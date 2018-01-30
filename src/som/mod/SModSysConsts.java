@@ -1,0 +1,178 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package som.mod;
+
+/**
+ *
+ * @author Sergio Flores
+ */
+public abstract class SModSysConsts {
+
+    public static final int CS_WAH_TP_WAH = 1;
+    public static final int CS_WAH_TP_SIL = 2;
+    public static final int CS_WAH_TP_TAN = 3;
+    public static final int CS_WAH_TP_TAN_MFG = 4;
+
+    public static final int CS_PLA_TP_PLA = 1;
+
+    public static final int CS_USR_TP_USR = 1;
+    public static final int CS_USR_TP_ADM = 2;
+    public static final int CS_USR_TP_SUP = 3;
+
+    public static final int CS_RIG_MAN_RM = 1;
+    public static final int CS_RIG_MAN_OS = 2;
+    public static final int CS_RIG_STK_RM = 3;
+    public static final int CS_RIG_STK_OS = 4;
+    public static final int CS_RIG_REV_RM = 5;
+    public static final int CS_RIG_REV_OS = 6;
+    public static final int CS_RIG_LAB = 7;
+    public static final int CS_RIG_SCA = 8;
+
+    public static final int CU_LAN_SPA = 1;
+    public static final int CU_LAN_ENG = 2;
+
+    public static final int CU_DIV_DEF = 1; // division
+    
+    public static final int CU_REP_GRP_DEF = 1; // reporting group
+    
+    public static final int SS_TIC_ST_SCA = 1;
+    public static final int SS_TIC_ST_LAB = 2;
+    public static final int SS_TIC_ST_ADM = 3;
+
+    public static final int SS_IOG_CT_IN = 1;
+    public static final int SS_IOG_CT_OUT = 2;
+
+    public static final int[] SS_IOG_CL_IN_PUR = new int[] { 1, 1 };
+    public static final int[] SS_IOG_CL_IN_SAL = new int[] { 1, 2 };
+    public static final int[] SS_IOG_CL_IN_EXT = new int[] { 1, 3 };
+    public static final int[] SS_IOG_CL_IN_INT = new int[] { 1, 4 };
+    public static final int[] SS_IOG_CL_IN_MFG = new int[] { 1, 5 };
+    public static final int[] SS_IOG_CL_OUT_PUR = new int[] { 2, 1 };
+    public static final int[] SS_IOG_CL_OUT_SAL = new int[] { 2, 2 };
+    public static final int[] SS_IOG_CL_OUT_EXT = new int[] { 2, 3 };
+    public static final int[] SS_IOG_CL_OUT_INT = new int[] { 2, 4 };
+    public static final int[] SS_IOG_CL_OUT_MFG = new int[] { 2, 5 };
+
+    public static final int[] SS_IOG_TP_IN_PUR_PUR = new int[] { 1, 1, 1 };
+    public static final int[] SS_IOG_TP_IN_PUR_CHG = new int[] { 1, 1, 2 };
+    public static final int[] SS_IOG_TP_IN_PUR_WAR = new int[] { 1, 1, 3 };
+    public static final int[] SS_IOG_TP_IN_PUR_CSG = new int[] { 1, 1, 4 };
+    public static final int[] SS_IOG_TP_IN_SAL_SAL = new int[] { 1, 2, 1 };
+    public static final int[] SS_IOG_TP_IN_SAL_CHG = new int[] { 1, 2, 2 };
+    public static final int[] SS_IOG_TP_IN_SAL_WAR = new int[] { 1, 2, 3 };
+    public static final int[] SS_IOG_TP_IN_SAL_CSG = new int[] { 1, 2, 4 };
+    public static final int[] SS_IOG_TP_IN_EXT_ADJ = new int[] { 1, 3, 1 };
+    public static final int[] SS_IOG_TP_IN_EXT_INV = new int[] { 1, 3, 2 };
+    public static final int[] SS_IOG_TP_IN_INT_TRA = new int[] { 1, 4, 1 };
+    public static final int[] SS_IOG_TP_IN_INT_CNV = new int[] { 1, 4, 2 };
+    public static final int[] SS_IOG_TP_IN_INT_MIX_PAS = new int[] { 1, 4, 3 };
+    public static final int[] SS_IOG_TP_IN_INT_MIX_ACT = new int[] { 1, 4, 4 };
+    public static final int[] SS_IOG_TP_IN_MFG_RM_ASD = new int[] { 1, 5, 1 };
+    public static final int[] SS_IOG_TP_IN_MFG_RM_RET = new int[] { 1, 5, 2 };
+    public static final int[] SS_IOG_TP_IN_MFG_WP_ASD = new int[] { 1, 5, 3 };
+    public static final int[] SS_IOG_TP_IN_MFG_WP_RET = new int[] { 1, 5, 4 };
+    public static final int[] SS_IOG_TP_IN_MFG_FG_ASD = new int[] { 1, 5, 5 };
+    public static final int[] SS_IOG_TP_IN_MFG_FG_RET = new int[] { 1, 5, 6 };
+    public static final int[] SS_IOG_TP_OUT_PUR_PUR = new int[] { 2, 1, 1 };
+    public static final int[] SS_IOG_TP_OUT_PUR_CHG = new int[] { 2, 1, 2 };
+    public static final int[] SS_IOG_TP_OUT_PUR_WAR = new int[] { 2, 1, 3 };
+    public static final int[] SS_IOG_TP_OUT_PUR_CSG = new int[] { 2, 1, 4 };
+    public static final int[] SS_IOG_TP_OUT_SAL_SAL = new int[] { 2, 2, 1 };
+    public static final int[] SS_IOG_TP_OUT_SAL_CHG = new int[] { 2, 2, 2 };
+    public static final int[] SS_IOG_TP_OUT_SAL_WAR = new int[] { 2, 2, 3 };
+    public static final int[] SS_IOG_TP_OUT_SAL_CSG = new int[] { 2, 2, 4 };
+    public static final int[] SS_IOG_TP_OUT_EXT_ADJ = new int[] { 2, 3, 1 };
+    public static final int[] SS_IOG_TP_OUT_EXT_INV = new int[] { 2, 3, 2 };
+    public static final int[] SS_IOG_TP_OUT_INT_TRA = new int[] { 2, 4, 1 };
+    public static final int[] SS_IOG_TP_OUT_INT_CNV = new int[] { 2, 4, 2 };
+    public static final int[] SS_IOG_TP_OUT_INT_MIX_PAS = new int[] { 2, 4, 3 };
+    public static final int[] SS_IOG_TP_OUT_INT_MIX_ACT = new int[] { 2, 4, 4 };
+    public static final int[] SS_IOG_TP_OUT_MFG_RM_ASD = new int[] { 2, 5, 1 };
+    public static final int[] SS_IOG_TP_OUT_MFG_RM_RET = new int[] { 2, 5, 2 };
+    public static final int[] SS_IOG_TP_OUT_MFG_WP_ASD = new int[] { 2, 5, 3 };
+    public static final int[] SS_IOG_TP_OUT_MFG_WP_RET = new int[] { 2, 5, 4 };
+    public static final int[] SS_IOG_TP_OUT_MFG_FG_ASD = new int[] { 2, 5, 5 };
+    public static final int[] SS_IOG_TP_OUT_MFG_FG_RET = new int[] { 2, 5, 6 };
+
+    public static final int SS_MIX_TP_NA = 1;
+    public static final int SS_MIX_TP_CNV = 2;
+    public static final int SS_MIX_TP_MIX_PAS = 3;
+    public static final int SS_MIX_TP_MIX_ACT = 4;
+
+    public static final int SS_ITEM_TP_RM = 1;
+    public static final int SS_ITEM_TP_WP = 2;
+    public static final int SS_ITEM_TP_FG = 3;
+    public static final int SS_ITEM_TP_BP = 4;
+    public static final int SS_ITEM_TP_CU = 5;
+
+    public static final int SU_IOG_ADJ_TP_NA = 1;
+
+    public static final int SU_INP_CT_NA = 1;
+    
+    public static final int[] SU_INP_CL_NA = new int[] { 1, 1 };
+
+    public static final int[] SU_INP_TP_NA = new int[] { 1, 1, 1 };
+
+    public static final int SU_UNIT_NA = 1;
+    public static final int SU_UNIT_MT_TON = 2;
+    public static final int SU_UNIT_KG = 3;
+    
+    public static final int SX_DEN = 1;
+    public static final int SX_IOD_VAL = 2;
+    public static final int SX_REF_IND = 3;
+    public static final int SX_IMP_PER = 4;
+    public static final int SX_MOI_PER = 5;
+    public static final int SX_PRO_PER = 6;
+    public static final int SX_OIL_PER = 7;
+    public static final int SX_OLE_PER = 8;
+    public static final int SX_LIN_PER = 9;
+    public static final int SX_LLC_PER = 10;
+    public static final int SX_ERU_PER = 11;
+
+    public static final int SX_LAB_TEST = 1;
+    public static final int SX_LAB_TEST_DET = 2;
+
+    // External system:
+
+    public static final int EXT_BPSS_CT_BP_SUP = 2;
+    public static final int EXT_BPSS_CT_BP_CUS = 3;
+    public static final int EXT_TRNS_TP_DPS_ADJ_RET = 2;
+    public static final int EXT_TRNS_ST_DPS_EMITED = 2;
+
+    public static final int EXT_FINS_TP_ACC_MOV_FY_OPEN = 2;
+    public static final int EXT_FINS_TP_ACC_SYS_SUP = 4;
+
+    public static final int[] EXT_FINS_TP_SYS_MOV_BPS_SUP = new int[] { 4, 2 };
+    public static final int[] EXT_FINS_CL_ACC_ASSET = new int[] { 2, 1 };
+
+    public static final int[] EXT_TRNS_CL_DPS_PUR_DOC = new int[] { 1, 3 };
+    public static final int[] EXT_TRNS_CL_IOM_IN_INT = new int[] { 1, 5 };
+    public static final int[] EXT_TRNS_CL_DPS_SAL_DOC = new int[] { 2, 3 };
+    public static final int[] EXT_TRNS_CL_IOM_OUT_INT = new int[] { 2, 5 };
+
+    public static final int[] EXT_TRNS_TP_IOG_IN_PUR_PUR = new int[] { 1, 1, 1 };
+    public static final int[] EXT_TRNS_TP_IOG_IN_SAL_SAL = new int[] { 1, 2, 1 };
+    public static final int[] EXT_TRNS_TP_IOG_IN_ADJ_ADJ = new int[] { 1, 3, 2 };
+    public static final int[] EXT_TRNS_TP_IOG_IN_ADJ_INV = new int[] { 1, 3, 1 };
+    public static final int[] EXT_TRNS_TP_IOG_IN_MFG_RM_RET = new int[] { 1, 6, 2 };
+    public static final int[] EXT_TRNS_TP_IOG_IN_MFG_FG_ASD = new int[] { 1, 6, 5 };
+    public static final int[] EXT_TRNS_TP_IOG_OUT_PUR_PUR = new int[] { 2, 1, 1 };
+    public static final int[] EXT_TRNS_TP_IOG_OUT_SAL_SAL = new int[] { 2, 2, 1 };
+    public static final int[] EXT_TRNS_TP_IOG_OUT_ADJ_ADJ = new int[] { 2, 3, 2 };
+    public static final int[] EXT_TRNS_TP_IOG_OUT_ADJ_INV = new int[] { 2, 3, 1 };
+    public static final int[] EXT_TRNS_TP_IOG_OUT_MFG_RM_ASD = new int[] { 2, 6, 1 };
+    public static final int[] EXT_TRNS_TP_IOG_OUT_MFG_FG_RET = new int[] { 2, 6, 6 };
+    public static final int[] EXT_TRNS_TP_IOG_IN_INT_TRA = new int[] { 1, 5, 1 };
+    public static final int[] EXT_TRNS_TP_IOG_IN_INT_CNV = new int[] { 1, 5, 2 };
+    public static final int[] EXT_TRNS_TP_IOG_OUT_INT_TRA = new int[] { 2, 5, 1 };
+    public static final int[] EXT_TRNS_TP_IOG_OUT_INT_CNV = new int[] { 2, 5, 2 };
+
+    public static final int EXT_DB_ACTION_SAVE_OK = 1201;
+
+    public static final int REP_LAB_TEST_IOD = 1;
+    public static final int REP_LAB_TEST_OLE = 2;
+    public static final int REP_LAB_TEST_LIN = 3;
+    public static final int REP_LAB_TEST_LLC = 4;
+}
