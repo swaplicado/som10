@@ -20,7 +20,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Alfredo Pérez
  */
 public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
 
@@ -46,6 +46,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     protected String msRevueltaId;
     protected String msRevueltaOdbc;
     protected String msRevueltaPath;
+    protected String msRevueltaHost;
+    protected String msRevueltaPort;
     protected int mnVersion;
     protected Date mtVersionTs;
     /*
@@ -95,6 +97,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public void setRevueltaId(String s) { msRevueltaId = s; }
     public void setRevueltaOdbc(String s) { msRevueltaOdbc = s; }
     public void setRevueltaPath(String s) { msRevueltaPath = s; }
+    public void setRevueltaHost(String s) { msRevueltaHost = s; }
+    public void setRevueltaPort(String s) { msRevueltaPort = s; }
     public void setVersion(int n) { mnVersion = n; }
     public void setVersionTs(Date t) { mtVersionTs = t; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -132,6 +136,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public String getRevueltaId() { return msRevueltaId; }
     public String getRevueltaOdbc() { return msRevueltaOdbc; }
     public String getRevueltaPath() { return msRevueltaPath; }
+    public String getRevueltaHost() { return msRevueltaHost; }
+    public String getRevueltaPort() { return msRevueltaPort; }
     public int getVersion() { return mnVersion; }
     public Date getVersionTs() { return mtVersionTs; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -185,6 +191,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         msRevueltaId = "";
         msRevueltaOdbc = "";
         msRevueltaPath = "";
+        msRevueltaHost = "";
+        msRevueltaPort = "";
         mnVersion = 0;
         mtVersionTs = null;
         mbUpdatable = false;
@@ -268,6 +276,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
             msRevueltaId = resultSet.getString("rev_id");
             msRevueltaOdbc = resultSet.getString("rev_odbc");
             msRevueltaPath = resultSet.getString("rev_path");
+            msRevueltaHost = resultSet.getString("rev_host");
+            msRevueltaPort = resultSet.getString("rev_port");
             mnVersion = resultSet.getInt("ver");
             mtVersionTs = resultSet.getTimestamp("ver_ts");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -342,6 +352,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "'" + msRevueltaId + "', " +
                     "'" + msRevueltaOdbc + "', " +
                     "'" + msRevueltaPath + "', " + 
+                    "'" + msRevueltaHost + "', " + 
+                    "'" + msRevueltaPort + "', " + 
                     mnVersion + ", " +
                     "NOW()" + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -384,6 +396,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "rev_id = '" + msRevueltaId + "', " +
                     "rev_odbc = '" + msRevueltaOdbc + "', " +
                     "rev_path = '" + msRevueltaPath + "', " +
+                    "rev_path = '" + msRevueltaHost + "', " +
+                    "rev_path = '" + msRevueltaPort + "', " +
                     //"ver = " + mnVersion + ", " +
                     //"ver_ts = " + "NOW()" + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -444,6 +458,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         registry.setRevueltaId(this.getRevueltaId());
         registry.setRevueltaOdbc(this.getRevueltaOdbc());
         registry.setRevueltaPath(this.getRevueltaPath());
+        registry.setRevueltaHost(this.getRevueltaHost());
+        registry.setRevueltaPort(this.getRevueltaPort());
         registry.setVersion(this.getVersion());
         registry.setVersionTs(this.getVersionTs());
         registry.setUpdatable(this.isUpdatable());

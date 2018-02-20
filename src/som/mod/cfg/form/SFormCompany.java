@@ -18,7 +18,7 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Alfredo Pérez
  */
 public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
@@ -340,13 +340,13 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jPanel20.setLayout(new java.awt.BorderLayout());
 
-        jPanel16.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros de conexión con sistema Revuelta XXI:"));
+        jPanel16.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros de conexión con sistema Revuelta:"));
         jPanel16.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
 
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlRevueltaId.setForeground(new java.awt.Color(0, 102, 102));
-        jlRevueltaId.setText("ID Revuelta XXI:*");
+        jlRevueltaId.setText("ID Revuelta:*");
         jlRevueltaId.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel21.add(jlRevueltaId);
 

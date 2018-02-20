@@ -33,7 +33,7 @@ import som.mod.som.form.SDialogMailReceptions;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Alfredo Pérez
  */
 public class SViewTicketTare extends SGridPaneView implements ActionListener {
 
@@ -297,8 +297,8 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         columns[col++].setSumApplying(true);
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_net_r", "Carga destino neto (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_1", "1a pesada Revuelta XXI");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_2", "2a pesada Revuelta XXI");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_1", "1a pesada Revuelta");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_2", "2a pesada Revuelta");
         if (mnGridSubtype == SModConsts.SX_TIC_TARE) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_4B, "lb.num", "Folio análisis");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE,  SDbConsts.FIELD_DATE + "1", "Fecha análisis");

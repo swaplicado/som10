@@ -36,7 +36,7 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Alfredo Pérez
  */
 public class SViewTicket extends SGridPaneView implements ActionListener {
 
@@ -521,8 +521,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         columns[col++].setSumApplying(true);
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_net_r", "Carga destino neto (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_1", "1a pesada Revuelta XXI");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_2", "2a pesada Revuelta XXI");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_1", "1a pesada Revuelta");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_2", "2a pesada Revuelta");
 
         if (mnGridSubtype == SModSysConsts.SS_TIC_ST_ADM) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "_prc_ton_reg", "Precio ton reg $");

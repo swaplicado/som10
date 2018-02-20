@@ -17,6 +17,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -43,7 +45,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Alfredo Pérez
  */
 public class SFormTicket extends SBeanForm implements ActionListener, ItemListener, FocusListener {
 
@@ -202,8 +204,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jlDummy.setPreferredSize(new java.awt.Dimension(25, 23));
         jPanel4.add(jlDummy);
 
-        jbImportTicket.setText("Importar Revuelta XXI ");
-        jbImportTicket.setToolTipText("Importar de Revuelta XXI (primer pesada)");
+        jbImportTicket.setText("Importar de Revuelta");
+        jbImportTicket.setToolTipText("Importar de Revuelta (primer pesada)");
         jbImportTicket.setPreferredSize(new java.awt.Dimension(165, 23));
         jPanel4.add(jbImportTicket);
 
@@ -311,8 +313,9 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jlWeightDestinyDepartureUnit.setPreferredSize(new java.awt.Dimension(35, 23));
         jPanel15.add(jlWeightDestinyDepartureUnit);
 
-        jbImportTareTicket.setText("Importar Revuelta XXI ");
-        jbImportTareTicket.setToolTipText("Importar de Revuelta XXI (segunda pesada)");
+        jbImportTareTicket.setText("Importar de Revuelta");
+        jbImportTareTicket.setToolTipText("Importar de Revuelta (segunda pesada)");
+        jbImportTareTicket.setActionCommand("Importar de Revuelta");
         jbImportTareTicket.setPreferredSize(new java.awt.Dimension(165, 23));
         jPanel15.add(jbImportTareTicket);
 
@@ -431,7 +434,13 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        attendWindowActivated();
+        try {
+            attendWindowActivated();
+        }
+        catch (InstantiationException | IllegalAccessException e) {
+            SLibUtils.printException(this, e);
+            Logger.getLogger(SFormTicket.class.getName()).log(Level.SEVERE, null, e);
+        }
     }//GEN-LAST:event_formWindowActivated
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
@@ -572,13 +581,13 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jlWeightDestinyDepartureUnit.setText(SSomConsts.KG);
     }
 
-    private void attendWindowActivated() {
+    private void attendWindowActivated() throws InstantiationException, IllegalAccessException {
         if (mbFirstTime) {
             mbFirstTime = false;
             
             moConnectionRevuelta = SSomUtils.openConnectionRevueltaJdbc(miClient.getSession());
             if (moConnectionRevuelta == null) {
-                miClient.showMsgBoxWarning("No se pudo establecer comunicación con el sistema Revuelta XXI.");
+                miClient.showMsgBoxWarning("No se pudo establecer comunicación con el sistema Revuelta.");
             }
             
             setEnabledFields(true);
@@ -772,31 +781,58 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                                 "INNER JOIN cliente AS c ON be.clave_c = c.clave_c) " +
                                 "WHERE be.clave_e = " + moIntTicket.getValue() + " AND be.fecha_e = #" + dateFormatDateShort.format(moDatetimeArrival.getValue()) + "# ";
                         */
-                        sql = "SELECT be.clave_e, CAST(DATE(be.fecha_e) AS SQL_CHAR) + ' ' + be.hora_e, be.placas, be.observa_e, be.conductor, be.peso_e, " + // 6
-                                "be.clave_p, be.clave_c, be.clave_o, be.nombre_oe, be.turno_oe, be.bascula_e, p.nombre_p, c.nombre_c " + // 14
+                        /* Deprecation due to change of DBMS of Revuelta's scale software (Alfredo Pérez, 2018-02-19)
+                        sql = "SELECT 
+                                be.clave_e,
+                                CAST(DATE(be.fecha_e) AS SQL_CHAR) + ' ' + be.hora_e, 
+                                be.placas, 
+                                be.observa_e,
+                                be.conductor, 
+                                be.peso_e, " +  // 6
+                                "be.clave_p,
+                                be.clave_c,     //8
+                                be.clave_o,     
+                                be.nombre_oe,   //10 
+                                be.turno_oe, 
+                                be.bascula_e,   //12
+                                p.nombre_p,
+                                c.nombre_c " + // 14
                                 "FROM ((boleto_ent AS be " +
                                 "INNER JOIN producto AS p ON be.clave_p = p.clave_p) " +
                                 "INNER JOIN cliente AS c ON be.clave_c = c.clave_c) " +
                                 "WHERE be.clave_e = " + moIntTicket.getValue() + " AND be.fecha_e = '" + SLibUtils.DbmsDateFormatDate.format(moDatetimeArrival.getValue()) + "' ";
                         
+                        */
+                        sql = "SELECT Pes_ID, Pro_ID, Emp_ID, Pes_Placas, Pes_Chofer, Pes_FecHorPri, Usb_Nombre, Emp_Nombre, Pro_Nombre, "
+                                + "Pes_BasPri, Pes_OpeNomPri, Pes_ObsPri, Pes_PesoPri, Pes_FecHorSeg, Pes_BasSeg, Pes_Bruto, Pes_Tara, Pes_Neto, Pes_OpeNomSeg, Pes_ObsSeg "
+                                + "FROM dba.Pesadas "
+                                + "WHERE Pes_ID = "+ moIntTicket.getValue();
+
                         resulset = statement.executeQuery(sql);
                         if (resulset.next()) {
-                            producerRevId = resulset.getString(8);
-                            itemRevId = resulset.getString(7);
+                            producerRevId = resulset.getString("Emp_ID");
+                            itemRevId = resulset.getString("Pro_ID");
 
                             producerId = SSomUtils.mapProducerSomRevuelta(miClient.getSession(), producerRevId);
                             itemId = SSomUtils.mapItemSomRevuelta(miClient.getSession(), itemRevId);
 
                             if (producerId > 0) {
                                 if (itemId > 0) {
-                                    moKeyProducer.setValue(new int [] { producerId });
-                                    moKeyItem.setValue(new int [] { itemId });
+                                    /* Deprecation due to change of DBMS of Revuelta's scale software (Alfredo Pérez, 2018-02-19)
                                     moTextPlates.setValue(resulset.getString(3));
                                     moTextDriver.setValue(resulset.getString(5));
                                     moDecWeightDestinyArrival.setValue(resulset.getDouble(6));
-                                    //moDatetimeArrival.setValue(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(2)));
+                                    moDatetimeArrival.setValue(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(2)));
                                     moDatetimeArrival.setValue(datetimeParser.parse(resulset.getString(2).replaceAll("a.m.", "AM").replaceAll("p.m.", "PM")));
                                     moTextNote.setValue(resulset.getString(4));
+                                    */
+                                    moKeyProducer.setValue(new int [] { producerId });
+                                    moKeyItem.setValue(new int [] { itemId });
+                                    moTextPlates.setValue(resulset.getString("Pes_Placas"));
+                                    moTextDriver.setValue(resulset.getString("Pes_Chofer"));
+                                    moDecWeightDestinyArrival.setValue(resulset.getDouble("Pes_PesoPri"));
+                                    moDatetimeArrival.setValue((resulset.getTimestamp("Pes_FecHorPri")));
+                                    moTextNote.setValue(resulset.getString("Pes_ObsPri"));
                                     moKeyScale.setEnabled(false);
                                     mbIsRevImport1 = true;
 
@@ -804,15 +840,15 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                                     itemStateKeyItem();
                                 }
                                 else {
-                                    miClient.showMsgBoxInformation("No se encontró el mapeo para el producto '" + resulset.getString(13) + "', en el catálogo de ítems de SOM.");
+                                    miClient.showMsgBoxInformation("No se encontró el mapeo para el producto '" + resulset.getString("Pro_Nombre") + "', en el catálogo de ítems de SOM.");
                                 }
                             }
                             else {
-                                miClient.showMsgBoxInformation("No se encontró el mapeo para el proveedor '" + resulset.getString(14) + "', en el catálogo de proveedores de SOM.");
+                                miClient.showMsgBoxInformation("No se encontró el mapeo para el proveedor '" + resulset.getString("Emp_Nombre") + "', en el catálogo de proveedores de SOM.");
                             }
                         }
                         else {
-                            miClient.showMsgBoxInformation("No se encontró ningún registro para el boleto '" + moIntTicket.getValue() + "', del día '" + SLibUtils.DateFormatDate.format(moDatetimeArrival.getValue()) + "', en Revuelta XXI.");
+                            miClient.showMsgBoxInformation("No se encontró ningún registro para el boleto '" + moIntTicket.getValue() + "', del día '" + SLibUtils.DateFormatDate.format(moDatetimeArrival.getValue()) + "', en Revuelta.");
                         }
                     }
                     else {
@@ -832,7 +868,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             }
         }
         else {
-            miClient.showMsgBoxWarning("No se pudo establecer comunicación con el sistema Revuelta XXI.");
+            miClient.showMsgBoxWarning("No se pudo establecer comunicación con el sistema Revuelta.");
         }
     }
 
@@ -852,15 +888,24 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                         "FROM boleto_sal " +
                         "WHERE clave_e = " + moIntTicket.getValue() + " AND fecha_s = #" + DateFormatDateShort.format(moDatetimeDeparture.getValue()) + "# ";
                 */
+                /* Deprecation due to change of DBMS of Revuelta's scale software (Alfredo Pérez, 2018-02-19)
                 sql = "SELECT clave_e, CAST(DATE(fecha_s) AS SQL_CHAR) + ' ' + hora_s, peso_s " + // 3
                         "FROM boleto_sal " +
                         "WHERE clave_e = " + moIntTicket.getValue() + " AND fecha_s = '" + SLibUtils.DbmsDateFormatDate.format(moDatetimeDeparture.getValue()) + "' ";
+                */
                         
+                sql = "SELECT Pes_ID, Pro_ID, Emp_ID, Pes_FecHorSeg, Pes_BasSeg, Pes_Bruto, Pes_Tara, Pes_Neto,Pes_PesoSeg, Pes_OpeNomSeg, Pes_ObsSeg "
+                        + "FROM dba.Pesadas "
+                        + "WHERE Pes_ID = "+ moIntTicket.getValue();
                 resulset = statement.executeQuery(sql);
                 if (resulset.next()) {
+                    /* Deprecation due to change of DBMS of Revuelta's scale software (Alfredo Pérez, 2018-02-19)
                     moDecWeightDestinyDeparture.setValue(resulset.getDouble(3));
-                    //moDatetimeDeparture.setValue(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(2)));
+                    moDatetimeDeparture.setValue(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(2)));
                     moDatetimeDeparture.setValue(datetimeParser.parse(resulset.getString(2).replaceAll("a.m.", "AM").replaceAll("p.m.", "PM")));
+                    */
+                    moDecWeightDestinyDeparture.setValue(resulset.getDouble("Pes_PesoSeg"));
+                    moDatetimeDeparture.setValue(resulset.getTimestamp("Pes_FecHorSeg"));
                     mbIsRevImport2 = true;
 
                     setEnabledFields(false);
@@ -869,12 +914,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                     miClient.showMsgBoxInformation("No se encontró ningún registro para el boleto '" + moIntTicket.getValue() + "', del día '" + SLibUtils.DateFormatDate.format(moDatetimeDeparture.getValue()) + ".");
                 }
             }
-            catch (ParseException | SQLException e) {
+            catch (SQLException e) {
                 SLibUtils.showException(this, e);
             }
         }
         else {
-            miClient.showMsgBoxWarning("No se pudo establecer comunicación con el sistema Revuelta XXI.");
+            miClient.showMsgBoxWarning("No se pudo establecer comunicación con el sistema Revuelta.");
         }
     }
 

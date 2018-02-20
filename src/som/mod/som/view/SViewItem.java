@@ -17,7 +17,7 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Alfredo Pérez
  */
 public class SViewItem extends SGridPaneView {
 
@@ -136,7 +136,7 @@ public class SViewItem extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.name_sht", SGridConsts.COL_TITLE_NAME + " corto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_L, "v.ext_name", SGridConsts.COL_TITLE_NAME + " externo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "v.ext_code", SGridConsts.COL_TITLE_CODE + " externo");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "v.rev_item_id", "Clave Revuelta XXI");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "v.rev_item_id", "Clave Revuelta");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "vt.code", "Tipo ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "ict.code", "Categoría insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "icl.code", "Clase insumo");

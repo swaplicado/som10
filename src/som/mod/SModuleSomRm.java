@@ -64,7 +64,7 @@ import som.mod.som.view.SViewTicketsSupplierItemInputType;
 
 /**
  * 
- * @author Néstor Ávalos, Juan Barajas, Sergio Flores
+ * @author Néstor Ávalos, Juan Barajas, Sergio Flores, Alfredo Pérez
  */
 public class SModuleSomRm extends SGuiModule implements ActionListener {
 
@@ -234,7 +234,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjRepSeedPayed = new JMenuItem("Materia prima pagada...");
         mjRepFreighTime = new JMenuItem("Duración fletes de materia prima...");
         mjRepTicLog = new JMenuItem("Bitácora de boletos");
-        mjRepCompTic = new JMenuItem("Comparativo boletos SOM vs. Revuelta XXI...");
+        mjRepCompTic = new JMenuItem("Comparativo boletos SOM vs. Revuelta...");
 
         mjRep.add(mjRepSeedReceived);
         mjRep.add(mjRepSeedReceivedByIodVal);
@@ -581,7 +581,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 guiReport = new SGuiReport("reps/s_tic.jasper", "Reporte boleto");
                 break;
             case SModConsts.SR_TIC_COMP:
-                guiReport = new SGuiReport("reps/s_tic_comp.jasper", "Reporte comparativo boletos SOM vs. Revuelta XXI");
+                guiReport = new SGuiReport("reps/s_tic_comp.jasper", "Reporte comparativo boletos SOM vs. Revuelta");
                 break;
             case SModConsts.SR_ITEM_REC:
                 switch (subtype) {
@@ -716,7 +716,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 showView(SModConsts.SX_TIC_LOG, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjRepCompTic) {
-                new SDialogRepComparativeTicket(miClient, SModConsts.SR_TIC_COMP, "Reporte comparativo boletos SOM vs. Revuelta XXI").setVisible(true);
+                new SDialogRepComparativeTicket(miClient, SModConsts.SR_TIC_COMP, "Reporte comparativo boletos SOM vs. Revuelta").setVisible(true);
             }
         }
     }

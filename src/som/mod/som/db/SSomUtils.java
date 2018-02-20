@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 import sa.lib.SLibConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
@@ -20,10 +21,11 @@ import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.cfg.db.SDbBranchWarehouse;
+import som.mod.cfg.db.SDbCompany;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Alfredo Pérez
  */
 public abstract class SSomUtils {
     
@@ -733,6 +735,7 @@ public abstract class SSomUtils {
      * @param session Current GUI session.
      * @return Connection
      */
+    /* Deprecation due to change of DBMS of Revuelta's scale software (Alfredo Pérez, 2018-02-19)
     public static Connection openConnectionRevueltaJdbc(SGuiSession session) {
         Connection connection = null;
 
@@ -747,11 +750,36 @@ public abstract class SSomUtils {
 
         return connection;
     }
+    */
+    
+    /**
+     * Obtain conexion with system Revuelta using JDBC jconn3 Driver
+     * @param session Current GUI session.
+     * @return Connection
+     */
+    public static Connection openConnectionRevueltaJdbc(SGuiSession session) {
+        Connection connection = null;
+
+        try {
+            Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+            SDbCompany company = ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany();
+            String url="jdbc:sybase:Tds:" + company.getRevueltaHost() + ":" + company.getRevueltaPort() + "/Revuelta";
+            Properties prop = new Properties();
+            prop.put("user", "usuario");
+            prop.put("password", "revuelta");
+            connection = DriverManager.getConnection(url, prop);
+        }
+        catch (ClassNotFoundException | SQLException e) {
+            SLibUtils.printException(SSomUtils.class.getName(), e);
+        }
+
+        return connection;
+    }
 
     /**
-     * Obtain producer ID on SOM, from producer ID on Revuelta XXI.
+     * Obtain producer ID on SOM, from producer ID on Revuelta.
      * @param session Current GUI session.
-     * @param revueltaProducerId Producer ID on Revuelta XXI
+     * @param revueltaProducerId Producer ID on Revuelta.
      * @return Producer ID on SOM
      */
     public static int mapProducerSomRevuelta(SGuiSession session, String revueltaProducerId) {
@@ -776,9 +804,9 @@ public abstract class SSomUtils {
     }
 
     /**
-     * Obtain item ID on SOM, from item ID on Revuelta XXI.
+     * Obtain item ID on SOM, from item ID on Revuelta.
      * @param session Current GUI session.
-     * @param revueltaItemId Item ID on Revuelta XXI
+     * @param revueltaItemId Item ID on Revuelta.
      * @return Item ID on SOM
      */
     public static int mapItemSomRevuelta(SGuiSession session, String revueltaItemId) {
@@ -803,7 +831,7 @@ public abstract class SSomUtils {
     }
 
     /**
-     * Obtain all items mapped from Revuelta XXI on SOM.
+     * Obtain all items mapped from Revuelta on SOM.
      * @param session Current GUI session.
      * @return String of items ID's
      */
@@ -813,8 +841,10 @@ public abstract class SSomUtils {
         ResultSet resultSet;
 
         try {
-            sSql = "SELECT rev_item_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " " +
-                    "WHERE b_del = 0 AND b_dis = 0 AND rev_item_id <> ''";
+            sSql = "SELECT DISTINCT rev_item_id " +
+                    "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " " +
+                    "WHERE NOT b_del AND NOT b_dis AND rev_item_id <> '' " +
+                    "ORDER BY rev_item_id ";
 
             resultSet = session.getStatement().executeQuery(sSql);
             while (resultSet.next()) {
@@ -862,10 +892,6 @@ public abstract class SSomUtils {
      * @param idItem int,
      * @param dateStart Date,
      * @param dateEnd Date,
-     * @param idRegion int,
-     * @param isRegionNull boolean,
-     * @param idProducer int,
-     * @param isReportingGroupNonZero boolean,
      * @param idReportingGroup int
      * @return double
      */

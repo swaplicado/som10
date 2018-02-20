@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
@@ -26,7 +25,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Alfredo Pérez
  */
 public class SDialogRepComparativeTicket extends SBeanDialogReport {
 
@@ -166,6 +165,7 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
                     "WHERE be.fecha_e BETWEEN #" + dateFormatDateShort.format(start) + "# AND #" + dateFormatDateShort.format(end) + "# AND be.clave_u = '" + revueltaId + "' " +
                     (sqlMapItems.isEmpty() ? "" : ("AND p.clave_p IN (" + sqlMapItems + ") "));
             */
+            /* Deprecation due to change of DBMS of Revuelta's scale software (Alfredo Pérez, 2018-02-19)
             sql = "SELECT be.clave_e, CAST(DATE(be.fecha_e) AS SQL_CHAR) + ' ' + be.hora_e, CAST(DATE(bs.fecha_s) AS SQL_CHAR) + ' ' + bs.hora_s, be.placas, be.observa_e, be.conductor, be.peso_e, bs.peso_s, bs.peso_n, " + // 9
                     "p.clave_p, p.nombre_p, c.clave_c, c.nombre_c, u.nombre_u, be.clave_o, be.nombre_oe, be.turno_oe, be.bascula_e, be.completo " + // 19
                     "FROM (((boleto_ent AS be " +
@@ -173,20 +173,27 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
                     "INNER JOIN producto AS p ON be.clave_p = p.clave_p) " +
                     "INNER JOIN cliente AS c ON be.clave_c = c.clave_c) " +
                     "INNER JOIN usuario AS u ON be.clave_u = u.clave_u " +
-                    "WHERE be.fecha_e BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(start) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(end) + "' AND be.clave_u = '" + revueltaId + "' " +
+                    "WHERE be.fecha_e BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(start) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(end) + 
+                    "' AND be.clave_u = '" + revueltaId + "' " +
                     (sqlMapItems.isEmpty() ? "" : ("AND p.clave_p IN (" + sqlMapItems + ") "));
+            */
 
+            sql = "SELECT Usu_Clave, Pes_ID, Pro_ID, Emp_ID, Pes_Placas, Pes_Chofer, Pes_Completo, Pes_FecHorPri, Pes_FecHorSeg, Usb_Nombre, Emp_Nombre, Pro_Nombre, Pes_BasPri, Pes_OpeNomPri, Pes_ObsPri, Pes_PesoPri, Pes_PesoSeg, Pes_FecHorSeg, Pes_BasSeg, Pes_Bruto, Pes_Tara, Pes_Neto, Pes_OpeNomSeg, Pes_ObsSeg, Pes_Neto " + 
+                    "FROM dba.Pesadas  as P INNER JOIN dba.Usuarios as U ON U.Usu_Nombre = P.Pes_OpeNomPri " + 
+                    "WHERE Pes_FecHorPri BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(start) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(end) +  "' AND Usb_ID = '" +  revueltaId + "' " +
+                    (sqlMapItems.isEmpty() ? "" : ("AND Pro_ID IN (" + sqlMapItems + ") "));
             resulset = statement.executeQuery(sql);
             while (resulset.next()) {
                 SDbTicketRevuelta ticketRevuelta = new SDbTicketRevuelta();
 
+                /* Deprecation due to change of DBMS of Revuelta's scale software (Alfredo Pérez, 2018-02-19)
                 ticketRevuelta.setPkTicketRevueltaId(resulset.getInt(1));
                 ticketRevuelta.setPlate(resulset.getString(4));
                 ticketRevuelta.setDriver(resulset.getString(6));
                 ticketRevuelta.setNote(resulset.getString(5));
-                //ticketRevuelta.setDatetimeArrival(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(2)));
+                ticketRevuelta.setDatetimeArrival(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(2)));
                 ticketRevuelta.setDatetimeArrival(datetimeParser.parse(resulset.getString(2).replaceAll("a.m.", "AM").replaceAll("p.m.", "PM")));
-                //ticketRevuelta.setDatetimeDeparture(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(3)));
+                ticketRevuelta.setDatetimeDeparture(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(3)));
                 ticketRevuelta.setDatetimeDeparture(datetimeParser.parse(resulset.getString(3).replaceAll("a.m.", "AM").replaceAll("p.m.", "PM")));
                 ticketRevuelta.setWeightArrival(resulset.getInt(7));
                 ticketRevuelta.setWeightDeparture(resulset.getInt(8));
@@ -200,6 +207,25 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
                 ticketRevuelta.setTurn(resulset.getString(17));
                 ticketRevuelta.setScaleId(resulset.getString(18));
                 ticketRevuelta.setTared(resulset.getBoolean(19));
+                */
+                ticketRevuelta.setPkTicketRevueltaId(resulset.getInt("Pes_ID"));
+                ticketRevuelta.setPlate(resulset.getString("Pes_Placas"));
+                ticketRevuelta.setDriver(resulset.getString("Pes_Chofer"));
+                ticketRevuelta.setNote(resulset.getString("Pes_ObsPri"));
+                ticketRevuelta.setDatetimeArrival(resulset.getTimestamp("Pes_FecHorPri"));
+                ticketRevuelta.setDatetimeDeparture(resulset.getTimestamp("Pes_FecHorSeg"));
+                ticketRevuelta.setWeightArrival(resulset.getInt("Pes_PesoPri"));
+                ticketRevuelta.setWeightDeparture(resulset.getInt("Pes_PesoSeg"));
+                ticketRevuelta.setWeightNet_r(resulset.getInt("Pes_Neto"));
+                ticketRevuelta.setProducer(resulset.getString("Emp_Nombre"));
+                ticketRevuelta.setProducerId(resulset.getString("Emp_ID"));
+                ticketRevuelta.setItem(resulset.getString("Pro_Nombre"));
+                ticketRevuelta.setItemId(resulset.getString("Pro_ID"));
+                ticketRevuelta.setOperator(resulset.getString("Pes_OpeNomPri"));
+                ticketRevuelta.setOperatorId(resulset.getString("Usu_Clave"));
+                ticketRevuelta.setTurn("");
+                ticketRevuelta.setScaleId(resulset.getString("Pes_BasPri"));
+                ticketRevuelta.setTared(resulset.getBoolean("Pes_Completo"));
                 ticketRevuelta.setSystem(true);
 
                 ticketRevuelta.setDateStart(start);
@@ -218,39 +244,44 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
                     "WHERE be.completo = no AND be.fecha_e BETWEEN #" + dateFormatDateShort.format(start) + "# AND #" + dateFormatDateShort.format(end) + "# AND be.clave_u = '" + revueltaId + "' " +
                     (sqlMapItems.isEmpty() ? "" : ("AND p.clave_p IN (" + sqlMapItems + ") "));
             */
+            /* Deprecation due to change of DBMS of Revuelta's scale software (Alfredo Pérez, 2018-02-19)
             sql = "SELECT be.clave_e, CAST(DATE(be.fecha_e) AS SQL_CHAR) + ' ' + be.hora_e, CAST(DATE(be.fecha_e) AS SQL_CHAR) + ' ' + be.hora_e, be.placas, be.observa_e, be.conductor, be.peso_e, be.peso_e, " + // 8
                     "p.clave_p, p.nombre_p, c.clave_c, c.nombre_c, u.nombre_u, be.clave_o, be.nombre_oe, be.turno_oe, be.bascula_e, be.completo " + // 18
                     "FROM ((boleto_ent AS be " +
                     "INNER JOIN producto AS p ON be.clave_p = p.clave_p) " +
                     "INNER JOIN cliente AS c ON be.clave_c = c.clave_c) " +
                     "INNER JOIN usuario AS u ON be.clave_u = u.clave_u " +
-                    "WHERE be.completo = 0 AND be.fecha_e BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(start) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(end) + "' AND be.clave_u = '" + revueltaId + "' " +
+                    "WHERE be.completo = 0 AND be.fecha_e BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(start) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(end) + "' AND be.clave_u =" + revueltaId + " " +
                     (sqlMapItems.isEmpty() ? "" : ("AND p.clave_p IN (" + sqlMapItems + ") "));
-
+            */
+            
+            sql = "SELECT Usu_Clave, Pes_ID, Pro_ID, Emp_ID, Pes_Placas, Pes_Chofer, Pes_Completo, Pes_FecHorPri, Pes_FecHorSeg, Usb_Nombre, Emp_Nombre, Pro_Nombre, Pes_BasPri, Pes_OpeNomPri, Pes_ObsPri, Pes_PesoPri, Pes_PesoSeg, Pes_FecHorSeg, Pes_BasSeg, Pes_Bruto, Pes_Tara, Pes_Neto, Pes_OpeNomSeg, Pes_ObsSeg, Pes_Neto " + 
+                    "FROM dba.Pesadas  as P INNER JOIN dba.Usuarios as U ON U.Usu_Nombre = P.Pes_OpeNomPri " + 
+                    "WHERE Pes_FecHorPri BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(start) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(end) +  "' " +
+                    (sqlMapItems.isEmpty() ? "" : ("AND Pro_ID IN (" + sqlMapItems + ") "));
+            
             resulset = statement.executeQuery(sql);
             while (resulset.next()) {
                 SDbTicketRevuelta ticketRevuelta = new SDbTicketRevuelta();
 
-                ticketRevuelta.setPkTicketRevueltaId(resulset.getInt(1));
-                ticketRevuelta.setPlate(resulset.getString(4));
-                ticketRevuelta.setDriver(resulset.getString(6));
-                ticketRevuelta.setNote(resulset.getString(5));
-                //ticketRevuelta.setDatetimeArrival(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(2)));
-                ticketRevuelta.setDatetimeArrival(datetimeParser.parse(resulset.getString(2).replaceAll("a.m.", "AM").replaceAll("p.m.", "PM")));
-                //ticketRevuelta.setDatetimeDeparture(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(3)));
-                ticketRevuelta.setDatetimeDeparture(datetimeParser.parse(resulset.getString(3).replaceAll("a.m.", "AM").replaceAll("p.m.", "PM")));
-                ticketRevuelta.setWeightArrival(resulset.getInt(7));
-                ticketRevuelta.setWeightDeparture(resulset.getInt(8));
-                ticketRevuelta.setWeightNet_r(0);
-                ticketRevuelta.setProducer(resulset.getString(12));
-                ticketRevuelta.setProducerId(resulset.getString(11));
-                ticketRevuelta.setItem(resulset.getString(10));
-                ticketRevuelta.setItemId(resulset.getString(9));
-                ticketRevuelta.setOperator(resulset.getString(15));
-                ticketRevuelta.setOperatorId(resulset.getString(14));
-                ticketRevuelta.setTurn(resulset.getString(16));
-                ticketRevuelta.setScaleId(resulset.getString(17));
-                ticketRevuelta.setTared(resulset.getBoolean(18));
+                ticketRevuelta.setPkTicketRevueltaId(resulset.getInt("Pes_ID"));
+                ticketRevuelta.setPlate(resulset.getString("Pes_Placas"));
+                ticketRevuelta.setDriver(resulset.getString("Pes_Chofer"));
+                ticketRevuelta.setNote(resulset.getString("Pes_ObsPri"));
+                ticketRevuelta.setDatetimeArrival(resulset.getTimestamp("Pes_FecHorPri"));
+                ticketRevuelta.setDatetimeDeparture(resulset.getTimestamp("Pes_FecHorSeg"));
+                ticketRevuelta.setWeightArrival(resulset.getInt("Pes_PesoPri"));
+                ticketRevuelta.setWeightDeparture(resulset.getInt("Pes_PesoSeg"));
+                ticketRevuelta.setWeightNet_r(resulset.getInt("Pes_Neto"));
+                ticketRevuelta.setProducer(resulset.getString("Emp_Nombre"));
+                ticketRevuelta.setProducerId(resulset.getString("Emp_ID"));
+                ticketRevuelta.setItem(resulset.getString("Pro_Nombre"));
+                ticketRevuelta.setItemId(resulset.getString("Pro_ID"));
+                ticketRevuelta.setOperator(resulset.getString("Pes_OpeNomPri"));
+                ticketRevuelta.setOperatorId(resulset.getString("Usu_Clave"));
+                ticketRevuelta.setTurn("");
+                ticketRevuelta.setScaleId(resulset.getString("Pes_BasPri"));
+                ticketRevuelta.setTared(resulset.getBoolean("Pes_Completo"));
                 ticketRevuelta.setSystem(true);
 
                 ticketRevuelta.setDateStart(start);
@@ -259,7 +290,7 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
                 vTicRev.add(ticketRevuelta);
             }
         }
-        catch (ParseException | SQLException e) {
+        catch (SQLException e) {
             SLibUtils.showException(this, e);
         }
 

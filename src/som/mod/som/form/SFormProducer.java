@@ -21,7 +21,7 @@ import som.mod.som.db.SDbProducer;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Alfredo Pérez
  */
 public class SFormProducer extends SBeanForm implements ItemListener {
 
@@ -139,7 +139,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
 
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlRevueltaProducerId.setText("Clave Revuelta XXI:");
+        jlRevueltaProducerId.setText("Clave Revuelta:");
         jlRevueltaProducerId.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel7.add(jlRevueltaProducerId);
 

@@ -7,7 +7,6 @@ package som.mod.ext.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Date;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibUtils;
@@ -18,7 +17,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Alfredo Pérez
  */
 public class SDbTicketRevuelta extends SDbRegistryUser  {
 
@@ -48,6 +47,7 @@ public class SDbTicketRevuelta extends SDbRegistryUser  {
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
+    
     protected Date mtDateStart;
     protected Date mtDateEnd;
 
@@ -184,7 +184,6 @@ public class SDbTicketRevuelta extends SDbRegistryUser  {
 
     @Override
     public void read(SGuiSession session, int[] pk) throws SQLException, Exception {
-        Statement statement = null;
         ResultSet resultSet = null;
 
         initRegistry();
@@ -234,13 +233,11 @@ public class SDbTicketRevuelta extends SDbRegistryUser  {
     public void save(SGuiSession session) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = SDbConsts.SAVE_ERROR;
-
+        
+        verifyRegistryNew(session);
+        
         if (mbRegistryNew) {
             //computePrimaryKey(session); It's not required
-            mbUpdatable = true;
-            mbDisableable = true;
-            mbDeletable = true;
-            mbDisabled = false;
             mbDeleted = false;
             mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
@@ -299,15 +296,15 @@ public class SDbTicketRevuelta extends SDbRegistryUser  {
                     "b_tar = " + (mbTared ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
+                    //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
-                    "ts_usr_ins = " + "NOW()" + ", " +
+                    //"ts_usr_ins = " + "NOW()" + ", " +
                     "ts_usr_upd = " + "NOW()" + " " +
                     getSqlWhere();
         }
-
+        
         session.getStatement().execute(msSql);
-
+        
         // Finish registry updating:
 
         mbRegistryNew = false;
@@ -319,7 +316,8 @@ public class SDbTicketRevuelta extends SDbRegistryUser  {
         initQueryMembers();
         mnQueryResultId = SDbConsts.SAVE_ERROR;
 
-        msSql = "DELETE FROM " + getSqlTable() + " WHERE ts_arr BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(mtDateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(mtDateEnd) + "' ";
+        msSql = "DELETE FROM " + getSqlTable() + " "
+                + "WHERE ts_arr BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(mtDateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(mtDateEnd) + "' ";
 
         session.getStatement().execute(msSql);
         mnQueryResultId = SDbConsts.SAVE_OK;
@@ -358,5 +356,4 @@ public class SDbTicketRevuelta extends SDbRegistryUser  {
 
         return registry;
     }
-
 }

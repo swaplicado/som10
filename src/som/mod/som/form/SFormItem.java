@@ -31,7 +31,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Alfredo Pérez
  */
 public class SFormItem extends SBeanForm implements ItemListener {
 
@@ -711,7 +711,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
 
         jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlRevueltaItemId.setText("Clave Revuelta XXI:");
+        jlRevueltaItemId.setText("Clave Revuelta:");
         jlRevueltaItemId.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel23.add(jlRevueltaItemId);
         jPanel23.add(moTextRevueltaItemId);
