@@ -7,6 +7,7 @@ package som.mod.som.db;
 
 import erp.data.SDataConstantsSys;
 import erp.lib.SLibTimeUtilities;
+import erp.mod.SModSysConsts;
 import erp.mtrn.data.SDataDiog;
 import erp.mtrn.data.SDataDiogEntry;
 import erp.mtrn.data.SDataDiogNotes;
@@ -17,13 +18,12 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.Vector;
 import sa.gui.util.SUtilConsts;
+import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
 import som.gui.SGuiClientSessionCustom;
-import som.mod.SModConsts;
-import som.mod.SModSysConsts;
 
 /**
  *
@@ -46,7 +46,7 @@ public class SDbIogExportation extends SDbRegistryUser {
     protected Vector<int[]> mvExternalDiogId;
 
     public SDbIogExportation() {
-        super(SModConsts.S_IOG_EXP);
+        super(som.mod.SModConsts.S_IOG_EXP);
         mvExternalDiogId = new Vector<int[]>();
         initRegistry();
     }
@@ -61,7 +61,7 @@ public class SDbIogExportation extends SDbRegistryUser {
         ResultSet resultSet = null;
 
         try {
-            msSql = "SELECT id_iog_exp FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG_EXP_HIS) + " WHERE id_iog_exp = " + nPkIogExportationId + " AND id_ext_iog_year = " + nPkExternalIogYearId +
+            msSql = "SELECT id_iog_exp FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG_EXP_HIS) + " WHERE id_iog_exp = " + nPkIogExportationId + " AND id_ext_iog_year = " + nPkExternalIogYearId +
                 " AND id_ext_iog_doc = " + nPkExternalIogDocId + "; ";
             resultSet = session.getStatement().executeQuery(msSql);
 
@@ -107,8 +107,8 @@ public class SDbIogExportation extends SDbRegistryUser {
 
         try {
             msSql = "SELECT io.dt " +
-                "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS io " +
-                "WHERE io.b_del = 0 AND io.dt < '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND ((SELECT COUNT(*) FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG_EXP) + " AS e WHERE e.dt = io.dt) = 0); ";
+                "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS io " +
+                "WHERE io.b_del = 0 AND io.dt < '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND ((SELECT COUNT(*) FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG_EXP) + " AS e WHERE e.dt = io.dt) = 0); ";
 
             resultSet = session.getStatement().executeQuery(msSql);
             if (resultSet.next()) {
@@ -132,49 +132,49 @@ public class SDbIogExportation extends SDbRegistryUser {
         // Validate dps isn't delete AND entries:
 
         msSql = "SELECT CONCAT(tp.code, '-', i.num) AS f_iog_num, IF(d.num_ser <> '', CONCAT(d.num_ser, '-', d.num), d.num) AS f_num, 0 AS f_entry " +
-            "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS i " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_IOG_CT) + " AS ct ON i.fk_iog_ct = ct.id_iog_ct " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_IOG_CL) + " AS cl ON i.fk_iog_ct = cl.id_iog_ct AND i.fk_iog_cl = cl.id_iog_cl " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_IOG_TP) + " AS tp ON i.fk_iog_ct = tp.id_iog_ct AND i.fk_iog_cl = tp.id_iog_cl AND i.fk_iog_tp = tp.id_iog_tp " +
+            "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS i " +
+            "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SS_IOG_CT) + " AS ct ON i.fk_iog_ct = ct.id_iog_ct " +
+            "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SS_IOG_CL) + " AS cl ON i.fk_iog_ct = cl.id_iog_ct AND i.fk_iog_cl = cl.id_iog_cl " +
+            "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SS_IOG_TP) + " AS tp ON i.fk_iog_ct = tp.id_iog_ct AND i.fk_iog_cl = tp.id_iog_cl AND i.fk_iog_tp = tp.id_iog_tp " +
             "INNER JOIN " + msXtaExternalDatabaseName + ".trn_dps AS d ON i.fk_ext_dps_year_n = d.id_year AND i.fk_ext_dps_doc_n = d.id_doc AND d.b_del = 1 " +
             "WHERE i.b_del = 0 AND i.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND " +
             "i.fk_iog_ct IN(" +
-            SModSysConsts.SS_IOG_TP_IN_PUR_PUR[0] + ", " +
-            SModSysConsts.SS_IOG_TP_IN_SAL_SAL[0] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[0] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[0] + ") AND " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR[0] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL[0] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[0] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[0] + ") AND " +
             "i.fk_iog_cl IN(" +
-            SModSysConsts.SS_IOG_TP_IN_PUR_PUR[1] + ", " +
-            SModSysConsts.SS_IOG_TP_IN_SAL_SAL[1] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[1] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[1] + ") AND " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR[1] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL[1] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[1] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[1] + ") AND " +
             "i.fk_iog_tp IN(" +
-            SModSysConsts.SS_IOG_TP_IN_PUR_PUR[2] + ", " +
-            SModSysConsts.SS_IOG_TP_IN_SAL_SAL[2] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[2] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[2] + ") " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR[2] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL[2] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[2] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[2] + ") " +
             "UNION " +
             "SELECT i.num, IF(d.num_ser <> '', CONCAT(d.num_ser, '-', d.num), d.num) AS f_num, de.id_ety AS f_entry " +
-            "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS i " +
+            "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS i " +
             "INNER JOIN " + msXtaExternalDatabaseName + ".trn_dps AS d ON i.fk_ext_dps_year_n = d.id_year AND i.fk_ext_dps_doc_n = d.id_doc " +
             "INNER JOIN " + msXtaExternalDatabaseName + ".trn_dps_ety AS de ON i.fk_ext_dps_year_n = de.id_year AND i.fk_ext_dps_doc_n = de.id_doc AND " +
             "i.fk_ext_dps_ety_n = de.id_ety AND de.b_del = 1 " +
             "WHERE i.b_del = 0 AND i.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND " +
             "i.fk_iog_ct IN(" +
-            SModSysConsts.SS_IOG_TP_IN_PUR_PUR[0] + ", " +
-            SModSysConsts.SS_IOG_TP_IN_SAL_SAL[0] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[0] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[0] + ") AND " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR[0] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL[0] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[0] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[0] + ") AND " +
             "i.fk_iog_cl IN(" +
-            SModSysConsts.SS_IOG_TP_IN_PUR_PUR[1] + ", " +
-            SModSysConsts.SS_IOG_TP_IN_SAL_SAL[1] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[1] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[1] + ") AND " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR[1] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL[1] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[1] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[1] + ") AND " +
             "i.fk_iog_tp IN(" +
-            SModSysConsts.SS_IOG_TP_IN_PUR_PUR[2] + ", " +
-            SModSysConsts.SS_IOG_TP_IN_SAL_SAL[2] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[2] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[2] + "); ";
+            som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR[2] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL[2] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[2] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[2] + "); ";
 
         try {
             resultSet = session.getStatement().executeQuery(msSql);
@@ -210,31 +210,31 @@ public class SDbIogExportation extends SDbRegistryUser {
         // Validate dps isn't delete AND entries:
 
         msSql = "SELECT CONCAT(tp.code, '-', io.num) AS f_iog_num, IF(d.num_ser <> '', CONCAT(d.num_ser, '-', d.num), d.num) AS f_num " +
-            "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS io " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_IOG_CT) + " AS ct ON io.fk_iog_ct = ct.id_iog_ct " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_IOG_CL) + " AS cl ON io.fk_iog_ct = cl.id_iog_ct AND io.fk_iog_cl = cl.id_iog_cl " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_IOG_TP) + " AS tp ON io.fk_iog_ct = tp.id_iog_ct AND io.fk_iog_cl = tp.id_iog_cl AND io.fk_iog_tp = tp.id_iog_tp " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
+            "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS io " +
+            "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SS_IOG_CT) + " AS ct ON io.fk_iog_ct = ct.id_iog_ct " +
+            "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SS_IOG_CL) + " AS cl ON io.fk_iog_ct = cl.id_iog_ct AND io.fk_iog_cl = cl.id_iog_cl " +
+            "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SS_IOG_TP) + " AS tp ON io.fk_iog_ct = tp.id_iog_ct AND io.fk_iog_cl = tp.id_iog_cl AND io.fk_iog_tp = tp.id_iog_tp " +
+            "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
+            "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
             "INNER JOIN " + msXtaExternalDatabaseName + ".trn_dps AS d ON io.fk_ext_dps_year_n = d.id_year AND io.fk_ext_dps_doc_n = d.id_doc " +
             "INNER JOIN " + msXtaExternalDatabaseName + ".trn_dps_ety AS de ON io.fk_ext_dps_year_n = de.id_year AND io.fk_ext_dps_doc_n = de.id_doc AND " +
             "io.fk_ext_dps_ety_n = de.id_ety AND (i.fk_ext_item_n <> de.fid_item OR u.fk_ext_unit_n <> de.fid_unit) " +
             "WHERE io.b_del = 0 AND io.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND " +
             "io.fk_iog_ct IN(" +
-            SModSysConsts.SS_IOG_TP_IN_PUR_PUR[0] + ", " +
-            SModSysConsts.SS_IOG_TP_IN_SAL_SAL[0] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[0] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[0] + ") AND " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR[0] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL[0] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[0] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[0] + ") AND " +
             "io.fk_iog_cl IN(" +
-            SModSysConsts.SS_IOG_TP_IN_PUR_PUR[1] + ", " +
-            SModSysConsts.SS_IOG_TP_IN_SAL_SAL[1] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[1] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[1] + ") AND " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR[1] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL[1] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[1] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[1] + ") AND " +
             "io.fk_iog_tp IN(" +
-            SModSysConsts.SS_IOG_TP_IN_PUR_PUR[2] + ", " +
-            SModSysConsts.SS_IOG_TP_IN_SAL_SAL[2] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[2] + ", " +
-            SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[2] + "); ";
+            som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR[2] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL[2] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR[2] + ", " +
+            som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[2] + "); ";
 
         try {
             resultSet = session.getStatement().executeQuery(msSql);
@@ -261,9 +261,9 @@ public class SDbIogExportation extends SDbRegistryUser {
 
         try {
             msSql = "SELECT COUNT(*) = (SELECT COUNT(*) " +
-                "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS g " +
+                "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS g " +
                 "WHERE g.b_del = 0 AND g.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND g.fk_ext_adj_year_n IS NOT NULL) AS f_res " +
-                "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS g, " + msXtaExternalDatabaseName + ".trn_dps_dps_adj AS d " +
+                "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS g, " + msXtaExternalDatabaseName + ".trn_dps_dps_adj AS d " +
                 "WHERE g.b_del = 0 AND g.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND g.fk_ext_adj_year_n IS NOT NULL AND " +
                 "g.fk_ext_dps_year_n = d.id_dps_year AND g.fk_ext_dps_doc_n = d.id_dps_doc AND g.fk_ext_dps_ety_n = d.id_dps_ety AND " +
                 "g.fk_ext_adj_year_n = d.id_adj_year AND g.fk_ext_adj_doc_n = d.id_adj_doc AND g.fk_ext_adj_ety_n = d.id_adj_ety; ";
@@ -291,7 +291,7 @@ public class SDbIogExportation extends SDbRegistryUser {
             // Validate dps isn't delete AND entries:
 
             msSql = "SELECT id_iog, fk_ext_iog_year_n, fk_ext_iog_doc_n, fk_ext_iog_ety_n " +
-                "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS io " +
+                "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS io " +
                 "WHERE io.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND fk_ext_iog_year_n IS NOT NULL; ";
 
             mvExternalDiogId.removeAllElements();
@@ -348,83 +348,83 @@ public class SDbIogExportation extends SDbRegistryUser {
         ResultSet resultSetNote = null;
         ResultSet resultSetGroupBy = null;
 
-        vIogType.add(SModSysConsts.SS_IOG_TP_IN_PUR_PUR);
-        vIogType.add(SModSysConsts.SS_IOG_TP_IN_SAL_SAL);
-        vIogType.add(SModSysConsts.SS_IOG_TP_IN_EXT_ADJ);
-        vIogType.add(SModSysConsts.SS_IOG_TP_IN_EXT_INV);
-        vIogType.add(SModSysConsts.SS_IOG_TP_IN_INT_TRA);
-        vIogType.add(SModSysConsts.SS_IOG_TP_IN_INT_CNV);
-        vIogType.add(SModSysConsts.SS_IOG_TP_IN_INT_MIX_PAS);
-        vIogType.add(SModSysConsts.SS_IOG_TP_IN_INT_MIX_ACT);
-        vIogType.add(SModSysConsts.SS_IOG_TP_IN_MFG_RM_RET);
-        vIogType.add(SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD);
-        vIogType.add(SModSysConsts.SS_IOG_TP_OUT_PUR_PUR);
-        vIogType.add(SModSysConsts.SS_IOG_TP_OUT_SAL_SAL);
-        vIogType.add(SModSysConsts.SS_IOG_TP_OUT_EXT_ADJ);
-        vIogType.add(SModSysConsts.SS_IOG_TP_OUT_EXT_INV);
-        vIogType.add(SModSysConsts.SS_IOG_TP_OUT_INT_TRA);
-        vIogType.add(SModSysConsts.SS_IOG_TP_OUT_INT_CNV);
-        vIogType.add(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS);
-        vIogType.add(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT);
-        vIogType.add(SModSysConsts.SS_IOG_TP_OUT_MFG_RM_ASD);
-        vIogType.add(SModSysConsts.SS_IOG_TP_OUT_MFG_FG_RET);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_IN_EXT_ADJ);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_IN_EXT_INV);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_IN_INT_TRA);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_IN_INT_CNV);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_IN_INT_MIX_PAS);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_IN_INT_MIX_ACT);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_IN_MFG_RM_RET);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_OUT_EXT_ADJ);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_OUT_EXT_INV);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_TRA);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_CNV);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_OUT_MFG_RM_ASD);
+        vIogType.add(som.mod.SModSysConsts.SS_IOG_TP_OUT_MFG_FG_RET);
 
         for (int[] iogType : vIogType) {
 
             // Group by dps, adjustment, som move:
 
-            if (SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_PUR_PUR) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_SAL_SAL) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_PUR_PUR) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_SAL_SAL)) {
+            if (SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL)) {
 
                 msSql = "SELECT io.fk_iog_ct, io.fk_iog_cl, io.fk_iog_tp, w.fk_ext_cob_n, w.fk_ext_ent_n, io.fk_ext_dps_year_n, io.fk_ext_dps_doc_n " +
-                    "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS io " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
+                    "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS io " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
                     "WHERE io.b_del = 0 AND io.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND io.fk_iog_ct = " + iogType[0] + " AND " +
                     "io.fk_iog_cl = " + iogType[1] + " AND io.fk_iog_tp = " + iogType[2] + " " +
                     "GROUP BY io.fk_iog_ct, io.fk_iog_cl, io.fk_iog_tp, w.fk_ext_cob_n, w.fk_ext_ent_n, io.fk_ext_dps_year_n, io.fk_ext_dps_doc_n; ";
             }
-            else if (SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_EXT_ADJ) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_EXT_INV) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_EXT_ADJ) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_EXT_INV)) {
+            else if (SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_EXT_ADJ) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_EXT_INV) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_EXT_ADJ) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_EXT_INV)) {
 
                 msSql = "SELECT io.fk_iog_ct, io.fk_iog_cl, io.fk_iog_tp, w.fk_ext_cob_n, w.fk_ext_ent_n, io.fk_iog_adj_tp " +
-                    "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS io " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
-                        (SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_EXT_ADJ) ||
-                        SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_EXT_ADJ) ?
-                        "AND adj.id_iog_adj_tp != " + SModSysConsts.SU_IOG_ADJ_TP_NA : "") + " " +
+                    "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS io " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
+                        (SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_EXT_ADJ) ||
+                        SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_EXT_ADJ) ?
+                        "AND adj.id_iog_adj_tp != " + som.mod.SModSysConsts.SU_IOG_ADJ_TP_NA : "") + " " +
                     "WHERE io.b_del = 0 AND io.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND io.fk_iog_ct = " + iogType[0] + " AND " +
                     "io.fk_iog_cl = " + iogType[1] + " AND io.fk_iog_tp = " + iogType[2] + " " +
                     "GROUP BY io.fk_iog_ct, io.fk_iog_cl, io.fk_iog_tp, w.fk_ext_cob_n, w.fk_ext_ent_n, io.fk_iog_adj_tp; ";
             }
-            else if (SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_MFG_RM_RET) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_INT_TRA) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_INT_CNV) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_INT_MIX_PAS) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_INT_MIX_ACT) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_MFG_RM_ASD) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_MFG_FG_RET)||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_INT_TRA) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_INT_CNV) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS) ||
-                SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT)) {
+            else if (SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_MFG_RM_RET) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_INT_TRA) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_INT_CNV) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_INT_MIX_PAS) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_INT_MIX_ACT) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_MFG_RM_ASD) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_MFG_FG_RET)||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_TRA) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_CNV) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS) ||
+                SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT)) {
 
                 msSql = "SELECT io.fk_iog_ct,  io.fk_iog_cl,  io.fk_iog_tp, w.fk_ext_cob_n, w.fk_ext_ent_n  " +
-                    "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS io " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
-                    "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
+                    "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS io " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
+                    "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
                     "WHERE io.b_del = 0 AND io.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND io.fk_iog_ct = " + iogType[0] + " AND " +
                     "io.fk_iog_cl = " + iogType[1] + " AND io.fk_iog_tp = " + iogType[2] + " " +
                     "GROUP BY io.fk_iog_ct,  io.fk_iog_cl,  io.fk_iog_tp, w.fk_ext_cob_n, w.fk_ext_ent_n; ";
@@ -438,19 +438,19 @@ public class SDbIogExportation extends SDbRegistryUser {
 
                 // Select by dps, adjustment, som move:
 
-                if (SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_PUR_PUR) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_SAL_SAL) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_PUR_PUR) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_SAL_SAL)) {
+                if (SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_PUR_PUR) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_SAL_SAL) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_PUR_PUR) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_SAL_SAL)) {
 
                     msSql = "SELECT io.*, COALESCE(io.fk_ext_dps_year_n, 0) AS f_ext_dps_year, COALESCE(io.fk_ext_dps_doc_n, 0) AS f_ext_dps_doc, COALESCE(io.fk_ext_dps_ety_n, 0) AS f_ext_dps_ety, " +
                         "COALESCE(io.fk_ext_adj_year_n, 0) AS f_ext_adj_year, COALESCE(io.fk_ext_adj_doc_n, 0) AS f_ext_adj_doc, COALESCE(io.fk_ext_adj_ety_n, 0) AS f_ext_adj_ety, " +
                         "io.fk_iog_adj_tp, adj.fk_ext_iog_adj_tp, w.fk_ext_cob_n, w.fk_ext_ent_n, i.fk_ext_item_n, u.fk_ext_unit_n " +
-                        "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS io " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
+                        "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS io " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
                         "WHERE io.b_del = 0 AND io.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND io.fk_iog_ct = " + iogType[0] + " AND " +
                         "io.fk_iog_cl = " + iogType[1] + " AND io.fk_iog_tp = " + iogType[2] + " AND " +
                         "w.fk_ext_cob_n = " + resultSetGroupBy.getInt("w.fk_ext_cob_n") + " AND " +
@@ -461,46 +461,46 @@ public class SDbIogExportation extends SDbRegistryUser {
                         "io.fk_ext_dps_year_n IS NULL  AND " +
                         "io.fk_ext_dps_doc_n IS NULL ") + "; ";
                 }
-                else if (SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_EXT_ADJ) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_EXT_INV) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_EXT_ADJ) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_EXT_INV)) {
+                else if (SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_EXT_ADJ) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_EXT_INV) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_EXT_ADJ) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_EXT_INV)) {
 
                     msSql = "SELECT io.*, COALESCE(io.fk_ext_dps_year_n, 0) AS f_ext_dps_year, COALESCE(io.fk_ext_dps_doc_n, 0) AS f_ext_dps_doc, COALESCE(io.fk_ext_dps_ety_n, 0) AS f_ext_dps_ety, " +
                         "COALESCE(io.fk_ext_adj_year_n, 0) AS f_ext_adj_year, COALESCE(io.fk_ext_adj_doc_n, 0) AS f_ext_adj_doc, COALESCE(io.fk_ext_adj_ety_n, 0) AS f_ext_adj_ety, " +
                         "io.fk_iog_adj_tp, adj.fk_ext_iog_adj_tp, w.fk_ext_cob_n, w.fk_ext_ent_n, i.fk_ext_item_n, u.fk_ext_unit_n " +
-                        "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS io " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
+                        "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS io " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
                         "WHERE io.b_del = 0 AND io.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND io.fk_iog_ct = " + iogType[0] + " AND " +
                         "io.fk_iog_cl = " + iogType[1] + " AND io.fk_iog_tp = " + iogType[2] + " AND " +
                         "w.fk_ext_cob_n = " + resultSetGroupBy.getInt("w.fk_ext_cob_n") + " AND " +
                         "w.fk_ext_ent_n = " + resultSetGroupBy.getInt("w.fk_ext_ent_n") + " AND " +
                         "io.fk_iog_adj_tp = " + resultSetGroupBy.getInt("io.fk_iog_adj_tp") + "; ";
                 }
-                else if (SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_MFG_RM_RET) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_INT_TRA) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_INT_CNV) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_INT_MIX_PAS) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_IN_INT_MIX_ACT) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_MFG_RM_ASD) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_MFG_FG_RET)||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_INT_TRA) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_INT_CNV) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS) ||
-                    SLibUtils.compareKeys(iogType, SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT)) {
+                else if (SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_MFG_RM_RET) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_INT_TRA) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_INT_CNV) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_INT_MIX_PAS) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_IN_INT_MIX_ACT) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_MFG_RM_ASD) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_MFG_FG_RET)||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_TRA) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_CNV) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS) ||
+                    SLibUtils.compareKeys(iogType, som.mod.SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT)) {
 
                     msSql = "SELECT io.*, COALESCE(io.fk_ext_dps_year_n, 0) AS f_ext_dps_year, COALESCE(io.fk_ext_dps_doc_n, 0) AS f_ext_dps_doc, COALESCE(io.fk_ext_dps_ety_n, 0) AS f_ext_dps_ety, " +
                         "COALESCE(io.fk_ext_adj_year_n, 0) AS f_ext_adj_year, COALESCE(io.fk_ext_adj_doc_n, 0) AS f_ext_adj_doc, COALESCE(io.fk_ext_adj_ety_n, 0) AS f_ext_adj_ety, " +
                         "io.fk_iog_adj_tp, adj.fk_ext_iog_adj_tp, w.fk_ext_cob_n, w.fk_ext_ent_n, i.fk_ext_item_n, u.fk_ext_unit_n " +
-                        "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS io " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
-                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
+                        "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS io " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_ITEM) + " AS i ON io.fk_item = i.id_item " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_UNIT) + " AS u ON io.fk_unit = u.id_unit " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_EXT_WAH) + " AS w ON i.fk_ext_wah = w.id_ext_wah " +
+                        "INNER JOIN " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.SU_IOG_ADJ_TP) + " AS adj ON io.fk_iog_adj_tp = adj.id_iog_adj_tp " +
                         "WHERE io.b_del = 0 AND io.dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' AND io.fk_iog_ct = " + iogType[0] + " AND " +
                         "io.fk_iog_cl = " + iogType[1] + " AND io.fk_iog_tp = " + iogType[2] + " AND " +
                         "w.fk_ext_cob_n = " + resultSetGroupBy.getInt("w.fk_ext_cob_n") + " AND " +
@@ -548,6 +548,10 @@ public class SDbIogExportation extends SDbRegistryUser {
                         diog.setFkBookkeepingYearId_n();
                         diog.setFkBookkeepingNumberId_n();
                         */
+                        diog.setFkMaintMovementTypeId(SModSysConsts.TRNS_TP_MAINT_MOV_NA);
+                        diog.setFkMaintAreaId(SModSysConsts.TRN_MAINT_AREA_NA);
+                        diog.setFkMaintUserId_n(SLibConsts.UNDEFINED);
+                        diog.setFkMaintUserSupervisorId(SModSysConsts.TRN_MAINT_USER_SUPV_NA);
                         diog.setFkUserShippedId(SUtilConsts.USR_NA_ID);
                         diog.setFkUserAuditedId(SUtilConsts.USR_NA_ID);
                         diog.setFkUserAuthorizedId(SUtilConsts.USR_NA_ID);
@@ -616,7 +620,7 @@ public class SDbIogExportation extends SDbRegistryUser {
 
                     // Create diog note:
 
-                    msSql = "SELECT id_iog, id_note, note FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG_NOTE) + " WHERE id_iog = " +
+                    msSql = "SELECT id_iog, id_note, note FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG_NOTE) + " WHERE id_iog = " +
                             resultSet.getInt("io.id_iog");
                     statement = session.getDatabase().getConnection().createStatement();
                     resultSetNote = statement.executeQuery(msSql);
@@ -641,7 +645,7 @@ public class SDbIogExportation extends SDbRegistryUser {
 
                 if (diog != null) {
 
-                    if (diog.save(((SGuiClientSessionCustom) session.getSessionCustom()).getExtDatabaseCo().getConnection()) == SModSysConsts.EXT_DB_ACTION_SAVE_OK) {
+                    if (diog.save(((SGuiClientSessionCustom) session.getSessionCustom()).getExtDatabaseCo().getConnection()) == som.mod.SModSysConsts.EXT_DB_ACTION_SAVE_OK) {
 
                         // Assign diog entry id to iog:
 
@@ -691,7 +695,7 @@ public class SDbIogExportation extends SDbRegistryUser {
 
             msSql = "SELECT g.id_iog, de.id_year, de.id_doc, de.id_ety, g.fk_tic_n, g.fk_ext_dps_year_n, g.fk_ext_dps_doc_n, g.fk_ext_dps_ety_n, " +
                 "de.fid_dps_year_n, de.fid_dps_doc_n, de.fid_dps_ety_n, g.b_del " +
-                "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS g " +
+                "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS g " +
                 "INNER JOIN " + msXtaExternalDatabaseName + ".trn_diog_ety AS de ON g.fk_ext_iog_year_n = de.id_year AND g.fk_ext_iog_doc_n = de.id_doc AND " +
                 "g.fk_ext_iog_ety_n = de.id_ety " +
                 "INNER JOIN " + msXtaExternalDatabaseName + ".trn_diog AS d ON g.fk_ext_iog_year_n = d.id_year AND g.fk_ext_iog_doc_n = d.id_doc " +
@@ -720,7 +724,7 @@ public class SDbIogExportation extends SDbRegistryUser {
 
             msSql = "SELECT g.id_iog, de.id_year, de.id_doc, de.id_ety, g.fk_tic_n, g.fk_ext_dps_year_n, g.fk_ext_dps_doc_n, g.fk_ext_dps_ety_n, " +
                 "de.fid_dps_year_n, de.fid_dps_doc_n, de.fid_dps_ety_n, g.b_del " +
-                "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS g " +
+                "FROM " + som.mod.SModConsts.TablesMap.get(som.mod.SModConsts.S_IOG) + " AS g " +
                 "INNER JOIN " + msXtaExternalDatabaseName + ".trn_diog_ety AS de ON g.fk_ext_iog_year_n = de.id_year AND g.fk_ext_iog_doc_n = de.id_doc AND " +
                 "g.fk_ext_iog_ety_n = de.id_ety " +
                 "INNER JOIN " + msXtaExternalDatabaseName + ".trn_diog AS d ON g.fk_ext_iog_year_n = d.id_year AND g.fk_ext_iog_doc_n = d.id_doc " +
@@ -778,7 +782,7 @@ public class SDbIogExportation extends SDbRegistryUser {
 
     @Override
     public String getSqlTable() {
-        return SModConsts.TablesMap.get(mnRegistryType);
+        return som.mod.SModConsts.TablesMap.get(mnRegistryType);
     }
 
     @Override
