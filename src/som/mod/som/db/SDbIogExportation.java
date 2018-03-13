@@ -549,9 +549,10 @@ public class SDbIogExportation extends SDbRegistryUser {
                         diog.setFkBookkeepingNumberId_n();
                         */
                         diog.setFkMaintMovementTypeId(SModSysConsts.TRNS_TP_MAINT_MOV_NA);
-                        diog.setFkMaintAreaId(SModSysConsts.TRN_MAINT_AREA_NA);
                         diog.setFkMaintUserId_n(SLibConsts.UNDEFINED);
                         diog.setFkMaintUserSupervisorId(SModSysConsts.TRN_MAINT_USER_SUPV_NA);
+                        diog.setFkMaintReturnUserId_n(SLibConsts.UNDEFINED);
+                        diog.setFkMaintReturnUserSupervisorId(SModSysConsts.TRN_MAINT_USER_SUPV_NA);
                         diog.setFkUserShippedId(SUtilConsts.USR_NA_ID);
                         diog.setFkUserAuditedId(SUtilConsts.USR_NA_ID);
                         diog.setFkUserAuthorizedId(SUtilConsts.USR_NA_ID);
@@ -594,6 +595,7 @@ public class SDbIogExportation extends SDbRegistryUser {
                     /*diogEntry.setFkMfgYearId_n();
                     diogEntry.setFkMfgOrderId_n();
                     diogEntry.setFkMfgChargeId_n(); */
+                    diogEntry.setFkMaintAreaId(SModSysConsts.TRN_MAINT_AREA_NA);
                     diogEntry.setFkUserNewId(SUtilConsts.USR_NA_ID);
                     diogEntry.setFkUserEditId(SUtilConsts.USR_NA_ID);
                     diogEntry.setFkUserDeleteId(SUtilConsts.USR_NA_ID);
