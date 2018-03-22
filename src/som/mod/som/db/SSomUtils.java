@@ -751,7 +751,7 @@ public abstract class SSomUtils {
         return connection;
     }
     */
-    
+
     /**
      * Obtain conexion with system Revuelta using JDBC jconn3 Driver
      * @param session Current GUI session.
