@@ -27,7 +27,6 @@ public class SDbTicketRevuelta extends SDbRegistryUser  {
     protected String msNote;
     protected Date mtDatetimeArrival;
     protected Date mtDatetimeDeparture;
-    protected String nueva;
     protected double mdWeightArrival;
     protected double mdWeightDeparture;
     protected double mdWeightNet_r;
@@ -62,7 +61,6 @@ public class SDbTicketRevuelta extends SDbRegistryUser  {
     public void setNote(String s) { msNote = s; }
     public void setDatetimeArrival(Date t) { mtDatetimeArrival = t; }
     public void setDatetimeDeparture(Date t) { mtDatetimeDeparture = t; }
-    public void setDatetimeDeparture2(String t) { nueva = t; }
     public void setWeightArrival(double d) { mdWeightArrival = d; }
     public void setWeightDeparture(double d) { mdWeightDeparture = d; }
     public void setWeightNet_r(double d) { mdWeightNet_r = d; }
