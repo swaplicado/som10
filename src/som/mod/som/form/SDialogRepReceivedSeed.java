@@ -471,7 +471,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
             sqlOrderBy = "ict.name, it.fk_inp_ct, ";
         }
         
-        if (moRadByItem.isSelected() && !moBoolSummary.isSelected()) {
+        if (moRadByItem.isSelected()) {
             sqlOrderBy += "it.name, t.fk_item, "; //allways sort by item
         }
 
