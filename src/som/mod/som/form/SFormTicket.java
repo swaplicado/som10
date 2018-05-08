@@ -103,10 +103,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jPanel12 = new javax.swing.JPanel();
         jlItem = new javax.swing.JLabel();
         moKeyItem = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel21 = new javax.swing.JPanel();
+        jlInputSource = new javax.swing.JLabel();
+        moKeyInputSource = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel6 = new javax.swing.JPanel();
         jlPlates = new javax.swing.JLabel();
         moTextPlates = new sa.lib.gui.bean.SBeanFieldText();
-        jPanel14 = new javax.swing.JPanel();
         jlPlatesCage = new javax.swing.JLabel();
         moTextPlatesCage = new sa.lib.gui.bean.SBeanFieldText();
         jPanel3 = new javax.swing.JPanel();
@@ -238,31 +240,39 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
         jPanel2.add(jPanel12);
 
+        jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlInputSource.setText("Origen insumo:*");
+        jlInputSource.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel21.add(jlInputSource);
+
+        moKeyInputSource.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel21.add(moKeyInputSource);
+
+        jPanel2.add(jPanel21);
+
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlPlates.setText("Placas:*");
+        jlPlates.setText("Placas vehículo:*");
         jlPlates.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel6.add(jlPlates);
 
         moTextPlates.setText("sBeanFieldText2");
         jPanel6.add(moTextPlates);
 
-        jPanel2.add(jPanel6);
-
-        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
+        jlPlatesCage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlPlatesCage.setText("Placas caja:");
-        jlPlatesCage.setPreferredSize(new java.awt.Dimension(150, 23));
-        jPanel14.add(jlPlatesCage);
+        jlPlatesCage.setPreferredSize(new java.awt.Dimension(90, 23));
+        jPanel6.add(jlPlatesCage);
 
         moTextPlatesCage.setText("sBeanFieldText2");
-        jPanel14.add(moTextPlatesCage);
+        jPanel6.add(moTextPlatesCage);
 
-        jPanel2.add(jPanel14);
+        jPanel2.add(jPanel6);
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlDriver.setText("Chofer:*");
+        jlDriver.setText("Chofer vehículo:*");
         jlDriver.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel3.add(jlDriver);
 
@@ -315,7 +325,6 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
         jbImportTareTicket.setText("Importar de Revuelta");
         jbImportTareTicket.setToolTipText("Importar de Revuelta (segunda pesada)");
-        jbImportTareTicket.setActionCommand("Importar de Revuelta");
         jbImportTareTicket.setPreferredSize(new java.awt.Dimension(165, 23));
         jPanel15.add(jbImportTareTicket);
 
@@ -453,7 +462,6 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
@@ -461,6 +469,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
+    private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -478,6 +487,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JLabel jlDatetimeDeparture;
     private javax.swing.JLabel jlDriver;
     private javax.swing.JLabel jlDummy;
+    private javax.swing.JLabel jlInputSource;
     private javax.swing.JLabel jlItem;
     private javax.swing.JLabel jlNote;
     private javax.swing.JLabel jlPackageEmptyQuantityArrival;
@@ -514,6 +524,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightDestinyDeparture;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightSource;
     private sa.lib.gui.bean.SBeanFieldInteger moIntTicket;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyInputSource;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProducer;
     private sa.lib.gui.bean.SBeanFieldKey moKeyScale;
@@ -534,13 +545,14 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
         moKeyScale.setKeySettings(miClient, SGuiUtils.getLabelName(jlScale.getText()), true);
         moIntTicket.setIntegerSettings(SGuiUtils.getLabelName(jlTicket.getText()), SGuiConsts.GUI_TYPE_INT_RAW, true);
-        moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
         moKeyProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlProducer.getText()), true);
+        moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
+        moKeyInputSource.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputSource.getText()), true);
         moTextPlates.setTextSettings(SGuiUtils.getLabelName(jlPlates.getText()), 25);
         moTextPlatesCage.setTextSettings(SGuiUtils.getLabelName(jlPlatesCage.getText()), 25, 0);
         moTextDriver.setTextSettings(SGuiUtils.getLabelName(jlDriver.getText()), 150);
-        moDecWeightSource.setDecimalSettings(SGuiUtils.getLabelName(jlWeightSource.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moBoolWeightSourceAvailable.setBooleanSettings(SGuiUtils.getLabelName(moBoolWeightSourceAvailable.getText()), false);
+        moDecWeightSource.setDecimalSettings(SGuiUtils.getLabelName(jlWeightSource.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDecWeightDestinyArrival.setDecimalSettings(SGuiUtils.getLabelName(jlWeightDestinyArrival.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDecWeightDestinyDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlWeightDestinyDeparture.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDecWeightAverage.setDecimalSettings(SGuiUtils.getLabelName(jlWeightAverage.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
@@ -556,6 +568,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moFields.addField(moIntTicket);
         moFields.addField(moKeyProducer);
         moFields.addField(moKeyItem);
+        moFields.addField(moKeyInputSource);
         moFields.addField(moTextPlates);
         moFields.addField(moTextPlatesCage);
         moFields.addField(moTextDriver);
@@ -704,6 +717,9 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jlWeightAverageUnit.setText("");
         moDecPackageQuantityArrival.setEditable(mbIsPackage);
         moDecPackageEmptyQuantityArrival.setEditable(mbIsPackage);
+        
+        moKeyInputSource.removeAllItems();
+        moKeyInputSource.setEnabled(false);
 
         if (moKeyItem.getSelectedIndex() > 0) {
             try {
@@ -724,6 +740,9 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 else {
                     jlWeightAverageUnit.setText("");
                 }
+                
+                miClient.getSession().populateCatalogue(moKeyInputSource, SModConsts.SU_INP_SRC, SLibConsts.UNDEFINED, new SGuiParams(moItem.getFkInputCategoryId()));
+                moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
             }
             catch (SQLException e) {
                 SLibUtils.showException(this, e);
@@ -1059,6 +1078,14 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
         itemStateKeyItem();
         moKeyProducer.setValue(new int[] { moRegistry.getFkProducerId() });
+        
+        if (moRegistry.getFkInputSourceId() == SModSysConsts.SU_INP_SRC_NA) {
+            moKeyInputSource.resetField();
+        }
+        else {
+            moKeyInputSource.setValue(new int[] { moRegistry.getFkInputSourceId() });
+        }
+        
         mbIsTared = moRegistry.isTared();
         moTextPlates.setValue(moRegistry.getPlate());
         moTextPlatesCage.setValue(moRegistry.getPlateCage());
@@ -1105,6 +1132,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moTextScale.setEditable(false);
         }
 
+        moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
         moDecWeightAverage.setEditable(false);
 
         readItem();
@@ -1153,6 +1181,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         registry.setFkItemId(moKeyItem.getValue()[0]);
         registry.setFkUnitId(moKeyItem.getSelectedItem().getForeignKey()[0]);
         registry.setFkProducerId(moKeyProducer.getValue()[0]);
+        registry.setFkInputSourceId(!moKeyInputSource.isEnabled() ? SModSysConsts.SU_INP_SRC_NA : moKeyInputSource.getValue()[0]);
         registry.setFkLaboratoryId_n(registry.isRegistryNew() ? 0 : registry.getFkLaboratoryId_n());
         registry.setAuxRequiredCalculation(!mbIsLaboratory && mnFormSubtype == SModConsts.SX_TIC_TARE_PEND);
         registry.setTared(mnFormSubtype == SModConsts.SX_TIC_TARE_PEND || moRegistry.isTared());
@@ -1277,7 +1306,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 textField == moDecPackageQuantityDeparture.getComponent() ||
                 textField == moDecPackageEmptyQuantityDeparture.getComponent()) {
 
-                    computeWeightAverage();
+                computeWeightAverage();
             }
         }
     }

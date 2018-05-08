@@ -101,6 +101,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected int mnFkItemId;
     protected int mnFkUnitId;
     protected int mnFkProducerId;
+    protected int mnFkInputSourceId;
     protected int mnFkLaboratoryId_n;
     protected int mnFkExternalDpsYearId_n;
     protected int mnFkExternalDpsDocId_n;
@@ -492,6 +493,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setFkItemId(int n) { mnFkItemId = n; }
     public void setFkUnitId(int n) { mnFkUnitId = n; }
     public void setFkProducerId(int n) { mnFkProducerId = n; }
+    public void setFkInputSourceId(int n) { mnFkInputSourceId = n; }
     public void setFkLaboratoryId_n(int n) { mnFkLaboratoryId_n = n; }
     public void setFkExternalDpsYearId_n(int n) { mnFkExternalDpsYearId_n = n; }
     public void setFkExternalDpsDocId_n(int n) { mnFkExternalDpsDocId_n = n; }
@@ -560,6 +562,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public int getFkItemId() { return mnFkItemId; }
     public int getFkUnitId() { return mnFkUnitId; }
     public int getFkProducerId() { return mnFkProducerId; }
+    public int getFkInputSourceId() { return mnFkInputSourceId; }
     public int getFkLaboratoryId_n() { return mnFkLaboratoryId_n; }
     public int getFkExternalDpsYearId_n() { return mnFkExternalDpsYearId_n; }
     public int getFkExternalDpsDocId_n() { return mnFkExternalDpsDocId_n; }
@@ -684,6 +687,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mnFkItemId = 0;
         mnFkUnitId = 0;
         mnFkProducerId = 0;
+        mnFkInputSourceId = 0;
         mnFkLaboratoryId_n = 0;
         mnFkExternalDpsYearId_n = 0;
         mnFkExternalDpsDocId_n = 0;
@@ -831,6 +835,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mnFkItemId = resultSet.getInt("t.fk_item");
             mnFkUnitId = resultSet.getInt("t.fk_unit");
             mnFkProducerId = resultSet.getInt("t.fk_prod");
+            mnFkInputSourceId = resultSet.getInt("t.fk_inp_src");
             mnFkLaboratoryId_n = resultSet.getInt("t.fk_lab_n");
             mnFkExternalDpsYearId_n = resultSet.getInt("t.fk_ext_dps_year_n");
             mnFkExternalDpsDocId_n = resultSet.getInt("t.fk_ext_dps_doc_n");
@@ -977,6 +982,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     mnFkItemId + ", " +
                     mnFkUnitId + ", " +
                     mnFkProducerId + ", " +
+                    mnFkInputSourceId + ", " + 
                     (mnFkLaboratoryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkLaboratoryId_n) + ", " +
                     (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
@@ -1052,6 +1058,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "fk_item = " + mnFkItemId + ", " +
                     "fk_unit = " + mnFkUnitId + ", " +
                     "fk_prod = " + mnFkProducerId + ", " +
+                    "fk_inp_src = " + mnFkInputSourceId + ", " +
                     "fk_lab_n = " + (mnFkLaboratoryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkLaboratoryId_n) + ", " +
                     "fk_ext_dps_year_n = " + (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     "fk_ext_dps_doc_n = " + (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
@@ -1157,6 +1164,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setFkItemId(this.getFkItemId());
         registry.setFkUnitId(this.getFkUnitId());
         registry.setFkProducerId(this.getFkProducerId());
+        registry.setFkInputSourceId(this.getFkInputSourceId());
         registry.setFkLaboratoryId_n(this.getFkLaboratoryId_n());
         registry.setFkExternalDpsYearId_n(this.getFkExternalDpsYearId_n());
         registry.setFkExternalDpsDocId_n(this.getFkExternalDpsDocId_n());

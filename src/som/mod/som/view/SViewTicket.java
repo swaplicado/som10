@@ -309,7 +309,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
 
                     map.put("nTicketId", gridRow.getRowPrimaryKey()[0]);
                     map.put("sCurrencyCode", ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getLocalCurrencyCode());
-                    map.put("bShowMoney", miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) ? true : false);
+                    map.put("bShowMoney", miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
                     map.put("oFormatDecimal", oformatDecimal);
 
                     miClient.getSession().printReport(SModConsts.SR_TIC, SLibConsts.UNDEFINED, null, map);
@@ -407,6 +407,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "it.code, "
                 + "pr.name, "
                 + "pr.code, "
+                + "isrc.name, "
+                + "isrc.code, "
                 + "se.name, "
                 + "re.name, "
                 + "lb.num, "
@@ -437,6 +439,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.fk_item = it.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS pr ON "
                 + "v.fk_prod = pr.id_prod "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS isrc ON "
+                + "v.fk_inp_src = isrc.id_inp_src "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -458,7 +462,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        int cols = 33;
+        int cols = 34;
         SGridColumnView[] columns = null;
 
         switch (mnGridSubtype) {
@@ -495,6 +499,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "se.name", "Temporada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "re.name", "Región");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "isrc.name", "Origen insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla", "Placas");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla_cag", "Placas caja");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.drv", "Chofer");
@@ -560,6 +565,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         moSuscriptionsSet.add(SModConsts.SU_SCA);
         moSuscriptionsSet.add(SModConsts.SU_ITEM);
         moSuscriptionsSet.add(SModConsts.SU_PROD);
+        moSuscriptionsSet.add(SModConsts.SU_INP_SRC);
         moSuscriptionsSet.add(SModConsts.SU_SEAS);
         moSuscriptionsSet.add(SModConsts.SU_REG);
         moSuscriptionsSet.add(SModConsts.S_LAB);

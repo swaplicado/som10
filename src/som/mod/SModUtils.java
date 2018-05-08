@@ -24,6 +24,7 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SU_INP_CT,
             SModConsts.SU_INP_CL,
             SModConsts.SU_INP_TP,
+            SModConsts.SU_INP_SRC,
             SModConsts.SU_UNIT,
             SModConsts.SU_ITEM,
             SModConsts.SU_SCA,

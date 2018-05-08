@@ -22,6 +22,7 @@ import sa.lib.gui.SGuiReport;
 import som.mod.som.db.SDbExternalWarehouse;
 import som.mod.som.db.SDbInputCategory;
 import som.mod.som.db.SDbInputClass;
+import som.mod.som.db.SDbInputSource;
 import som.mod.som.db.SDbInputType;
 import som.mod.som.db.SDbIodineValueRank;
 import som.mod.som.db.SDbItem;
@@ -31,6 +32,7 @@ import som.mod.som.db.SDbUnit;
 import som.mod.som.form.SFormExternalWarehouse;
 import som.mod.som.form.SFormInputCategory;
 import som.mod.som.form.SFormInputClass;
+import som.mod.som.form.SFormInputSource;
 import som.mod.som.form.SFormInputType;
 import som.mod.som.form.SFormIodineValueRank;
 import som.mod.som.form.SFormItem;
@@ -39,6 +41,7 @@ import som.mod.som.form.SFormScale;
 import som.mod.som.view.SViewExternalWarehouse;
 import som.mod.som.view.SViewInputCategory;
 import som.mod.som.view.SViewInputClass;
+import som.mod.som.view.SViewInputSource;
 import som.mod.som.view.SViewInputType;
 import som.mod.som.view.SViewIodineValueRank;
 import som.mod.som.view.SViewItem;
@@ -55,6 +58,7 @@ public class SModuleSom extends SGuiModule {
     private SFormInputCategory moFormInputCategory;
     private SFormInputClass moFormInputClass;
     private SFormInputType moFormInputType;
+    private SFormInputSource moformFormInputSource;
     private SFormItem moFormItem;
     private SFormScale moFormScale;
     private SFormProducer moFormProducer;
@@ -91,6 +95,9 @@ public class SModuleSom extends SGuiModule {
                 break;
             case SModConsts.SU_INP_TP:
                 registry = new SDbInputType();
+                break;
+            case SModConsts.SU_INP_SRC:
+                registry = new SDbInputSource();
                 break;
             case SModConsts.SU_UNIT:
                 registry = new SDbUnit();
@@ -148,6 +155,12 @@ public class SModuleSom extends SGuiModule {
                 sql = "SELECT id_inp_ct AS " + SDbConsts.FIELD_ID + "1, id_inp_cl AS " + SDbConsts.FIELD_ID + "2, id_inp_tp AS " + SDbConsts.FIELD_ID + "3, name AS " + SDbConsts.FIELD_ITEM + ", "
                         + "id_inp_ct AS " + SDbConsts.FIELD_FK + "1, id_inp_cl AS " + SDbConsts.FIELD_FK + "2 "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_inp_ct, id_inp_cl, id_inp_tp ";
+                break;
+            case SModConsts.SU_INP_SRC:
+                settings = new SGuiCatalogueSettings("Origen insumo", 1);
+                sql = "SELECT id_inp_src AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 AND "
+                        + "id_inp_src <> " + SModSysConsts.SU_INP_SRC_NA + " " + (params == null ? "" : "AND fk_inp_ct = " + params.getType() + " ") + "ORDER BY name, id_inp_src ";
                 break;
             case SModConsts.SU_UNIT:
                 settings = new SGuiCatalogueSettings("Unidad", 1);
@@ -280,6 +293,9 @@ public class SModuleSom extends SGuiModule {
             case SModConsts.SU_INP_TP:
                 view = new SViewInputType(miClient, "Tipos insumo");
                 break;
+            case SModConsts.SU_INP_SRC:
+                view = new SViewInputSource(miClient, "Orígenes insumos");
+                break;
             case SModConsts.SU_ITEM:
                 view = new SViewItem(miClient, "Ítems");
                 break;
@@ -324,6 +340,10 @@ public class SModuleSom extends SGuiModule {
             case SModConsts.SU_INP_TP:
                 if (moFormInputType == null) moFormInputType = new SFormInputType(miClient, "Tipo insumo");
                 form = moFormInputType;
+                break;
+            case SModConsts.SU_INP_SRC:
+                if (moformFormInputSource == null) moformFormInputSource = new SFormInputSource(miClient, "Origen insumo");
+                form = moformFormInputSource;
                 break;
             case SModConsts.SU_ITEM:
                 if (moFormItem == null) moFormItem = new SFormItem(miClient, "Ítem");

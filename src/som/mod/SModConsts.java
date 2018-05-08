@@ -62,6 +62,7 @@ public abstract class SModConsts {
     public static final int SU_SEAS_REG = 320012;
     public static final int SU_SEAS_PROD = 320013;
     public static final int SU_IOD_VAL_RANK = 320014;
+    public static final int SU_INP_SRC = 320021;
 
     public static final int S_LAB = 330001;
     public static final int S_LAB_NOTE = 330002;
@@ -197,6 +198,7 @@ public abstract class SModConsts {
         TablesMap.put(SU_SEAS_REG, "su_seas_reg");
         TablesMap.put(SU_SEAS_PROD, "su_seas_prod");
         TablesMap.put(SU_IOD_VAL_RANK, "su_iod_val_rank");
+        TablesMap.put(SU_INP_SRC, "su_inp_src");
 
         TablesMap.put(S_LAB, "s_lab");
         TablesMap.put(S_LAB_NOTE, "s_lab_note");

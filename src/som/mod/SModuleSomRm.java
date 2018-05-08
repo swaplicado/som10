@@ -74,6 +74,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCatInputType;
     private JMenuItem mjCatInputClass;
     private JMenuItem mjCatInputCategory;
+    private JMenuItem mjCatInputSource;
     private JMenuItem mjCatIodineValueRank;
     private JMenuItem mjCatExternalWarehouses;
     private JMenuItem mjCatUpdateCatalogues;
@@ -137,6 +138,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatInputType = new JMenuItem("Tipos de insumo");
         mjCatInputClass = new JMenuItem("Clases de insumo");
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
+        mjCatInputSource = new JMenuItem("Orígenes de insumos");
         mjCatIodineValueRank = new JMenuItem("Rangos de yodo");
         mjCatExternalWarehouses = new JMenuItem("Almacenes sistema externo");
         mjCatUpdateCatalogues = new JMenuItem("Actualizar catálogos sistema externo...");
@@ -147,7 +149,11 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCat.add(mjCatInputType);
         mjCat.add(mjCatInputClass);
         mjCat.add(mjCatInputCategory);
+        mjCat.addSeparator();
+        mjCat.add(mjCatInputSource);
+        mjCat.addSeparator();
         mjCat.add(mjCatIodineValueRank);
+        mjCat.addSeparator();
         mjCat.add(mjCatExternalWarehouses);
         mjCat.addSeparator();
         mjCat.add(mjCatUpdateCatalogues);
@@ -157,6 +163,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatInputType.addActionListener(this);
         mjCatInputClass.addActionListener(this);
         mjCatInputCategory.addActionListener(this);
+        mjCatInputSource.addActionListener(this);
         mjCatIodineValueRank.addActionListener(this);
         mjCatExternalWarehouses.addActionListener(this);
         mjCatUpdateCatalogues.addActionListener(this);
@@ -633,6 +640,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatInputCategory) {
                 miClient.getSession().showView(SModConsts.SU_INP_CT, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatInputSource) {
+                miClient.getSession().showView(SModConsts.SU_INP_SRC, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatIodineValueRank) {
                 miClient.getSession().showView(SModConsts.SU_IOD_VAL_RANK, SLibConsts.UNDEFINED, null);
