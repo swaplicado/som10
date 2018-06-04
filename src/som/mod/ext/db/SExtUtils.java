@@ -335,11 +335,13 @@ public abstract class SExtUtils {
                     resultSet = ((SGuiClientSessionCustom) client.getSession().getSessionCustom()).getExtStatement().executeQuery(sql);
 
                     while (resultSet.next()) {
-                        producer.saveField(client.getSession().getStatement(), new int[] { vProducers.get(i) }, SDbProducer.FIELD_CODE, resultSet.getString("ct.bp_key"));
-                        producer.saveField(client.getSession().getStatement(), new int[] { vProducers.get(i) }, SDbProducer.FIELD_NAME, resultSet.getString("bp.bp"));
-                        producer.saveField(client.getSession().getStatement(), new int[] { vProducers.get(i) }, SDbProducer.FIELD_NAME_TRADE, resultSet.getString("bp.bp_comm").length() > 14 ? // 14 limit to the size of the field 'name_trd'
-                            resultSet.getString("bp.bp_comm").substring(0, 14) : resultSet.getString("bp.bp_comm"));
-                        producer.saveField(client.getSession().getStatement(), new int[] { vProducers.get(i) }, SDbProducer.FIELD_FISCAL_ID, resultSet.getString("bp.fiscal_id"));
+                        System.out.println("bp_key: " + resultSet.getString("ct.bp_key") + "; bp: " + resultSet.getString("bp.bp") + "; bp_comm: " + resultSet.getString("bp.bp_comm") + "; fiscal_id: " + resultSet.getString("bp.fiscal_id") + ".");
+                        producer.saveField(client.getSession().getStatement(), new int[] { vProducers.get(i) }, 
+                                SDbProducer.FIELD_CODE, resultSet.getString("ct.bp_key"));
+                        producer.saveField(client.getSession().getStatement(), new int[] { vProducers.get(i) }, 
+                                SDbProducer.FIELD_NAME, resultSet.getString("bp.bp"));
+                        producer.saveField(client.getSession().getStatement(), new int[] { vProducers.get(i) }, 
+                                SDbProducer.FIELD_FISCAL_ID, resultSet.getString("bp.fiscal_id").length() <= SDbProducer.LEN_FISCAL_ID ? resultSet.getString("bp.fiscal_id") : resultSet.getString("bp.fiscal_id").substring(0, SDbProducer.LEN_FISCAL_ID));
                     }
                 }
 
