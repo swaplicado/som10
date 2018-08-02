@@ -242,7 +242,6 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
                 msSql = "SELECT id_rep_grp, name, sort "
                         + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_REP_GRP) + " AS r "
-                        + "WHERE b_del = 0 AND b_dis = 0 "
                         + "ORDER BY sort, id_rep_grp ";
 
                 Statement statement = session.getDatabase().getConnection().createStatement();
@@ -267,6 +266,41 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                         "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>" +
                         "</tr>" +
                         "</table><br>";
+                     
+                // SECTION 2.1 Current day summary by scale:
+                
+                body += "<b>Resumen " + section + ": " + itemName + "</b><br>"
+                        + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                        + "<tr><td align='center'><b>" + SLibUtils.textToHtml("Báscula") + "</b></td><td align='center'><b>" + SSomConsts.KG + "</b></td><td align='center'><b>%</b></td></tr>";
+
+                // Obtain scale list:
+                msSql = "SELECT id_sca, name "
+                        + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " "
+                        + "ORDER BY name, id_sca ";
+
+                // Prevent other ResultSets from being closed:
+                Statement scaleStatement = session.getDatabase().getConnection().createStatement();
+                ResultSet scaleResultSet = scaleStatement.executeQuery(msSql);
+
+                // Compute each scale:
+                while (scaleResultSet.next()) {
+                    weight = SSomUtils.obtainWeightDestinyByScale(session, mnFkItemId, mtDate, mtDate, scaleResultSet.getInt("id_sca"));
+
+                    if (weight != 0) {
+                        body += "<tr>"
+                                + "<td>" + SLibUtils.textToHtml(scaleResultSet.getString("name")) + "</td>"
+                                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
+                                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>"
+                                + "</tr>";
+                    }
+                }
+
+                body += "<tr>"
+                        + "<td><b>Total " + section + "</b></td>"
+                        + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
+                        + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
+                        + "</tr>"
+                        + "</table><br>";
 
                 // SECTION 3: Current month summary by reporting group:
 
@@ -304,7 +338,38 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                         "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>" +
                         "</tr>" +
                         "</table><br>";
+                
+                // SECTION 3.1 Current month summary by scale: 
+                
+                body += "<b>Resumen " + section + ": " + itemName + "</b><br>"
+                        + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                        + "<tr><td align='center'><b>" + SLibUtils.textToHtml("Báscula") + "</b></td><td align='center'><b>" + SSomConsts.KG + "</b></td><td align='center'><b>%</b></td></tr>";
 
+                // Prepare again scale ResultSet:
+                if (scaleResultSet.isAfterLast()) {
+                    scaleResultSet.beforeFirst();
+                }
+
+                // Compute each scale:
+                while (scaleResultSet.next()) {
+                    weight = SSomUtils.obtainWeightDestinyByScale(session, mnFkItemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"));
+
+                    if (weight != 0) {
+                        body += "<tr>"
+                                + "<td>" + SLibUtils.textToHtml(scaleResultSet.getString("name")) + "</td>"
+                                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
+                                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>"
+                                + "</tr>";
+                    }
+                }
+
+                body += "<tr>"
+                        + "<td><b>Total " + section + "</b></td>"
+                        + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
+                        + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
+                        + "</tr>"
+                        + "</table><br>";
+                
                 // SECTION 4: Season summary by reporting group:
 
                 dateStart = dateSeasonStart;
@@ -380,6 +445,37 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                         "</tr>" +
                         "</table><br>";
                 
+                // SECTION 5.1 Season summary by scale
+                
+                body += "<b>Resumen " + section + ": " + itemName + "</b><br>"
+                        + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                        + "<tr><td align='center'><b>" + SLibUtils.textToHtml("Báscula") + "</b></td><td align='center'><b>" + SSomConsts.KG + "</b></td><td align='center'><b>%</b></td></tr>";
+
+                // Prepare again scale ResultSet:
+                if (scaleResultSet.isAfterLast()) {
+                    scaleResultSet.beforeFirst();
+                }
+
+                // Compute each scale:
+                while (scaleResultSet.next()) {
+                    weight = SSomUtils.obtainWeightDestinyByScale(session, mnFkItemId, dateSeasonStart, dateSeasonEnd, scaleResultSet.getInt("id_sca"));
+
+                    if (weight != 0) {
+                        body += "<tr>"
+                                + "<td>" + SLibUtils.textToHtml(scaleResultSet.getString("name")) + "</td>"
+                                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
+                                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>"
+                                + "</tr>";
+                    }
+                }
+
+                body += "<tr>"
+                        + "<td><b>Total " + section + "</b></td>"
+                        + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
+                        + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
+                        + "</tr>"
+                        + "</table><br>";
+                          
                 // SECTION 6: All past seasons:
                 
                 section = "Temporadas anteriores";
@@ -924,7 +1020,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
-            mnFkUserTaredId= SUtilConsts.USR_NA_ID;
+            mnFkUserTaredId = SUtilConsts.USR_NA_ID;
             mnFkUserPayedId = SUtilConsts.USR_NA_ID;
             mnFkUserAssortedId = SUtilConsts.USR_NA_ID;
 
@@ -1089,7 +1185,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             child.save(session);
         }
 
-        for (SDbLaboratory child: mvChildLaboratories) {
+        for (SDbLaboratory child : mvChildLaboratories) {
             if (child.isRegistryNew() || child.isRegistryEdited()) {
                 child.setDeleted(mbDeleted);
                 child.save(session);

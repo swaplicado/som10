@@ -895,7 +895,7 @@ public abstract class SSomUtils {
      * @param idReportingGroup int
      * @return double
      */
-    public static double obtainWeightDestinyByPeriod(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, final int idReportingGroup) throws SQLException {
+    public static double obtainWeightDestinyByPeriod(final SGuiSession session, final int idItem,final Date dateStart, final Date dateEnd, final int idReportingGroup) throws SQLException {
         double weight = 0;
 
         String sql = "SELECT SUM(t.wei_des_net_r) " +
@@ -904,6 +904,33 @@ public abstract class SSomUtils {
             "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " AND " +
             "t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
             (idReportingGroup == SLibConsts.UNDEFINED ? "" : "AND p.fk_rep_grp = " + idReportingGroup + " ") + ";";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+
+        if (resultSet.next()) {
+            weight = resultSet.getDouble(1);
+        }
+
+        return weight;
+    }
+    
+    /**
+     * Obtain weight on destiny and on a given scale from tickes on the provided period.
+     * @param session Current GUI session.
+     * @param idItem int,
+     * @param dateStart Date,
+     * @param dateEnd Date,
+     * @param idScale int
+     * @return double
+     */
+    public static double obtainWeightDestinyByScale(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, final int idScale) throws SQLException {
+        double weight = 0;
+
+        String sql = "SELECT SUM(t.wei_des_net_r) " +
+            "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS s ON t.fk_sca = s.id_sca " +
+            "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " AND " +
+            "t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' AND " +
+            "t.fk_sca = " + idScale + ";";
         ResultSet resultSet = session.getStatement().executeQuery(sql);
 
         if (resultSet.next()) {
