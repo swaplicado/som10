@@ -11,7 +11,7 @@ import sa.lib.grid.SGridRow;
 /**
  *
  * @author Juan Barajas, Sergio Flores
- * 2018-11-22, Sergio Flores:
+ * 2018-11-21, Sergio Flores:
  * 1) Adición de columna referencia en tabla de movimientos de almacén.
  * 2) Adición de referencia y observaciones de movimientos de almacén a vistas y tarjeta auxiliar.
  */

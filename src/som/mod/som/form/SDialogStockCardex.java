@@ -30,7 +30,7 @@ import som.mod.som.db.SRowStockCardex;
 /**
  *
  * @author Juan Barajas, Sergio Flores
- * 2018-11-22, Sergio Flores:
+ * 2018-11-21, Sergio Flores:
  * 1) Adición de referencia y observaciones de movimientos de almacén a vistas y tarjeta auxiliar.
  */
 public class SDialogStockCardex extends JDialog implements ActionListener {

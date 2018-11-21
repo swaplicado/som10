@@ -38,7 +38,7 @@ import som.mod.som.db.SSomWarehouseItem;
 /**
  *
  * @author Néstor Ávalos, Sergio Flores
- * 2018-11-22, Sergio Flores:
+ * 2018-11-21, Sergio Flores:
  * 1) Adición de columna referencia en tabla de movimientos de almacén.
  */
 public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListener, ItemListener, FocusListener {
