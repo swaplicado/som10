@@ -37,15 +37,14 @@ import som.mod.som.db.SSomWarehouseItem;
 
 /**
  *
- * @author Néstor Ávalos
+ * @author Néstor Ávalos, Sergio Flores
+ * 2018-11-22, Sergio Flores:
+ * 1) Adición de columna referencia en tabla de movimientos de almacén.
  */
 public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListener, ItemListener, FocusListener {
 
     private boolean mbTicketRegistry;
-    private int mnParamType;
-    private int mnParamSubtype;
     private int[] moFkIogTypeId;
-    private String msParamDate;
 
     private SDbIog moRegistry;
     private SDbIog moIogRegistryB;
@@ -91,6 +90,8 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         jPanel4 = new javax.swing.JPanel();
         jlDate = new javax.swing.JLabel();
         moDateDate = new sa.lib.gui.bean.SBeanFieldDate();
+        jlReference = new javax.swing.JLabel();
+        moTextReference = new sa.lib.gui.bean.SBeanFieldText();
         jPanel37 = new javax.swing.JPanel();
         jPanel39 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
@@ -199,7 +200,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel36.setLayout(new java.awt.GridLayout(4, 0, 0, 5));
 
-        jPanel15.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlIogType.setText("Tipo docto.:");
         jlIogType.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -212,7 +213,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel36.add(jPanel15);
 
-        jPanel16.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlIogAdjustmentType.setText("Tipo ajuste:*");
         jlIogAdjustmentType.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -223,7 +224,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel36.add(jPanel16);
 
-        jPanel17.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNumber.setText("Folio:");
         jlNumber.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -234,7 +235,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel36.add(jPanel17);
 
-        jPanel4.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDate.setText("Fecha:*");
         jlDate.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -248,6 +249,12 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         });
         jPanel4.add(moDateDate);
 
+        jlReference.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlReference.setText("Referencia:");
+        jlReference.setPreferredSize(new java.awt.Dimension(90, 23));
+        jPanel4.add(jlReference);
+        jPanel4.add(moTextReference);
+
         jPanel36.add(jPanel4);
 
         jPanel2.add(jPanel36, java.awt.BorderLayout.NORTH);
@@ -257,7 +264,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         jPanel39.setBorder(javax.swing.BorderFactory.createTitledBorder("Almacén:"));
         jPanel39.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
 
-        jPanel6.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlBranch.setText("Sucursal:*");
         jlBranch.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -268,7 +275,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel39.add(jPanel6);
 
-        jPanel7.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlWarehouse.setText("Almacén:*");
         jlWarehouse.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -279,7 +286,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel39.add(jPanel7);
 
-        jPanel30.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel30.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDivision.setText("División:*");
         jlDivision.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -290,7 +297,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel39.add(jPanel30);
 
-        jPanel8.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItem.setText("Ítem:*");
         jlItem.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -301,7 +308,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel39.add(jPanel8);
 
-        jPanel10.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlXtaStock.setText("Existencias:");
         jlXtaStock.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -330,7 +337,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel39.add(jPanel10);
 
-        jPanel9.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlQuantity.setText("Cantidad:*");
         jlQuantity.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -350,7 +357,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel38.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
 
-        jPanel31.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel31.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlBranchDestiny.setText("Sucursal:");
         jlBranchDestiny.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -361,7 +368,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel38.add(jPanel31);
 
-        jPanel32.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel32.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlWarehouseDestiny.setText("Almacén:");
         jlWarehouseDestiny.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -372,7 +379,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel38.add(jPanel32);
 
-        jPanel41.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel41.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDivisionDestiny.setText("División:*");
         jlDivisionDestiny.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -383,7 +390,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel38.add(jPanel41);
 
-        jPanel33.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItemDestiny.setText("Ítem:");
         jlItemDestiny.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -394,7 +401,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel38.add(jPanel33);
 
-        jPanel34.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlXtaStockDestiny.setText("Existencias:");
         jlXtaStockDestiny.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -423,7 +430,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel38.add(jPanel34);
 
-        jPanel35.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel35.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlQuantityDestiny.setText("Cantidad:");
         jlQuantityDestiny.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -444,9 +451,9 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel2.add(jPanel37, java.awt.BorderLayout.CENTER);
 
-        jPanel12.setLayout(new java.awt.GridLayout(2, 1));
+        jPanel12.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
 
-        jPanel29.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel29.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNote.setText("Observaciones:");
         jlNote.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -458,7 +465,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel12.add(jPanel29);
 
-        jPanel40.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel40.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolDeleted.setText("Registro eliminado");
         moBoolDeleted.setEnabled(false);
@@ -484,7 +491,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del documento externo:"));
         jPanel13.setLayout(new java.awt.GridLayout(10, 0, 0, 5));
 
-        jPanel14.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDpsBizPartner.setText("Asoc. neg.:");
         jlDpsBizPartner.setPreferredSize(new java.awt.Dimension(80, 23));
@@ -496,7 +503,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel13.add(jPanel14);
 
-        jPanel22.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDpsBizPartnerCode.setText("Asoc. neg. cód.:");
         jlDpsBizPartnerCode.setPreferredSize(new java.awt.Dimension(80, 23));
@@ -507,7 +514,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel13.add(jPanel22);
 
-        jPanel18.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDpsDate.setText("Fecha docto.:");
         jlDpsDate.setPreferredSize(new java.awt.Dimension(80, 23));
@@ -518,7 +525,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel13.add(jPanel18);
 
-        jPanel19.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDpsNumberSeries.setText("Folio docto.:");
         jlDpsNumberSeries.setPreferredSize(new java.awt.Dimension(80, 23));
@@ -529,7 +536,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel13.add(jPanel19);
 
-        jPanel62.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel62.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDpsNumberReference.setText("Ref. docto.:");
         jlDpsNumberReference.setPreferredSize(new java.awt.Dimension(80, 23));
@@ -540,7 +547,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel13.add(jPanel62);
 
-        jPanel20.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDpsItem.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jlDpsItem.setText("Ítem: ");
@@ -554,7 +561,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel13.add(jPanel20);
 
-        jPanel23.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDpsItemCode.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jlDpsItemCode.setText("Código ítem:");
@@ -567,7 +574,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel13.add(jPanel23);
 
-        jPanel21.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDpsQuantityOriginal.setText("C. original:");
         jlDpsQuantityOriginal.setPreferredSize(new java.awt.Dimension(80, 23));
@@ -581,7 +588,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel13.add(jPanel21);
 
-        jPanel24.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDpsQuantitySupDev.setText("C. surt./dev.:");
         jlDpsQuantitySupDev.setPreferredSize(new java.awt.Dimension(80, 23));
@@ -595,7 +602,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel13.add(jPanel24);
 
-        jPanel25.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDpsQuantityPending.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jlDpsQuantityPending.setText("C. pendiente:");
@@ -617,7 +624,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         jPanel27.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del boleto:"));
         jPanel27.setLayout(new java.awt.GridLayout(9, 0, 0, 5));
 
-        jPanel28.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTicketScale.setText("Báscula:");
         jlTicketScale.setPreferredSize(new java.awt.Dimension(80, 23));
@@ -629,7 +636,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel27.add(jPanel28);
 
-        jPanel26.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlTicketNumber.setText("Boleto:");
         jlTicketNumber.setPreferredSize(new java.awt.Dimension(80, 23));
@@ -724,6 +731,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private javax.swing.JLabel jlQuantityDestiny;
     private javax.swing.JLabel jlQuantityUnit;
     private javax.swing.JLabel jlQuantityUnitDestiny;
+    private javax.swing.JLabel jlReference;
     private javax.swing.JLabel jlTicketNumber;
     private javax.swing.JLabel jlTicketScale;
     private javax.swing.JLabel jlWarehouse;
@@ -764,6 +772,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private sa.lib.gui.bean.SBeanFieldText moTextIogType;
     private sa.lib.gui.bean.SBeanFieldText moTextNote;
     private sa.lib.gui.bean.SBeanFieldText moTextNumber;
+    private sa.lib.gui.bean.SBeanFieldText moTextReference;
     private sa.lib.gui.bean.SBeanFieldText moTextTicketScale;
     private sa.lib.gui.bean.SBeanFieldText moTextXtaStockPeriod;
     private sa.lib.gui.bean.SBeanFieldText moTextXtaStockPeriodDestiny;
@@ -785,29 +794,30 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moFieldKeyGroupWarehouseDestiny = new SGuiFieldKeyGroup(miClient);
         moDialogStockCardex = new SDialogStockCardex(miClient);
 
-        moTextIogType.setTextSettings(SGuiUtils.getLabelName(jlIogType.getText()), 100, 0);
-        moKeyIogAdjustmentType.setKeySettings(miClient, SGuiUtils.getLabelName(jlIogAdjustmentType.getText()), true);
-        moTextNumber.setTextSettings(SGuiUtils.getLabelName(jlNumber.getText()), 15, 0);
-        moDateDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlDate.getText()), true);
-        moKeyBranch.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranch.getText()), true);
-        moKeyWarehouseSource.setKeySettings(miClient, SGuiUtils.getLabelName(jlWarehouse.getText()), true);
-        moKeyDivisionSource.setKeySettings(miClient, SGuiUtils.getLabelName(jlDivision.getText()), true);
-        moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
-        moDecXtaStock.setDecimalSettings(SGuiUtils.getLabelName(jlXtaStock.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moTextIogType.setTextSettings(SGuiUtils.getLabelName(jlIogType), 100, 0);
+        moKeyIogAdjustmentType.setKeySettings(miClient, SGuiUtils.getLabelName(jlIogAdjustmentType), true);
+        moTextNumber.setTextSettings(SGuiUtils.getLabelName(jlNumber), 15, 0);
+        moDateDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlDate), true);
+        moTextReference.setTextSettings(SGuiUtils.getLabelName(jlReference), 10, 0);
+        moKeyBranch.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranch), true);
+        moKeyWarehouseSource.setKeySettings(miClient, SGuiUtils.getLabelName(jlWarehouse), true);
+        moKeyDivisionSource.setKeySettings(miClient, SGuiUtils.getLabelName(jlDivision), true);
+        moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem), true);
+        moDecXtaStock.setDecimalSettings(SGuiUtils.getLabelName(jlXtaStock), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moTextXtaStockPeriod.setTextSettings(jlXtaStockPeriod.getText(), 5, 0);
-        moDecQuantity.setDecimalSettings(SGuiUtils.getLabelName(jlQuantity.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moKeyBranchDestiny.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranchDestiny.getText()), true);
-        moKeyWarehouseDestiny.setKeySettings(miClient, SGuiUtils.getLabelName(jlWarehouseDestiny.getText()), true);
-        moKeyDivisionDestiny.setKeySettings(miClient, SGuiUtils.getLabelName(jlDivisionDestiny.getText()), true);
-        moKeyItemDestiny.setKeySettings(miClient, SGuiUtils.getLabelName(jlItemDestiny.getText()), true);
-        moDecXtaStockDestiny.setDecimalSettings(SGuiUtils.getLabelName(jlXtaStockDestiny.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecQuantity.setDecimalSettings(SGuiUtils.getLabelName(jlQuantity), SGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moKeyBranchDestiny.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranchDestiny), true);
+        moKeyWarehouseDestiny.setKeySettings(miClient, SGuiUtils.getLabelName(jlWarehouseDestiny), true);
+        moKeyDivisionDestiny.setKeySettings(miClient, SGuiUtils.getLabelName(jlDivisionDestiny), true);
+        moKeyItemDestiny.setKeySettings(miClient, SGuiUtils.getLabelName(jlItemDestiny), true);
+        moDecXtaStockDestiny.setDecimalSettings(SGuiUtils.getLabelName(jlXtaStockDestiny), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moTextXtaStockPeriodDestiny.setTextSettings(jlXtaStockPeriodDestiny.getText(), 5, 0);
-        moDecQuantityDestiny.setDecimalSettings(SGuiUtils.getLabelName(jlQuantityDestiny.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 255, 0);
-        moBoolDeleted.setBooleanSettings(SGuiUtils.getLabelName(moBoolDeleted.getText()), false);
-        moBoolSystem.setBooleanSettings(SGuiUtils.getLabelName(moBoolSystem.getText()), false);
+        moDecQuantityDestiny.setDecimalSettings(SGuiUtils.getLabelName(jlQuantityDestiny), SGuiConsts.GUI_TYPE_DEC_QTY, true);
+        moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote), 255, 0);
+        moBoolDeleted.setBooleanSettings(moBoolDeleted.getText(), false);
+        moBoolSystem.setBooleanSettings(moBoolSystem.getText(), false);
 
-        moIntTicketNumber.setIntegerSettings(SGuiUtils.getLabelName(jlTicketNumber.getText()), SGuiConsts.GUI_TYPE_INT, false);
+        moIntTicketNumber.setIntegerSettings(SGuiUtils.getLabelName(jlTicketNumber), SGuiConsts.GUI_TYPE_INT, false);
         moTextDpsBizPartner.setTextSettings(jlDpsBizPartner.getText(), 200, 0);
         moTextDpsBizPartnerCode.setTextSettings("Código", 100, 0);
         moDateDpsDate.setDateSettings(miClient, jlDpsDate.getText(), false);
@@ -815,9 +825,9 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moTextDpsNumberReference.setTextSettings(jlDpsNumberReference.getText(), 100, 0);
         moTextDpsItem.setTextSettings(jlDpsItem.getText(), 200, 0);
         moTextDpsItemCode.setTextSettings("Código", 100, 0);
-        moDecDpsQuantityOriginal.setDecimalSettings(SGuiUtils.getLabelName(jlDpsQuantityOriginal.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecDpsQuantitySupDev.setDecimalSettings(SGuiUtils.getLabelName(jlDpsQuantitySupDev.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
-        moDecDpsQuantityPending.setDecimalSettings(SGuiUtils.getLabelName(jlDpsQuantityPending.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecDpsQuantityOriginal.setDecimalSettings(SGuiUtils.getLabelName(jlDpsQuantityOriginal), SGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecDpsQuantitySupDev.setDecimalSettings(SGuiUtils.getLabelName(jlDpsQuantitySupDev), SGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecDpsQuantityPending.setDecimalSettings(SGuiUtils.getLabelName(jlDpsQuantityPending), SGuiConsts.GUI_TYPE_DEC_AMT, false);
 
         moTextTicketScale.setTextSettings(jlTicketScale.getText(), 200, 0);
         moIntTicketNumber.setIntegerSettings(jlTicketNumber.getText(), SGuiConsts.GUI_TYPE_INT, false);
@@ -826,6 +836,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moFields.addField(moKeyIogAdjustmentType);
         moFields.addField(moTextNumber);
         moFields.addField(moDateDate);
+        moFields.addField(moTextReference);
         moFields.addField(moKeyBranch);
         moFields.addField(moKeyWarehouseSource);
         moFields.addField(moKeyDivisionSource);
@@ -888,13 +899,6 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         }
 
         if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId)) {
-            /* 27/10/2014 jbarajas remove all traces of control mixtures.
-             *
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, moFkIogTypeId) ||
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS, moFkIogTypeId) ||
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, moFkIogTypeId)
-            */
-
             if (moKeyWarehouseDestiny.getModel().getSize() == 2) {
                 moKeyWarehouseDestiny.setSelectedIndex(1);
             }
@@ -933,6 +937,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moTextIogType.setValue(moRegistry.getXtaIogTypeName());
         moTextNumber.setValue(moRegistry.getXtaNumber());
         moDateDate.setValue(moRegistry.getDate());
+        moTextReference.setValue(moRegistry.getReference());
         moKeyBranch.setValue(new int[] { moRegistry.getFkWarehouseCompanyId(), moRegistry.getFkWarehouseBranchId() });
         moKeyWarehouseSource.setValue(new int[] { moRegistry.getFkWarehouseCompanyId(), moRegistry.getFkWarehouseBranchId(), moRegistry.getFkWarehouseWarehouseId() });
         moKeyDivisionSource.setValue(new int[] { moRegistry.getFkDivisionId() });
@@ -956,10 +961,8 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         setFormEditable(true);
         if (moRegistry.isRegistryNew()) {
-
             resetComboBoxes();
 
-            //moRegistry.setNumber(moRegistry.getXtaIogTypeCode() + "-");
             moTextNumber.setValue(moRegistry.getXtaIogTypeCode() + "-");
             moDateDate.setValue(miClient.getSession().getWorkingDate());
             moBoolDeleted.setEnabled(false);
@@ -977,6 +980,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
             if (moBoolSystem.getValue()) {
                 moDateDate.setEditable(false);
+                moTextReference.setEditable(false);
                 moDecQuantity.setEditable(false);
                 moBoolDeleted.setEnabled(false);
             }
@@ -1078,13 +1082,6 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private void loadIogDestiny() {
 
         if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId)) {
-            /* 27/10/2014 jbarajas remove all traces of control mixtures.
-             *
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, moFkIogTypeId) ||
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS, moFkIogTypeId) ||
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, moFkIogTypeId) ) {
-            */
-
             moKeyBranchDestiny.setValue(new int[] { moIogRegistryB.getFkWarehouseCompanyId(), moIogRegistryB.getFkWarehouseBranchId() });
             moKeyWarehouseDestiny.setValue(new int[] { moIogRegistryB.getFkWarehouseCompanyId(), moIogRegistryB.getFkWarehouseBranchId(), moIogRegistryB.getFkWarehouseWarehouseId() });
             moKeyDivisionDestiny.setValue(new int[] { moIogRegistryB.getFkDivisionId() });
@@ -1167,7 +1164,6 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private void actionCardex() {
         if (jbCardex.isEnabled()) {
             if (moDateDate.getValue() != null ) {
-
                 moDialogStockCardex.formReset();
                 moDialogStockCardex.setFormParams(
                         SLibTimeUtils.getEndOfYear(moDateDate.getValue()),
@@ -1205,34 +1201,14 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     }
 
     private void assignIogDestinyQuantity() {
-
         // Assign quantity destiny depending of move type:
 
         if (moKeyWarehouseDestiny.getSelectedIndex() > 0 && moKeyItemDestiny.getSelectedIndex() > 0) {
 
             if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId)) {
-                    // 27/10/2014 jbarajas remove all traces of control mixtures.
-
-                    //SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS, moFkIogTypeId) ) {
-
                 moDecQuantityDestiny.setValue(moDecQuantity.getValue());
                 moIogRegistryB.setQuantity(moDecQuantityDestiny.getValue());
             }
-            /* 27/10/2014 jbarajas remove all traces of control mixtures.
-             *
-            else if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, moFkIogTypeId) ) {
-
-                moDecQuantityDestiny.setValue(moDecQuantity.getValue());
-                moIogRegistryB.setQuantity(moDecQuantityDestiny.getValue());
-            }
-            else if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, moFkIogTypeId) ) {
-
-                moDecQuantityDestiny.setValue(moDecXtaStockDestiny.getValue());
-                moIogRegistryB.setQuantity(moDecQuantity.getValue());
-                moIogRegistryC.setQuantity(moDecQuantityDestiny.getValue());
-                moIogRegistryD.setQuantity(moDecQuantityDestiny.getValue());
-            }
-            */
         }
     }
 
@@ -1255,7 +1231,6 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         }
 
         if (somWarehouseItem.size() > 0) {
-
             if (bSource) {
                 moKeyItem.setValue(new int[] { somWarehouseItem.get(0).getPkItemId() });
             }
@@ -1292,7 +1267,6 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
                     (moKeyWarehouseDestiny.getSelectedIndex() > 0 ? moKeyWarehouseDestiny.getValue() : moKeyBranchDestiny.getValue())),
                 (origin ? (moKeyDivisionSource.getSelectedIndex() > 0 ? moKeyDivisionSource.getValue()[0] : SLibConsts.UNDEFINED) :
                     (moKeyDivisionDestiny.getSelectedIndex() > 0 ? moKeyDivisionDestiny.getValue()[0] : SLibConsts.UNDEFINED)),
-
                 null,
                 moDateDate.getValue(), false);
 
@@ -1341,13 +1315,6 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moKeyBranchDestiny.setEnabled(false);
 
         if (!SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId)) {
-            /* 27/10/2014 jbarajas remove all traces of control mixtures.
-             *
-            !SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, moFkIogTypeId) &&
-            !SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS, moFkIogTypeId) &&
-            !SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, moFkIogTypeId) ) {
-            */
-
             moKeyWarehouseDestiny.setEnabled(b);
             moKeyDivisionDestiny.setEnabled(b);
             moKeyItemDestiny.setEnabled(!moRegistry.isRegistryNew() ? false : b);
@@ -1425,31 +1392,10 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     }
 
     private void renderTransferMoves() {
-
         if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId) ) {
 
             moIogRegistryB = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_IN_INT_TRA);
         }
-
-        /* 27/10/2014 jbarajas remove all traces of control mixtures.
-         *
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, moFkIogTypeId) ) {
-
-            moIogRegistryB = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_IN_INT_CNV);
-        }
-
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS, moFkIogTypeId) ) {
-
-            moIogRegistryB = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_IN_INT_MIX_PAS);
-        }
-
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, moFkIogTypeId) ) {
-
-            moIogRegistryB = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_IN_INT_MIX_ACT);
-            moIogRegistryC = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT);
-            moIogRegistryD = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_IN_INT_MIX_ACT);
-        }
-        */
 
         if (moIogRegistryB != null) {
             moIogRegistryB.setFkWarehouseCompanyId(((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getPrimaryKey()[0]);
@@ -1471,21 +1417,9 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private void getRegistryDestiny(final SDbIog registry) {
 
          if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId)) {
-            /* 27/10/2014 jbarajas remove all traces of control mixtures.
-             *
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, moFkIogTypeId) ||
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS, moFkIogTypeId) ||
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, moFkIogTypeId) ) {
-            */
-
             moIogRegistryB = assignIogDestinyData(moIogRegistryB);
 
             if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId)) {
-                    /* 27/10/2014 jbarajas remove all traces of control mixtures.
-                     *
-                    SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, moFkIogTypeId)) {
-                    */
-
                 moIogRegistryB.setFkItemId(moKeyItem.getValue()[0]);
                 moIogRegistryB.setFkUnitId(moKeyItem.getSelectedItem().getForeignKey()[0]);
             }
@@ -1496,42 +1430,11 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
             registry.setIogRegistryB(moIogRegistryB);
         }
-
-        /* 27/10/2014 jbarajas remove all traces of control mixtures.
-         *
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, moFkIogTypeId) ) {
-
-            moIogRegistryC = assignIogDestinyData(moIogRegistryC);
-            moIogRegistryC.setFkItemId(moKeyItemDestiny.getValue()[0]);
-            moIogRegistryC.setFkUnitId(moKeyItemDestiny.getSelectedItem().getForeignKey()[0]);
-            registry.setIogRegistryC(moIogRegistryC);
-
-            moIogRegistryD = assignIogDestinyData(moIogRegistryD);
-            moIogRegistryD.setFkItemId(moKeyItem.getValue()[0]);
-            moIogRegistryD.setFkUnitId(moKeyItem.getSelectedItem().getForeignKey()[0]);
-            registry.setIogRegistryD(moIogRegistryD);
-        }
-        */
     }
 
     private SDbIog assignIogDestinyData(final SDbIog iogRegistry) {
         SDbIog iog = iogRegistry;
 
-        /* 27/10/2014 jbarajas remove all traces of control mixtures.
-         *
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, moFkIogTypeId)) {
-            iog.setFkWarehouseCompanyId(moKeyWarehouseSource.getValue()[0]);
-            iog.setFkWarehouseBranchId(moKeyWarehouseSource.getValue()[1]);
-            iog.setFkWarehouseWarehouseId(moKeyWarehouseSource.getValue()[2]);
-            iog.setFkDivisionId(moKeyDivisionSource.getValue()[0]);
-        }
-        else {
-            iog.setFkWarehouseCompanyId(moKeyWarehouseDestiny.getValue()[0]);
-            iog.setFkWarehouseBranchId(moKeyWarehouseDestiny.getValue()[1]);
-            iog.setFkWarehouseWarehouseId(moKeyWarehouseDestiny.getValue()[2]);
-            iog.setFkDivisionId(moKeyDivisionDestiny.getValue()[0]);
-        }
-        */
         iog.setFkWarehouseCompanyId(moKeyWarehouseDestiny.getValue()[0]);
         iog.setFkWarehouseBranchId(moKeyWarehouseDestiny.getValue()[1]);
         iog.setFkWarehouseWarehouseId(moKeyWarehouseDestiny.getValue()[2]);
@@ -1599,7 +1502,6 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     @Override
     public void setRegistry(SDbRegistry registry) throws Exception {
         moRegistry = (SDbIog) registry;
-
         loadFieldsValuesIog();
     }
 
@@ -1610,15 +1512,16 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         registry.setFkWarehouseCompanyId(moKeyWarehouseSource.getValue()[0]);
         registry.setFkWarehouseBranchId(moKeyWarehouseSource.getValue()[1]);
         registry.setFkWarehouseWarehouseId(moKeyWarehouseSource.getValue()[2]);
-        /*registry.setFkIogCategoryId(registry.getFkIogCategoryId());
-        registry.setFkIogClassId(registry.getFkIogClassId());
-        registry.setFkIogTypeId(registry.getFkIogTypeId());*/
+        //registry.setFkIogCategoryId(registry.getFkIogCategoryId());
+        //registry.setFkIogClassId(registry.getFkIogClassId());
+        //registry.setFkIogTypeId(registry.getFkIogTypeId());
         registry.setFkIogAdjustmentTypeId(moKeyIogAdjustmentType.getValue()[0]);
         registry.setFkItemId(moKeyItem.getValue()[0]);
         registry.setFkUnitId(moKeyItem.getSelectedItem().getForeignKey()[0]);
         registry.setFkDivisionId(moKeyDivisionSource.getValue()[0]);
 
         registry.setDate(moDateDate.getValue());
+        registry.setReference(moTextReference.getValue());
         registry.setQuantity(moDecQuantity.getValue());
         registry.setXtaNote(moTextNote.getValue());
         registry.setDeleted(moBoolDeleted.getValue());
@@ -1751,12 +1654,6 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         if (validation.isValid()) {
             if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId)) {
-                /* 27/10/2014 jbarajas remove all traces of control mixtures.
-                 *
-                SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS, moFkIogTypeId) ||
-                SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, moFkIogTypeId) ) {
-                */
-
                 if (SLibUtils.compareKeys(moKeyWarehouseSource.getValue(), moKeyWarehouseDestiny.getValue())) {
                     validation.setMessage("El almacén origen y destino deben ser diferentes.");
                     validation.setComponent(moKeyWarehouseSource.getComponent());
@@ -1766,35 +1663,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
                     validation.setComponent(moKeyDivisionSource.getComponent());
                 }
             }
-            /* 27/10/2014 jbarajas remove all traces of control mixtures.
-             *
-            else if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, moFkIogTypeId)) {
-                if (!SLibUtils.compareKeys(moKeyWarehouseSource.getValue(), moKeyWarehouseDestiny.getValue())) {
-                    validation.setMessage("El almacén origen y destino deben ser iguales");
-                    validation.setComponent(moKeyWarehouseSource.getComponent());
-                }
-                else if (!SLibUtils.compareKeys(moKeyDivisionSource.getValue(), moKeyDivisionDestiny.getValue())) {
-                    validation.setMessage("La división origen y destino deben ser iguales");
-                    validation.setComponent(moKeyDivisionSource.getComponent());
-                }
-            }
-            */
         }
-
-        /* 27/10/2014 jbarajas remove all traces of control mixtures.
-         *
-        if (validation.isValid()) {
-            if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, moFkIogTypeId) ||
-                SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS, moFkIogTypeId) ||
-                SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, moFkIogTypeId) ) {
-
-                if (moKeyItemDestiny.getSelectedIndex() <= 0) {
-                    validation.setMessage(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + SGuiUtils.getLabelName(jlItemDestiny.getText()) + "'.");
-                    validation.setComponent(moKeyWarehouseSource.getComponent());
-                }
-            }
-        }
-        */
 
         return validation;
     }
@@ -1827,7 +1696,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
     @Override
     public void focusGained(FocusEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     @Override

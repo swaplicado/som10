@@ -26,7 +26,9 @@ import som.mod.cfg.db.SDbBranchWarehouse;
 
 /**
  *
- * @author Néstor Ávalos
+ * @author Néstor Ávalos, Sergio Flores
+ * 2018-11-22, Sergio Flores:
+ * 1) Adición de columna referencia en tabla de movimientos de almacén.
  */
 public class SDbIog extends SDbRegistryUser {
 
@@ -35,6 +37,7 @@ public class SDbIog extends SDbRegistryUser {
     protected int mnPkIogId;
     protected int mnNumber;
     protected Date mtDate;
+    protected String msReference;
     protected double mdQuantity;
     protected boolean mbAuthorized;
     /*
@@ -341,20 +344,8 @@ public class SDbIog extends SDbRegistryUser {
     }
 
     private boolean validateInOutMoves(final SGuiSession session, final boolean actionDelete) throws SQLException, Exception {
-        boolean b = true;
-        int nItemId = 0;
-        int nItemUnitId = 0;
-        int nItemTypeId = 0;
-        double dItemStock = 0;
-        double dItemDensity = 0;
-        double dWarehouseCapacity = 0;
-        String sItem = "";
-        String sItemUnit = "";
-
+        boolean goNext = true;
         SSomStock stock = null;
-        Vector<Object> itemsStock = new Vector<Object>();
-        ArrayList<SSomWarehouseItem> aWarehouseItems = new ArrayList<SSomWarehouseItem>();
-
         SDbItem item = null;
         SDbBranchWarehouse warehouse = null;
         SDbMfgEstimation estimation = null;
@@ -368,18 +359,17 @@ public class SDbIog extends SDbRegistryUser {
             if (estimation.isClosed()) {
 
                 msQueryResult = "El período está cerrado por estimación de la producción.";
-                b = false;
+                goNext = false;
             }
         }
         catch (Exception e) {
             SLibUtils.showException(this, e);
         }
 
-        if (!b) {
+        if (!goNext) {
             mnQueryResultId = SDbConsts.SAVE_ERROR;
         }
         else {
-
             warehouse = new SDbBranchWarehouse();
             warehouse.read(session, new int[] { mnFkWarehouseCompanyId, mnFkWarehouseBranchId, mnFkWarehouseWarehouseId });
             if (warehouse.getQueryResultId() != SDbConsts.READ_OK) {
@@ -412,68 +402,11 @@ public class SDbIog extends SDbRegistryUser {
                         SLibConsts.UNDEFINED);
 
                 if (!msQueryResult.isEmpty()) {
-                    b = false;
+                    goNext = false;
                 }
-
-                /* XXX Delete before to updateCode
-                 *
-                // Obtain items by warehouse:
-
-                aWarehouseItems = stockWarehouseByItem(session, SLibTimeUtils.digestYear(mtDate)[0], new int[] { mnFkWarehouseCompanyId, mnFkWarehouseBranchId, mnFkWarehouseWarehouseId },
-                        (moStock != null ? moStock.getPrimaryKey() : null), (!mbXtaValidateExportationStock ? SLibTimeUtils.getEndOfYear(mtDate) : mtDate), SLibConsts.UNDEFINED);
-                dWarehouseCapacity = 0;
-
-                for (Object oItem : itemsStock) {
-                    nItemId = (Integer)((Object[]) oItem)[0];
-                    nItemUnitId = (Integer)((Object[]) oItem)[1];
-                    nItemTypeId = (Integer)((Object[]) oItem)[2];
-                    sItem = (String)((Object[]) oItem)[3];
-                    sItemUnit = (String)((Object[]) oItem)[4];
-                    dItemStock = (Double)((Object[]) oItem)[5];
-                    dItemDensity = (Double)((Object[]) oItem)[6];
-
-                    //if (!mbXtaValidateTankItems) {
-                        if (warehouse.getFkWarehouseTypeId() != SModSysConsts.CS_WAH_TP_WAH) {
-
-                            // Validate only if item is not a cull:
-
-                            if ((mnFkItemId != nItemId || mnFkUnitId != nItemUnitId) &&
-                                item.getFkItemTypeId() != SModSysConsts.SS_ITEM_TP_CU &&
-                                nItemTypeId != SModSysConsts.SS_ITEM_TP_CU) {
-
-                                msQueryResult = "El almacén '" + warehouse.getCode() + "' ya contiene un ítem con existencias: '" + sItem + "'.";
-                                b = false;
-                                break;
-                            }
-                        }
-                    //}
-
-                    // Validate total capacity in warehouse:
-
-                    if (!mbXtaValidateWarehouseProduction) {
-                        dWarehouseCapacity += (dItemDensity > 0 ? (dItemStock / dItemDensity) : (dItemStock / item.getDensity()));
-                        if ((dWarehouseCapacity + ((actionDelete ? 0 : mdQuantity) / item.getDensity())) > warehouse.getCapacityRealLiter() &&
-                                warehouse.getFkWarehouseTypeId() == SModSysConsts.CS_WAH_TP_TAN) {
-                            msQueryResult = "La cantidad capturada de: '" + SLibUtils.DecimalFormatValue2D.format(mdQuantity) + " " + msXtaUnit +
-                                    "' hace que el tanque: '" + warehouse.getCode() + "' sobrepase su capacidad.";
-                            b = false;
-                            break;
-                        }
-                    }
-
-                    // Validate units:
-
-                    if (mnFkUnitId != nItemUnitId &&
-                        nItemTypeId != SModSysConsts.SS_ITEM_TP_CU) {
-
-                        msQueryResult = "El ítem '" + msXtaItem + " " + msXtaUnit + "' tiene una unidad ('" + sItemUnit + "') diferente a la del producto : '" + warehouse.getCode() + "'.";
-                        b = false;
-                        break;
-                    }
-                } */
             }
 
-            if (b &&
+            if (goNext &&
                (mnFkIogCategoryId == SModSysConsts.SS_IOG_CT_IN && !mbDeleted && actionDelete) ||
                (mnFkIogCategoryId == SModSysConsts.SS_IOG_CT_OUT && !mbDeleted && !actionDelete) ||
                (mnFkIogCategoryId == SModSysConsts.SS_IOG_CT_OUT && mbDeleted && actionDelete)) {
@@ -495,7 +428,7 @@ public class SDbIog extends SDbRegistryUser {
 
                 if (!stock.getResult().isEmpty()) {
                     msQueryResult = stock.getResult();
-                    b = false;
+                    goNext = false;
                 }
                 else {
 
@@ -515,13 +448,13 @@ public class SDbIog extends SDbRegistryUser {
                         SLibConsts.UNDEFINED);
 
                     if (!msQueryResult.isEmpty()) {
-                        b = false;
+                        goNext = false;
                     }
                 }
             }
         }
 
-        return b;
+        return goNext;
     }
 
     private SDbIog readRegistryDestiny(final SGuiSession session, final SDbIog iogRegistry, final int nPkIogRegistryId) throws SQLException, Exception {
@@ -674,6 +607,7 @@ public class SDbIog extends SDbRegistryUser {
     public void setPkIogId(int n) { mnPkIogId = n; }
     public void setNumber(int n) { mnNumber = n; }
     public void setDate(Date t) { mtDate = t; }
+    public void setReference(String s) { msReference = s; }
     public void setQuantity(double d) { mdQuantity = d; }
     public void setAuthorized(boolean b) { mbAuthorized = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
@@ -712,6 +646,7 @@ public class SDbIog extends SDbRegistryUser {
     public int getPkIogId() { return mnPkIogId; }
     public int getNumber() { return mnNumber; }
     public Date getDate() { return mtDate; }
+    public String getReference() { return msReference; }
     public double getQuantity() { return mdQuantity; }
     public boolean isAuthorized() { return mbAuthorized; }
     public boolean isDeleted() { return mbDeleted; }
@@ -831,7 +766,7 @@ public class SDbIog extends SDbRegistryUser {
         ResultSet resultSet = null;
         Statement statement = null;
 
-        // canSave:
+        // Can save?:
 
         mbXtaValidateWarehouseProduction = true;
         if (!canSave(session)) {
@@ -839,7 +774,6 @@ public class SDbIog extends SDbRegistryUser {
         }
 
         if (res) {
-
             // Obtain phisical inventory:
 
             sql = "SELECT stk_day " +
@@ -944,7 +878,6 @@ public class SDbIog extends SDbRegistryUser {
 
     public void computeIog(final Date date, final double quantity, final boolean system, final int[] iogType, final int adjustment,
             final int item, final int unit, final int[] warehouse, final int nDivisionId, final int estimation, final int version, final int user) {
-
         mtDate = date;
         mdQuantity = quantity;
         mbSystem = system;
@@ -980,6 +913,7 @@ public class SDbIog extends SDbRegistryUser {
         mnPkIogId = 0;
         mnNumber = 0;
         mtDate = null;
+        msReference = "";
         mdQuantity = 0;
         mbAuthorized = false;
         mbDeleted = false;
@@ -1112,6 +1046,7 @@ public class SDbIog extends SDbRegistryUser {
             mnPkIogId = resultSet.getInt("iog.id_iog");
             mnNumber = resultSet.getInt("iog.num");
             mtDate = resultSet.getDate("iog.dt");
+            msReference = resultSet.getString("iog.ref");
             mdQuantity = resultSet.getDouble("iog.qty");
             mbAuthorized = resultSet.getBoolean("iog.b_aut");
             mbDeleted = resultSet.getBoolean("iog.b_del");
@@ -1270,6 +1205,7 @@ public class SDbIog extends SDbRegistryUser {
                     mnPkIogId + ", " +
                     mnNumber + ", " +
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " +
+                    "'" + msReference + "', " + 
                     mdQuantity + ", " +
                     (mbAuthorized ? 1 : 0) + ", " +
                     (mbDeleted ? 1 : 0) + ", " +
@@ -1312,6 +1248,7 @@ public class SDbIog extends SDbRegistryUser {
                     //"id_iog = " + mnPkIogId + ", " +
                     "num = " + mnNumber + ", " +
                     "dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " +
+                    "ref = '" + msReference + "', " +
                     "qty = " + mdQuantity + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
@@ -1350,7 +1287,6 @@ public class SDbIog extends SDbRegistryUser {
         session.getStatement().execute(msSql);
 
         if (mbRegistryNew) {
-
             // Save note:
 
             moIogNote = new SDbIogNote();
@@ -1466,25 +1402,6 @@ public class SDbIog extends SDbRegistryUser {
     public boolean canDelete(SGuiSession session) throws SQLException, Exception {
         boolean result = validateInOutMoves(session, true);
 
-        /*
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, new int[] { mnFkIogCategoryId, mnFkIogClassId, mnFkIogTypeId })) {
-            result = validateInOutMoves(session, true);
-        }
-        else {
-            result = validateInOutMoves(session, true);
-        }
-
-        if (result && moIogRegistryC != null) {
-            result = moIogRegistryC.validateInOutMoves(session, true);
-            msQueryResult = moIogRegistryC.msQueryResult;
-        }
-
-        if (result && moIogRegistryD != null) {
-            result = moIogRegistryD.validateInOutMoves(session, true);
-            msQueryResult = moIogRegistryD.msQueryResult;
-        }
-        */
-
         if (result && moIogRegistryB != null) {
             result = moIogRegistryB.validateInOutMoves(session, true);
 
@@ -1500,30 +1417,8 @@ public class SDbIog extends SDbRegistryUser {
     public boolean canSave(SGuiSession session) throws SQLException, Exception {
         boolean result =  validateInOutMoves(session, false);
 
-        /* 27/10/2014 jbarajas remove all traces of control mixtures.
-         *
-        if (result && moIogRegistryC != null) {
-            result = moIogRegistryC.validateInOutMoves(session, false);
-            msQueryResult = moIogRegistryC.msQueryResult;
-        }
-
-        if (result && moIogRegistryD != null) {
-            result = moIogRegistryD.validateInOutMoves(session, false);
-            msQueryResult = moIogRegistryD.msQueryResult;
-        }
-        */
-
         if (result && moIogRegistryB != null) {
-            /* 27/10/2014 jbarajas remove all traces of control mixtures.
-             *
-            if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, new int[] { mnFkIogCategoryId, mnFkIogClassId, mnFkIogTypeId })) {
-                result = moIogRegistryB.validateInOutMoves(session, false);
-            }
-            else {
-            */
             result = moIogRegistryB.validateInOutMoves(session, false);
-            //}
-
             msQueryResult = moIogRegistryB.msQueryResult;
         }
 
@@ -1537,6 +1432,7 @@ public class SDbIog extends SDbRegistryUser {
         registry.setPkIogId(this.getPkIogId());
         registry.setNumber(this.getNumber());
         registry.setDate(this.getDate());
+        registry.setReference(this.getReference());
         registry.setQuantity(this.getQuantity());
         registry.setAuthorized(this.isAuthorized());
         registry.setDeleted(this.isDeleted());

@@ -29,7 +29,9 @@ import som.mod.som.db.SRowStockCardex;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Sergio Flores
+ * 2018-11-22, Sergio Flores:
+ * 1) Adición de referencia y observaciones de movimientos de almacén a vistas y tarjeta auxiliar.
  */
 public class SDialogStockCardex extends JDialog implements ActionListener {
 
@@ -331,7 +333,7 @@ public class SDialogStockCardex extends JDialog implements ActionListener {
             @Override
             public void createGridColumns() {
                 int col = 0;
-                SGridColumnForm[] columns = new SGridColumnForm[23];
+                SGridColumnForm[] columns = new SGridColumnForm[25];
 
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DATE, "Fecha");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_CO, "Sucursal");
@@ -344,6 +346,8 @@ public class SDialogStockCardex extends JDialog implements ActionListener {
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Salidas");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Existencias");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_UNT, "Unidad");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Referencia");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Observaciones");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "Folio docto inv");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DATE, "Fecha docto inv");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "Tipo docto CV");
@@ -391,7 +395,8 @@ public class SDialogStockCardex extends JDialog implements ActionListener {
                     "s.dt, st.name, ad.code AS f_adj, cob.code, ent.code, s.mov_in, s.mov_out, u.code, " + // 15
                     "iog.dt, iogt.code, CONCAT(iogt.code, '-', iog.num) AS f_iog_num, iog_cob.code, iog_ent.code, un.name, iog.ts_usr_ins, ue.name, iog.ts_usr_upd, " + // 24
                     "dpst.code, CONCAT(dps.num_ser, IF(length(dps.num_ser) = 0, '', '-'), dps.num) AS f_dps_num, dps.dt, dps_cob.code, " + // 28
-                    "adjt.code, CONCAT(adj.num_ser, IF(length(adj.num_ser) = 0, '', '-'), adj.num) AS f_adj_num, adj.dt, adj_cob.code, d.code " + // 32
+                    "adjt.code, CONCAT(adj.num_ser, IF(length(adj.num_ser) = 0, '', '-'), adj.num) AS f_adj_num, adj.dt, adj_cob.code, d.code, " + // 32
+                    "iog.ref, COALESCE(note.note, '') AS _note " + // 34
                     "FROM " + SModConsts.TablesMap.get(SModConsts.S_STK) + " AS s " +
                     "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON s.id_unit = u.id_unit " +
                     "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_COB) + " AS cob ON s.id_co = cob.id_co AND s.id_cob = cob.id_cob " +
@@ -405,6 +410,7 @@ public class SDialogStockCardex extends JDialog implements ActionListener {
                     "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_DIV) + " AS d ON iog.fk_div = d.id_div " +
                     "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS un ON iog.fk_usr_ins = un.id_usr " +
                     "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ue ON iog.fk_usr_upd = ue.id_usr " +
+                    "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_IOG_NOTE) + " AS note ON iog.id_iog = note.id_iog AND note.id_note = 1 " +
                     "LEFT OUTER JOIN " + sDatabaseCoExtName + ".trn_dps AS dps ON iog.fk_ext_dps_year_n = dps.id_year AND iog.fk_ext_dps_doc_n = dps.id_doc " +
                     "LEFT OUTER JOIN erp.trnu_tp_dps AS dpst ON dps.fid_ct_dps = dpst.id_ct_dps AND dps.fid_cl_dps = dpst.id_cl_dps AND dps.fid_tp_dps = dpst.id_tp_dps " +
                     "LEFT OUTER JOIN erp.bpsu_bpb AS dps_cob ON dps.fid_cob = dps_cob.id_bpb " +
@@ -439,6 +445,8 @@ public class SDialogStockCardex extends JDialog implements ActionListener {
                 row.setOut(out);
                 row.setStock(stock);
                 row.setUnit(resultSet.getString(15));
+                row.setReference(resultSet.getString("iog.ref"));
+                row.setNote(resultSet.getString("_note"));
                 row.setIogNumber(resultSet.getString(18));
                 row.setIogDate(resultSet.getDate(16));
                 row.setDpsType(resultSet.getString(25));

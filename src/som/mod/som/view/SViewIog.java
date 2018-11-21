@@ -26,7 +26,10 @@ import som.mod.SModSysConsts;
 
 /**
  *
- * @author Néstor Ávalos
+ * @author Néstor Ávalos, Sergio Flores
+ * 2018-11-22, Sergio Flores:
+ * 1) Adición de columna referencia en tabla de movimientos de almacén.
+ * 2) Adición de referencia y observaciones de movimientos de almacén a vistas y tarjeta auxiliar.
  */
 public class SViewIog extends SGridPaneView implements ActionListener {
 
@@ -38,12 +41,6 @@ public class SViewIog extends SGridPaneView implements ActionListener {
     private JButton moButtonOutAdjustment;
     private JButton moButtonOutInventory;
     private JButton moButtonOutTransfer;
-    /* 27/10/2014 jbarajas remove all traces of control mixtures.
-     *
-    private JButton moButtonOutMixingPasive;
-    private JButton moButtonOutMixingActive;
-    private JButton moButtonOutConvertion;
-    */
     private JButton moButtonInRawMaterialAsc;
     private JButton moButtonInRawMaterialRet;
     private JButton moButtonOutRawMaterialAsc;
@@ -84,19 +81,8 @@ public class SViewIog extends SGridPaneView implements ActionListener {
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonOutInventory);
                 moButtonOutTransfer = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_stk_tra.gif")), "Salida traspaso", this);
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonOutTransfer);
-                /* 27/10/2014 jbarajas remove all traces of control mixtures.
-                 *
-                moButtonOutMixingPasive = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_stk_mix_pas.gif")), "Salida traspaso mezcla pasiva", this);
-                getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonOutMixingPasive);
-                moButtonOutMixingActive = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_stk_mix_act.gif")), "Salida traspaso mezcla activa", this);
-                getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonOutMixingActive);
-                moButtonOutConvertion = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_stk_cnv.gif")), "Salida traspaso conversión", this);
-                getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonOutConvertion);
-
-                moButtonOutMixingActive.setEnabled(true);
-                moButtonOutConvertion.setEnabled(true);
-                */
                 break;
+                
             case SModConsts.SX_INV_IN_RM:
                 moButtonOutRawMaterialAsc = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mfg_rm_asd.gif")), "Salida entrega MP", this);
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonOutRawMaterialAsc);
@@ -105,6 +91,7 @@ public class SViewIog extends SGridPaneView implements ActionListener {
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonOutRawMaterialRet);
                 moButtonOutRawMaterialRet.setEnabled(false);
                 break;
+                
             case SModConsts.SX_INV_OUT_RM:
                 moButtonInRawMaterialAsc = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mfg_rm_asd.gif")), "Entrada entrega MP", this);
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonInRawMaterialAsc);
@@ -113,6 +100,7 @@ public class SViewIog extends SGridPaneView implements ActionListener {
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonInRawMaterialRet);
                 moButtonInRawMaterialRet.setEnabled(true);
                 break;
+                
             case SModConsts.SX_INV_IN_FG:
                 moButtonInFinishedGoodAsc = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mfg_fg_asd.gif")), "Entrada entrega PT", this);
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonInFinishedGoodAsc);
@@ -121,6 +109,7 @@ public class SViewIog extends SGridPaneView implements ActionListener {
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonInFinishedGoodRet);
                 moButtonInFinishedGoodRet.setEnabled(false);
                 break;
+                
             case SModConsts.SX_INV_OUT_FG:
                 moButtonOutFinishedGoodAsc = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mfg_fg_asd.gif")), "Salida entrega PT", this);
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonOutFinishedGoodAsc);
@@ -129,6 +118,8 @@ public class SViewIog extends SGridPaneView implements ActionListener {
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonOutFinishedGoodRet);
                 moButtonOutFinishedGoodRet.setEnabled(true);
                 break;
+                
+            default:
         }
     }
 
@@ -207,26 +198,32 @@ public class SViewIog extends SGridPaneView implements ActionListener {
                         SModSysConsts.SS_IOG_TP_IN_PUR_PUR[2] + ", " +
                         SModSysConsts.SS_IOG_TP_OUT_SAL_SAL[2] + ") ";
                 break;
+                
             case SModConsts.SX_INV_IN_RM:
                 sql += "v.fk_iog_ct IN(" + SModSysConsts.SS_IOG_TP_OUT_MFG_RM_ASD[0] + ", " + SModSysConsts.SS_IOG_TP_IN_MFG_RM_ASD[0] + ") AND " +
                        "v.fk_iog_cl IN(" + SModSysConsts.SS_IOG_TP_OUT_MFG_RM_ASD[1] + ", " + SModSysConsts.SS_IOG_TP_IN_MFG_RM_ASD[1] + ") AND " +
                        "v.fk_iog_tp IN(" + SModSysConsts.SS_IOG_TP_OUT_MFG_RM_ASD[2] + ", " + SModSysConsts.SS_IOG_TP_IN_MFG_RM_ASD[2] + ") ";
                 break;
+                
             case SModConsts.SX_INV_OUT_RM:
                 sql += "v.fk_iog_ct IN(" + SModSysConsts.SS_IOG_TP_IN_MFG_RM_RET[0] + ", " + SModSysConsts.SS_IOG_TP_OUT_MFG_RM_RET[0] + ") AND " +
                        "v.fk_iog_cl IN(" + SModSysConsts.SS_IOG_TP_IN_MFG_RM_RET[1] + ", " + SModSysConsts.SS_IOG_TP_OUT_MFG_RM_RET[1] + ") AND " +
                        "v.fk_iog_tp IN(" + SModSysConsts.SS_IOG_TP_IN_MFG_RM_RET[2] + ", " + SModSysConsts.SS_IOG_TP_OUT_MFG_RM_RET[2] + ") ";
                 break;
+                
             case SModConsts.SX_INV_IN_FG:
                 sql += "v.fk_iog_ct IN(" + SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD[0] + ", " + SModSysConsts.SS_IOG_TP_OUT_MFG_FG_ASD[0] + ") AND " +
                        "v.fk_iog_cl IN(" + SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD[1] + ", " + SModSysConsts.SS_IOG_TP_OUT_MFG_FG_ASD[1] + ") AND " +
                        "v.fk_iog_tp IN(" + SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD[2] + ", " + SModSysConsts.SS_IOG_TP_OUT_MFG_FG_ASD[2] + ") ";
                 break;
+                
             case SModConsts.SX_INV_OUT_FG:
                 sql += "v.fk_iog_ct IN(" + SModSysConsts.SS_IOG_TP_OUT_MFG_FG_RET[0] + ", " + SModSysConsts.SS_IOG_TP_IN_MFG_FG_RET[0] + ") AND " +
                        "v.fk_iog_cl IN(" + SModSysConsts.SS_IOG_TP_OUT_MFG_FG_RET[1] + ", " + SModSysConsts.SS_IOG_TP_IN_MFG_FG_RET[1] + ") AND " +
                        "v.fk_iog_tp IN(" + SModSysConsts.SS_IOG_TP_OUT_MFG_FG_RET[2] + ", " + SModSysConsts.SS_IOG_TP_IN_MFG_FG_RET[2] + ") ";
                 break;
+                
+            default:
         }
 
         filter = (Boolean) moFiltersMap.get(SGridConsts.FILTER_DELETED);
@@ -245,7 +242,8 @@ public class SViewIog extends SGridPaneView implements ActionListener {
         msSql = "SELECT v.id_iog AS " + SDbConsts.FIELD_ID + "1, " +
             "v.num AS number, " +
             "v.dt AS " + SDbConsts.FIELD_DATE + ", " +
-            "v.qty AS f_qty, " +
+            "v.ref, " +
+            "v.qty, " +
             "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", " +
             "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", " +
             "v.fk_iog_ct, " +
@@ -290,6 +288,7 @@ public class SViewIog extends SGridPaneView implements ActionListener {
             "u.name AS u_name, " +
             "CONCAT(tp.code, '-', v.num) AS f_num, " +
             "CONCAT(CONCAT(ir.num_ser, (IF(ir.num_ser <> '', '-', '')), ir.num), '; ', ir.dt, '; ', ir.name) AS f_ref, " +
+            "note.note, " +
             "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", " +
             "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + ", " +
             "tp.code AS " + SDbConsts.FIELD_CODE + ", " +
@@ -319,6 +318,8 @@ public class SViewIog extends SGridPaneView implements ActionListener {
             "v.fk_usr_ins = ui.id_usr " +
             "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON " +
             "v.fk_usr_upd = uu.id_usr " +
+            "LEFT OUTER JOIN "+ SModConsts.TablesMap.get(SModConsts.S_IOG_NOTE) + " AS note ON " +
+            "v.id_iog = note.id_iog AND note.id_note = 1 " +
             "LEFT OUTER JOIN "+ SModConsts.TablesMap.get(SModConsts.S_IOG_REF) + " AS ir ON " +
             "v.id_iog = ir.id_iog " +
             (sql.isEmpty() ? "" : "WHERE " + sql) +
@@ -328,7 +329,7 @@ public class SViewIog extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[18];
+        SGridColumnView[] columns = new SGridColumnView[20];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "f_num", "Folio");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, SDbConsts.FIELD_DATE, SGridConsts.COL_TITLE_DATE);
@@ -339,9 +340,11 @@ public class SViewIog extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "adj_code", "Tipo ajuste");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_L, "i_name", "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "i_code", "Ítem código");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "f_qty", "Cantidad");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "v.qty", "Cantidad");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_UNT, "u_code", "Unidad");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "f_ref", "Referencia");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.ref", "Referencia");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "f_ref", "Referencia E/S");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "note.note", "Observaciones");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);

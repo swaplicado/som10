@@ -10,7 +10,10 @@ import sa.lib.grid.SGridRow;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Sergio Flores
+ * 2018-11-22, Sergio Flores:
+ * 1) Adición de columna referencia en tabla de movimientos de almacén.
+ * 2) Adición de referencia y observaciones de movimientos de almacén a vistas y tarjeta auxiliar.
  */
 public class SRowStockCardex implements SGridRow {
 
@@ -25,6 +28,8 @@ public class SRowStockCardex implements SGridRow {
     protected double mdOut;
     protected double mdStock;
     protected String msUnit;
+    protected String msReference;
+    protected String msNote;
     protected Date mtIogDate;
     protected String msIogType;
     protected String msIogNumber;
@@ -55,6 +60,8 @@ public class SRowStockCardex implements SGridRow {
         mdOut = 0;
         mdStock = 0;
         msUnit = "";
+        msReference = "";
+        msNote = "";
         mtIogDate = null;
         msIogType = "";
         msIogNumber = "";
@@ -85,6 +92,8 @@ public class SRowStockCardex implements SGridRow {
     public void setOut(double d) { mdOut = d; }
     public void setStock(double d) { mdStock = d; }
     public void setUnit(String s) { msUnit = s; }
+    public void setReference(String s) { msReference = s; }
+    public void setNote(String s) { msNote = s; }
     public void setIogDate(Date t) { mtIogDate = t; }
     public void setIogType(String s) { msIogType = s; }
     public void setIogNumber(String s) { msIogNumber = s; }
@@ -114,6 +123,8 @@ public class SRowStockCardex implements SGridRow {
     public double getOut() { return mdOut; }
     public double getStock() { return mdStock; }
     public String getUnit() { return msUnit; }
+    public String getReference() { return msReference; }
+    public String getNote() { return msNote; }
     public Date getIogDate() { return mtIogDate; }
     public String getIogType() { return msIogType; }
     public String getIogNumber() { return msIogNumber; }
@@ -206,39 +217,45 @@ public class SRowStockCardex implements SGridRow {
                 value = msUnit;
                 break;
             case 11:
-                value = msIogNumber;
+                value = msReference;
                 break;
             case 12:
-                value = mtIogDate;
+                value = msNote;
                 break;
             case 13:
-                value = msDpsType;
+                value = msIogNumber;
                 break;
             case 14:
-                value = msDpsNumber;
+                value = mtIogDate;
                 break;
             case 15:
-                value = mtDpsDate;
+                value = msDpsType;
                 break;
             case 16:
-                value = msAdjType;
+                value = msDpsNumber;
                 break;
             case 17:
-                value = msAdjNumber;
+                value = mtDpsDate;
                 break;
             case 18:
-                value = mtAdjDate;
+                value = msAdjType;
                 break;
             case 19:
-                value = msUserInsert;
+                value = msAdjNumber;
                 break;
             case 20:
-                value = mtDateUserInsert;
+                value = mtAdjDate;
                 break;
             case 21:
-                value = msUserUpdate;
+                value = msUserInsert;
                 break;
             case 22:
+                value = mtDateUserInsert;
+                break;
+            case 23:
+                value = msUserUpdate;
+                break;
+            case 24:
                 value = mtDateUserUpdate;
                 break;
             default:

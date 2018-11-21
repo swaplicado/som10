@@ -1,0 +1,8 @@
+================================================================================
+2018-11-22, 1.0 056.1
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición de columna referencia en tabla de movimientos de almacén.
+2) Adición de referencia y observaciones de movimientos de almacén a vistas y tarjeta auxiliar.
+================================================================================
+#eof
