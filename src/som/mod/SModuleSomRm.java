@@ -58,6 +58,7 @@ import som.mod.som.view.SViewSeasonRegion;
 import som.mod.som.view.SViewSupraRegion;
 import som.mod.som.view.SViewTicket;
 import som.mod.som.view.SViewTicketTare;
+import som.mod.som.view.SViewTicketsLaboratoryTestFruit;
 import som.mod.som.view.SViewTicketsLog;
 import som.mod.som.view.SViewTicketsSupplierItem;
 import som.mod.som.view.SViewTicketsSupplierItemInputType;
@@ -97,6 +98,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenu mjQa;    // Quality Assurrance
     private JMenuItem mjQaLabTest;
     private JMenuItem mjQaLabTestDet;
+    private JMenuItem mjQaTicketLabTestDetFruit;
     private JMenu mjRep;   // Reports
     private JMenuItem mjRepSeedReceived;
     private JMenuItem mjRepSeedReceivedByIodVal;
@@ -225,12 +227,16 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjQa = new JMenu("Control calidad");
         mjQaLabTest = new JMenuItem("Análisis de laboratorio");
         mjQaLabTestDet = new JMenuItem("Análisis de laboratorio a detalle");
+        mjQaTicketLabTestDetFruit = new JMenuItem("Boletos fruta y análisis de laboratorio");
 
         mjQa.add(mjQaLabTest);
         mjQa.add(mjQaLabTestDet);
+        mjQa.addSeparator();
+        mjQa.add(mjQaTicketLabTestDetFruit);
 
         mjQaLabTest.addActionListener(this);
         mjQaLabTestDet.addActionListener(this);
+        mjQaTicketLabTestDetFruit.addActionListener(this);
 
         mjRep = new JMenu("Reportes");
         mjRepSeedReceived = new JMenuItem("Materia prima recibida...");
@@ -455,10 +461,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.S_LAB:
                 switch (subtype) {
                     case SModSysConsts.SX_LAB_TEST:
-                        view = new SViewLaboratory(miClient, subtype, "Análisis laboratorio");
+                        view = new SViewLaboratory(miClient, subtype, "Análisis lab");
                         break;
                     case SModSysConsts.SX_LAB_TEST_DET:
-                        view = new SViewLaboratory(miClient, subtype, "Análisis laboratorio (detalle)");
+                        view = new SViewLaboratory(miClient, subtype, "Análisis lab (detalle)");
                         break;
                     default:
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -502,6 +508,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.SX_TIC_LOG:
                 view = new SViewTicketsLog(miClient, "Bitácora boletos");
+                break;
+            case SModConsts.SX_TIC_LAB_TEST_FRUIT:
+                view = new SViewTicketsLaboratoryTestFruit(miClient, "Boletos fruta análisis lab");
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -691,6 +700,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjQaLabTestDet) {
                 showView(SModConsts.S_LAB, SModSysConsts.SX_LAB_TEST_DET, null);
+            }
+            else if (menuItem == mjQaTicketLabTestDetFruit) {
+                showView(SModConsts.SX_TIC_LAB_TEST_FRUIT, 0, null);
             }
             else if (menuItem == mjTicManSupplierItem) {
                 showView(SModConsts.SX_TIC_MAN_SUP, SLibConsts.UNDEFINED, null);

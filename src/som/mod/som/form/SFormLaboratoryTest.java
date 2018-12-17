@@ -17,13 +17,17 @@ import sa.lib.gui.SGuiField;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanFieldDecimal;
+import sa.lib.gui.bean.SBeanFieldKey;
+import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
+import som.mod.cfg.db.SDbCompany;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbLaboratoryTest;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Sergio Flores
+ * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  */
 public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements FocusListener {
 
@@ -90,9 +94,34 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
         jPanel20 = new javax.swing.JPanel();
         jlAcidityPercentage = new javax.swing.JLabel();
         moDecAcidityPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jPanel7 = new javax.swing.JPanel();
+        jPanel11 = new javax.swing.JPanel();
+        jPanel22 = new javax.swing.JPanel();
+        jPanel23 = new javax.swing.JPanel();
+        jlFruitClass = new javax.swing.JLabel();
+        moKeyFruitClass = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel24 = new javax.swing.JPanel();
+        jlFruitRipenessDegree = new javax.swing.JLabel();
+        moKeyFruitRipenessDegree = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel21 = new javax.swing.JPanel();
+        jPanel25 = new javax.swing.JPanel();
+        jPanel26 = new javax.swing.JPanel();
+        jlFruitWeightTotal = new javax.swing.JLabel();
+        moDecFruitWeightTotal = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlFruitWeightTotalUnit = new javax.swing.JLabel();
+        jPanel27 = new javax.swing.JPanel();
+        jlFruitWeightPeelPit = new javax.swing.JLabel();
+        moDecFruitWeightPeelPit = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlFruitWeightPeelPitUnit = new javax.swing.JLabel();
+        jPanel28 = new javax.swing.JPanel();
+        jlFruitPulpHumidityPercentage = new javax.swing.JLabel();
+        moDecFruitPulpHumidityPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jPanel29 = new javax.swing.JPanel();
+        jlFruitPulpOilPercentage = new javax.swing.JLabel();
+        moDecFruitPulpOilPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanel1.setLayout(new java.awt.BorderLayout(5, 0));
 
         jPanel5.setLayout(new java.awt.BorderLayout());
 
@@ -100,7 +129,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlImpuritiesPercentage.setText("Impurezas:");
+        jlImpuritiesPercentage.setText("Impurezas (%):");
         jlImpuritiesPercentage.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel12.add(jlImpuritiesPercentage);
         jPanel12.add(moDecImpuritiesPercentage);
@@ -109,7 +138,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
         jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlMoisturePercentage.setText("Humedad:");
+        jlMoisturePercentage.setText("Humedad (%):");
         jlMoisturePercentage.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel13.add(jlMoisturePercentage);
         jPanel13.add(moDecMoisturePercentage);
@@ -153,7 +182,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
         jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlOleicAcidPercentage.setText("Ácido oleico:");
+        jlOleicAcidPercentage.setText("Ácido oleico (%):");
         jlOleicAcidPercentage.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel16.add(jlOleicAcidPercentage);
         jPanel16.add(moDecOleicAcidPercentage);
@@ -162,7 +191,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
         jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlLinoleicAcidPercentage.setText("Ácido linoleico:");
+        jlLinoleicAcidPercentage.setText("Ácido linoleico (%):");
         jlLinoleicAcidPercentage.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel17.add(jlLinoleicAcidPercentage);
         jPanel17.add(moDecLinoleicAcidPercentage);
@@ -171,7 +200,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
         jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlLinolenicAcidPercentage.setText("Ácido linolénico:");
+        jlLinolenicAcidPercentage.setText("Ácido linolénico (%):");
         jlLinolenicAcidPercentage.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel19.add(jlLinolenicAcidPercentage);
         jPanel19.add(moDecLinolenicAcidPercentage);
@@ -180,7 +209,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
         jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlErucicAcidPercentage.setText("Ácido erúcico:");
+        jlErucicAcidPercentage.setText("Ácido erúcico (%):");
         jlErucicAcidPercentage.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel14.add(jlErucicAcidPercentage);
         jPanel14.add(moDecErucicAcidPercentage);
@@ -189,7 +218,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlProteinPercentage.setText("Proteína:");
+        jlProteinPercentage.setText("Proteína (%):");
         jlProteinPercentage.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel18.add(jlProteinPercentage);
         jPanel18.add(moDecProteinPercentage);
@@ -198,7 +227,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
         jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlOilContentPercentage.setText("Aceite:");
+        jlOilContentPercentage.setText("Aceite (%):");
         jlOilContentPercentage.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel15.add(jlOilContentPercentage);
         jPanel15.add(moDecOilContentPercentage);
@@ -207,7 +236,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
         jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlAcidityPercentage.setText("Acidez:");
+        jlAcidityPercentage.setText("Acidez (%):");
         jlAcidityPercentage.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel20.add(jlAcidityPercentage);
         jPanel20.add(moDecAcidityPercentage);
@@ -218,11 +247,99 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
         jPanel1.add(jPanel6, java.awt.BorderLayout.CENTER);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jPanel1, java.awt.BorderLayout.NORTH);
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros fruta:"));
+        jPanel7.setLayout(new java.awt.BorderLayout(5, 0));
+
+        jPanel11.setLayout(new java.awt.BorderLayout());
+
+        jPanel22.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+
+        jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlFruitClass.setText("Clase fruta:*");
+        jlFruitClass.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel23.add(jlFruitClass);
+
+        moKeyFruitClass.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel23.add(moKeyFruitClass);
+
+        jPanel22.add(jPanel23);
+
+        jPanel24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlFruitRipenessDegree.setText("Grado madurez:*");
+        jlFruitRipenessDegree.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel24.add(jlFruitRipenessDegree);
+
+        moKeyFruitRipenessDegree.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel24.add(moKeyFruitRipenessDegree);
+
+        jPanel22.add(jPanel24);
+
+        jPanel11.add(jPanel22, java.awt.BorderLayout.NORTH);
+
+        jPanel7.add(jPanel11, java.awt.BorderLayout.WEST);
+
+        jPanel21.setLayout(new java.awt.BorderLayout());
+
+        jPanel25.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
+
+        jPanel26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlFruitWeightTotal.setText("Peso fruta:");
+        jlFruitWeightTotal.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel26.add(jlFruitWeightTotal);
+        jPanel26.add(moDecFruitWeightTotal);
+
+        jlFruitWeightTotalUnit.setText("g");
+        jlFruitWeightTotalUnit.setPreferredSize(new java.awt.Dimension(35, 23));
+        jPanel26.add(jlFruitWeightTotalUnit);
+
+        jPanel25.add(jPanel26);
+
+        jPanel27.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlFruitWeightPeelPit.setText("Peso cáscara + hueso:");
+        jlFruitWeightPeelPit.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel27.add(jlFruitWeightPeelPit);
+        jPanel27.add(moDecFruitWeightPeelPit);
+
+        jlFruitWeightPeelPitUnit.setText("g");
+        jlFruitWeightPeelPitUnit.setPreferredSize(new java.awt.Dimension(35, 23));
+        jPanel27.add(jlFruitWeightPeelPitUnit);
+
+        jPanel25.add(jPanel27);
+
+        jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlFruitPulpHumidityPercentage.setText("Humedad pulpa (%):");
+        jlFruitPulpHumidityPercentage.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel28.add(jlFruitPulpHumidityPercentage);
+        jPanel28.add(moDecFruitPulpHumidityPercentage);
+
+        jPanel25.add(jPanel28);
+
+        jPanel29.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlFruitPulpOilPercentage.setText("Aceite pulpa (%):");
+        jlFruitPulpOilPercentage.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel29.add(jlFruitPulpOilPercentage);
+        jPanel29.add(moDecFruitPulpOilPercentage);
+
+        jPanel25.add(jPanel29);
+
+        jPanel21.add(jPanel25, java.awt.BorderLayout.NORTH);
+
+        jPanel7.add(jPanel21, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(jPanel7, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
@@ -233,15 +350,33 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
+    private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel22;
+    private javax.swing.JPanel jPanel23;
+    private javax.swing.JPanel jPanel24;
+    private javax.swing.JPanel jPanel25;
+    private javax.swing.JPanel jPanel26;
+    private javax.swing.JPanel jPanel27;
+    private javax.swing.JPanel jPanel28;
+    private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JLabel jlAcidityPercentage;
     private javax.swing.JLabel jlDensity;
     private javax.swing.JLabel jlErucicAcidPercentage;
+    private javax.swing.JLabel jlFruitClass;
+    private javax.swing.JLabel jlFruitPulpHumidityPercentage;
+    private javax.swing.JLabel jlFruitPulpOilPercentage;
+    private javax.swing.JLabel jlFruitRipenessDegree;
+    private javax.swing.JLabel jlFruitWeightPeelPit;
+    private javax.swing.JLabel jlFruitWeightPeelPitUnit;
+    private javax.swing.JLabel jlFruitWeightTotal;
+    private javax.swing.JLabel jlFruitWeightTotalUnit;
     private javax.swing.JLabel jlImpuritiesPercentage;
     private javax.swing.JLabel jlIodineValue;
     private javax.swing.JLabel jlLinoleicAcidPercentage;
@@ -254,6 +389,10 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
     private sa.lib.gui.bean.SBeanFieldDecimal moDecAcidityPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDensity;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecErucicAcidPercentage;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecFruitPulpHumidityPercentage;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecFruitPulpOilPercentage;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecFruitWeightPeelPit;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecFruitWeightTotal;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecImpuritiesPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecIodineValue;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecLinoleicAcidPercentage;
@@ -263,25 +402,33 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
     private sa.lib.gui.bean.SBeanFieldDecimal moDecOleicAcidPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecProteinPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecRefractionIndex;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyFruitClass;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyFruitRipenessDegree;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 490, 300);
+        SGuiUtils.setWindowBounds(this, 720, 450);
 
-        moDecImpuritiesPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlImpuritiesPercentage.getText()), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecImpuritiesPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlImpuritiesPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moDecImpuritiesPercentage.setDecimalFormat(SLibUtils.DecimalFormatPercentage2D);
-        moDecMoisturePercentage.setDecimalSettings(SGuiUtils.getLabelName(jlMoisturePercentage.getText()), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecMoisturePercentage.setDecimalSettings(SGuiUtils.getLabelName(jlMoisturePercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moDecMoisturePercentage.setDecimalFormat(SLibUtils.DecimalFormatPercentage2D);
-        moDecDensity.setDecimalSettings(SGuiUtils.getLabelName(jlDensity.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moDecRefractionIndex.setDecimalSettings(SGuiUtils.getLabelName(jlRefractionIndex.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moDecIodineValue.setDecimalSettings(SGuiUtils.getLabelName(jlIodineValue.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moDecOleicAcidPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlOleicAcidPercentage.getText()), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
-        moDecLinoleicAcidPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlLinoleicAcidPercentage.getText()), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
-        moDecLinolenicAcidPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlLinolenicAcidPercentage.getText()), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
-        moDecErucicAcidPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlErucicAcidPercentage.getText()), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
-        moDecProteinPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlProteinPercentage.getText()), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
-        moDecOilContentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlOilContentPercentage.getText()), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
-        moDecAcidityPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlAcidityPercentage.getText()), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecDensity.setDecimalSettings(SGuiUtils.getLabelName(jlDensity), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecRefractionIndex.setDecimalSettings(SGuiUtils.getLabelName(jlRefractionIndex), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecIodineValue.setDecimalSettings(SGuiUtils.getLabelName(jlIodineValue), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecOleicAcidPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlOleicAcidPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecLinoleicAcidPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlLinoleicAcidPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecLinolenicAcidPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlLinolenicAcidPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecErucicAcidPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlErucicAcidPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecProteinPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlProteinPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecOilContentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlOilContentPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecAcidityPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlAcidityPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moKeyFruitClass.setKeySettings(miClient, SGuiUtils.getLabelName(jlFruitClass), true);
+        moKeyFruitRipenessDegree.setKeySettings(miClient, SGuiUtils.getLabelName(jlFruitRipenessDegree), true);
+        moDecFruitWeightTotal.setDecimalSettings(SGuiUtils.getLabelName(jlFruitWeightTotal), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecFruitWeightPeelPit.setDecimalSettings(SGuiUtils.getLabelName(jlFruitWeightPeelPit), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecFruitPulpHumidityPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlFruitPulpHumidityPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecFruitPulpOilPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlFruitPulpOilPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
 
         moFields.addField(moDecImpuritiesPercentage);
         moFields.addField(moDecMoisturePercentage);
@@ -295,6 +442,12 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
         moFields.addField(moDecProteinPercentage);
         moFields.addField(moDecOilContentPercentage);
         moFields.addField(moDecAcidityPercentage);
+        moFields.addField(moKeyFruitClass);
+        moFields.addField(moKeyFruitRipenessDegree);
+        moFields.addField(moDecFruitWeightTotal);
+        moFields.addField(moDecFruitWeightPeelPit);
+        moFields.addField(moDecFruitPulpHumidityPercentage);
+        moFields.addField(moDecFruitPulpOilPercentage);
 
         moFields.setFormButton(jbSave);
     }
@@ -332,6 +485,12 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
         moDecProteinPercentage.setEditable(moParamsItem.isProteinPercentage());
         moDecOilContentPercentage.setEditable(moParamsItem.isOilContentPercentage());
         moDecAcidityPercentage.setEditable(moParamsItem.isAcidityPercentage());
+        moKeyFruitClass.setEditable(moParamsItem.isFruit());
+        moKeyFruitRipenessDegree.setEditable(moParamsItem.isFruit());
+        moDecFruitWeightTotal.setEditable(moParamsItem.isFruit());
+        moDecFruitWeightPeelPit.setEditable(moParamsItem.isFruit());
+        moDecFruitPulpHumidityPercentage.setEditable(moParamsItem.isFruit());
+        moDecFruitPulpOilPercentage.setEditable(moParamsItem.isFruit());
     }
 
     @Override
@@ -348,7 +507,9 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
 
     @Override
     public void reloadCatalogues() {
-
+        SDbCompany company = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany();
+        company.populateFruitOptions(SDbCompany.FRUIT_CLASS, moKeyFruitClass);
+        company.populateFruitOptions(SDbCompany.FRUIT_RIPENESS_DEGREE, moKeyFruitRipenessDegree);
     }
 
     @Override
@@ -368,7 +529,9 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
         else {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
         }
-
+        
+        SDbCompany company = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany();
+        
         moDecImpuritiesPercentage.setValue(moRegistry.getImpuritiesPercentage());
         moDecMoisturePercentage.setValue(moRegistry.getMoisturePercentage());
         moDecDensity.setValue(moRegistry.getDensity());
@@ -381,6 +544,12 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
         moDecProteinPercentage.setValue(moRegistry.getProteinPercentage());
         moDecOilContentPercentage.setValue(moRegistry.getOilContentPercentage());
         moDecAcidityPercentage.setValue(moRegistry.getAcidityPercentage());
+        moKeyFruitClass.setValue(new int[] { company.getFruitOptionId(SDbCompany.FRUIT_CLASS, moRegistry.getFruitClass()) });
+        moKeyFruitRipenessDegree.setValue(new int[] { company.getFruitOptionId(SDbCompany.FRUIT_RIPENESS_DEGREE, moRegistry.getFruitRipenessDegree()) });
+        moDecFruitWeightTotal.setValue(moRegistry.getFruitWeightTotal());
+        moDecFruitWeightPeelPit.setValue(moRegistry.getFruitWeightPeelPit());
+        moDecFruitPulpHumidityPercentage.setValue(moRegistry.getFruitPulpHumidityPercentage());
+        moDecFruitPulpOilPercentage.setValue(moRegistry.getFruitPulpOilPercentage());
 
         setFormEditable(true);
         setEnableRequired();
@@ -395,6 +564,8 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
         if (registry.isRegistryNew()) {
         }
 
+        SDbCompany company = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany();
+        
         registry.setImpuritiesPercentage(moDecImpuritiesPercentage.getValue());
         registry.setMoisturePercentage(moDecMoisturePercentage.getValue());
         registry.setDensity(moDecDensity.getValue());
@@ -407,6 +578,12 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
         registry.setProteinPercentage(moDecProteinPercentage.getValue());
         registry.setOilContentPercentage(moDecOilContentPercentage.getValue());
         registry.setAcidityPercentage(moDecAcidityPercentage.getValue());
+        registry.setFruitClass(moKeyFruitClass.getSelectedIndex() <= 0 ? "" : company.getFruitOption(SDbCompany.FRUIT_CLASS, moKeyFruitClass.getValue()[0]));
+        registry.setFruitRipenessDegree(moKeyFruitRipenessDegree.getSelectedIndex() <= 0 ? "" : company.getFruitOption(SDbCompany.FRUIT_RIPENESS_DEGREE, moKeyFruitRipenessDegree.getValue()[0]));
+        registry.setFruitWeightTotal(moDecFruitWeightTotal.getValue());
+        registry.setFruitWeightPeelPit(moDecFruitWeightPeelPit.getValue());
+        registry.setFruitPulpHumidityPercentage(moDecFruitPulpHumidityPercentage.getValue());
+        registry.setFruitPulpOilPercentage(moDecFruitPulpOilPercentage.getValue());
 
         return registry;
     }
@@ -417,7 +594,11 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Fo
         SGuiValidation validation = moFields.validateFields();
 
         for (SGuiField field : moFields.getFields()) {
-            if (field.isEditable() && (Double) field.getValue() > 0d) {
+            if (field instanceof SBeanFieldDecimal && field.isEditable() && (Double) field.getValue() > 0) {
+                isEmpy = false;
+                break;
+            }
+            else if (field instanceof SBeanFieldKey && field.isEnabled() && ((SBeanFieldKey) field).getSelectedIndex() > 0) {
                 isEmpy = false;
                 break;
             }

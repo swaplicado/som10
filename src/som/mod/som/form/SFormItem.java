@@ -32,6 +32,7 @@ import som.mod.som.db.SSomUtils;
 /**
  *
  * @author Juan Barajas, Sergio Flores, Alfredo Pérez
+ * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  */
 public class SFormItem extends SBeanForm implements ItemListener {
 
@@ -151,6 +152,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel20 = new javax.swing.JPanel();
         moBoolImpuritiesPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
         moBoolOleicAcidPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
+        moBoolFruit = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel35 = new javax.swing.JPanel();
         moBoolMoisturePercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
         moBoolLinoleicAcidPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
@@ -195,6 +197,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel23 = new javax.swing.JPanel();
         jlRevueltaItemId = new javax.swing.JLabel();
         moTextRevueltaItemId = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel8 = new javax.swing.JLabel();
         jPanel42 = new javax.swing.JPanel();
         moBoolPrintInputType = new sa.lib.gui.bean.SBeanFieldBoolean();
 
@@ -274,8 +277,8 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moTextNameShort.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel43.add(moTextNameShort);
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
-        jLabel7.setText("(para notificaciones mail)");
+        jLabel7.setForeground(java.awt.Color.gray);
+        jLabel7.setText("para notificaciones mail");
         jLabel7.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel43.add(jLabel7);
 
@@ -529,31 +532,35 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel30.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolLaboratory.setText("Aplica análisis de laboratorio");
-        moBoolLaboratory.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolLaboratory.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel30.add(moBoolLaboratory);
 
         jPanel18.add(jPanel30);
 
         jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolImpuritiesPercentage.setText("Aplica porcentaje impurezas");
-        moBoolImpuritiesPercentage.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolImpuritiesPercentage.setText("Aplica impurezas (%)");
+        moBoolImpuritiesPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel20.add(moBoolImpuritiesPercentage);
 
-        moBoolOleicAcidPercentage.setText("Aplica porcentaje ácido oleico");
-        moBoolOleicAcidPercentage.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolOleicAcidPercentage.setText("Aplica ácido oleico (%)");
+        moBoolOleicAcidPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel20.add(moBoolOleicAcidPercentage);
+
+        moBoolFruit.setText("Aplican parámetros fruta");
+        moBoolFruit.setPreferredSize(new java.awt.Dimension(175, 23));
+        jPanel20.add(moBoolFruit);
 
         jPanel18.add(jPanel20);
 
         jPanel35.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolMoisturePercentage.setText("Aplica porcentaje humedad");
-        moBoolMoisturePercentage.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolMoisturePercentage.setText("Aplica humedad (%)");
+        moBoolMoisturePercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel35.add(moBoolMoisturePercentage);
 
-        moBoolLinoleicAcidPercentage.setText("Aplica porcentaje ácido linoleico");
-        moBoolLinoleicAcidPercentage.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolLinoleicAcidPercentage.setText("Aplica ácido linoleico (%)");
+        moBoolLinoleicAcidPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel35.add(moBoolLinoleicAcidPercentage);
 
         jPanel18.add(jPanel35);
@@ -561,11 +568,11 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel36.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolDensity.setText("Aplica densidad");
-        moBoolDensity.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolDensity.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel36.add(moBoolDensity);
 
-        moBoolLinolenicAcidPercentage.setText("Aplica porcentaje ácido linolénico");
-        moBoolLinolenicAcidPercentage.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolLinolenicAcidPercentage.setText("Aplica ácido linolénico (%)");
+        moBoolLinolenicAcidPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel36.add(moBoolLinolenicAcidPercentage);
 
         jPanel18.add(jPanel36);
@@ -573,7 +580,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel37.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolRefractionIndex.setText("Aplica índice refracción (IR)");
-        moBoolRefractionIndex.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolRefractionIndex.setPreferredSize(new java.awt.Dimension(175, 23));
         moBoolRefractionIndex.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 moBoolRefractionIndexActionPerformed(evt);
@@ -581,8 +588,8 @@ public class SFormItem extends SBeanForm implements ItemListener {
         });
         jPanel37.add(moBoolRefractionIndex);
 
-        moBoolErucicAcidPercentage.setText("Aplica porcentaje ácido erúcico");
-        moBoolErucicAcidPercentage.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolErucicAcidPercentage.setText("Aplica ácido erúcico (%)");
+        moBoolErucicAcidPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel37.add(moBoolErucicAcidPercentage);
 
         jPanel18.add(jPanel37);
@@ -590,33 +597,33 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel39.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         moBoolIodineValue.setText("Aplica valor yodo (VI)");
-        moBoolIodineValue.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolIodineValue.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel39.add(moBoolIodineValue);
 
-        moBoolProteinPercentage.setText("Aplica porcentaje proteína");
-        moBoolProteinPercentage.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolProteinPercentage.setText("Aplica proteína (%)");
+        moBoolProteinPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel39.add(moBoolProteinPercentage);
 
         jPanel18.add(jPanel39);
 
         jPanel48.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jLabel3.setPreferredSize(new java.awt.Dimension(200, 23));
+        jLabel3.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel48.add(jLabel3);
 
-        moBoolOilContentPercentage.setText("Aplica porcentaje aceite");
-        moBoolOilContentPercentage.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolOilContentPercentage.setText("Aplica aceite (%)");
+        moBoolOilContentPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel48.add(moBoolOilContentPercentage);
 
         jPanel18.add(jPanel48);
 
         jPanel51.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jLabel4.setPreferredSize(new java.awt.Dimension(200, 23));
+        jLabel4.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel51.add(jLabel4);
 
-        moBoolAcidityPercentage.setText("Aplica porcentaje acidez");
-        moBoolAcidityPercentage.setPreferredSize(new java.awt.Dimension(200, 23));
+        moBoolAcidityPercentage.setText("Aplica acidez (%)");
+        moBoolAcidityPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel51.add(moBoolAcidityPercentage);
 
         jPanel18.add(jPanel51);
@@ -670,8 +677,8 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moTextAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel34.add(moTextAutoMailNotificationBoxes);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
-        jLabel1.setText("(separar con \";\")");
+        jLabel1.setForeground(java.awt.Color.gray);
+        jLabel1.setText("separar con ';'");
         jLabel1.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel34.add(jLabel1);
 
@@ -694,8 +701,8 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moTextUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel47.add(moTextUserMailNotificationBoxes);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
-        jLabel2.setText("(separar con \";\")");
+        jLabel2.setForeground(java.awt.Color.gray);
+        jLabel2.setText("separar con ';'");
         jLabel2.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel47.add(jLabel2);
 
@@ -715,6 +722,11 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jlRevueltaItemId.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel23.add(jlRevueltaItemId);
         jPanel23.add(moTextRevueltaItemId);
+
+        jLabel8.setForeground(java.awt.Color.gray);
+        jLabel8.setText("clave ítem en BD Revuelta");
+        jLabel8.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel23.add(jLabel8);
 
         jPanel18.add(jPanel23);
 
@@ -759,6 +771,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -845,6 +858,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolAutoMailNotification;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolDensity;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolErucicAcidPercentage;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolFruit;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolImpuritiesPercentage;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolIodineValue;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolLaboratory;
@@ -940,6 +954,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolProteinPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolProteinPercentage.getText()), false);
         moBoolOilContentPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolOilContentPercentage.getText()), false);
         moBoolAcidityPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolAcidityPercentage.getText()), false);
+        moBoolFruit.setBooleanSettings(SGuiUtils.getLabelName(moBoolFruit.getText()), false);
         moBoolPackage.setBooleanSettings(SGuiUtils.getLabelName(moBoolPackage.getText()), false);
         moDecPackageWeight.setDecimalSettings(SGuiUtils.getLabelName(jlPackageWeight), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moTextPackageName.setTextSettings(SGuiUtils.getLabelName(jlPackageName), 35);
@@ -994,6 +1009,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moFields.addField(moBoolProteinPercentage);
         moFields.addField(moBoolOilContentPercentage);
         moFields.addField(moBoolAcidityPercentage);
+        moFields.addField(moBoolFruit);
         moFields.addField(moBoolPackage);
         moFields.addField(moDecPackageWeight);
         moFields.addField(moTextPackageName);
@@ -1103,6 +1119,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolProteinPercentage.setEnabled(moBoolLaboratory.getValue());
         moBoolOilContentPercentage.setEnabled(moBoolLaboratory.getValue());
         moBoolAcidityPercentage.setEnabled(moBoolLaboratory.getValue());
+        moBoolFruit.setEnabled(moBoolLaboratory.getValue());
     }
 
     private void itemStateBoolPackage() {
@@ -1198,6 +1215,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolProteinPercentage.setValue(moRegistry.isProteinPercentage());
         moBoolOilContentPercentage.setValue(moRegistry.isOilContentPercentage());
         moBoolAcidityPercentage.setValue(moRegistry.isAcidityPercentage());
+        moBoolFruit.setValue(moRegistry.isFruit());
         moBoolPackage.setValue(moRegistry.isPackage());
         moBoolLaboratory.setValue(moRegistry.isLaboratory());
         moKeyItemType.setValue(new int[] { moRegistry.getFkItemTypeId() });
@@ -1296,11 +1314,12 @@ public class SFormItem extends SBeanForm implements ItemListener {
             registry.setMoisturePercentage(moBoolMoisturePercentage.getValue());
             registry.setProteinPercentage(moBoolProteinPercentage.getValue());
             registry.setOilContentPercentage(moBoolOilContentPercentage.getValue());
-            registry.setAcidityPercentage(moBoolAcidityPercentage.getValue());
             registry.setOleicAcidPercentage(moBoolOleicAcidPercentage.getValue());
             registry.setLinoleicAcidPercentage(moBoolLinoleicAcidPercentage.getValue());
             registry.setLinolenicAcidPercentage(moBoolLinolenicAcidPercentage.getValue());
             registry.setErucicAcidPercentage(moBoolErucicAcidPercentage.getValue());
+            registry.setAcidityPercentage(moBoolAcidityPercentage.getValue());
+            registry.setFruit(moBoolFruit.getValue());
         }
         else {
             registry.setDensity(false);
@@ -1310,11 +1329,12 @@ public class SFormItem extends SBeanForm implements ItemListener {
             registry.setMoisturePercentage(false);
             registry.setProteinPercentage(false);
             registry.setOilContentPercentage(false);
-            registry.setAcidityPercentage(false);
             registry.setOleicAcidPercentage(false);
             registry.setLinoleicAcidPercentage(false);
             registry.setLinolenicAcidPercentage(false);
             registry.setErucicAcidPercentage(false);
+            registry.setAcidityPercentage(false);
+            registry.setFruit(false);
         }
 
         registry.setPrintInputType(moBoolPrintInputType.getValue());

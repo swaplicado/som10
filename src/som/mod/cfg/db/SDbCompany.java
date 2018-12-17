@@ -9,20 +9,28 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Vector;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiConfigCompany;
+import sa.lib.gui.SGuiItem;
 import sa.lib.gui.SGuiSession;
+import sa.lib.gui.bean.SBeanFieldKey;
 import som.mod.SModConsts;
 
 /**
  *
  * @author Sergio Flores, Alfredo Pérez
+ * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  */
 public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
+    
+    public static final int FRUIT_CLASS = 1;
+    public static final int FRUIT_RIPENESS_DEGREE = 2;
 
     protected int mnPkCompanyId;
     protected String msCode;
@@ -42,12 +50,13 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     protected boolean mbMailNotificationConfigAuth;
     protected String msCurrencyCode;
     protected double mdMaximumStockDifferenceKg;
-
     protected String msRevueltaId;
     protected String msRevueltaOdbc;
     protected String msRevueltaPath;
     protected String msRevueltaHost;
     protected String msRevueltaPort;
+    protected String msFruitClasses;
+    protected String msFruitRipenessDegrees;
     protected int mnVersion;
     protected Date mtVersionTs;
     /*
@@ -69,12 +78,121 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     */
 
     protected Vector<SDbCompanyBranch> mvChildBranches;
+    
+    protected HashMap<Integer, String> moFruitClassesMap;
+    protected HashMap<Integer, String> moFruitRipenessDegreesMap;
 
     public SDbCompany() {
         super(SModConsts.CU_CO);
-        mvChildBranches = new Vector<SDbCompanyBranch>();
+        mvChildBranches = new Vector<>();
+        moFruitClassesMap = new HashMap<>();
+        moFruitRipenessDegreesMap = new HashMap<>();
         initRegistry();
     }
+    
+    /*
+     * Fruit options methods
+     */
+    
+    private void explodeOptions(String implodedOptions, HashMap<Integer, String> map) {
+        String[] options = SLibUtils.textExplode(implodedOptions, ";");
+        for (int index = 0; index < options.length; index++) {
+            map.put(index + 1, options[index]);
+        }
+    }
+    
+    private void prepareOptions() {
+        explodeOptions(msFruitClasses, moFruitClassesMap);
+        explodeOptions(msFruitRipenessDegrees, moFruitRipenessDegreesMap);
+    }
+    
+    /**
+     * Gets option for supplied option ID.
+     * @param fruitOption FRUIT constant.
+     * @param optionId ID of desired option.
+     * @return Option.
+     */
+    public String getFruitOption(int fruitOption, int optionId) {
+        String option = "";
+        
+        switch (fruitOption) {
+            case FRUIT_CLASS:
+                option = moFruitClassesMap.get(optionId);
+                break;
+            case FRUIT_RIPENESS_DEGREE:
+                option = moFruitRipenessDegreesMap.get(optionId);
+                break;
+            default:
+        }
+        
+        return option;
+    }
+
+    private int getOptionId(HashMap<Integer, String> map, String option) {
+        int id = 0;
+        
+        for (Integer key : map.keySet()) {
+            if (map.get(key).equals(option)) {
+                id = key;
+                break;
+            }
+        }
+        
+        return id;
+    }
+    
+    /**
+     * Gets option ID for supplied option.
+     * @param fruitOption FRUIT constant.
+     * @param option Desired option.
+     * @return Option.
+     */
+    public int getFruitOptionId(int fruitOption, String option) {
+        int id = 0;
+        
+        switch (fruitOption) {
+            case FRUIT_CLASS:
+                id = getOptionId(moFruitClassesMap, option);
+                break;
+            case FRUIT_RIPENESS_DEGREE:
+                id = getOptionId(moFruitRipenessDegreesMap, option);
+                break;
+            default:
+        }
+        
+        return id;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void populateOptions(HashMap<Integer, String> map, SBeanFieldKey fieldKey) {
+        fieldKey.removeAllItems();
+        fieldKey.addItem(new SGuiItem("- " + SUtilConsts.TXT_SELECT + " -"));
+        
+        for (Integer key : map.keySet()) {
+            fieldKey.addItem(new SGuiItem(new int[] { key }, map.get(key)));
+        }
+    }
+    
+    /**
+     * Populates Key Bean with desired fruit options.
+     * @param fruitOption FRUIT constant.
+     * @param fieldKey Key Bean to populate with options.
+     */
+    public void populateFruitOptions(int fruitOption, SBeanFieldKey fieldKey) {
+        switch (fruitOption) {
+            case FRUIT_CLASS:
+                populateOptions(moFruitClassesMap, fieldKey);
+                break;
+            case FRUIT_RIPENESS_DEGREE:
+                populateOptions(moFruitRipenessDegreesMap, fieldKey);
+                break;
+            default:
+        }
+    }
+
+    /*
+     * Public methods
+     */
 
     public void setPkCompanyId(int n) { mnPkCompanyId = n; }
     public void setCode(String s) { msCode = s; }
@@ -99,6 +217,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public void setRevueltaPath(String s) { msRevueltaPath = s; }
     public void setRevueltaHost(String s) { msRevueltaHost = s; }
     public void setRevueltaPort(String s) { msRevueltaPort = s; }
+    public void setFruitClasses(String s) { msFruitClasses = s; }
+    public void setFruitRipenessDegrees(String s) { msFruitRipenessDegrees = s; }
     public void setVersion(int n) { mnVersion = n; }
     public void setVersionTs(Date t) { mtVersionTs = t; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -138,6 +258,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public String getRevueltaPath() { return msRevueltaPath; }
     public String getRevueltaHost() { return msRevueltaHost; }
     public String getRevueltaPort() { return msRevueltaPort; }
+    public String getFruitClasses() { return msFruitClasses; }
+    public String getFruitRipenessDegrees() { return msFruitRipenessDegrees; }
     public int getVersion() { return mnVersion; }
     public Date getVersionTs() { return mtVersionTs; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -193,6 +315,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         msRevueltaPath = "";
         msRevueltaHost = "";
         msRevueltaPort = "";
+        msFruitClasses = "";
+        msFruitRipenessDegrees = "";
         mnVersion = 0;
         mtVersionTs = null;
         mbUpdatable = false;
@@ -210,6 +334,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         mtTsUserUpdate = null;
 
         mvChildBranches.clear();
+        moFruitClassesMap.clear();
+        moFruitRipenessDegreesMap.clear();
     }
 
     @Override
@@ -278,6 +404,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
             msRevueltaPath = resultSet.getString("rev_path");
             msRevueltaHost = resultSet.getString("rev_host");
             msRevueltaPort = resultSet.getString("rev_port");
+            msFruitClasses = resultSet.getString("fruit_class");
+            msFruitRipenessDegrees = resultSet.getString("fruit_ripe");
             mnVersion = resultSet.getInt("ver");
             mtVersionTs = resultSet.getTimestamp("ver_ts");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -305,9 +433,13 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                 child.read(session, new int[] { mnPkCompanyId, resultSet.getInt(1) });
                 mvChildBranches.add(child);
             }
+            
+            // Prepare fruit options:
+
+            prepareOptions();
 
             // Finish registry reading:
-
+            
             mbRegistryNew = false;
         }
 
@@ -354,6 +486,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "'" + msRevueltaPath + "', " + 
                     "'" + msRevueltaHost + "', " + 
                     "'" + msRevueltaPort + "', " + 
+                    "'" + msFruitClasses + "', " + 
+                    "'" + msFruitRipenessDegrees + "', " + 
                     mnVersion + ", " +
                     "NOW()" + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -398,6 +532,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "rev_path = '" + msRevueltaPath + "', " +
                     "rev_path = '" + msRevueltaHost + "', " +
                     "rev_path = '" + msRevueltaPort + "', " +
+                    "fruit_class = '" + msFruitClasses + "', " +
+                    "fruit_ripe = '" + msFruitRipenessDegrees + "', " +
                     //"ver = " + mnVersion + ", " +
                     //"ver_ts = " + "NOW()" + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -460,6 +596,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         registry.setRevueltaPath(this.getRevueltaPath());
         registry.setRevueltaHost(this.getRevueltaHost());
         registry.setRevueltaPort(this.getRevueltaPort());
+        registry.setFruitClasses(this.getFruitClasses());
+        registry.setFruitRipenessDegrees(this.getFruitRipenessDegrees());
         registry.setVersion(this.getVersion());
         registry.setVersionTs(this.getVersionTs());
         registry.setUpdatable(this.isUpdatable());

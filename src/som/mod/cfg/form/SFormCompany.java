@@ -19,6 +19,7 @@ import som.mod.som.db.SSomConsts;
 /**
  *
  * @author Sergio Flores, Alfredo Pérez
+ * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  */
 public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
@@ -97,14 +98,29 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         jPanel11 = new javax.swing.JPanel();
         jlExternalCoId = new javax.swing.JLabel();
         moIntExternalCoId = new sa.lib.gui.bean.SBeanFieldInteger();
-        jPanel20 = new javax.swing.JPanel();
+        jPanel15 = new javax.swing.JPanel();
         jPanel16 = new javax.swing.JPanel();
         jPanel21 = new javax.swing.JPanel();
         jlRevueltaId = new javax.swing.JLabel();
         moTextRevueltaId = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel2 = new javax.swing.JLabel();
         jPanel22 = new javax.swing.JPanel();
         jlRevueltaOdbc = new javax.swing.JLabel();
         moTextRevueltaOdbc = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel42 = new javax.swing.JPanel();
+        jlRevueltaPath = new javax.swing.JLabel();
+        moTextRevueltaPath = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel43 = new javax.swing.JPanel();
+        jlRevueltaHost = new javax.swing.JLabel();
+        moTextRevueltaHost = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel5 = new javax.swing.JLabel();
+        jPanel44 = new javax.swing.JPanel();
+        jlRevueltaPort = new javax.swing.JLabel();
+        moTextRevueltaPort = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel6 = new javax.swing.JLabel();
+        jPanel20 = new javax.swing.JPanel();
         jPanel28 = new javax.swing.JPanel();
         jPanel29 = new javax.swing.JPanel();
         jlMailNotificationConfigProtocol = new javax.swing.JLabel();
@@ -125,6 +141,17 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         moBoolMailNotificationConfigStartTls = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel37 = new javax.swing.JPanel();
         moBoolMailNotificationConfigAuth = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel38 = new javax.swing.JPanel();
+        jPanel39 = new javax.swing.JPanel();
+        jPanel40 = new javax.swing.JPanel();
+        jlFruitClasses = new javax.swing.JLabel();
+        moTextFruitClasses = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel41 = new javax.swing.JPanel();
+        jlFruitRipenessDegrees = new javax.swing.JLabel();
+        moTextFruitRipenessDegrees = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel7 = new javax.swing.JLabel();
+        jPanel45 = new javax.swing.JPanel();
 
         jPanel1.setLayout(new java.awt.BorderLayout(0, 5));
 
@@ -135,8 +162,8 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlCode.setText("Código:*");
-        jlCode.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlCode.setText("Código empresa:*");
+        jlCode.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel4.add(jlCode);
 
         moTextCode.setText("sBeanFieldText1");
@@ -146,8 +173,8 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlName.setText("Nombre:*");
-        jlName.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlName.setText("Nombre empresa:*");
+        jlName.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel5.add(jlName);
 
         moTextName.setText("sBeanFieldText1");
@@ -159,11 +186,11 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCurrencyCode.setText("Código moneda:*");
-        jlCurrencyCode.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlCurrencyCode.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel17.add(jlCurrencyCode);
 
         moTextCurrencyCode.setText("sBeanFieldText1");
-        moTextCurrencyCode.setPreferredSize(new java.awt.Dimension(50, 23));
+        moTextCurrencyCode.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel17.add(moTextCurrencyCode);
 
         jPanel2.add(jPanel17);
@@ -171,7 +198,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         jPanel27.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlMaximumStockDifferenceKg.setText("Máx. dif. inv. físico:");
-        jlMaximumStockDifferenceKg.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlMaximumStockDifferenceKg.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel27.add(jlMaximumStockDifferenceKg);
         jPanel27.add(moDecMaximumStockDifferenceKg);
 
@@ -194,7 +221,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         jtfVersion.setEditable(false);
         jtfVersion.setText("jTextField1");
         jtfVersion.setFocusable(false);
-        jtfVersion.setPreferredSize(new java.awt.Dimension(50, 23));
+        jtfVersion.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel25.add(jtfVersion);
 
         jPanel24.add(jPanel25);
@@ -243,16 +270,16 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jPanel18.setLayout(new java.awt.GridLayout(1, 2, 0, 5));
 
-        jPanel19.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros de conexión con sistema externo:"));
         jPanel19.setLayout(new java.awt.BorderLayout());
 
-        jPanel13.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
+        jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder(" Parámetros de conexión con sistema externo:"));
+        jPanel13.setLayout(new java.awt.GridLayout(7, 1, 0, 5));
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlExternalHost.setForeground(new java.awt.Color(0, 102, 102));
         jlExternalHost.setText("Host:*");
-        jlExternalHost.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlExternalHost.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel6.add(jlExternalHost);
 
         moTextExternalHost.setText("sBeanFieldText1");
@@ -265,10 +292,11 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jlExternalPort.setForeground(new java.awt.Color(0, 102, 102));
         jlExternalPort.setText("Puerto:*");
-        jlExternalPort.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlExternalPort.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel7.add(jlExternalPort);
 
         moTextExternalPort.setText("sBeanFieldText1");
+        moTextExternalPort.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel7.add(moTextExternalPort);
 
         jPanel13.add(jPanel7);
@@ -277,7 +305,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jlExternalUser.setForeground(new java.awt.Color(0, 102, 102));
         jlExternalUser.setText("Usuario:*");
-        jlExternalUser.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlExternalUser.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel8.add(jlExternalUser);
 
         moTextExternalUser.setText("sBeanFieldText1");
@@ -290,7 +318,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jlExternalPassword.setForeground(new java.awt.Color(0, 102, 102));
         jlExternalPassword.setText("Contraseña:*");
-        jlExternalPassword.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlExternalPassword.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel9.add(jlExternalPassword);
 
         moPswdExternalPassword.setText("sBeanFieldPassword1");
@@ -303,7 +331,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jlExternalDatabase.setForeground(new java.awt.Color(0, 102, 102));
         jlExternalDatabase.setText("BD ERP:*");
-        jlExternalDatabase.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlExternalDatabase.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel10.add(jlExternalDatabase);
 
         moTextExternalDatabase.setText("sBeanFieldText1");
@@ -316,7 +344,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jlExternalDatabaseCo.setForeground(new java.awt.Color(0, 102, 102));
         jlExternalDatabaseCo.setText("BD empresa:*");
-        jlExternalDatabaseCo.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlExternalDatabaseCo.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel14.add(jlExternalDatabaseCo);
 
         moTextExternalDatabaseCo.setText("sBeanFieldText1");
@@ -328,20 +356,20 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlExternalCoId.setText("ID empresa:*");
-        jlExternalCoId.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlExternalCoId.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel11.add(jlExternalCoId);
+
+        moIntExternalCoId.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel11.add(moIntExternalCoId);
 
         jPanel13.add(jPanel11);
 
         jPanel19.add(jPanel13, java.awt.BorderLayout.NORTH);
 
-        jPanel18.add(jPanel19);
+        jPanel15.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros de conexión con sistema Revuelta:"));
+        jPanel15.setLayout(new java.awt.BorderLayout());
 
-        jPanel20.setLayout(new java.awt.BorderLayout());
-
-        jPanel16.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros de conexión con sistema Revuelta:"));
-        jPanel16.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+        jPanel16.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -351,8 +379,13 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         jPanel21.add(jlRevueltaId);
 
         moTextRevueltaId.setText("sBeanFieldText1");
-        moTextRevueltaId.setPreferredSize(new java.awt.Dimension(50, 23));
+        moTextRevueltaId.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel21.add(moTextRevueltaId);
+
+        jLabel2.setForeground(java.awt.Color.gray);
+        jLabel2.setText("ID empresa en BD Revuelta");
+        jLabel2.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel21.add(jLabel2);
 
         jPanel16.add(jPanel21);
 
@@ -364,11 +397,77 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         jPanel22.add(jlRevueltaOdbc);
 
         moTextRevueltaOdbc.setText("sBeanFieldText1");
+        moTextRevueltaOdbc.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel22.add(moTextRevueltaOdbc);
+
+        jLabel1.setForeground(java.awt.Color.gray);
+        jLabel1.setText("para JDBC driver (obsoleto)");
+        jLabel1.setPreferredSize(new java.awt.Dimension(195, 23));
+        jPanel22.add(jLabel1);
 
         jPanel16.add(jPanel22);
 
-        jPanel20.add(jPanel16, java.awt.BorderLayout.NORTH);
+        jPanel42.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlRevueltaPath.setForeground(new java.awt.Color(0, 102, 102));
+        jlRevueltaPath.setText("Ruta BD:*");
+        jlRevueltaPath.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel42.add(jlRevueltaPath);
+
+        moTextRevueltaPath.setText("sBeanFieldText1");
+        moTextRevueltaPath.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel42.add(moTextRevueltaPath);
+
+        jLabel4.setForeground(java.awt.Color.gray);
+        jLabel4.setText("para Caigen Access driver (obsoleto)");
+        jLabel4.setPreferredSize(new java.awt.Dimension(195, 23));
+        jPanel42.add(jLabel4);
+
+        jPanel16.add(jPanel42);
+
+        jPanel43.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlRevueltaHost.setForeground(new java.awt.Color(0, 102, 102));
+        jlRevueltaHost.setText("Host:*");
+        jlRevueltaHost.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel43.add(jlRevueltaHost);
+
+        moTextRevueltaHost.setText("sBeanFieldText1");
+        moTextRevueltaHost.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel43.add(moTextRevueltaHost);
+
+        jLabel5.setForeground(java.awt.Color.gray);
+        jLabel5.setText("para jTDS JDBC driver para Sybase");
+        jLabel5.setPreferredSize(new java.awt.Dimension(195, 23));
+        jPanel43.add(jLabel5);
+
+        jPanel16.add(jPanel43);
+
+        jPanel44.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlRevueltaPort.setForeground(new java.awt.Color(0, 102, 102));
+        jlRevueltaPort.setText("Puerto:*");
+        jlRevueltaPort.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel44.add(jlRevueltaPort);
+
+        moTextRevueltaPort.setText("sBeanFieldText1");
+        moTextRevueltaPort.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel44.add(moTextRevueltaPort);
+
+        jLabel6.setForeground(java.awt.Color.gray);
+        jLabel6.setText("para jTDS JDBC driver para Sybase");
+        jLabel6.setPreferredSize(new java.awt.Dimension(195, 23));
+        jPanel44.add(jLabel6);
+
+        jPanel16.add(jPanel44);
+
+        jPanel15.add(jPanel16, java.awt.BorderLayout.NORTH);
+
+        jPanel19.add(jPanel15, java.awt.BorderLayout.CENTER);
+
+        jPanel18.add(jPanel19);
+
+        jPanel20.setLayout(new java.awt.BorderLayout());
 
         jPanel28.setBorder(javax.swing.BorderFactory.createTitledBorder("Configuración de mail para notificaciones:"));
         jPanel28.setLayout(new java.awt.GridLayout(7, 1, 0, 5));
@@ -454,7 +553,53 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jPanel28.add(jPanel37);
 
-        jPanel20.add(jPanel28, java.awt.BorderLayout.CENTER);
+        jPanel20.add(jPanel28, java.awt.BorderLayout.NORTH);
+
+        jPanel38.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros fruta de opción múltiple:"));
+        jPanel38.setLayout(new java.awt.BorderLayout(0, 5));
+
+        jPanel39.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+
+        jPanel40.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlFruitClasses.setText("Clases fruta:");
+        jlFruitClasses.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel40.add(jlFruitClasses);
+
+        moTextFruitClasses.setText("sBeanFieldText1");
+        moTextFruitClasses.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel40.add(moTextFruitClasses);
+
+        jLabel3.setForeground(java.awt.Color.gray);
+        jLabel3.setText("separar con ';'");
+        jLabel3.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel40.add(jLabel3);
+
+        jPanel39.add(jPanel40);
+
+        jPanel41.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlFruitRipenessDegrees.setText("Grados madurez:");
+        jlFruitRipenessDegrees.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel41.add(jlFruitRipenessDegrees);
+
+        moTextFruitRipenessDegrees.setText("sBeanFieldText2");
+        moTextFruitRipenessDegrees.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel41.add(moTextFruitRipenessDegrees);
+
+        jLabel7.setForeground(java.awt.Color.gray);
+        jLabel7.setText("separar con ';'");
+        jLabel7.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel41.add(jLabel7);
+
+        jPanel39.add(jPanel41);
+
+        jPanel38.add(jPanel39, java.awt.BorderLayout.NORTH);
+
+        jPanel45.setLayout(new java.awt.BorderLayout());
+        jPanel38.add(jPanel45, java.awt.BorderLayout.CENTER);
+
+        jPanel20.add(jPanel38, java.awt.BorderLayout.CENTER);
 
         jPanel18.add(jPanel20);
 
@@ -465,12 +610,20 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel18;
@@ -495,7 +648,15 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel35;
     private javax.swing.JPanel jPanel36;
     private javax.swing.JPanel jPanel37;
+    private javax.swing.JPanel jPanel38;
+    private javax.swing.JPanel jPanel39;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel40;
+    private javax.swing.JPanel jPanel41;
+    private javax.swing.JPanel jPanel42;
+    private javax.swing.JPanel jPanel43;
+    private javax.swing.JPanel jPanel44;
+    private javax.swing.JPanel jPanel45;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -511,6 +672,8 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JLabel jlExternalPassword;
     private javax.swing.JLabel jlExternalPort;
     private javax.swing.JLabel jlExternalUser;
+    private javax.swing.JLabel jlFruitClasses;
+    private javax.swing.JLabel jlFruitRipenessDegrees;
     private javax.swing.JLabel jlLanguaje;
     private javax.swing.JLabel jlMailNotificationConfigHost;
     private javax.swing.JLabel jlMailNotificationConfigPassword;
@@ -519,8 +682,11 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JLabel jlMailNotificationConfigUser;
     private javax.swing.JLabel jlMaximumStockDifferenceKg;
     private javax.swing.JLabel jlName;
+    private javax.swing.JLabel jlRevueltaHost;
     private javax.swing.JLabel jlRevueltaId;
     private javax.swing.JLabel jlRevueltaOdbc;
+    private javax.swing.JLabel jlRevueltaPath;
+    private javax.swing.JLabel jlRevueltaPort;
     private javax.swing.JLabel jlVersion;
     private javax.swing.JLabel jlVersionTs;
     private javax.swing.JLabel jlXtaStockUnit;
@@ -541,17 +707,22 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
     private sa.lib.gui.bean.SBeanFieldText moTextExternalHost;
     private sa.lib.gui.bean.SBeanFieldText moTextExternalPort;
     private sa.lib.gui.bean.SBeanFieldText moTextExternalUser;
+    private sa.lib.gui.bean.SBeanFieldText moTextFruitClasses;
+    private sa.lib.gui.bean.SBeanFieldText moTextFruitRipenessDegrees;
     private sa.lib.gui.bean.SBeanFieldText moTextMailNotificationConfigHost;
     private sa.lib.gui.bean.SBeanFieldText moTextMailNotificationConfigPort;
     private sa.lib.gui.bean.SBeanFieldText moTextMailNotificationConfigProtocol;
     private sa.lib.gui.bean.SBeanFieldText moTextMailNotificationConfigUser;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
+    private sa.lib.gui.bean.SBeanFieldText moTextRevueltaHost;
     private sa.lib.gui.bean.SBeanFieldText moTextRevueltaId;
     private sa.lib.gui.bean.SBeanFieldText moTextRevueltaOdbc;
+    private sa.lib.gui.bean.SBeanFieldText moTextRevueltaPath;
+    private sa.lib.gui.bean.SBeanFieldText moTextRevueltaPort;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 800, 500);
+        SGuiUtils.setWindowBounds(this, 960, 600);
 
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode), 5);
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName), 50);
@@ -559,8 +730,6 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         moDecMaximumStockDifferenceKg.setDecimalSettings(SGuiUtils.getLabelName(jlMaximumStockDifferenceKg), SGuiConsts.GUI_TYPE_DEC, false);
         moKeyLanguaje.setKeySettings(miClient, SGuiUtils.getLabelName(jlLanguaje), true);
         moKeyDivisionDefault.setKeySettings(miClient, SGuiUtils.getLabelName(jlDivisionDefault), true);
-        moBoolMailNotificationConfigStartTls.setBooleanSettings(SGuiUtils.getLabelName(moBoolMailNotificationConfigStartTls.getText()), false);
-        moBoolMailNotificationConfigAuth.setBooleanSettings(SGuiUtils.getLabelName(moBoolMailNotificationConfigAuth.getText()), false);
         moTextExternalHost.setTextSettings(SGuiUtils.getLabelName(jlExternalHost), 50);
         moTextExternalHost.setTextCaseType(SLibConsts.UNDEFINED);
         moTextExternalPort.setTextSettings(SGuiUtils.getLabelName(jlExternalPort), 10);
@@ -572,6 +741,17 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         moTextExternalDatabase.setTextCaseType(SLibConsts.UNDEFINED);
         moTextExternalDatabaseCo.setTextSettings(SGuiUtils.getLabelName(jlExternalDatabaseCo), 50);
         moTextExternalDatabaseCo.setTextCaseType(SLibConsts.UNDEFINED);
+        moIntExternalCoId.setIntegerSettings(SGuiUtils.getLabelName(jlExternalCoId), SGuiConsts.GUI_TYPE_INT_RAW, true);
+        moTextRevueltaId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaId), 4);
+        moTextRevueltaId.setTextCaseType(SLibConsts.UNDEFINED);
+        moTextRevueltaOdbc.setTextSettings(SGuiUtils.getLabelName(jlRevueltaOdbc), 10);
+        moTextRevueltaOdbc.setTextCaseType(SLibConsts.UNDEFINED);
+        moTextRevueltaPath.setTextSettings(SGuiUtils.getLabelName(jlRevueltaPath), 256);
+        moTextRevueltaPath.setTextCaseType(SLibConsts.UNDEFINED);
+        moTextRevueltaHost.setTextSettings(SGuiUtils.getLabelName(jlRevueltaHost), 50);
+        moTextRevueltaHost.setTextCaseType(SLibConsts.UNDEFINED);
+        moTextRevueltaPort.setTextSettings(SGuiUtils.getLabelName(jlRevueltaPort), 5);
+        moTextRevueltaPort.setTextCaseType(SLibConsts.UNDEFINED);
         moTextMailNotificationConfigProtocol.setTextSettings(SGuiUtils.getLabelName(jlMailNotificationConfigProtocol), 50);
         moTextMailNotificationConfigProtocol.setTextCaseType(SLibConsts.UNDEFINED);
         moTextMailNotificationConfigHost.setTextSettings(SGuiUtils.getLabelName(jlMailNotificationConfigHost), 50);
@@ -581,11 +761,10 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         moTextMailNotificationConfigUser.setTextSettings(SGuiUtils.getLabelName(jlMailNotificationConfigUser), 50);
         moTextMailNotificationConfigUser.setTextCaseType(SLibConsts.UNDEFINED);
         moPswdMailNotificationConfigPassword.setTextSettings(SGuiUtils.getLabelName(jlMailNotificationConfigPassword), 50);
-        moIntExternalCoId.setIntegerSettings(SGuiUtils.getLabelName(jlExternalCoId), SGuiConsts.GUI_TYPE_INT_RAW, true);
-        moTextRevueltaId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaId), 4);
-        moTextRevueltaId.setTextCaseType(SLibConsts.UNDEFINED);
-        moTextRevueltaOdbc.setTextSettings(SGuiUtils.getLabelName(jlRevueltaOdbc), 10);
-        moTextRevueltaOdbc.setTextCaseType(SLibConsts.UNDEFINED);
+        moBoolMailNotificationConfigStartTls.setBooleanSettings(SGuiUtils.getLabelName(moBoolMailNotificationConfigStartTls.getText()), false);
+        moBoolMailNotificationConfigAuth.setBooleanSettings(SGuiUtils.getLabelName(moBoolMailNotificationConfigAuth.getText()), false);
+        moTextFruitClasses.setTextSettings(SGuiUtils.getLabelName(jlFruitClasses), 250);
+        moTextFruitRipenessDegrees.setTextSettings(SGuiUtils.getLabelName(jlFruitRipenessDegrees), 250);
 
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
@@ -602,6 +781,9 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         moFields.addField(moIntExternalCoId);
         moFields.addField(moTextRevueltaId);
         moFields.addField(moTextRevueltaOdbc);
+        moFields.addField(moTextRevueltaPath);
+        moFields.addField(moTextRevueltaHost);
+        moFields.addField(moTextRevueltaPort);
         moFields.addField(moTextMailNotificationConfigProtocol);
         moFields.addField(moTextMailNotificationConfigHost);
         moFields.addField(moTextMailNotificationConfigPort);
@@ -609,6 +791,8 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         moFields.addField(moPswdMailNotificationConfigPassword);
         moFields.addField(moBoolMailNotificationConfigStartTls);
         moFields.addField(moBoolMailNotificationConfigAuth);
+        moFields.addField(moTextFruitClasses);
+        moFields.addField(moTextFruitRipenessDegrees);
 
         moFields.setFormButton(jbSave);
         
@@ -653,28 +837,33 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
         }
 
-        moTextName.setValue(moRegistry.getName());
         moTextCode.setValue(moRegistry.getCode());
+        moTextName.setValue(moRegistry.getName());
         moTextCurrencyCode.setValue(moRegistry.getCurrencyCode());
         moDecMaximumStockDifferenceKg.setValue(moRegistry.getMaximumStockDifferenceKg());
         moKeyLanguaje.setValue(new int[] { moRegistry.getFkLanguageId() });
         moKeyDivisionDefault.setValue(new int[] { moRegistry.getFkDivisionDefaultId() });
-        moBoolMailNotificationConfigStartTls.setValue(moRegistry.isMailNotificationConfigStartTls());
-        moBoolMailNotificationConfigAuth.setValue(moRegistry.isMailNotificationConfigAuth());
         moTextExternalHost.setValue(moRegistry.getExternalHost());
         moTextExternalPort.setValue(moRegistry.getExternalPort());
         moTextExternalUser.setValue(moRegistry.getExternalUser());
         moPswdExternalPassword.setValue(moRegistry.getExternalPassword());
         moTextExternalDatabase.setValue(moRegistry.getExternalDatabase());
         moTextExternalDatabaseCo.setValue(moRegistry.getExternalDatabaseCo());
+        moIntExternalCoId.setValue(moRegistry.getFkExternalCoId_n());
+        moTextRevueltaId.setValue(moRegistry.getRevueltaId());
+        moTextRevueltaOdbc.setValue(moRegistry.getRevueltaOdbc());
+        moTextRevueltaPath.setValue(moRegistry.getRevueltaPath());
+        moTextRevueltaHost.setValue(moRegistry.getRevueltaHost());
+        moTextRevueltaPort.setValue(moRegistry.getRevueltaPort());
         moTextMailNotificationConfigProtocol.setValue(moRegistry.getMailNotificationConfigProtocol());
         moTextMailNotificationConfigHost.setValue(moRegistry.getMailNotificationConfigHost());
         moTextMailNotificationConfigPort.setValue(moRegistry.getMailNotificationConfigPort());
         moTextMailNotificationConfigUser.setValue(moRegistry.getMailNotificationConfigUser());
         moPswdMailNotificationConfigPassword.setValue(moRegistry.getMailNotificationConfigPassword());
-        moIntExternalCoId.setValue(moRegistry.getFkExternalCoId_n());
-        moTextRevueltaId.setValue(moRegistry.getRevueltaId());
-        moTextRevueltaOdbc.setValue(moRegistry.getRevueltaOdbc());
+        moBoolMailNotificationConfigStartTls.setValue(moRegistry.isMailNotificationConfigStartTls());
+        moBoolMailNotificationConfigAuth.setValue(moRegistry.isMailNotificationConfigAuth());
+        moTextFruitClasses.setValue(moRegistry.getFruitClasses());
+        moTextFruitRipenessDegrees.setValue(moRegistry.getFruitRipenessDegrees());
 
         jtfVersion.setText("" + moRegistry.getVersion());
         jtfVersionTs.setText(moRegistry.getVersionTs() == null ? "" : SLibUtils.DateFormatDatetime.format(moRegistry.getVersionTs()));
@@ -690,11 +879,8 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         if (registry.isRegistryNew()) {}
 
-        registry.setName(moTextName.getValue());
         registry.setCode(moTextCode.getValue());
-        registry.setMaximumStockDifferenceKg(moDecMaximumStockDifferenceKg.getValue());
-        registry.setMailNotificationConfigStartTls(moBoolMailNotificationConfigStartTls.getValue());
-        registry.setMailNotificationConfigAuth(moBoolMailNotificationConfigAuth.getValue());
+        registry.setName(moTextName.getValue());
         registry.setExternalHost(moTextExternalHost.getValue());
         registry.setExternalPort(moTextExternalPort.getValue());
         registry.setExternalUser(moTextExternalUser.getValue());
@@ -706,9 +892,17 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         registry.setMailNotificationConfigPort(moTextMailNotificationConfigPort.getValue());
         registry.setMailNotificationConfigUser(moTextMailNotificationConfigUser.getValue());
         registry.setMailNotificationConfigPassword(moPswdMailNotificationConfigPassword.getValue());
+        registry.setMailNotificationConfigStartTls(moBoolMailNotificationConfigStartTls.getValue());
+        registry.setMailNotificationConfigAuth(moBoolMailNotificationConfigAuth.getValue());
         registry.setCurrencyCode(moTextCurrencyCode.getValue());
+        registry.setMaximumStockDifferenceKg(moDecMaximumStockDifferenceKg.getValue());
         registry.setRevueltaId(moTextRevueltaId.getValue());
         registry.setRevueltaOdbc(moTextRevueltaOdbc.getValue());
+        registry.setRevueltaPath(moTextRevueltaPath.getValue());
+        registry.setRevueltaHost(moTextRevueltaHost.getValue());
+        registry.setRevueltaPort(moTextRevueltaPort.getValue());
+        registry.setFruitClasses(moTextFruitClasses.getValue());
+        registry.setFruitRipenessDegrees(moTextFruitRipenessDegrees.getValue());
         //registry.setVersion(0);
         //registry.setVersionTs(null);
         registry.setFkLanguageId(moKeyLanguaje.getValue()[0]);

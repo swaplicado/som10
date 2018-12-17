@@ -12,6 +12,7 @@ public abstract class SSomConsts {
     
     public static final int DIV_DEF = 1;
 
+    public static final String G = "g";
     public static final String KG = "kg";
     public static final String L = "l";
     public static final String M = "m";

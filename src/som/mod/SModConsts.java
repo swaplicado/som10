@@ -91,6 +91,7 @@ public abstract class SModConsts {
     public static final int SX_TIC_TARE = 340021;
     public static final int SX_TIC_TARE_PEND = 340022;
     public static final int SX_TIC_LOG = 340023;
+    public static final int SX_TIC_LAB_TEST_FRUIT = 340026;
     public static final int SX_STK_STK = 340031;
     public static final int SX_STK_DIV = 340032;
     public static final int SX_STK_MOVE = 340033;

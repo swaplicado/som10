@@ -21,6 +21,7 @@ import som.mod.SModConsts;
 /**
  *
  * @author Juan Barajas, Sergio Flores
+ * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  */
 public class SDbItem extends SDbRegistryUser {
 
@@ -61,6 +62,7 @@ public class SDbItem extends SDbRegistryUser {
     protected boolean mbLinolenicAcidPercentage;
     protected boolean mbErucicAcidPercentage;
     protected boolean mbAcidityPercentage;
+    protected boolean mbFruit;
     protected boolean mbPrintInputType;
     /*
     protected boolean mbUpdatable;
@@ -176,6 +178,7 @@ public class SDbItem extends SDbRegistryUser {
     public void setLinolenicAcidPercentage(boolean b) { mbLinolenicAcidPercentage = b; }
     public void setErucicAcidPercentage(boolean b) { mbErucicAcidPercentage = b; }
     public void setAcidityPercentage(boolean b) { mbAcidityPercentage = b; }
+    public void setFruit(boolean b) { mbFruit = b; }
     public void setPrintInputType(boolean b) { mbPrintInputType = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
@@ -237,6 +240,7 @@ public class SDbItem extends SDbRegistryUser {
     public boolean isLinolenicAcidPercentage() { return mbLinolenicAcidPercentage; }
     public boolean isErucicAcidPercentage() { return mbErucicAcidPercentage; }
     public boolean isAcidityPercentage() { return mbAcidityPercentage; }
+    public boolean isFruit() { return mbFruit; }
     public boolean isPrintInputType() { return mbPrintInputType; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
@@ -316,6 +320,7 @@ public class SDbItem extends SDbRegistryUser {
         mbLinolenicAcidPercentage = false;
         mbErucicAcidPercentage = false;
         mbAcidityPercentage = false;
+        mbFruit = false;
         mbPrintInputType = false;
         mbUpdatable = false;
         mbDisableable = false;
@@ -422,6 +427,7 @@ public class SDbItem extends SDbRegistryUser {
             mbLinolenicAcidPercentage = resultSet.getBoolean("b_llc_per");
             mbErucicAcidPercentage = resultSet.getBoolean("b_eru_per");
             mbAcidityPercentage = resultSet.getBoolean("b_aci_per");
+            mbFruit = resultSet.getBoolean("b_fruit");
             mbPrintInputType = resultSet.getBoolean("b_prt_inp_tp");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
@@ -508,6 +514,7 @@ public class SDbItem extends SDbRegistryUser {
                     (mbLinolenicAcidPercentage ? 1 : 0) + ", " +
                     (mbErucicAcidPercentage ? 1 : 0) + ", " +
                     (mbAcidityPercentage ? 1 : 0) + ", " +
+                    (mbFruit ? 1 : 0) + ", " + 
                     (mbPrintInputType ? 1 : 0) + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
@@ -574,6 +581,7 @@ public class SDbItem extends SDbRegistryUser {
                     "b_llc_per = " + (mbLinolenicAcidPercentage ? 1 : 0) + ", " +
                     "b_eru_per = " + (mbErucicAcidPercentage ? 1 : 0) + ", " +
                     "b_aci_per = " + (mbAcidityPercentage ? 1 : 0) + ", " +
+                    "b_fruit = " + (mbFruit ? 1 : 0) + ", " +
                     "b_prt_inp_tp = " + (mbPrintInputType ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
@@ -648,6 +656,7 @@ public class SDbItem extends SDbRegistryUser {
         registry.setLinolenicAcidPercentage(this.isLinolenicAcidPercentage());
         registry.setErucicAcidPercentage(this.isErucicAcidPercentage());
         registry.setAcidityPercentage(this.isAcidityPercentage());
+        registry.setFruit(this.isFruit());
         registry.setPrintInputType(this.isPrintInputType());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());

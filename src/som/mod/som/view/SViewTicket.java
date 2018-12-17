@@ -41,7 +41,7 @@ import som.mod.som.db.SSomConsts;
 public class SViewTicket extends SGridPaneView implements ActionListener {
 
     private SGridFilterDatePeriod moFilterDatePeriod;
-    private SPaneFilter moPaneFilter;
+    private SPaneFilter moPaneFilterItem;
     private SPaneFilter moPaneFilterInputCategory;
     private JButton mjbPreviousStep;
     private JButton mjbNextStep;
@@ -52,8 +52,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
 
     public SViewTicket(SGuiClient client, int gridSubtype, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_TIC, gridSubtype, title);
-        setRowButtonsEnabled(true, true, true, false, true);
-        jbRowCopy.setEnabled(false);
+        setRowButtonsEnabled(true, true, false, false, true);
 
         initComponetsCustom();
     }
@@ -62,8 +61,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
         moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
 
-        moPaneFilter = new SPaneFilter(this, SModConsts.SU_ITEM);
-        moPaneFilter.initFilter(null);
+        moPaneFilterItem = new SPaneFilter(this, SModConsts.SU_ITEM);
+        moPaneFilterItem.initFilter(null);
         moPaneFilterInputCategory = new SPaneFilter(this, SModConsts.SU_INP_CT);
         moPaneFilterInputCategory.initFilter(null);
 
@@ -81,7 +80,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbManager);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbSeasonRegion);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterInputCategory);
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilter);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterItem);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
 
         switch (mnGridSubtype) {
