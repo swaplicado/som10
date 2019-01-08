@@ -33,6 +33,7 @@ import som.mod.som.db.SSomUtils;
  *
  * @author Juan Barajas, Sergio Flores, Alfredo Pérez
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
+ * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
 public class SFormItem extends SBeanForm implements ItemListener {
 
@@ -156,6 +157,8 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel35 = new javax.swing.JPanel();
         moBoolMoisturePercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
         moBoolLinoleicAcidPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jlFruitYieldAdjustmentPercentage = new javax.swing.JLabel();
+        moDecFruitYieldAdjustmentPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
         jPanel36 = new javax.swing.JPanel();
         moBoolDensity = new sa.lib.gui.bean.SBeanFieldBoolean();
         moBoolLinolenicAcidPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
@@ -563,6 +566,13 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolLinoleicAcidPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel35.add(moBoolLinoleicAcidPercentage);
 
+        jlFruitYieldAdjustmentPercentage.setText("Ajuste rendimiento:");
+        jlFruitYieldAdjustmentPercentage.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel35.add(jlFruitYieldAdjustmentPercentage);
+
+        moDecFruitYieldAdjustmentPercentage.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel35.add(moDecFruitYieldAdjustmentPercentage);
+
         jPanel18.add(jPanel35);
 
         jPanel36.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -829,6 +839,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
     private javax.swing.JLabel jlExternalItem;
     private javax.swing.JLabel jlExternalName;
     private javax.swing.JLabel jlExternalWarehouse_n;
+    private javax.swing.JLabel jlFruitYieldAdjustmentPercentage;
     private javax.swing.JLabel jlInputCategory;
     private javax.swing.JLabel jlInputClass;
     private javax.swing.JLabel jlInputType;
@@ -874,6 +885,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolUserMailNotification;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolUserMailNotificationOnlyWhenMoves;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDensity;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecFruitYieldAdjustmentPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecMfgByproductPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecMfgFinishedGoodPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecMfgTotalPercentage;
@@ -955,6 +967,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolOilContentPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolOilContentPercentage.getText()), false);
         moBoolAcidityPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolAcidityPercentage.getText()), false);
         moBoolFruit.setBooleanSettings(SGuiUtils.getLabelName(moBoolFruit.getText()), false);
+        moDecFruitYieldAdjustmentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlFruitYieldAdjustmentPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moBoolPackage.setBooleanSettings(SGuiUtils.getLabelName(moBoolPackage.getText()), false);
         moDecPackageWeight.setDecimalSettings(SGuiUtils.getLabelName(jlPackageWeight), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moTextPackageName.setTextSettings(SGuiUtils.getLabelName(jlPackageName), 35);
@@ -1010,6 +1023,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moFields.addField(moBoolOilContentPercentage);
         moFields.addField(moBoolAcidityPercentage);
         moFields.addField(moBoolFruit);
+        moFields.addField(moDecFruitYieldAdjustmentPercentage);
         moFields.addField(moBoolPackage);
         moFields.addField(moDecPackageWeight);
         moFields.addField(moTextPackageName);
@@ -1120,8 +1134,14 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolOilContentPercentage.setEnabled(moBoolLaboratory.getValue());
         moBoolAcidityPercentage.setEnabled(moBoolLaboratory.getValue());
         moBoolFruit.setEnabled(moBoolLaboratory.getValue());
+        itemStateBoolFruit();
     }
 
+    private void itemStateBoolFruit() {
+        jlFruitYieldAdjustmentPercentage.setEnabled(moBoolLaboratory.getValue());
+        moDecFruitYieldAdjustmentPercentage.setEnabled(moBoolLaboratory.getValue() && moBoolFruit.getValue());
+    }
+    
     private void itemStateBoolPackage() {
         moTextPackageName.setEditable(moBoolPackage.getValue());
         moDecPackageWeight.setEditable(moBoolPackage.getValue());
@@ -1132,6 +1152,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moKeyExternalItem.addItemListener(this);
         moKeyItemType.addItemListener(this);
         moBoolLaboratory.addItemListener(this);
+        moBoolFruit.addItemListener(this);
         moBoolPackage.addItemListener(this);
         moKeyUnit.addItemListener(this);
         moBoolUserMailNotificationOnlyWhenMoves.addItemListener(this);
@@ -1142,6 +1163,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moKeyExternalItem.removeItemListener(this);
         moKeyItemType.removeItemListener(this);
         moBoolLaboratory.removeItemListener(this);
+        moBoolFruit.removeItemListener(this);
         moBoolPackage.removeItemListener(this);
         moKeyUnit.removeItemListener(this);
         moBoolUserMailNotificationOnlyWhenMoves.removeItemListener(this);
@@ -1216,6 +1238,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolOilContentPercentage.setValue(moRegistry.isOilContentPercentage());
         moBoolAcidityPercentage.setValue(moRegistry.isAcidityPercentage());
         moBoolFruit.setValue(moRegistry.isFruit());
+        moDecFruitYieldAdjustmentPercentage.setValue(moRegistry.getFruitYieldAdjustmentPercentage());
         moBoolPackage.setValue(moRegistry.isPackage());
         moBoolLaboratory.setValue(moRegistry.isLaboratory());
         moKeyItemType.setValue(new int[] { moRegistry.getFkItemTypeId() });
@@ -1320,6 +1343,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
             registry.setErucicAcidPercentage(moBoolErucicAcidPercentage.getValue());
             registry.setAcidityPercentage(moBoolAcidityPercentage.getValue());
             registry.setFruit(moBoolFruit.getValue());
+            registry.setFruitYieldAdjustmentPercentage(!registry.isFruit() ? 0 : moDecFruitYieldAdjustmentPercentage.getValue());
         }
         else {
             registry.setDensity(false);
@@ -1335,6 +1359,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
             registry.setErucicAcidPercentage(false);
             registry.setAcidityPercentage(false);
             registry.setFruit(false);
+            registry.setFruitYieldAdjustmentPercentage(0);
         }
 
         registry.setPrintInputType(moBoolPrintInputType.getValue());
@@ -1493,6 +1518,9 @@ public class SFormItem extends SBeanForm implements ItemListener {
 
             if (checkBox == moBoolLaboratory) {
                 itemStateBoolLaboratory();
+            }
+            else if (checkBox == moBoolFruit) {
+                itemStateBoolFruit();
             }
             else if (checkBox == moBoolPackage) {
                 itemStateBoolPackage();

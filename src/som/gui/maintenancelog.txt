@@ -1,9 +1,15 @@
 ================================================================================
+2019-01-08, 1.0 059.0
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición de ajuste de rendimiento para parámetros de fruta, y cálculo de valores '% humedad' y '% contenido aceite'.
+2) Mostrar solo proveedores con movimientos en sección período actual, en notificación automática de recepción de boletos.
+
+================================================================================
 2018-12-14, 1.0 058.1
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
 1) Adición, configuración y captura de parámetros de laboratorio específicos de fruta.
-================================================================================
 
 ================================================================================
 2018-11-22, 1.0 057.1
@@ -11,5 +17,4 @@ Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
 1) Adición de columna referencia en tabla de movimientos de almacén.
 2) Adición de referencia y observaciones de movimientos de almacén a vistas y tarjeta auxiliar.
-================================================================================
 #eof

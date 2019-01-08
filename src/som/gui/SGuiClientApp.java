@@ -67,7 +67,7 @@ import som.mod.cfg.db.SDbUserGui;
 public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener {
 
     public static final String APP_NAME = "SOM 1.0";
-    public static final String APP_RELEASE = "SOM 1.0 058.1"; // release date: 2018-12-14
+    public static final String APP_RELEASE = "SOM 1.0 059.0"; // release date: 2019-01-07
     public static final String APP_COPYRIGHT = "2013-2019";
     public static final String APP_PROVIDER = "Software Aplicado SA de CV";
 
@@ -126,8 +126,8 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jtfSessionBranch = new javax.swing.JTextField();
         jtfUser = new javax.swing.JTextField();
         jtfUserTs = new javax.swing.JTextField();
-        jlAppRelease = new javax.swing.JLabel();
         jpStatusBar2 = new javax.swing.JPanel();
+        jlAppRelease = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jmbMenuBar = new javax.swing.JMenuBar();
         jmFile = new javax.swing.JMenu();
@@ -236,7 +236,6 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jbWorkingDate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/gui_date.gif"))); // NOI18N
         jbWorkingDate.setToolTipText("Cambiar fecha de trabajo");
         jbWorkingDate.setContentAreaFilled(false);
-        jbWorkingDate.setOpaque(false);
         jbWorkingDate.setPreferredSize(new java.awt.Dimension(20, 20));
         jpStatusBar1.add(jbWorkingDate);
 
@@ -267,19 +266,20 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jtfUserTs.setPreferredSize(new java.awt.Dimension(150, 20));
         jpStatusBar1.add(jtfUserTs);
 
-        jlAppRelease.setForeground(new java.awt.Color(0, 153, 153));
-        jlAppRelease.setText("RELEASE");
-        jlAppRelease.setPreferredSize(new java.awt.Dimension(100, 20));
-        jpStatusBar1.add(jlAppRelease);
-
         jpStatusBar.add(jpStatusBar1, java.awt.BorderLayout.CENTER);
 
         jpStatusBar2.setOpaque(false);
         jpStatusBar2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 2));
 
+        jlAppRelease.setForeground(new java.awt.Color(0, 153, 153));
+        jlAppRelease.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jlAppRelease.setText("RELEASE");
+        jlAppRelease.setPreferredSize(new java.awt.Dimension(100, 20));
+        jpStatusBar2.add(jlAppRelease);
+
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/swap_logo_9.jpg"))); // NOI18N
-        jLabel1.setPreferredSize(new java.awt.Dimension(100, 20));
+        jLabel1.setPreferredSize(new java.awt.Dimension(80, 19));
         jpStatusBar2.add(jLabel1);
 
         jpStatusBar.add(jpStatusBar2, java.awt.BorderLayout.EAST);

@@ -19,6 +19,7 @@ import som.mod.som.db.SSomConsts;
  *
  * @author Juan Barajas, Sergio Flores, Alfredo Pérez
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
+ * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
 public class SViewItem extends SGridPaneView {
 
@@ -52,6 +53,7 @@ public class SViewItem extends SGridPaneView {
                 + "v.ext_code, "
                 + "v.ext_name, "
                 + "v.unit_wei, "
+                + "v.fruit_yield_adj_per, "
                 + "v.den, "
                 + "v.mfg_fg_per, "
                 + "v.mfg_bp_per, "
@@ -131,7 +133,7 @@ public class SViewItem extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[50];
+        columns = new SGridColumnView[51];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
@@ -175,6 +177,7 @@ public class SViewItem extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_oil_per", "Aceite");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_aci_per", "Acidez");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_fruit", "Parámetros fruta");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_DISC, "v.fruit_yield_adj_per", "Ajuste rendimiento");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_prt_inp_tp", "Tipo insumo impresión boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);

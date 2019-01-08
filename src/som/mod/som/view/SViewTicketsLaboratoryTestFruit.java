@@ -22,6 +22,7 @@ import som.mod.som.db.SSomConsts;
 /**
  *
  * @author Sergio Flores
+ * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
 public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
 
@@ -65,6 +66,7 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
                 + "l.id_lab, "
                 + "l.num, "
                 + "lt.id_test, "
+                + "lt.aci_per, "
                 + "lt.fruit_class, "
                 + "lt.fruit_ripe, "
                 + "lt.fruit_wei_total, "
@@ -79,7 +81,8 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
                 + "@fruit_oil_wei := @pulp_wei * lt.fruit_pulp_oil_per AS _fruit_oil_wei, "
                 + "IF(lt.fruit_wei_total = 0, 0.0, @fruit_hum_wei / lt.fruit_wei_total) AS _fruit_hum_per, "
                 + "IF(lt.fruit_wei_total = 0, 0.0, @fruit_sol_wei / lt.fruit_wei_total) AS _fruit_sol_per, "
-                + "IF(lt.fruit_wei_total = 0, 0.0, @fruit_oil_wei / lt.fruit_wei_total) AS _fruit_oil_per "
+                + "@fruit_oil_per := IF(lt.fruit_wei_total = 0, 0.0, @fruit_oil_wei / lt.fruit_wei_total) AS _fruit_oil_per, "
+                + "@fruit_oil_per - lt.fruit_yield_adj_per AS _fruit_yield "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sca ON T.fk_sca = sca.id_sca "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON t.fk_item = i.id_item AND NOT t.b_del "
@@ -87,7 +90,7 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_LAB) + " AS l ON t.fk_lab_n = l.id_lab AND NOT l.b_del "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_LAB_TEST) + " AS lt ON l.id_lab = lt.id_lab "
                 + "WHERE i.b_fruit " + (sql.isEmpty() ? "" : "AND " + sql)
-                + "ORDER BY t.num, t.id_tic;";
+                + "ORDER BY t.num, t.id_tic, lt.id_lab, lt.id_test;";
     }
 
     @Override
@@ -95,7 +98,7 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[23];
+        columns = new SGridColumnView[25];
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca.code", "Báscula");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "t.num", "Boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "t.dt", SGridConsts.COL_TITLE_DATE + " boleto");
@@ -116,9 +119,11 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_hum_wei", "Fruta: humedad (" + SSomConsts.G + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_sol_wei", "Fruta: sólidos (" + SSomConsts.G + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_oil_wei", "Fruta: aceite (" + SSomConsts.G + ")");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "lt.aci_per", "Fruta: acidez");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_hum_per", "Fruta: humedad");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_sol_per", "Fruta: sólidos");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_oil_per", "Fruta: aceite");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_yield", "Rendimiento esperado");
 
         moModel.getGridColumns().addAll(Arrays.asList(columns));
     }

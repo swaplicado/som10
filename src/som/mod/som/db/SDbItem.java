@@ -22,6 +22,7 @@ import som.mod.SModConsts;
  *
  * @author Juan Barajas, Sergio Flores
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
+ * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
 public class SDbItem extends SDbRegistryUser {
 
@@ -41,6 +42,7 @@ public class SDbItem extends SDbRegistryUser {
     protected String msPackageName;
     protected double mdPackageWeight;
     protected double mdUnitaryWeight;
+    protected double mdFruitYieldAdjustmentPercentage;
     protected int mnStartingSeasonMonth;
     protected String msRevueltaItemId;
     protected String msAutoMailNotificationBoxes;
@@ -157,6 +159,7 @@ public class SDbItem extends SDbRegistryUser {
     public void setPackageName(String s) { msPackageName = s; }
     public void setPackageWeight(double d) { mdPackageWeight = d; }
     public void setUnitaryWeight(double d) { mdUnitaryWeight = d; }
+    public void setFruitYieldAdjustmentPercentage(double d) { mdFruitYieldAdjustmentPercentage = d; }
     public void setStartingSeasonMonth(int n) { mnStartingSeasonMonth = n; }
     public void setRevueltaItemId(String s) { msRevueltaItemId = s; }
     public void setAutoMailNotificationBoxes(String s) { msAutoMailNotificationBoxes = s; }
@@ -219,6 +222,7 @@ public class SDbItem extends SDbRegistryUser {
     public String getPackageName() { return msPackageName; }
     public double getPackageWeight() { return mdPackageWeight; }
     public double getUnitaryWeight() { return mdUnitaryWeight; }
+    public double getFruitYieldAdjustmentPercentage() { return mdFruitYieldAdjustmentPercentage; }
     public int getStartingSeasonMonth() { return mnStartingSeasonMonth; }
     public String getRevueltaItemId() { return msRevueltaItemId; }
     public String getAutoMailNotificationBoxes() { return msAutoMailNotificationBoxes; }
@@ -299,6 +303,7 @@ public class SDbItem extends SDbRegistryUser {
         msPackageName = "";
         mdPackageWeight = 0;
         mdUnitaryWeight = 0;
+        mdFruitYieldAdjustmentPercentage = 0;
         mnStartingSeasonMonth = 0;
         msRevueltaItemId = "";
         msAutoMailNotificationBoxes = "";
@@ -406,6 +411,7 @@ public class SDbItem extends SDbRegistryUser {
             msPackageName = resultSet.getString("paq_name");
             mdPackageWeight = resultSet.getDouble("paq_wei");
             mdUnitaryWeight = resultSet.getDouble("unit_wei");
+            mdFruitYieldAdjustmentPercentage = resultSet.getDouble("fruit_yield_adj_per");
             mnStartingSeasonMonth = resultSet.getInt("sta_seas_mon");
             msRevueltaItemId = resultSet.getString("rev_item_id");
             msAutoMailNotificationBoxes = resultSet.getString("amn_box");
@@ -493,6 +499,7 @@ public class SDbItem extends SDbRegistryUser {
                     "'" + msPackageName + "', " +
                     mdPackageWeight + ", " +
                     mdUnitaryWeight + ", " +
+                    mdFruitYieldAdjustmentPercentage + ", " + 
                     mnStartingSeasonMonth + ", " +
                     "'" + msRevueltaItemId + "', " +
                     "'" + msAutoMailNotificationBoxes + "', " +
@@ -560,6 +567,7 @@ public class SDbItem extends SDbRegistryUser {
                     "paq_name = '" + msPackageName + "', " +
                     "paq_wei = " + mdPackageWeight + ", " +
                     "unit_wei = " + mdUnitaryWeight + ", " +
+                    "fruit_yield_adj_per = " + mdFruitYieldAdjustmentPercentage + ", " +
                     "sta_seas_mon = " + mnStartingSeasonMonth + ", " +
                     "rev_item_id = '" + msRevueltaItemId + "', " +
                     "amn_box = '" + msAutoMailNotificationBoxes + "', " +
@@ -635,6 +643,7 @@ public class SDbItem extends SDbRegistryUser {
         registry.setPackageName(this.getPackageName());
         registry.setPackageWeight(this.getPackageWeight());
         registry.setUnitaryWeight(this.getUnitaryWeight());
+        registry.setFruitYieldAdjustmentPercentage(this.getFruitYieldAdjustmentPercentage());
         registry.setStartingSeasonMonth(this.getStartingSeasonMonth());
         registry.setRevueltaItemId(this.getRevueltaItemId());
         registry.setAutoMailNotificationBoxes(this.getAutoMailNotificationBoxes());

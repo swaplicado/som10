@@ -35,6 +35,7 @@ import som.mod.SModSysConsts;
 /**
  *
  * @author Juan Barajas, Sergio Flores
+ * 2019-01-07, Sergio Flores: Mostrar solo proveedores con movimientos en sección período actual, en notificación automática de recepción de boletos.
  */
 public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
@@ -253,11 +254,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
                 while (resultSet.next()) {
                     weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, mtDate, mtDate, resultSet.getInt("id_rep_grp"));
-                    body += "<tr>" +
-                            "<td>" + SLibUtils.textToHtml(resultSet.getString("name")) + "</td>" +
-                            "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>" +
-                            "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>" +
-                            "</tr>";
+                    if (weight != 0) {
+                        body += "<tr>" +
+                                "<td>" + SLibUtils.textToHtml(resultSet.getString("name")) + "</td>" +
+                                "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>" +
+                                "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>" +
+                                "</tr>";
+                    }
                 }
 
                 body += "<tr>" +
@@ -285,7 +288,6 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 // Compute each scale:
                 while (scaleResultSet.next()) {
                     weight = SSomUtils.obtainWeightDestinyByScale(session, mnFkItemId, mtDate, mtDate, scaleResultSet.getInt("id_sca"));
-
                     if (weight != 0) {
                         body += "<tr>"
                                 + "<td>" + SLibUtils.textToHtml(scaleResultSet.getString("name")) + "</td>"
