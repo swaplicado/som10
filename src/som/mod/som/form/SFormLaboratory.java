@@ -42,6 +42,7 @@ import som.mod.som.db.SSomUtils;
  * @author Juan Barajas, Sergio Flores
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
+ * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
  */
 public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, ActionListener, ItemListener {
 
@@ -416,7 +417,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
             @Override
             public void createGridColumns() {
                 int col = 0;
-                SGridColumnForm[] columns = new SGridColumnForm[20];
+                SGridColumnForm[] columns = new SGridColumnForm[21];
 
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_1B, "Prueba lab");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_2D, "Impurezas");
@@ -435,6 +436,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Grado madurez");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Peso fruta (g)");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Peso cáscara + hueso (g)");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Materia seca pulpa");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Humedad pulpa");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Aceite pulpa");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Rendimiento esperado");

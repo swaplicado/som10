@@ -4,10 +4,13 @@
  */
 package som.mod.som.form;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import sa.lib.SLibConsts;
@@ -25,14 +28,17 @@ import som.mod.SModConsts;
 import som.mod.cfg.db.SDbCompany;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbLaboratoryTest;
+import som.mod.som.db.SLabConsts;
+import som.mod.som.db.SLabUtils;
 
 /**
  *
  * @author Juan Barajas, Sergio Flores
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
+ * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
  */
-public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements ItemListener, FocusListener {
+public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements ActionListener, ItemListener, FocusListener {
 
     private SDbLaboratoryTest moRegistry;
     private SDbItem moParamsItem;
@@ -117,6 +123,10 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
         jlFruitWeightPeelPit = new javax.swing.JLabel();
         moDecFruitWeightPeelPit = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlFruitWeightPeelPitUnit = new javax.swing.JLabel();
+        jPanel31 = new javax.swing.JPanel();
+        jlFruitPulpDryMatterPercentage = new javax.swing.JLabel();
+        moDecFruitPulpDryMatterPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jbComputeFruitPulpParams = new javax.swing.JButton();
         jPanel28 = new javax.swing.JPanel();
         jlFruitPulpHumidityPercentage = new javax.swing.JLabel();
         moDecFruitPulpHumidityPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
@@ -291,7 +301,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
 
         jPanel21.setLayout(new java.awt.BorderLayout());
 
-        jPanel25.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jPanel25.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
 
         jPanel26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -318,6 +328,20 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
         jPanel27.add(jlFruitWeightPeelPitUnit);
 
         jPanel25.add(jPanel27);
+
+        jPanel31.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlFruitPulpDryMatterPercentage.setText("Materia seca pulpa (%):");
+        jlFruitPulpDryMatterPercentage.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel31.add(jlFruitPulpDryMatterPercentage);
+        jPanel31.add(moDecFruitPulpDryMatterPercentage);
+
+        jbComputeFruitPulpParams.setText("Calcular");
+        jbComputeFruitPulpParams.setToolTipText("Calcular % humedad y aceite en pulpa");
+        jbComputeFruitPulpParams.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel31.add(jbComputeFruitPulpParams);
+
+        jPanel25.add(jPanel31);
 
         jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -377,16 +401,19 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
     private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel30;
+    private javax.swing.JPanel jPanel31;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JButton jbComputeFruitPulpParams;
     private javax.swing.JLabel jlAcidityPercentage;
     private javax.swing.JLabel jlDensity;
     private javax.swing.JLabel jlErucicAcidPercentage;
     private javax.swing.JLabel jlFruitClass;
+    private javax.swing.JLabel jlFruitPulpDryMatterPercentage;
     private javax.swing.JLabel jlFruitPulpHumidityPercentage;
     private javax.swing.JLabel jlFruitPulpOilPercentage;
     private javax.swing.JLabel jlFruitRipenessDegree;
@@ -407,6 +434,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
     private sa.lib.gui.bean.SBeanFieldDecimal moDecAcidityPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDensity;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecErucicAcidPercentage;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecFruitPulpDryMatterPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecFruitPulpHumidityPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecFruitPulpOilPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecFruitWeightPeelPit;
@@ -426,7 +454,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 720, 450);
+        SGuiUtils.setWindowBounds(this, 800, 500);
         
         moCompany = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany();
 
@@ -448,8 +476,12 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
         moKeyFruitRipenessDegree.setKeySettings(miClient, SGuiUtils.getLabelName(jlFruitRipenessDegree), true);
         moDecFruitWeightTotal.setDecimalSettings(SGuiUtils.getLabelName(jlFruitWeightTotal), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecFruitWeightPeelPit.setDecimalSettings(SGuiUtils.getLabelName(jlFruitWeightPeelPit), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecFruitPulpDryMatterPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlFruitPulpDryMatterPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecFruitPulpDryMatterPercentage.setMaxDouble(1);
         moDecFruitPulpHumidityPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlFruitPulpHumidityPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecFruitPulpHumidityPercentage.setMaxDouble(1);
         moDecFruitPulpOilPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlFruitPulpOilPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecFruitPulpOilPercentage.setMaxDouble(1);
         moDecFruitYieldAdjustmentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlFruitYieldAdjustmentPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
 
         moFields.addField(moDecImpuritiesPercentage);
@@ -468,6 +500,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
         moFields.addField(moKeyFruitRipenessDegree);
         moFields.addField(moDecFruitWeightTotal);
         moFields.addField(moDecFruitWeightPeelPit);
+        moFields.addField(moDecFruitPulpDryMatterPercentage);
         moFields.addField(moDecFruitPulpHumidityPercentage);
         moFields.addField(moDecFruitPulpOilPercentage);
         moFields.addField(moDecFruitYieldAdjustmentPercentage);
@@ -481,22 +514,30 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
     
     private void computeFruitParams() {
         if (moParamsItem.isFruit()) {
-            // load fruit class into registry for computation:
-            moRegistry.setFruitClass(moKeyFruitClass.getSelectedIndex() <= 0 ? SDbLaboratoryTest.RESET_FRUIT_PARAMS : moCompany.getFruitOption(SDbCompany.FRUIT_CLASS, moKeyFruitClass.getValue()[0]));
-            
-            // load fruit params into registry for computation:
-            moRegistry.setFruitWeightTotal(moDecFruitWeightTotal.getValue());
-            moRegistry.setFruitWeightPeelPit(moDecFruitWeightPeelPit.getValue());
-            moRegistry.setFruitPulpHumidityPercentage(moDecFruitPulpHumidityPercentage.getValue());
-            moRegistry.setFruitPulpOilPercentage(moDecFruitPulpOilPercentage.getValue());
-            moRegistry.computeFruitParams();
-            
-            // retrieve computed params from registry:
-            moDecMoisturePercentage.setValue(moRegistry.getMoisturePercentage());
-            moDecOilContentPercentage.setValue(moRegistry.getOilContentPercentage());
+            try {
+                SDbLaboratoryTest test = moRegistry.clone();
+
+                // load fruit class into registry for computation:
+                test.setFruitClass(moKeyFruitClass.getSelectedIndex() <= 0 ? SDbLaboratoryTest.RESET_FRUIT_PARAMS : moCompany.getFruitOption(SDbCompany.FRUIT_CLASS, moKeyFruitClass.getValue()[0]));
+
+                // load fruit params into registry for computation:
+                test.setFruitWeightTotal(moDecFruitWeightTotal.getValue());
+                test.setFruitWeightPeelPit(moDecFruitWeightPeelPit.getValue());
+                test.setFruitPulpDryMatterPercentage(moDecFruitPulpDryMatterPercentage.getValue()); // no really required for computation
+                test.setFruitPulpHumidityPercentage(moDecFruitPulpHumidityPercentage.getValue());
+                test.setFruitPulpOilPercentage(moDecFruitPulpOilPercentage.getValue());
+                test.computeFruitParams();
+
+                // retrieve computed params from registry:
+                moDecMoisturePercentage.setValue(test.getMoisturePercentage());
+                moDecOilContentPercentage.setValue(test.getOilContentPercentage());
+            }
+            catch (Exception e) {
+                SLibUtils.showException(this, e);
+            }
         }
     }
-
+    
     private void setEnableRequired() {
         moDecImpuritiesPercentage.setEditable(moParamsItem.isImpuritiesPercentage());
         moDecMoisturePercentage.setEditable(moParamsItem.isMoisturePercentage() && !moParamsItem.isFruit());
@@ -514,9 +555,35 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
         moKeyFruitRipenessDegree.setEditable(moParamsItem.isFruit());
         moDecFruitWeightTotal.setEditable(moParamsItem.isFruit());
         moDecFruitWeightPeelPit.setEditable(moParamsItem.isFruit());
+        moDecFruitPulpDryMatterPercentage.setEditable(moParamsItem.isFruit());
         moDecFruitPulpHumidityPercentage.setEditable(moParamsItem.isFruit());
         moDecFruitPulpOilPercentage.setEditable(moParamsItem.isFruit());
         moDecFruitYieldAdjustmentPercentage.setEditable(false); // allways is read-only
+        jbComputeFruitPulpParams.setEnabled(moParamsItem.isFruit());
+    }
+
+    /**
+     * Note that by now works only for avocado! No other fruit considered!
+     */
+    private void actionPerformedComputeFruitPulpParams() {
+        try {
+            SGuiValidation validation = moDecFruitPulpDryMatterPercentage.validateField();
+            if (SGuiUtils.computeValidation(miClient, validation)) {
+                if (moDecFruitPulpDryMatterPercentage.getValue() == 0) {
+                    moDecFruitPulpOilPercentage.setValue(0.0);
+                    moDecFruitPulpHumidityPercentage.setValue(1.0);
+                }
+                else {
+                    moDecFruitPulpOilPercentage.setValue(SLabUtils.estimateFruitOilPct(SLabConsts.FRUIT_AVOCADO, moDecFruitPulpDryMatterPercentage.getValue()));
+                    moDecFruitPulpHumidityPercentage.setValue(1 - moDecFruitPulpDryMatterPercentage.getValue());
+                }
+                
+                computeFruitParams();
+            }
+        }
+        catch (Exception e) {
+            SLibUtils.showException(this, e);
+        }
     }
 
     @Override
@@ -537,22 +604,26 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
 
     @Override
     public void addAllListeners() {
+        jbComputeFruitPulpParams.addActionListener(this);
         moKeyFruitClass.addItemListener(this);
         moDecImpuritiesPercentage.addFocusListener(this);
         moDecMoisturePercentage.addFocusListener(this);
         moDecFruitWeightTotal.addFocusListener(this);
         moDecFruitWeightPeelPit.addFocusListener(this);
+        moDecFruitPulpDryMatterPercentage.addFocusListener(this);
         moDecFruitPulpHumidityPercentage.addFocusListener(this);
         moDecFruitPulpOilPercentage.addFocusListener(this);
     }
 
     @Override
     public void removeAllListeners() {
+        jbComputeFruitPulpParams.removeActionListener(this);
         moKeyFruitClass.removeItemListener(this);
         moDecImpuritiesPercentage.removeFocusListener(this);
         moDecMoisturePercentage.removeFocusListener(this);
         moDecFruitWeightTotal.removeFocusListener(this);
         moDecFruitWeightPeelPit.removeFocusListener(this);
+        moDecFruitPulpDryMatterPercentage.removeFocusListener(this);
         moDecFruitPulpHumidityPercentage.removeFocusListener(this);
         moDecFruitPulpOilPercentage.removeFocusListener(this);
     }
@@ -599,6 +670,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
         moKeyFruitRipenessDegree.setValue(new int[] { moCompany.getFruitOptionId(SDbCompany.FRUIT_RIPENESS_DEGREE, moRegistry.getFruitRipenessDegree()) });
         moDecFruitWeightTotal.setValue(moRegistry.getFruitWeightTotal());
         moDecFruitWeightPeelPit.setValue(moRegistry.getFruitWeightPeelPit());
+        moDecFruitPulpDryMatterPercentage.setValue(moRegistry.getFruitPulpDryMatterPercentage());
         moDecFruitPulpHumidityPercentage.setValue(moRegistry.getFruitPulpHumidityPercentage());
         moDecFruitPulpOilPercentage.setValue(moRegistry.getFruitPulpOilPercentage());
         moDecFruitYieldAdjustmentPercentage.setValue(moRegistry.getFruitYieldAdjustmentPercentage());
@@ -632,6 +704,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
         registry.setFruitRipenessDegree(moKeyFruitRipenessDegree.getSelectedIndex() <= 0 ? "" : moCompany.getFruitOption(SDbCompany.FRUIT_RIPENESS_DEGREE, moKeyFruitRipenessDegree.getValue()[0]));
         registry.setFruitWeightTotal(moDecFruitWeightTotal.getValue());
         registry.setFruitWeightPeelPit(moDecFruitWeightPeelPit.getValue());
+        registry.setFruitPulpDryMatterPercentage(moDecFruitPulpDryMatterPercentage.getValue());
         registry.setFruitPulpHumidityPercentage(moDecFruitPulpHumidityPercentage.getValue());
         registry.setFruitPulpOilPercentage(moDecFruitPulpOilPercentage.getValue());
         registry.setFruitYieldAdjustmentPercentage(moDecFruitYieldAdjustmentPercentage.getValue());
@@ -641,30 +714,49 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
 
     @Override
     public SGuiValidation validateForm() {
-        boolean isEmpy = true;
+        boolean testsEmpty = true;
         SGuiValidation validation = moFields.validateFields();
 
         for (SGuiField field : moFields.getFields()) {
             if (field instanceof SBeanFieldDecimal && field.isEditable() && (Double) field.getValue() > 0) {
-                isEmpy = false;
+                testsEmpty = false;
                 break;
             }
             else if (field instanceof SBeanFieldKey && field.isEnabled() && ((SBeanFieldKey) field).getSelectedIndex() > 0) {
-                isEmpy = false;
+                testsEmpty = false;
                 break;
             }
         }
 
-        if (validation.isValid() && isEmpy) {
-            if (miClient.showMsgBoxConfirm("No ha capturado ningún valor para la prueba de laboratorio.\n" + SGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION) {
+        if (validation.isValid()) {
+            if (testsEmpty && miClient.showMsgBoxConfirm("No se ha capturado ningún resultado de laboratorio.\n" + SGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
+                validation.setMessage("Se debe capturar al menos un resultado de laboratorio.");
             }
-            else {
-                validation.setMessage("Se debe especificar al menos un valor para la prueba de laboratorio.");
-                validation.setComponent(moDecImpuritiesPercentage);
+            else if (moParamsItem.isFruit()) {
+                if (SLibUtils.round(moDecFruitPulpDryMatterPercentage.getValue() + moDecFruitPulpHumidityPercentage.getValue(), SLibUtils.DecimalFormatPercentage4D.getMaximumFractionDigits()) != 1) {
+                    validation.setMessage("La suma de '" + SGuiUtils.getLabelName(jlFruitPulpDryMatterPercentage) + "' y '" + SGuiUtils.getLabelName(jlFruitPulpHumidityPercentage) + "' debe ser igual a 100%.");
+                    validation.setComponent(moDecFruitPulpDryMatterPercentage);
+                }
+                else if (moDecFruitPulpOilPercentage.getValue() > moDecFruitPulpDryMatterPercentage.getValue()) {
+                    validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(jlFruitPulpOilPercentage) + "'" + SGuiConsts.ERR_MSG_FIELD_VAL_LESS_EQUAL + "'" + SGuiUtils.getLabelName(jlFruitPulpDryMatterPercentage) + "'.");
+                    validation.setComponent(moDecFruitPulpOilPercentage);
+                }
             }
         }
         
         return validation;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof JButton) {
+            JButton button = (JButton) e.getSource();
+            
+            if (button == jbComputeFruitPulpParams) {
+                actionPerformedComputeFruitPulpParams();
+                moDecFruitPulpDryMatterPercentage.requestFocusInWindow();
+            }
+        }
     }
 
     @Override
@@ -682,6 +774,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
 
     @Override
     public void focusGained(FocusEvent e) {
+        
     }
 
     @Override
@@ -692,6 +785,9 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements It
             if (textField == moDecImpuritiesPercentage.getComponent() || 
                     textField == moDecMoisturePercentage.getComponent()) {
                 computePercentageRound((SBeanFieldDecimal) textField);
+            }
+            else if (textField == moDecFruitPulpDryMatterPercentage.getComponent()) {
+                actionPerformedComputeFruitPulpParams(); // invokes private method computeFruitParams() as well
             }
             else if (textField == moDecFruitWeightTotal.getComponent() || 
                     textField == moDecFruitWeightPeelPit.getComponent() || 

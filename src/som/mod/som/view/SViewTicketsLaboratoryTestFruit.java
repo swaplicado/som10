@@ -23,6 +23,7 @@ import som.mod.som.db.SSomConsts;
  *
  * @author Sergio Flores
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
+ * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
  */
 public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
 
@@ -72,7 +73,7 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
                 + "lt.fruit_wei_total, "
                 + "lt.fruit_wei_peel_pit, "
                 + "@pulp_wei := lt.fruit_wei_total - lt.fruit_wei_peel_pit AS _fruit_wei_pulp, "
-                + "1 - lt.fruit_pulp_hum_per AS _pulp_dry_matter_per, "
+                + "lt.fruit_pulp_dry_per AS _pulp_dry_matter_per, "
                 + "lt.fruit_pulp_hum_per AS _pulp_hum_per, "
                 + "1.0 - lt.fruit_pulp_hum_per - lt.fruit_pulp_oil_per AS _pulp_sol_per, "
                 + "lt.fruit_pulp_oil_per AS _pulp_oil_per, "

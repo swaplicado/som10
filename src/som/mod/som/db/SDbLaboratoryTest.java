@@ -18,6 +18,7 @@ import som.mod.SModConsts;
  * @author Juan Barajas, Sergio Flores
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta, y cálculo de valores '% humedad' y '% contenido aceite'.
+ * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
  */
 public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     
@@ -41,6 +42,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     protected String msFruitRipenessDegree;
     protected double mdFruitWeightTotal;
     protected double mdFruitWeightPeelPit;
+    protected double mdFruitPulpDryMatterPercentage;
     protected double mdFruitPulpHumidityPercentage;
     protected double mdFruitPulpOilPercentage;
     protected double mdFruitYieldAdjustmentPercentage;
@@ -68,6 +70,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     public void setFruitRipenessDegree(String s) { msFruitRipenessDegree = s; }
     public void setFruitWeightTotal(double d) { mdFruitWeightTotal = d; }
     public void setFruitWeightPeelPit(double d) { mdFruitWeightPeelPit = d; }
+    public void setFruitPulpDryMatterPercentage(double d) { mdFruitPulpDryMatterPercentage = d; }
     public void setFruitPulpHumidityPercentage(double d) { mdFruitPulpHumidityPercentage = d; }
     public void setFruitPulpOilPercentage(double d) { mdFruitPulpOilPercentage = d; }
     public void setFruitYieldAdjustmentPercentage(double d) { mdFruitYieldAdjustmentPercentage = d; }
@@ -90,6 +93,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     public String getFruitRipenessDegree() { return msFruitRipenessDegree; }
     public double getFruitWeightTotal() { return mdFruitWeightTotal; }
     public double getFruitWeightPeelPit() { return mdFruitWeightPeelPit; }
+    public double getFruitPulpDryMatterPercentage() { return mdFruitPulpDryMatterPercentage; }
     public double getFruitPulpHumidityPercentage() { return mdFruitPulpHumidityPercentage; }
     public double getFruitPulpOilPercentage() { return mdFruitPulpOilPercentage; }
     public double getFruitYieldAdjustmentPercentage() { return mdFruitYieldAdjustmentPercentage; }
@@ -148,6 +152,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
         msFruitRipenessDegree = "";
         mdFruitWeightTotal = 0;
         mdFruitWeightPeelPit = 0;
+        mdFruitPulpDryMatterPercentage = 0;
         mdFruitPulpHumidityPercentage = 0;
         mdFruitPulpOilPercentage = 0;
         mdFruitYieldAdjustmentPercentage = 0;
@@ -216,6 +221,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
             msFruitRipenessDegree = resultSet.getString("fruit_ripe");
             mdFruitWeightTotal = resultSet.getDouble("fruit_wei_total");
             mdFruitWeightPeelPit = resultSet.getDouble("fruit_wei_peel_pit");
+            mdFruitPulpDryMatterPercentage = resultSet.getDouble("fruit_pulp_dry_per");
             mdFruitPulpHumidityPercentage = resultSet.getDouble("fruit_pulp_hum_per");
             mdFruitPulpOilPercentage = resultSet.getDouble("fruit_pulp_oil_per");
             mdFruitYieldAdjustmentPercentage = resultSet.getDouble("fruit_yield_adj_per");
@@ -257,6 +263,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                     "'" + msFruitRipenessDegree + "', " + 
                     mdFruitWeightTotal + ", " + 
                     mdFruitWeightPeelPit + ", " + 
+                    mdFruitPulpDryMatterPercentage + ", " + 
                     mdFruitPulpHumidityPercentage + ", " + 
                     mdFruitPulpOilPercentage + ", " + 
                     mdFruitYieldAdjustmentPercentage + " " + 
@@ -282,6 +289,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                     "fruit_ripe = '" + msFruitRipenessDegree + "', " +
                     "fruit_wei_total = " + mdFruitWeightTotal + ", " +
                     "fruit_wei_peel_pit = " + mdFruitWeightPeelPit + ", " +
+                    "fruit_pulp_dry_per = " + mdFruitPulpDryMatterPercentage + ", " +
                     "fruit_pulp_hum_per = " + mdFruitPulpHumidityPercentage + ", " +
                     "fruit_pulp_oil_per = " + mdFruitPulpOilPercentage + ", " +
                     "fruit_yield_adj_per = " + mdFruitYieldAdjustmentPercentage + " " +
@@ -318,6 +326,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
         registry.setFruitRipenessDegree(this.getFruitRipenessDegree());
         registry.setFruitWeightTotal(this.getFruitWeightTotal());
         registry.setFruitWeightPeelPit(this.getFruitWeightPeelPit());
+        registry.setFruitPulpDryMatterPercentage(this.getFruitPulpDryMatterPercentage());
         registry.setFruitPulpHumidityPercentage(this.getFruitPulpHumidityPercentage());
         registry.setFruitPulpOilPercentage(this.getFruitPulpOilPercentage());
         registry.setFruitYieldAdjustmentPercentage(this.getFruitYieldAdjustmentPercentage());
@@ -423,12 +432,15 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                 value = mdFruitWeightPeelPit;
                 break;
             case 17:
-                value = mdFruitPulpHumidityPercentage;
+                value = mdFruitPulpDryMatterPercentage;
                 break;
             case 18:
-                value = mdFruitPulpOilPercentage;
+                value = mdFruitPulpHumidityPercentage;
                 break;
             case 19:
+                value = mdFruitPulpOilPercentage;
+                break;
+            case 20:
                 value = mdFruitYieldAdjustmentPercentage;
                 break;
             default:
