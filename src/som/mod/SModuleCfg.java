@@ -53,6 +53,7 @@ import som.mod.cfg.view.SViewYear;
 /**
  * 
  * @author Sergio Flores
+ * 2019-01-17, Sergio Flores: Cambio de ubicación del catálogo de agrupadores de reporte, del módulo configuración al módulo materias primas.
  */
 public class SModuleCfg extends SGuiModule implements ActionListener {
 
@@ -62,7 +63,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
     private JMenuItem mjCatWarehouse;
     private JMenuItem mjCatPlant;
     private JMenuItem mjCatScale;
-    private JMenuItem mjCatReportingGroup;
     private JMenu mjUsr;
     private JMenuItem mjUsrUser;
     private JMenuItem mjUsrUserRights;
@@ -90,7 +90,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjCatWarehouse = new JMenuItem("Almacenes");
         mjCatPlant = new JMenuItem("Plantas");
         mjCatScale = new JMenuItem("Básculas");
-        mjCatReportingGroup = new JMenuItem("Agrupadores de reporte");
 
         mjCat.add(mjCatCompany);
         mjCat.add(mjCatCompanyBranch);
@@ -98,15 +97,12 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjCat.add(mjCatPlant);
         mjCat.addSeparator();
         mjCat.add(mjCatScale);
-        mjCat.addSeparator();
-        mjCat.add(mjCatReportingGroup);
 
         mjCatCompany.addActionListener(this);
         mjCatCompanyBranch.addActionListener(this);
         mjCatWarehouse.addActionListener(this);
         mjCatPlant.addActionListener(this);
         mjCatScale.addActionListener(this);
-        mjCatReportingGroup.addActionListener(this);
 
         mjCatCompany.setEnabled(miClient.getSession().getUser().isSupervisor());
 
@@ -461,9 +457,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatScale) {
                 miClient.getSession().showView(SModConsts.SU_SCA, SLibConsts.UNDEFINED, null);
-            }
-            else if (menuItem == mjCatReportingGroup) {
-                miClient.getSession().showView(SModConsts.CU_REP_GRP, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjUsrUser) {
                 showView(SModConsts.CU_USR, SLibConsts.UNDEFINED, null);

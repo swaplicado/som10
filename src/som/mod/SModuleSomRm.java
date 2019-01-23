@@ -66,6 +66,7 @@ import som.mod.som.view.SViewTicketsSupplierItemInputType;
 /**
  * 
  * @author Néstor Ávalos, Juan Barajas, Sergio Flores, Alfredo Pérez
+ * 2019-01-17, Sergio Flores: Cambio de ubicación del catálogo de agrupadores de reporte, del módulo configuración al módulo materias primas.
  */
 public class SModuleSomRm extends SGuiModule implements ActionListener {
 
@@ -76,6 +77,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCatInputClass;
     private JMenuItem mjCatInputCategory;
     private JMenuItem mjCatInputSource;
+    private JMenuItem mjCatReportingGroup;
     private JMenuItem mjCatIodineValueRank;
     private JMenuItem mjCatExternalWarehouses;
     private JMenuItem mjCatUpdateCatalogues;
@@ -141,6 +143,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatInputClass = new JMenuItem("Clases de insumo");
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
         mjCatInputSource = new JMenuItem("Orígenes de insumos");
+        mjCatReportingGroup = new JMenuItem("Agrupadores de reporte");
         mjCatIodineValueRank = new JMenuItem("Rangos de yodo");
         mjCatExternalWarehouses = new JMenuItem("Almacenes sistema externo");
         mjCatUpdateCatalogues = new JMenuItem("Actualizar catálogos sistema externo...");
@@ -153,6 +156,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCat.add(mjCatInputCategory);
         mjCat.addSeparator();
         mjCat.add(mjCatInputSource);
+        mjCat.add(mjCatReportingGroup);
         mjCat.addSeparator();
         mjCat.add(mjCatIodineValueRank);
         mjCat.addSeparator();
@@ -166,6 +170,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatInputClass.addActionListener(this);
         mjCatInputCategory.addActionListener(this);
         mjCatInputSource.addActionListener(this);
+        mjCatReportingGroup.addActionListener(this);
         mjCatIodineValueRank.addActionListener(this);
         mjCatExternalWarehouses.addActionListener(this);
         mjCatUpdateCatalogues.addActionListener(this);
@@ -652,6 +657,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatInputSource) {
                 miClient.getSession().showView(SModConsts.SU_INP_SRC, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatReportingGroup) {
+                miClient.getSession().getModule(SModConsts.MOD_CFG).showView(SModConsts.CU_REP_GRP, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatIodineValueRank) {
                 miClient.getSession().showView(SModConsts.SU_IOD_VAL_RANK, SLibConsts.UNDEFINED, null);
