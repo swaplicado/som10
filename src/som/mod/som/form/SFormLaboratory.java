@@ -436,10 +436,10 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Grado madurez");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Peso fruta (g)");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Peso cáscara + hueso (g)");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Materia seca pulpa");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Humedad pulpa");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Aceite pulpa");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Rendimiento esperado");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Pulpa: materia seca");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Pulpa: humedad");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Pulpa: aceite");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ajuste rendimiento");
 
                 for (col = 0; col < columns.length; col++) {
                     moModel.getGridColumns().add(columns[col]);

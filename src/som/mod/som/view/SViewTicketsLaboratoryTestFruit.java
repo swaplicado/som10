@@ -73,16 +73,17 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
                 + "lt.fruit_wei_total, "
                 + "lt.fruit_wei_peel_pit, "
                 + "@pulp_wei := lt.fruit_wei_total - lt.fruit_wei_peel_pit AS _fruit_wei_pulp, "
-                + "lt.fruit_pulp_dry_per AS _pulp_dry_matter_per, "
+                + "lt.fruit_pulp_dry_per AS _pulp_dry_per, "
                 + "lt.fruit_pulp_hum_per AS _pulp_hum_per, "
-                + "1.0 - lt.fruit_pulp_hum_per - lt.fruit_pulp_oil_per AS _pulp_sol_per, "
+                + "@pulp_sol_per := lt.fruit_pulp_dry_per - lt.fruit_pulp_oil_per AS _pulp_sol_per, "
                 + "lt.fruit_pulp_oil_per AS _pulp_oil_per, "
                 + "@fruit_hum_wei := @pulp_wei * lt.fruit_pulp_hum_per AS _fruit_hum_wei, "
-                + "@fruit_sol_wei := @pulp_wei * (1 - lt.fruit_pulp_hum_per - lt.fruit_pulp_oil_per) + lt.fruit_wei_peel_pit AS _fruit_sol_wei, "
+                + "@fruit_sol_wei := @pulp_wei * @pulp_sol_per + lt.fruit_wei_peel_pit AS _fruit_sol_wei, "
                 + "@fruit_oil_wei := @pulp_wei * lt.fruit_pulp_oil_per AS _fruit_oil_wei, "
                 + "IF(lt.fruit_wei_total = 0, 0.0, @fruit_hum_wei / lt.fruit_wei_total) AS _fruit_hum_per, "
                 + "IF(lt.fruit_wei_total = 0, 0.0, @fruit_sol_wei / lt.fruit_wei_total) AS _fruit_sol_per, "
                 + "@fruit_oil_per := IF(lt.fruit_wei_total = 0, 0.0, @fruit_oil_wei / lt.fruit_wei_total) AS _fruit_oil_per, "
+                + "lt.fruit_yield_adj_per, "
                 + "@fruit_oil_per - lt.fruit_yield_adj_per AS _fruit_yield "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sca ON T.fk_sca = sca.id_sca "
@@ -99,7 +100,7 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[25];
+        columns = new SGridColumnView[26];
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca.code", "Báscula");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "t.num", "Boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "t.dt", SGridConsts.COL_TITLE_DATE + " boleto");
@@ -112,19 +113,20 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "lt.fruit_ripe", "Grado madurez");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "lt.fruit_wei_total", "Peso fruta (" + SSomConsts.G + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "lt.fruit_wei_peel_pit", "Peso cáscara + hueso (" + SSomConsts.G + ")");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_wei_pulp", "Peso pulpa (" + SSomConsts.G + ")");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_dry_matter_per", "Pulpa: materia seca");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_hum_per", "Pulpa: humedad");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_sol_per", "Pulpa: sólidos");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_oil_per", "Pulpa: aceite");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_hum_wei", "Fruta: humedad (" + SSomConsts.G + ")");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_sol_wei", "Fruta: sólidos (" + SSomConsts.G + ")");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_oil_wei", "Fruta: aceite (" + SSomConsts.G + ")");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "lt.aci_per", "Fruta: acidez");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_hum_per", "Fruta: humedad");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_sol_per", "Fruta: sólidos");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_oil_per", "Fruta: aceite");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_yield", "Rendimiento esperado");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_wei_pulp", "Peso pulpa (" + SSomConsts.G + ") *");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_dry_per", "Pulpa: materia seca %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_hum_per", "Pulpa: humedad %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_sol_per", "Pulpa: sólidos % *");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_oil_per", "Pulpa: aceite %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_hum_wei", "Fruta: humedad (" + SSomConsts.G + ") *");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_sol_wei", "Fruta: sólidos (" + SSomConsts.G + ") *");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_oil_wei", "Fruta: aceite (" + SSomConsts.G + ") *");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "lt.aci_per", "Fruta: acidez %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_hum_per", "Fruta: humedad % *");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_sol_per", "Fruta: sólidos % *");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_oil_per", "Fruta: aceite % *");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "lt.fruit_yield_adj_per", "Ajuste rendimiento %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_yield", "Rendimiento esperado % *");
 
         moModel.getGridColumns().addAll(Arrays.asList(columns));
     }

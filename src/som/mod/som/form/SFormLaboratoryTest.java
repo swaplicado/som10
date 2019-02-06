@@ -331,13 +331,13 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
 
         jPanel31.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlFruitPulpDryMatterPercentage.setText("Materia seca pulpa (%):");
+        jlFruitPulpDryMatterPercentage.setText("Pulpa: materia seca (%):");
         jlFruitPulpDryMatterPercentage.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel31.add(jlFruitPulpDryMatterPercentage);
         jPanel31.add(moDecFruitPulpDryMatterPercentage);
 
         jbComputeFruitPulpParams.setText("Calcular");
-        jbComputeFruitPulpParams.setToolTipText("Calcular % humedad y aceite en pulpa");
+        jbComputeFruitPulpParams.setToolTipText("Calcular % humedad y % aceite en pulpa");
         jbComputeFruitPulpParams.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel31.add(jbComputeFruitPulpParams);
 
@@ -345,7 +345,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
 
         jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlFruitPulpHumidityPercentage.setText("Humedad pulpa (%):");
+        jlFruitPulpHumidityPercentage.setText("Pulpa: humedad (%):");
         jlFruitPulpHumidityPercentage.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel28.add(jlFruitPulpHumidityPercentage);
         jPanel28.add(moDecFruitPulpHumidityPercentage);
@@ -354,7 +354,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
 
         jPanel29.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlFruitPulpOilPercentage.setText("Aceite pulpa (%):");
+        jlFruitPulpOilPercentage.setText("Pulpa: aceite(%):");
         jlFruitPulpOilPercentage.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel29.add(jlFruitPulpOilPercentage);
         jPanel29.add(moDecFruitPulpOilPercentage);
@@ -570,12 +570,12 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
             SGuiValidation validation = moDecFruitPulpDryMatterPercentage.validateField();
             if (SGuiUtils.computeValidation(miClient, validation)) {
                 if (moDecFruitPulpDryMatterPercentage.getValue() == 0) {
-                    moDecFruitPulpOilPercentage.setValue(0.0);
                     moDecFruitPulpHumidityPercentage.setValue(1.0);
+                    moDecFruitPulpOilPercentage.setValue(0.0);
                 }
                 else {
+                    moDecFruitPulpHumidityPercentage.setValue(1.0 - moDecFruitPulpDryMatterPercentage.getValue());
                     moDecFruitPulpOilPercentage.setValue(SLabUtils.estimateFruitOilPct(SLabConsts.FRUIT_AVOCADO, moDecFruitPulpDryMatterPercentage.getValue()));
-                    moDecFruitPulpHumidityPercentage.setValue(1 - moDecFruitPulpDryMatterPercentage.getValue());
                 }
                 
                 computeFruitParams();
