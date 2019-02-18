@@ -1,4 +1,11 @@
 ================================================================================
+2019-02-06, 1.0 060.2
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Implementación reporte comparativo histórico mensual recepción materias primas vía CLI,
+para ser invocado por Programador de Tareas de Windows.
+
+================================================================================
 2019-02-06, 1.0 060.1
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
