@@ -59,7 +59,8 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SR_ITEM_REC,
             SModConsts.SR_ITEM_REC_PAY,
             SModConsts.SR_ITEM_REC_IOD_VAL,
-            SModConsts.SR_FRE_TIME
+            SModConsts.SR_FRE_TIME,
+            SModConsts.SR_ITEM_FRUIT
         });
     }
 

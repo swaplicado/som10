@@ -106,6 +106,8 @@ public abstract class SModSysConsts {
     public static final int SS_ITEM_TP_FG = 3;
     public static final int SS_ITEM_TP_BP = 4;
     public static final int SS_ITEM_TP_CU = 5;
+    
+    public static final int SX_ITEM_TP_FRUIT = 6;
 
     public static final int SU_IOG_ADJ_TP_NA = 1;
 

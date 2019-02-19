@@ -37,6 +37,7 @@ import som.mod.som.db.SDbSupraRegion;
 import som.mod.som.db.SDbTicket;
 import som.mod.som.form.SDialogRepFreightTime;
 import som.mod.som.form.SDialogRepIodineRank;
+import som.mod.som.form.SDialogRepReceivedFruit;
 import som.mod.som.form.SDialogRepReceivedSeed;
 import som.mod.som.form.SFormDialogAssignSeasonRegion;
 import som.mod.som.form.SFormLaboratory;
@@ -103,6 +104,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjQaTicketLabTestDetFruit;
     private JMenu mjRep;   // Reports
     private JMenuItem mjRepSeedReceived;
+    private JMenuItem mjRepSeedReceivedFruit;
     private JMenuItem mjRepSeedReceivedByIodVal;
     private JMenuItem mjRepSeedReceivedByPerOle;
     private JMenuItem mjRepSeedReceivedByPerLin;
@@ -245,6 +247,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
         mjRep = new JMenu("Reportes");
         mjRepSeedReceived = new JMenuItem("Materia prima recibida...");
+        mjRepSeedReceivedFruit = new JMenuItem("Fruta recibida...");
         mjRepSeedReceivedByIodVal = new JMenuItem("Materia prima recibida por valor de yodo...");
         mjRepSeedReceivedByPerOle = new JMenuItem("Materia prima recibida por porcentaje de ácido oleico...");
         mjRepSeedReceivedByPerLin = new JMenuItem("Materia prima recibida por porcentaje de ácido linoleico...");
@@ -255,6 +258,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjRepCompTic = new JMenuItem("Comparativo boletos SOM vs. Revuelta...");
 
         mjRep.add(mjRepSeedReceived);
+        mjRep.add(mjRepSeedReceivedFruit);
         mjRep.add(mjRepSeedReceivedByIodVal);
         mjRep.add(mjRepSeedReceivedByPerOle);
         mjRep.add(mjRepSeedReceivedByPerLin);
@@ -268,6 +272,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjRep.add(mjRepCompTic);
 
         mjRepSeedReceived.addActionListener(this);
+        mjRepSeedReceivedFruit.addActionListener(this);
         mjRepSeedReceivedByIodVal.addActionListener(this);
         mjRepSeedReceivedByPerOle.addActionListener(this);
         mjRepSeedReceivedByPerLin.addActionListener(this);
@@ -614,6 +619,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                         break;
                 }
                 break;
+            case SModConsts.SR_ITEM_FRUIT:
+                    guiReport = new SGuiReport("reps/s_item_rec_fruit.jasper", "Reporte de fruta recibida");
+                break;
             case SModConsts.SR_ITEM_REC_IOD_VAL:
                 switch (subtype) {
                     case SModSysConsts.REP_LAB_TEST_IOD:
@@ -723,6 +731,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjRepSeedReceived) {
                 new SDialogRepReceivedSeed(miClient, SModConsts.SR_ITEM_REC, "Reporte materia prima recibida").setVisible(true);
+            }
+            else if (menuItem == mjRepSeedReceivedFruit) {
+                new SDialogRepReceivedFruit(miClient, SModConsts.SR_ITEM_FRUIT, "Reporte de fruta recibida").setVisible(true);
             }
             else if (menuItem == mjRepSeedReceivedByIodVal) {
                 new SDialogRepIodineRank(miClient, SModConsts.SR_ITEM_REC_IOD_VAL, SModSysConsts.REP_LAB_TEST_IOD, "Reporte materia prima recibida por valor de yodo").setVisible(true);

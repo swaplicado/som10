@@ -190,6 +190,9 @@ public class SModuleSom extends SGuiModule {
                         aux += "AND i.fk_item_tp = " + SModSysConsts.SS_ITEM_TP_CU + " ";
                         settings.setCatalogueName("Desecho");
                         break;
+                    case SModSysConsts.SX_ITEM_TP_FRUIT:
+                        aux += "AND i.b_fruit ";
+                        settings.setCatalogueName("Fruta");
                     default:
                 }
 
