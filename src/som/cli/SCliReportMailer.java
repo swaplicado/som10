@@ -24,31 +24,32 @@ import sa.lib.mail.SMailSender;
 public class SCliReportMailer {
     
     private static final int ARG_ITEM_ID = 0;
-    private static final int ARG_YEARS = 1;
+    private static final int ARG_YEAR = 1;
     private static final int ARG_MAIL_TO = 2;
 
     private static final int DEF_ITEM_ID = 6;
-    private static final int DEF_YEARS = 5;
+    //private static final int DEF_YEAR_REF = 5;
+    private static final int DEF_YEAR_REF = 2010;
     private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
 
     /**
      * @param args the command line arguments
-     * Three arguments are expected:
-     * 1: item ID
-     * 2: history years
-     * 3: mail recipients (separated with semicolon, without blanks, obviously)
+     * Three arguments expected:
+     * 1: Item ID.
+     * 2: Year reference. Can be two types of values: i.e., if >= 2001, then is the year to start from; otherwise is a number of history years besides current year.
+     * 3: Mail recipients (separated with semicolon, without blanks between them, obviously).
      */
     public static void main(String[] args) {
         try {
             int itemId = DEF_ITEM_ID;
-            int years = DEF_YEARS;
+            int yearRef = DEF_YEAR_REF;
             String mailTo = DEF_MAIL_TO;
             
             if (args.length >= 1) {
                 itemId = SLibUtils.parseInt(args[ARG_ITEM_ID]);
             }
             if (args.length >= 2) {
-                years = SLibUtils.parseInt(args[ARG_YEARS]);
+                yearRef = SLibUtils.parseInt(args[ARG_YEAR]);
             }
             if (args.length >= 3) {
                 mailTo = args[ARG_MAIL_TO];
@@ -61,7 +62,7 @@ public class SCliReportMailer {
             session.setDatabase(database);
 
             SReportHtmlTicketSeasonMonth reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonth(session);
-            String body = reportHtmlTicketSeasonMonth.generateReportHtml(itemId, years);
+            String body = reportHtmlTicketSeasonMonth.generateReportHtml(itemId, yearRef);
             
             SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "AETHSOM", "som@aeth.mx");
             //SMailSender sender = new SMailSender("mail.swaplicado.com.mx", "26", "smtp", false, true, "sflores@swaplicado.com.mx", "Ch3c0m4n", "sflores@swaplicado.com.mx");

@@ -1,4 +1,11 @@
 ================================================================================
+2019-02-27, 1.0 060.4
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Mejora reporte comparativo histórico mensual: adición columnas porcentaje mensual por temporada,
+compactación de tabla de datos, y ampliación de año de inicio.
+
+================================================================================
 2019-02-19, 1.0 060.3
 Luis Alfredo PÉREZ ZAVALA
 --------------------------------------------------------------------------------
