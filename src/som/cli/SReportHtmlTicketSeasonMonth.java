@@ -15,6 +15,7 @@ import sa.lib.SLibTimeConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiSession;
+import som.mod.som.db.SDbInputCategory;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SSomMailUtils;
 
@@ -41,6 +42,8 @@ public class SReportHtmlTicketSeasonMonth {
         // read requested item for report:
         SDbItem item = new SDbItem();
         item.read(moSession, new int[] { itemId });
+        SDbInputCategory inputCategory = new SDbInputCategory();
+        inputCategory.read(moSession, new int[] { item.getFkInputCategoryId() });
         
         // define start and end date for report:
         Date dateCur = new Date();
@@ -139,7 +142,7 @@ public class SReportHtmlTicketSeasonMonth {
         // HTML body:
         
         html += "<body>";
-        html += "<h2>" + SLibUtils.textToHtml("Comparativo histórico mensual recepción materias primas") + "</h2>";
+        html += "<h2>" + SLibUtils.textToHtml("Comparativo histórico mensual recepción " + inputCategory.getName().toLowerCase()) + "</h2>";
         html += "<p><b>" + SLibUtils.textToHtml(item.getName()) + "</b> al " + SLibUtils.textToHtml(SLibUtils.DateFormatDateLong.format(dateCur)) + " (" + SLibUtils.DateFormatTime.format(dateCur) + ")</p>";
         
         // HTML table:
