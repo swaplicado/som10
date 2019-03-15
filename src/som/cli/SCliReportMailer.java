@@ -9,6 +9,9 @@ import erp.lib.SLibUtilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.TimeZone;
+import sa.gui.util.SUtilConfigXml;
+import sa.gui.util.SUtilConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbDatabase;
@@ -16,6 +19,7 @@ import sa.lib.gui.SGuiSession;
 import sa.lib.mail.SMail;
 import sa.lib.mail.SMailConsts;
 import sa.lib.mail.SMailSender;
+import sa.lib.xml.SXmlUtils;
 import som.mod.som.db.SDbInputCategory;
 import som.mod.som.db.SDbItem;
 
@@ -44,6 +48,8 @@ public class SCliReportMailer {
      */
     public static void main(String[] args) {
         try {
+            // define arguments of program:
+            
             int itemId = DEF_ITEM_ID;
             int yearRef = DEF_YEAR_REF;
             String mailTo = DEF_MAIL_TO;
@@ -58,11 +64,34 @@ public class SCliReportMailer {
                 mailTo = args[ARG_MAIL_TO];
             }
             
+            // connect database:
+            
+            String xml = SXmlUtils.readXml(SUtilConsts.FILE_NAME_CFG);
+            SUtilConfigXml configXml = new SUtilConfigXml();
+            configXml.processXml(xml);
+
+            TimeZone zone = SLibUtils.createTimeZone(TimeZone.getDefault(), TimeZone.getTimeZone((String) configXml.getAttribute(SUtilConfigXml.ATT_TIME_ZONE).getValue()));
+            SLibUtils.restoreDateFormats(zone);
+            TimeZone.setDefault(zone);
+
             SDbDatabase database = new SDbDatabase(SDbConsts.DBMS_MYSQL);
-            database.connect("192.168.1.233", "3306", "som_com", "root", "msroot");
+            int result = database.connect(
+                    (String) configXml.getAttribute(SUtilConfigXml.ATT_DB_HOST).getValue(),
+                    (String) configXml.getAttribute(SUtilConfigXml.ATT_DB_PORT).getValue(),
+                    "som_com",
+                    (String) configXml.getAttribute(SUtilConfigXml.ATT_USR_NAME).getValue(),
+                    (String) configXml.getAttribute(SUtilConfigXml.ATT_USR_PSWD).getValue());
+
+            if (result != SDbConsts.CONNECTION_OK) {
+                throw new Exception(SDbConsts.ERR_MSG_DB_CONNECTION);
+            }
+            
+            // create user session:
             
             SGuiSession session = new SGuiSession(null);
             session.setDatabase(database);
+            
+            // generate and send report:
 
             SReportHtmlTicketSeasonMonth reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonth(session);
             String body = reportHtmlTicketSeasonMonth.generateReportHtml(itemId, yearRef);

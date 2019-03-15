@@ -78,7 +78,6 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
     private boolean mbFirstActivation;
     private boolean mbLoggedIn;
     private SGuiSession moSession;
-    private SUtilConfigXml moConfigXml;
     private SDbDatabase moSysDatabase;
     private SDbDatabaseMonitor moSysDatabaseMonitor;
     private Statement miSysStatement;
@@ -421,10 +420,6 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        int result = SLibConsts.UNDEFINED;
-        String xml = "";
-        TimeZone zone = null;
-
         mbFirstActivation = true;
 
         setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -438,21 +433,21 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         logout();
 
         try {
-            xml = SXmlUtils.readXml(SUtilConsts.FILE_NAME_CFG);
-            moConfigXml = new SUtilConfigXml();
-            moConfigXml.processXml(xml);
+            String xml = SXmlUtils.readXml(SUtilConsts.FILE_NAME_CFG);
+            SUtilConfigXml configXml = new SUtilConfigXml();
+            configXml.processXml(xml);
 
-            zone = SLibUtils.createTimeZone(TimeZone.getDefault(), TimeZone.getTimeZone((String) moConfigXml.getAttribute(SUtilConfigXml.ATT_TIME_ZONE).getValue()));
+            TimeZone zone = SLibUtils.createTimeZone(TimeZone.getDefault(), TimeZone.getTimeZone((String) configXml.getAttribute(SUtilConfigXml.ATT_TIME_ZONE).getValue()));
             SLibUtils.restoreDateFormats(zone);
             TimeZone.setDefault(zone);
 
             moSysDatabase = new SDbDatabase(SDbConsts.DBMS_MYSQL);
-            result = moSysDatabase.connect(
-                    (String) moConfigXml.getAttribute(SUtilConfigXml.ATT_DB_HOST).getValue(),
-                    (String) moConfigXml.getAttribute(SUtilConfigXml.ATT_DB_PORT).getValue(),
-                    (String) moConfigXml.getAttribute(SUtilConfigXml.ATT_DB_NAME).getValue(),
-                    (String) moConfigXml.getAttribute(SUtilConfigXml.ATT_USR_NAME).getValue(),
-                    (String) moConfigXml.getAttribute(SUtilConfigXml.ATT_USR_PSWD).getValue());
+            int result = moSysDatabase.connect(
+                    (String) configXml.getAttribute(SUtilConfigXml.ATT_DB_HOST).getValue(),
+                    (String) configXml.getAttribute(SUtilConfigXml.ATT_DB_PORT).getValue(),
+                    (String) configXml.getAttribute(SUtilConfigXml.ATT_DB_NAME).getValue(),
+                    (String) configXml.getAttribute(SUtilConfigXml.ATT_USR_NAME).getValue(),
+                    (String) configXml.getAttribute(SUtilConfigXml.ATT_USR_PSWD).getValue());
 
             if (result != SDbConsts.CONNECTION_OK) {
                 throw new Exception(SDbConsts.ERR_MSG_DB_CONNECTION);
@@ -464,7 +459,7 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
                 miSysStatement = moSysDatabase.getConnection().createStatement();
             }
 
-            mnTerminal = SLibUtils.parseInt((String) moConfigXml.getAttribute(SUtilConfigXml.ATT_TERMINAL).getValue());
+            mnTerminal = SLibUtils.parseInt((String) configXml.getAttribute(SUtilConfigXml.ATT_TERMINAL).getValue());
 
             moDatePicker = new SGuiDatePicker(this, SGuiConsts.DATE_PICKER_DATE);
             moDateRangePicker = new SGuiDateRangePicker(this);
