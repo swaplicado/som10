@@ -19,6 +19,7 @@ import sa.lib.gui.SGuiSession;
 import sa.lib.mail.SMail;
 import sa.lib.mail.SMailConsts;
 import sa.lib.mail.SMailSender;
+import sa.lib.mail.SMailUtils;
 import sa.lib.xml.SXmlUtils;
 import som.mod.som.db.SDbInputCategory;
 import som.mod.som.db.SDbItem;
@@ -32,6 +33,7 @@ public class SCliReportMailer {
     private static final int ARG_ITEM_ID = 0;
     private static final int ARG_YEAR = 1;
     private static final int ARG_MAIL_TO = 2;
+    private static final int ARG_MAIL_BCC = 3;
 
     private static final int DEF_ITEM_ID = 6; // aguacate maduro
     //private static final int DEF_ITEM_ID = 64;  // aguacate maduro orgánico
@@ -53,6 +55,7 @@ public class SCliReportMailer {
             int itemId = DEF_ITEM_ID;
             int yearRef = DEF_YEAR_REF;
             String mailTo = DEF_MAIL_TO;
+            String mailBcc = DEF_MAIL_TO;
             
             if (args.length >= 1) {
                 itemId = SLibUtils.parseInt(args[ARG_ITEM_ID]);
@@ -62,6 +65,9 @@ public class SCliReportMailer {
             }
             if (args.length >= 3) {
                 mailTo = args[ARG_MAIL_TO];
+            }
+            if (args.length >= 4) {
+                mailBcc = args[ARG_MAIL_BCC];
             }
             
             // connect database:
@@ -104,8 +110,9 @@ public class SCliReportMailer {
             SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "AETHSOM", "som@aeth.mx");
             //SMailSender sender = new SMailSender("mail.swaplicado.com.mx", "26", "smtp", false, true, "sflores@swaplicado.com.mx", "Ch3c0m4n", "sflores@swaplicado.com.mx");
             ArrayList<String> recipients = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailTo, ";")));
-            SMail mail = new SMail(sender, "[SOM] Histórico mensual " + inputCategory.getName().toLowerCase() + " " + SLibUtils.DateFormatDate.format(new Date()), body, recipients);
-
+            String subject = "[SOM] Histórico mensual " + inputCategory.getName().toLowerCase() + " " + SLibUtils.DateFormatDate.format(new Date());
+            SMail mail = new SMail(sender, SMailUtils.encodeSubjectUtf8(subject), body, recipients);
+            mail.getBccRecipients().add(mailBcc);
             mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
             mail.send();
             System.out.println("Mail send!");
