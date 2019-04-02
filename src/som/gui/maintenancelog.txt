@@ -1,4 +1,10 @@
 ================================================================================
+2019-04-02, 1.0 060.7
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición de vistas de boletos por ítem y por tipo insumo, así como el menú de control de calidad para usuarios con permiso 'CONSULTA MATERIAS PRIMAS'.
+
+================================================================================
 2019-04-01, 1.0 060.6
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
