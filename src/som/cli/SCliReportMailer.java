@@ -46,7 +46,8 @@ public class SCliReportMailer {
      * Three arguments expected:
      * 1: Item ID.
      * 2: Year reference. Can be two types of values: i.e., if >= 2001, then is the year to start from; otherwise is a number of history years besides current year.
-     * 3: Mail recipients (separated with semicolon, without blanks between them, obviously).
+     * 3: Mail To recipients (separated with semicolon, without blanks between them, obviously).
+     * 4: Mail Bcc recipients (separated with semicolon, without blanks between them, obviously).
      */
     public static void main(String[] args) {
         try {
@@ -97,24 +98,36 @@ public class SCliReportMailer {
             SGuiSession session = new SGuiSession(null);
             session.setDatabase(database);
             
-            // generate and send report:
+            // generate mail body:
 
             SReportHtmlTicketSeasonMonth reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonth(session);
-            String body = reportHtmlTicketSeasonMonth.generateReportHtml(itemId, yearRef);
+            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(itemId, yearRef);
+            
+            // generate mail subject:
             
             SDbItem item = new SDbItem();
             item.read(session, new int[] { itemId });
+            
             SDbInputCategory inputCategory = new SDbInputCategory();
             inputCategory.read(session, new int[] { item.getFkInputCategoryId() });
             
+            String mailSubject = "[SOM] Histórico mensual " + inputCategory.getName().toLowerCase() + " " + SLibUtils.DateFormatDate.format(new Date());
+            
+            // prepare mail recepients:
+            
+            ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailTo, ";")));
+            ArrayList<String> recipientsBcc = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailBcc, ";")));
+            
+            // send mail:
+            
             SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "AETHSOM", "som@aeth.mx");
             //SMailSender sender = new SMailSender("mail.swaplicado.com.mx", "26", "smtp", false, true, "sflores@swaplicado.com.mx", "Ch3c0m4n", "sflores@swaplicado.com.mx");
-            ArrayList<String> recipients = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailTo, ";")));
-            String subject = "[SOM] Histórico mensual " + inputCategory.getName().toLowerCase() + " " + SLibUtils.DateFormatDate.format(new Date());
-            SMail mail = new SMail(sender, SMailUtils.encodeSubjectUtf8(subject), body, recipients);
-            mail.getBccRecipients().add(mailBcc);
+            
+            SMail mail = new SMail(sender, SMailUtils.encodeSubjectUtf8(mailSubject), mailBody, recipientsTo);
+            mail.getBccRecipients().addAll(recipientsBcc);
             mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
             mail.send();
+            
             System.out.println("Mail send!");
         }
         catch (Exception e) {
