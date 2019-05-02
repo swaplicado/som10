@@ -28,7 +28,7 @@ import som.mod.SModConsts;
  */
 public class SViewTicketsSupplierItem extends SGridPaneView {
     
-    private SGridFilterDateRange moFilterDateRange;
+    private final SGridFilterDateRange moFilterDateRange;
     
     public SViewTicketsSupplierItem(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_TIC_MAN_SUP, SLibConsts.UNDEFINED, title);

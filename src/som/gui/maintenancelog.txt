@@ -1,4 +1,35 @@
 ================================================================================
+2019-04-03, 1.0 060.8
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Implementación 4 argumento para clase som.cli.SCliReportMailer, para destinatarios terciarios Bcc (Blind carbon copy).
+
+================================================================================
+2019-04-02, 1.0 060.7
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición de vistas de boletos por ítem y por tipo insumo, así como el menú de control de calidad para usuarios con permiso 'CONSULTA MATERIAS PRIMAS'.
+
+================================================================================
+2019-04-01, 1.0 060.6
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Mejora reporte comparativo histórico mensual: codificación de asunto de mail para preservar correctamente caracteres no ASCII.
+
+================================================================================
+2019-03-15, 1.0 060.5
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Mejora reporte comparativo histórico mensual: coloreado de valor mayor en cada año/temporada.
+
+================================================================================
+2019-02-28, 1.0 060.4
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Mejora reporte comparativo histórico mensual: adición columnas porcentaje mensual por temporada,
+compactación de tabla de datos, ampliación de año de inicio, y mejora a asunto mail.
+
+================================================================================
 2019-02-19, 1.0 060.3
 Luis Alfredo PÉREZ ZAVALA
 --------------------------------------------------------------------------------
