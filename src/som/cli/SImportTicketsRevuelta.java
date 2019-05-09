@@ -11,49 +11,55 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbDatabase;
 import sa.lib.gui.SGuiSession;
+import som.mod.SModConsts;
 import som.mod.SModSysConsts;
+import som.mod.cfg.db.SDbCompany;
 import som.mod.cfg.db.SDbUser;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbTicket;
+import som.mod.som.db.SDbTicketNote;
 import som.mod.som.db.SSomUtils;
 import static som.mod.som.db.SSomUtils.getProperRegionId;
 import static som.mod.som.db.SSomUtils.getProperSeasonId;
 
 /**
  *
- * @author Alfredo Prez
+ * @author Alfredo Pérez
  */
 public class SImportTicketsRevuelta {
 
-    private static Connection connectionRev;
-    private static Connection connectionSoom;
-    private static int lastImportedTicket;
-    private static boolean b_lab;
-    private static SGuiSession session = new SGuiSession(null);
+    private static Connection moConnectionRev;
+    private static Connection moConnectionSom;
+    private static int mnLastImportedTicket;
+    private static SGuiSession session;
+    private static String PlateCageLabels;
 
-    public static int getLastImportedTicket() { return lastImportedTicket; }
-    public static boolean getBlab(){ return b_lab;}
-
-    public static void setLastImportedTicket(int lastId) { lastImportedTicket = lastId; }
-    public static void setBlab(boolean b) { b_lab = b; }
-
+    public static int getLastImportedTicket() { return mnLastImportedTicket; }
+    public static void setLastImportedTicket(int lastId) { mnLastImportedTicket = lastId; }
+    
     public static void main(String[] args) {
-        connectionRev = openConnectionRevuelta();
-        connectionSoom = openConnectionSom();
+        session = new SGuiSession(null);
+        moConnectionRev = openConnectionRevuelta();
+        moConnectionSom = openConnectionSom();
 
         SDbDatabase database = new SDbDatabase(SDbConsts.DBMS_MYSQL);
         database.connect("192.168.1.233", "3306", "som_com", "root", "msroot");
         session.setDatabase(database);
         try {
+            SDbCompany company = (SDbCompany) session.readRegistry(SModConsts.CU_CO, new int[] { SUtilConsts.BPR_CO_ID });
+            PlateCageLabels = company.getPlateCageLabels();
+            
             run(session);
             database.disconnect();
-            connectionRev.close();
-            connectionSoom.close();
+            moConnectionRev.close();
+            moConnectionSom.close();
         } 
         catch (Exception e) {
             SLibUtils.printException(SImportTicketsRevuelta.class.getName(), e);
@@ -61,8 +67,8 @@ public class SImportTicketsRevuelta {
     }
 
     private static void run(SGuiSession session) throws Exception {
-        Statement stmSoom = connectionSoom.createStatement();
-        Statement stmRev = connectionRev.createStatement();
+        Statement stmSoom = moConnectionSom.createStatement();
+        Statement stmRev = moConnectionRev.createStatement();
         ResultSet rstSoom = null;
 
         rstSoom = stmSoom.executeQuery("SELECT MAX(num) FROM som_com.s_tic s WHERE dt >= '2019-01-01'");
@@ -99,7 +105,7 @@ public class SImportTicketsRevuelta {
                     registry.setDate(rstRev.getDate("Pes_FecHorPri"));
                     //registry.setQuantity(Quantity());
                     registry.setPlate(rstRev.getString("Pes_Placas"));
-                    //registry.setPlateCage(PlateCage());
+                    registry.setPlateCage(getContainerPlates(PlateCageLabels, rstRev.getString("Pes_ObsPri")));
                     registry.setDriver(rstRev.getString("Pes_Chofer"));
                     registry.setDatetimeArrival(rstRev.getTimestamp("Pes_FecHorPri"));
                     registry.setDatetimeDeparture(rstRev.getTimestamp("Pes_FecHorSeg") == null ? rstRev.getTimestamp("Pes_FecHorPri") : rstRev.getTimestamp("Pes_FecHorSeg"));
@@ -135,8 +141,8 @@ public class SImportTicketsRevuelta {
                     //registry.setTared(this.isTared());
                     //registry.setPayed(this.isPayed());
                     //registry.setAssorted(this.isAssorted());
-                    //registry.setPackage(this.isPackage());
-                    //registry.setLaboratory(this.isLaboratory());
+                    registry.setPackage(dbItem.isPackage());
+                    registry.setLaboratory(dbItem.isLaboratory());
                     //registry.setDpsSupply(this.isDpsSupply());
                     //registry.setDeleted(this.isDeleted());
                     //registry.setSystem(this.isSystem());
@@ -149,7 +155,7 @@ public class SImportTicketsRevuelta {
                     registry.setFkRegionId_n(getProperRegionId(session, seasonId, registry.getFkItemId(), registry.getFkProducerId()));
                     registry.setFkUnitId(dbItem.getFkUnitId());
                     registry.setFkInputSourceId(1);
-                    registry.setFkLaboratoryId_n(getBlab() ? 1 : 0);
+                    registry.setFkLaboratoryId_n(0);
                     //registry.setFkExternalDpsYearId_n(FkExternalDpsYearId_n());
                     //registry.setFkExternalDpsDocId_n(FkExternalDpsDocId_n());
                     //registry.setFkExternalDpsEntryId_n(FkExternalDpsEntryId_n());
@@ -177,6 +183,9 @@ public class SImportTicketsRevuelta {
                     //registry.setAuxRequiredCalculation(this.isAuxRequiredCalculation());
                     //registry.setAuxSendMail(this.isAuxSendMail());
                     //registry.setAuxRecipientsTo(AuxRecipientsTo());
+                    SDbTicketNote note = new SDbTicketNote();
+                    note.setNote(rstRev.getString("Pes_ObsPri"));
+                    registry.getChildTicketNotes().add(note);
                     registry.save(session);
                     System.out.println("Boleto importado: " + rstRev.getInt("Pes_ID"));
                 }
@@ -218,5 +227,33 @@ public class SImportTicketsRevuelta {
             throw new IllegalStateException("Cannot connect the database!", e);
         }
         return connection;
+    }
+
+    /**
+     * 
+     * @param aBuscar Palabras a buscar separadas por ; (punto y coma).
+     * @param cadena Cadena de texto en donde se van a buscar las palabras.
+     * @return Regresa la siguiente palabra encontrada despues de la palabra buscada.
+     * ejemplo:
+     * aBuscar = "jaula;tolva;tq";
+     * cadena = "PESO TEORICO: 37990 KG JAULA: 293XS3 pedido 0068049 carga completa";
+     * return = "293XS3";
+     */
+    private static String getContainerPlates(String aBuscar, String cadena) {
+        String[] valuesSplit = aBuscar.split(";");
+        String placas = "";
+        for (String value : valuesSplit) {
+            
+            Pattern pattern = Pattern.compile(value + "([\\s:]*[\\w]*)", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(cadena);
+            
+            if (matcher.find()) {
+                placas = matcher.group(1).replaceAll("[\\s:]","");
+            }
+            if (!"".equals(placas)){
+                return placas;
+            }
+        }
+        return "";
     }
 }

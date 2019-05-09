@@ -34,7 +34,7 @@ import som.mod.SModSysConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Alfredo Pérez
  * 2019-01-07, Sergio Flores: Mostrar solo proveedores con movimientos en sección período actual, en notificación automática de recepción de boletos.
  * 2019-01-17, Sergio Flores: Mejoras reporte automático vía mail al tarar boletos:
  *   a) remoción de proveedores sin movimientos en todas las secciones. Antes aparecían todos.
@@ -152,6 +152,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         super(SModConsts.S_TIC);
         mvChildTicketNotes = new Vector<>();
         mvChildLaboratories = new Vector<>();
+        initRegistry();
     }
 
     /*

@@ -1,5 +1,15 @@
 ================================================================================
-2019-04-30, 1.0 060.4
+2019-05-09, 1.0 061.0
+Luis Alfredo PÉREZ ZAVALA
+--------------------------------------------------------------------------------
+1) Se agrego initRegistry() a algunas clases.
+2) Correcciones minimas a la importación de boletos.
+    a) Se agregaron las notas a la importación automática de boletos.
+    b) Se eliminó el "null" en el llenado de las placas de la caja.
+    c) Se intenta extraer la información referente a las placas de la caja.
+
+================================================================================
+2019-04-30, 1.0 060.9
 Luis Alfredo PÉREZ ZAVALA
 --------------------------------------------------------------------------------
 1) Implementación de importación automatica de boletos de Revuelta a SOM.

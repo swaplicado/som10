@@ -53,6 +53,7 @@ public class SDbTicketRevuelta extends SDbRegistryUser  {
 
     public SDbTicketRevuelta() {
         super(SModConsts.E_TIC_REV);
+        initRegistry();
     }
 
     public void setPkTicketRevueltaId(int n) { mnPkTicketRevueltaId = n; }

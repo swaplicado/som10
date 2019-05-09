@@ -22,7 +22,7 @@ import som.mod.SModSysConsts;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Alfredo Pérez
  */
 public class SDbLaboratory extends SDbRegistryUser {
 
@@ -61,6 +61,7 @@ public class SDbLaboratory extends SDbRegistryUser {
         super(SModConsts.S_LAB);
         mvChildNotes = new Vector<>();
         mvChildTests = new Vector<>();
+        initRegistry();
     }
 
     /*
