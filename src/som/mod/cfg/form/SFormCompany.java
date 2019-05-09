@@ -151,6 +151,10 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         jlFruitRipenessDegrees = new javax.swing.JLabel();
         moTextFruitRipenessDegrees = new sa.lib.gui.bean.SBeanFieldText();
         jLabel7 = new javax.swing.JLabel();
+        jPanel46 = new javax.swing.JPanel();
+        jlPlateCageLabels = new javax.swing.JLabel();
+        moTextPlateCageLabels = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel8 = new javax.swing.JLabel();
         jPanel45 = new javax.swing.JPanel();
 
         jPanel1.setLayout(new java.awt.BorderLayout(0, 5));
@@ -558,7 +562,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         jPanel38.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros fruta de opción múltiple:"));
         jPanel38.setLayout(new java.awt.BorderLayout(0, 5));
 
-        jPanel39.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+        jPanel39.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
         jPanel40.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -594,6 +598,23 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
 
         jPanel39.add(jPanel41);
 
+        jPanel46.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlPlateCageLabels.setText("Etiquetas placas:");
+        jlPlateCageLabels.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel46.add(jlPlateCageLabels);
+
+        moTextPlateCageLabels.setText("sBeanFieldText2");
+        moTextPlateCageLabels.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel46.add(moTextPlateCageLabels);
+
+        jLabel8.setForeground(java.awt.Color.gray);
+        jLabel8.setText("separar con ';'");
+        jLabel8.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel46.add(jLabel8);
+
+        jPanel39.add(jPanel46);
+
         jPanel38.add(jPanel39, java.awt.BorderLayout.NORTH);
 
         jPanel45.setLayout(new java.awt.BorderLayout());
@@ -617,6 +638,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -657,6 +679,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel43;
     private javax.swing.JPanel jPanel44;
     private javax.swing.JPanel jPanel45;
+    private javax.swing.JPanel jPanel46;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -682,6 +705,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JLabel jlMailNotificationConfigUser;
     private javax.swing.JLabel jlMaximumStockDifferenceKg;
     private javax.swing.JLabel jlName;
+    private javax.swing.JLabel jlPlateCageLabels;
     private javax.swing.JLabel jlRevueltaHost;
     private javax.swing.JLabel jlRevueltaId;
     private javax.swing.JLabel jlRevueltaOdbc;
@@ -714,6 +738,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
     private sa.lib.gui.bean.SBeanFieldText moTextMailNotificationConfigProtocol;
     private sa.lib.gui.bean.SBeanFieldText moTextMailNotificationConfigUser;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
+    private sa.lib.gui.bean.SBeanFieldText moTextPlateCageLabels;
     private sa.lib.gui.bean.SBeanFieldText moTextRevueltaHost;
     private sa.lib.gui.bean.SBeanFieldText moTextRevueltaId;
     private sa.lib.gui.bean.SBeanFieldText moTextRevueltaOdbc;
@@ -765,6 +790,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         moBoolMailNotificationConfigAuth.setBooleanSettings(SGuiUtils.getLabelName(moBoolMailNotificationConfigAuth.getText()), false);
         moTextFruitClasses.setTextSettings(SGuiUtils.getLabelName(jlFruitClasses), 250);
         moTextFruitRipenessDegrees.setTextSettings(SGuiUtils.getLabelName(jlFruitRipenessDegrees), 250);
+        moTextPlateCageLabels.setTextSettings(SGuiUtils.getLabelName(jlPlateCageLabels), 250);
 
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
@@ -793,6 +819,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         moFields.addField(moBoolMailNotificationConfigAuth);
         moFields.addField(moTextFruitClasses);
         moFields.addField(moTextFruitRipenessDegrees);
+        moFields.addField(moTextPlateCageLabels);
 
         moFields.setFormButton(jbSave);
         
@@ -864,6 +891,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         moBoolMailNotificationConfigAuth.setValue(moRegistry.isMailNotificationConfigAuth());
         moTextFruitClasses.setValue(moRegistry.getFruitClasses());
         moTextFruitRipenessDegrees.setValue(moRegistry.getFruitRipenessDegrees());
+        moTextPlateCageLabels.setValue(moRegistry.getPlateCageLabels());
 
         jtfVersion.setText("" + moRegistry.getVersion());
         jtfVersionTs.setText(moRegistry.getVersionTs() == null ? "" : SLibUtils.DateFormatDatetime.format(moRegistry.getVersionTs()));
@@ -903,6 +931,7 @@ public class SFormCompany extends sa.lib.gui.bean.SBeanForm {
         registry.setRevueltaPort(moTextRevueltaPort.getValue());
         registry.setFruitClasses(moTextFruitClasses.getValue());
         registry.setFruitRipenessDegrees(moTextFruitRipenessDegrees.getValue());
+        registry.setPlateCageLabels(moTextPlateCageLabels.getValue());
         //registry.setVersion(0);
         //registry.setVersionTs(null);
         registry.setFkLanguageId(moKeyLanguaje.getValue()[0]);

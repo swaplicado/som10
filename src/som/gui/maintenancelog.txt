@@ -7,6 +7,7 @@ Luis Alfredo PÉREZ ZAVALA
     a) Se agregaron las notas a la importación automática de boletos.
     b) Se eliminó el "null" en el llenado de las placas de la caja.
     c) Se intenta extraer la información referente a las placas de la caja.
+3) Implementación de campo de configuración para la identificación de la caja en la configuración de la empresa.
 
 ================================================================================
 2019-04-30, 1.0 060.9
