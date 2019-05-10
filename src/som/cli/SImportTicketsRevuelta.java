@@ -18,7 +18,6 @@ import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbDatabase;
 import sa.lib.gui.SGuiSession;
-import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.cfg.db.SDbCompany;
 import som.mod.cfg.db.SDbUser;
@@ -53,7 +52,8 @@ public class SImportTicketsRevuelta {
         database.connect("192.168.1.233", "3306", "som_com", "root", "msroot");
         session.setDatabase(database);
         try {
-            SDbCompany company = (SDbCompany) session.readRegistry(SModConsts.CU_CO, new int[] { SUtilConsts.BPR_CO_ID });
+            SDbCompany company = new SDbCompany();
+            company.read(session, new int[] { SUtilConsts.BPR_CO_ID });
             PlateCageLabels = company.getPlateCageLabels();
             
             run(session);
@@ -96,7 +96,7 @@ public class SImportTicketsRevuelta {
             if (!rstSoom.next()) {
                 idItem = SSomUtils.mapItemSomRevuelta(session, rstRev.getString("Pro_ID"));
                 idProd = SSomUtils.mapProducerSomRevuelta(session, rstRev.getString("Emp_ID"));
-                if (idItem != 0 || idProd != 0) {
+                if (idItem != 0 && idProd != 0) {
                     SDbItem dbItem = new SDbItem();
                     dbItem.read(session, new int[] { idItem });
                     SDbTicket registry = new SDbTicket();
