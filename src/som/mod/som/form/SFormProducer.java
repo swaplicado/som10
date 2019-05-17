@@ -120,7 +120,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         jPanel8.add(jlNameTrade);
 
         moTextNameTrade.setText("sBeanFieldText1");
-        moTextNameTrade.setPreferredSize(new java.awt.Dimension(300, 23));
+        moTextNameTrade.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel8.add(moTextNameTrade);
 
         jPanel2.add(jPanel8);

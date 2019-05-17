@@ -84,10 +84,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCatUpdateCatalogues;
     private JMenu mjCfg;   // Configuration
     private JMenuItem mjCfgSeasons;
-    private JMenuItem mjCfgSupraRegions;
-    private JMenuItem mjCfgRegions;
     private JMenuItem mjCfgSeasonRegion;
     private JMenuItem mjCfgSeasonProducer;
+    private JMenuItem mjCfgRegions;
+    private JMenuItem mjCfgSupraRegions;
     private JMenu mjTic;   // Tickets
     private JMenuItem mjTicTicketSca;
     private JMenuItem mjTicTicketLab;
@@ -179,23 +179,23 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
         mjCfg = new JMenu("Configuración");
         mjCfgSeasons = new JMenuItem("Temporadas");
-        mjCfgSupraRegions = new JMenuItem("Supraregiones");
-        mjCfgRegions = new JMenuItem("Regiones");
         mjCfgSeasonRegion = new JMenuItem("Configuración de regiones");
         mjCfgSeasonProducer = new JMenuItem("Configuración de proveedores");
+        mjCfgRegions = new JMenuItem("Regiones");
+        mjCfgSupraRegions = new JMenuItem("Supraregiones");
 
         mjCfg.add(mjCfgSeasons);
-        mjCfg.add(mjCfgSupraRegions);
-        mjCfg.add(mjCfgRegions);
-        mjCfg.addSeparator();
         mjCfg.add(mjCfgSeasonRegion);
         mjCfg.add(mjCfgSeasonProducer);
+        mjCfg.addSeparator();
+        mjCfg.add(mjCfgRegions);
+        mjCfg.add(mjCfgSupraRegions);
 
         mjCfgSeasons.addActionListener(this);
-        mjCfgSupraRegions.addActionListener(this);
-        mjCfgRegions.addActionListener(this);
         mjCfgSeasonRegion.addActionListener(this);
         mjCfgSeasonProducer.addActionListener(this);
+        mjCfgRegions.addActionListener(this);
+        mjCfgSupraRegions.addActionListener(this);
 
         mjTic = new JMenu("Boletos báscula");
         mjTicTicketSca = new JMenuItem("Boletos en báscula");
@@ -681,17 +681,17 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             else if (menuItem == mjCfgSeasons) {
                 showView(SModConsts.SU_SEAS, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == mjCfgSupraRegions) {
-                showView(SModConsts.SU_SUP_REG, SLibConsts.UNDEFINED, null);
-            }
-            else if (menuItem == mjCfgRegions) {
-                showView(SModConsts.SU_REG, SLibConsts.UNDEFINED, null);
-            }
             else if (menuItem == mjCfgSeasonRegion) {
                 showView(SModConsts.SU_SEAS_REG, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCfgSeasonProducer) {
                 showView(SModConsts.SU_SEAS_PROD, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCfgRegions) {
+                showView(SModConsts.SU_REG, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCfgSupraRegions) {
+                showView(SModConsts.SU_SUP_REG, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjTicTicketSca) {
                 showView(SModConsts.S_TIC, SModSysConsts.SS_TIC_ST_SCA, null);
