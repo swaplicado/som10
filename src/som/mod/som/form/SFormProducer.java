@@ -21,7 +21,7 @@ import som.mod.som.db.SDbProducer;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores
  */
 public class SFormProducer extends SBeanForm implements ItemListener {
 
