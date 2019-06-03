@@ -159,16 +159,17 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
 
         switch (mnGridSubtype) {
             case SModConsts.SX_TIC_TARE:
-
                 filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
                 sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt", (SGuiDate) filter);
                 break;
+                
             case SModConsts.SX_TIC_TARE_PEND:
                 filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE);
                 if (filter != null) {
                     sql += (sql.length() == 0 ? "" : "AND ") + " v.dt <= '" + SLibUtils.DbmsDateFormatDate.format((SGuiDate) filter) + "' ";
                 }
                 break;
+                
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -197,6 +198,8 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 + "it.code, "
                 + "pr.name, "
                 + "pr.code, "
+                + "isrc.name, "
+                + "isrc.code, "
                 + "v.b_rev_1, "
                 + "v.b_rev_2, "
                 + "v.wei_src, "
@@ -232,6 +235,12 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 + "v.fk_sca = sc.id_sca "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_TIC_ST) + " AS vs ON "
                 + "v.fk_tic_st = vs.id_tic_st "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS it ON "
+                + "v.fk_item = it.id_item "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS pr ON "
+                + "v.fk_prod = pr.id_prod "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS isrc ON "
+                + "v.fk_inp_src = isrc.id_inp_src "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -240,10 +249,6 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 + "v.fk_seas_n = se.id_seas "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_REG) + " AS re ON "
                 + "v.fk_reg_n = re.id_reg "
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS it ON "
-                + "v.fk_item = it.id_item "
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS pr ON "
-                + "v.fk_prod = pr.id_prod "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_LAB) + " AS lb ON "
                 + "v.fk_lab_n = lb.id_lab "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)
@@ -256,10 +261,10 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         SGridColumnView[] columns = null;
 
         if (mnGridSubtype == SModConsts.SX_TIC_TARE) {
-            columns = new SGridColumnView[36];
+            columns = new SGridColumnView[37];
         }
         else {
-            columns = new SGridColumnView[33];
+            columns = new SGridColumnView[34];
         }
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sc.code", "Báscula");
@@ -269,14 +274,15 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "pr.code", "Proveedor código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "it.name", "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "it.code", "Ítem código");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vs.name", "Estatus");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "se.name", "Temporada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "re.name", "Región");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "isrc.name", "Origen insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla", "Placas");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla_cag", "Placas caja");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, SDbConsts.FIELD_NAME, "Chofer");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "v.ts_arr", "TS entrada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "v.ts_dep", "TS  salida");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vs.name", "Estatus");
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_src", "Carga origen (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_arr", "Peso entrada (" + SSomConsts.KG + ")");

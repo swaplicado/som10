@@ -367,10 +367,9 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 960, 600);
 
-        jbSaveSend = new JButton("Guardar y enviar");
-        jbSaveSend.setPreferredSize(new Dimension(175, 23));
+        jbSaveSend = new JButton("Guardar y enviar al estado siguiente");
+        jbSaveSend.setPreferredSize(new Dimension(250, 23));
         jbSaveSend.addActionListener(this);
-        jbSaveSend.setToolTipText("Guardar y enviar al estado siguiente");
 
         moTextScaleName.setTextSettings(SGuiUtils.getLabelName(jlScale.getText()), 25);
         moTextScaleCode.setTextSettings(SGuiUtils.getLabelName(jlScale.getText()), 25);

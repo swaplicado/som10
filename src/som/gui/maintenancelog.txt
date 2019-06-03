@@ -1,4 +1,12 @@
 ================================================================================
+2019-06-03, 1.0 062.0
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Ampliación de longitud de Clave Revuelta en Productores.
+2) Eliminación de filtros a boletos con estatus "báscula" y "laboratorio".
+3) Habilitación de botón "guardar y enviar" en tara de boletos, siempre y cuando el estatus del mismo sea "báscula".
+
+================================================================================
 2019-05-17, 1.0 061.1
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

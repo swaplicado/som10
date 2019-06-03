@@ -208,7 +208,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName.getText()), 150);
         moTextNameTrade.setTextSettings(SGuiUtils.getLabelName(jlNameTrade.getText()), 15);
         moTextFiscalId.setTextSettings(SGuiUtils.getLabelName(jlFiscalId.getText()), 20);
-        moTextRevueltaProducerId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaProducerId.getText()), 4, 0);
+        moTextRevueltaProducerId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaProducerId.getText()), 10, 0);
         moKeyReportingGroup.setKeySettings(miClient, SGuiUtils.getLabelName(jlReportingGroup.getText()), true);
         moBoolFreight.setBooleanSettings(SGuiUtils.getLabelName(moBoolFreight.getText()), false);
 

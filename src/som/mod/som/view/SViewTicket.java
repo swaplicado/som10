@@ -18,6 +18,7 @@ import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
 import sa.lib.grid.SGridConsts;
+import sa.lib.grid.SGridFilterDateCutOff;
 import sa.lib.grid.SGridFilterDatePeriod;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
@@ -40,9 +41,10 @@ import som.mod.som.db.SSomConsts;
  */
 public class SViewTicket extends SGridPaneView implements ActionListener {
 
+    private SGridFilterDateCutOff moFilterDateCutOff;
     private SGridFilterDatePeriod moFilterDatePeriod;
-    private SPaneFilter moPaneFilterItem;
     private SPaneFilter moPaneFilterInputCategory;
+    private SPaneFilter moPaneFilterItem;
     private JButton mjbPreviousStep;
     private JButton mjbNextStep;
     private JButton mjbLaboratoryTest;
@@ -58,14 +60,6 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     }
 
     private void initComponetsCustom() {
-        moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
-        moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
-
-        moPaneFilterItem = new SPaneFilter(this, SModConsts.SU_ITEM);
-        moPaneFilterItem.initFilter(null);
-        moPaneFilterInputCategory = new SPaneFilter(this, SModConsts.SU_INP_CT);
-        moPaneFilterInputCategory.initFilter(null);
-
         mjbPreviousStep = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_move_left.gif")), "Regresar boleto al estado anterior", this);
         mjbNextStep = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_move_right.gif")), "Enviar boleto al estado siguiente", this);
         mjbLaboratoryTest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_lab.gif")), "Agregar análisis de laboratorio", this);
@@ -73,7 +67,30 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         mjbSeasonRegion = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tic_cfg.gif")), "Cambiar temporada y región", this);
         mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
 
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+        moPaneFilterInputCategory = new SPaneFilter(this, SModConsts.SU_INP_CT);
+        moPaneFilterInputCategory.initFilter(null);
+        moPaneFilterItem = new SPaneFilter(this, SModConsts.SU_ITEM);
+        moPaneFilterItem.initFilter(null);
+
+        switch (mnGridSubtype) {
+            case SModSysConsts.SS_TIC_ST_SCA:
+            case SModSysConsts.SS_TIC_ST_LAB:
+                moFilterDateCutOff = new SGridFilterDateCutOff(miClient, this);
+                moFilterDateCutOff.initFilter(null);
+                getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDateCutOff);
+                break;
+                
+            case SModSysConsts.SS_TIC_ST_ADM:
+            case SLibConsts.UNDEFINED:
+                moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
+                moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
+                getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+                break;
+                
+            default:
+                miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+        
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPreviousStep);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbNextStep);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbLaboratoryTest);
@@ -91,6 +108,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
                 break;
+                
             case SModSysConsts.SS_TIC_ST_LAB:
                 mjbPreviousStep.setEnabled(true);
                 mjbNextStep.setEnabled(true);
@@ -99,6 +117,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbSeasonRegion.setEnabled(false);
                 setRowButtonsEnabled(false);
                 break;
+                
             case SModSysConsts.SS_TIC_ST_ADM:
                 mjbPreviousStep.setEnabled(true);
                 mjbNextStep.setEnabled(false);
@@ -107,6 +126,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbSeasonRegion.setEnabled(true);
                 setRowButtonsEnabled(false);
                 break;
+                
             case SLibConsts.UNDEFINED:
                 mjbPreviousStep.setEnabled(false);
                 mjbNextStep.setEnabled(false);
@@ -115,6 +135,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbSeasonRegion.setEnabled(false);
                 setRowButtonsEnabled(false);
                 break;
+                
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -335,9 +356,27 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             sql += (sql.isEmpty() ? "" : "AND ") + "v.b_del = 0 ";
         }
 
-        filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
-        sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt", (SGuiDate) filter);
-
+        switch (mnGridSubtype) {
+            case SModSysConsts.SS_TIC_ST_SCA:
+            case SModSysConsts.SS_TIC_ST_LAB:
+                filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE);
+                if (filter != null) {
+                    sql += (sql.length() == 0 ? "" : "AND ") + " v.dt <= '" + SLibUtils.DbmsDateFormatDate.format((SGuiDate) filter) + "' ";
+                }
+                break;
+                
+            case SModSysConsts.SS_TIC_ST_ADM:
+            case SLibConsts.UNDEFINED:
+                filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
+                if (filter != null) {
+                    sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt", (SGuiDate) filter);
+                }
+                break;
+                
+            default:
+                miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+                
         filter = (int[]) moFiltersMap.get(SModConsts.SU_INP_CT);
         if (filter != null) {
             sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "it.fk_inp_ct" }, (int[]) filter);
@@ -357,6 +396,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 break;
             case SModSysConsts.SS_TIC_ST_ADM:
                 sql += (sql.isEmpty() ? "" : "AND ") + "v.fk_tic_st = " + mnGridSubtype + " ";
+                break;
+            case SLibConsts.UNDEFINED:
                 break;
             default:
         }
@@ -430,10 +471,10 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS v "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_TIC_ST) + " AS vs ON "
-                + "v.fk_tic_st = vs.id_tic_st "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sc ON "
                 + "v.fk_sca = sc.id_sca "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_TIC_ST) + " AS vs ON "
+                + "v.fk_tic_st = vs.id_tic_st "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS it ON "
                 + "v.fk_item = it.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS pr ON "
@@ -465,6 +506,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         SGridColumnView[] columns = null;
 
         switch (mnGridSubtype) {
+            case SModSysConsts.SS_TIC_ST_SCA:
+                break;
             case SModSysConsts.SS_TIC_ST_LAB:
                 cols += 3;
                 break;
@@ -574,15 +617,14 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
 
     @Override
     public void actionMouseClicked() {
-        switch (mnGridSubtype) {
-            case SModSysConsts.SS_TIC_ST_LAB:
-                actionLaboratoryTest();
-                break;
-            case SModSysConsts.SS_TIC_ST_ADM:
-                actionManager();
-                break;
-            default:
-                super.actionMouseClicked();
+        if (mnGridSubtype == SModSysConsts.SS_TIC_ST_LAB) {
+            actionLaboratoryTest();
+        }
+        else if (mnGridSubtype == SModSysConsts.SS_TIC_ST_ADM) {
+            actionManager();
+        }
+        else {
+            super.actionMouseClicked();
         }
     }
 

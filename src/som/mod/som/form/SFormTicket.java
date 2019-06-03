@@ -444,7 +444,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         try {
-            attendWindowActivated();
+            handleWindowActivated();
         }
         catch (InstantiationException | IllegalAccessException e) {
             SLibUtils.printException(this, e);
@@ -538,10 +538,9 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 960, 600);
         
-        jbSaveSend = new JButton("Guardar y enviar");
-        jbSaveSend.setPreferredSize(new Dimension(175, 23));
+        jbSaveSend = new JButton("Guardar y enviar al estado siguiente");
+        jbSaveSend.setPreferredSize(new Dimension(250, 23));
         jbSaveSend.addActionListener(this);
-        jbSaveSend.setToolTipText("Guardar y enviar al estado siguiente");
 
         moKeyScale.setKeySettings(miClient, SGuiUtils.getLabelName(jlScale.getText()), true);
         moIntTicket.setIntegerSettings(SGuiUtils.getLabelName(jlTicket.getText()), SGuiConsts.GUI_TYPE_INT_RAW, true);
@@ -594,7 +593,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jlWeightDestinyDepartureUnit.setText(SSomConsts.KG);
     }
 
-    private void attendWindowActivated() throws InstantiationException, IllegalAccessException {
+    private void handleWindowActivated() throws InstantiationException, IllegalAccessException {
         if (mbFirstTime) {
             mbFirstTime = false;
             
@@ -647,7 +646,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moDecPackageEmptyQuantityDeparture.setEditable(mbIsPackage);
             jbImportTareTicket.setEnabled(enable && moConnectionRevuelta != null);
             jbCleanTare.setEnabled(!enable);
-            jbSaveSend.setEnabled(false);
+            jbSaveSend.setEnabled(enable && moRegistry != null && moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA);
         }
         else if (moRegistry.isRegistryNew()) {
             moIntTicket.setEditable(enable);
