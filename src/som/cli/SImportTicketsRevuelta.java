@@ -5,6 +5,8 @@
  */
 package som.cli;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -187,12 +189,19 @@ public class SImportTicketsRevuelta {
                     note.setNote(rstRev.getString("Pes_ObsPri"));
                     registry.getChildTicketNotes().add(note);
                     registry.save(session);
-                    System.out.println("Boleto importado: " + rstRev.getInt("Pes_ID"));
-                }
-                else {
-                    System.out.println("El boleto " + rstRev.getInt("Pes_ID") + " NO pudo ser importado debido al item: " + rstRev.getString("Pro_ID"));
-                }
+                    writeLog("Boleto importado con exito: " + rstRev.getInt("Pes_ID"));
+                    }
+                    //else {
+                        //writeLog("El boleto " + rstRev.getInt("Pes_ID") + " NO pudo ser importado debido al item: " + rstRev.getString("Pro_ID"));
+                    //}
             }
+        }
+    }
+
+    public static void writeLog(String str) throws Exception {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("SImportTicketsRevuelta.log", true))) {
+            writer.append(System.getProperty( "line.separator" ));
+            writer.append(str);
         }
     }
 
