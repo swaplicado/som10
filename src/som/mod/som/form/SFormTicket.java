@@ -1284,6 +1284,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                         dummy.setPackingEmptyQuantityDeparture(moDecPackingEmptyQuantityDeparture.getValue());
                         dummy.setWeightDestinyArrival(moDecWeightDestinyArrival.getValue());
                         dummy.setWeightDestinyDeparture(moDecWeightDestinyDeparture.getValue());
+                        dummy.setFkItemId(moKeyItem.getValue()[0]);
                         try {
                             dummy.computeWeight(miClient.getSession(), false);
                             if (dummy.getWeightDestinyNet_r() < 0) {
