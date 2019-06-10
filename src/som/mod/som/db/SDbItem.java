@@ -39,8 +39,8 @@ public class SDbItem extends SDbRegistryUser {
     protected double mdMfgFinishedGoodPercentage;
     protected double mdMfgByproductPercentage;
     protected double mdMfgCullPercentage;
-    protected String msPackageName;
-    protected double mdPackageWeight;
+    protected String msPackingName;
+    protected double mdPackingWeight;
     protected double mdUnitaryWeight;
     protected double mdFruitYieldAdjustmentPercentage;
     protected int mnStartingSeasonMonth;
@@ -50,7 +50,7 @@ public class SDbItem extends SDbRegistryUser {
     protected boolean mbAutoMailNotification;
     protected boolean mbUserMailNotification;
     protected boolean mbUserMailNotificationOnlyWhenMoves;
-    protected boolean mbPackage;
+    protected boolean mbPacking;
     protected boolean mbLaboratory;
     protected boolean mbDensity;
     protected boolean mbIodineValue;
@@ -156,8 +156,8 @@ public class SDbItem extends SDbRegistryUser {
     public void setMfgFinishedGoodPercentage(double d) { mdMfgFinishedGoodPercentage = d; }
     public void setMfgByproductPercentage(double d) { mdMfgByproductPercentage = d; }
     public void setMfgCullPercentage(double d) { mdMfgCullPercentage = d; }
-    public void setPackageName(String s) { msPackageName = s; }
-    public void setPackageWeight(double d) { mdPackageWeight = d; }
+    public void setPackingName(String s) { msPackingName = s; }
+    public void setPackingWeight(double d) { mdPackingWeight = d; }
     public void setUnitaryWeight(double d) { mdUnitaryWeight = d; }
     public void setFruitYieldAdjustmentPercentage(double d) { mdFruitYieldAdjustmentPercentage = d; }
     public void setStartingSeasonMonth(int n) { mnStartingSeasonMonth = n; }
@@ -167,7 +167,7 @@ public class SDbItem extends SDbRegistryUser {
     public void setAutoMailNotification(boolean b) { mbAutoMailNotification = b; }
     public void setUserMailNotification(boolean b) { mbUserMailNotification = b; }
     public void setUserMailNotificationOnlyWhenMoves(boolean b) { mbUserMailNotificationOnlyWhenMoves = b; }
-    public void setPackage(boolean b) { mbPackage = b; }
+    public void setPacking(boolean b) { mbPacking = b; }
     public void setLaboratory(boolean b) { mbLaboratory = b; }
     public void setDensity(boolean b) { mbDensity = b; }
     public void setIodineValue(boolean b) { mbIodineValue = b; }
@@ -219,8 +219,8 @@ public class SDbItem extends SDbRegistryUser {
     public double getMfgFinishedGoodPercentage() { return mdMfgFinishedGoodPercentage; }
     public double getMfgByproductPercentage() { return mdMfgByproductPercentage; }
     public double getMfgCullPercentage() { return mdMfgCullPercentage; }
-    public String getPackageName() { return msPackageName; }
-    public double getPackageWeight() { return mdPackageWeight; }
+    public String getPackingName() { return msPackingName; }
+    public double getPackingWeight() { return mdPackingWeight; }
     public double getUnitaryWeight() { return mdUnitaryWeight; }
     public double getFruitYieldAdjustmentPercentage() { return mdFruitYieldAdjustmentPercentage; }
     public int getStartingSeasonMonth() { return mnStartingSeasonMonth; }
@@ -230,7 +230,7 @@ public class SDbItem extends SDbRegistryUser {
     public boolean isAutoMailNotification() { return mbAutoMailNotification; }
     public boolean isUserMailNotification() { return mbUserMailNotification; }
     public boolean isUserMailNotificationOnlyWhenMoves() { return mbUserMailNotificationOnlyWhenMoves; }
-    public boolean isPackage() { return mbPackage; }
+    public boolean isPacking() { return mbPacking; }
     public boolean isLaboratory() { return mbLaboratory; }
     public boolean isDensity() { return mbDensity; }
     public boolean isIodineValue() { return mbIodineValue; }
@@ -300,8 +300,8 @@ public class SDbItem extends SDbRegistryUser {
         mdMfgFinishedGoodPercentage = 0;
         mdMfgByproductPercentage = 0;
         mdMfgCullPercentage = 0;
-        msPackageName = "";
-        mdPackageWeight = 0;
+        msPackingName = "";
+        mdPackingWeight = 0;
         mdUnitaryWeight = 0;
         mdFruitYieldAdjustmentPercentage = 0;
         mnStartingSeasonMonth = 0;
@@ -311,7 +311,7 @@ public class SDbItem extends SDbRegistryUser {
         mbAutoMailNotification = false;
         mbUserMailNotification = false;
         mbUserMailNotificationOnlyWhenMoves = false;
-        mbPackage = false;
+        mbPacking = false;
         mbLaboratory = false;
         mbDensity = false;
         mbIodineValue = false;
@@ -408,8 +408,8 @@ public class SDbItem extends SDbRegistryUser {
             mdMfgFinishedGoodPercentage = resultSet.getDouble("mfg_fg_per");
             mdMfgByproductPercentage = resultSet.getDouble("mfg_bp_per");
             mdMfgCullPercentage = resultSet.getDouble("mfg_cu_per");
-            msPackageName = resultSet.getString("paq_name");
-            mdPackageWeight = resultSet.getDouble("paq_wei");
+            msPackingName = resultSet.getString("paq_name");
+            mdPackingWeight = resultSet.getDouble("paq_wei");
             mdUnitaryWeight = resultSet.getDouble("unit_wei");
             mdFruitYieldAdjustmentPercentage = resultSet.getDouble("fruit_yield_adj_per");
             mnStartingSeasonMonth = resultSet.getInt("sta_seas_mon");
@@ -419,7 +419,7 @@ public class SDbItem extends SDbRegistryUser {
             mbAutoMailNotification = resultSet.getBoolean("b_amn");
             mbUserMailNotification = resultSet.getBoolean("b_umn");
             mbUserMailNotificationOnlyWhenMoves = resultSet.getBoolean("b_umn_owm");
-            mbPackage = resultSet.getBoolean("b_paq");
+            mbPacking = resultSet.getBoolean("b_paq");
             mbLaboratory = resultSet.getBoolean("b_lab");
             mbDensity = resultSet.getBoolean("b_den");
             mbIodineValue = resultSet.getBoolean("b_iod_val");
@@ -496,8 +496,8 @@ public class SDbItem extends SDbRegistryUser {
                     mdMfgFinishedGoodPercentage + ", " +
                     mdMfgByproductPercentage + ", " +
                     mdMfgCullPercentage + ", " +
-                    "'" + msPackageName + "', " +
-                    mdPackageWeight + ", " +
+                    "'" + msPackingName + "', " +
+                    mdPackingWeight + ", " +
                     mdUnitaryWeight + ", " +
                     mdFruitYieldAdjustmentPercentage + ", " + 
                     mnStartingSeasonMonth + ", " +
@@ -507,7 +507,7 @@ public class SDbItem extends SDbRegistryUser {
                     (mbAutoMailNotification ? 1 : 0) + ", " +
                     (mbUserMailNotification ? 1 : 0) + ", " +
                     (mbUserMailNotificationOnlyWhenMoves ? 1 : 0) + ", " +
-                    (mbPackage ? 1 : 0) + ", " +
+                    (mbPacking ? 1 : 0) + ", " +
                     (mbLaboratory ? 1 : 0) + ", " +
                     (mbDensity ? 1 : 0) + ", " +
                     (mbIodineValue ? 1 : 0) + ", " +
@@ -564,8 +564,8 @@ public class SDbItem extends SDbRegistryUser {
                     "mfg_fg_per = " + mdMfgFinishedGoodPercentage + ", " +
                     "mfg_bp_per = " + mdMfgByproductPercentage + ", " +
                     "mfg_cu_per = " + mdMfgCullPercentage + ", " +
-                    "paq_name = '" + msPackageName + "', " +
-                    "paq_wei = " + mdPackageWeight + ", " +
+                    "paq_name = '" + msPackingName + "', " +
+                    "paq_wei = " + mdPackingWeight + ", " +
                     "unit_wei = " + mdUnitaryWeight + ", " +
                     "fruit_yield_adj_per = " + mdFruitYieldAdjustmentPercentage + ", " +
                     "sta_seas_mon = " + mnStartingSeasonMonth + ", " +
@@ -575,7 +575,7 @@ public class SDbItem extends SDbRegistryUser {
                     "b_amn = " + (mbAutoMailNotification ? 1 : 0) + ", " +
                     "b_umn = " + (mbUserMailNotification ? 1 : 0) + ", " +
                     "b_umn_owm = " + (mbUserMailNotificationOnlyWhenMoves ? 1 : 0) + ", " +
-                    "b_paq = " + (mbPackage ? 1 : 0) + ", " +
+                    "b_paq = " + (mbPacking ? 1 : 0) + ", " +
                     "b_lab = " + (mbLaboratory ? 1 : 0) + ", " +
                     "b_den = " + (mbDensity ? 1 : 0) + ", " +
                     "b_iod_val = " + (mbIodineValue ? 1 : 0) + ", " +
@@ -640,8 +640,8 @@ public class SDbItem extends SDbRegistryUser {
         registry.setMfgFinishedGoodPercentage(this.getMfgFinishedGoodPercentage());
         registry.setMfgByproductPercentage(this.getMfgByproductPercentage());
         registry.setMfgCullPercentage(this.getMfgCullPercentage());
-        registry.setPackageName(this.getPackageName());
-        registry.setPackageWeight(this.getPackageWeight());
+        registry.setPackingName(this.getPackingName());
+        registry.setPackingWeight(this.getPackingWeight());
         registry.setUnitaryWeight(this.getUnitaryWeight());
         registry.setFruitYieldAdjustmentPercentage(this.getFruitYieldAdjustmentPercentage());
         registry.setStartingSeasonMonth(this.getStartingSeasonMonth());
@@ -651,7 +651,7 @@ public class SDbItem extends SDbRegistryUser {
         registry.setAutoMailNotification(this.isAutoMailNotification());
         registry.setUserMailNotification(this.isUserMailNotification());
         registry.setUserMailNotificationOnlyWhenMoves(this.isUserMailNotificationOnlyWhenMoves());
-        registry.setPackage(this.isPackage());
+        registry.setPacking(this.isPacking());
         registry.setLaboratory(this.isLaboratory());
         registry.setDensity(this.isDensity());
         registry.setIodineValue(this.isIodineValue());

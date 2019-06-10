@@ -25,7 +25,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores, Alfredo Pérez
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores
  */
 public class SDialogRepComparativeTicket extends SBeanDialogReport {
 
@@ -147,14 +147,14 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
         ResultSet resulset = null;
         Vector<SDbTicketRevuelta> vTicRev = new Vector<>();
         SimpleDateFormat datetimeParser = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
-        //SimpleDateFormat DateFormatDateShort = new SimpleDateFormat("MM/dd/yyyy");    // XXX used when ODBC was supported by JVM (sflores, 2015-06-24)
+        //SimpleDateFormat DateFormatDateShort = new SimpleDateFormat("MM/dd/yyyy");    // XXX used when ODBC was supported by JVM (Sergio Flores 2015-06-24)
 
         sqlMapItems = SSomUtils.mapItemSomRevuelta(miClient.getSession());
         revueltaId = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getRevueltaId();
         try {
             statement = moConnectionRevuelta.createStatement();
 
-            /* XXX used when ODBC was supported by JVM (sflores, 2015-06-24)
+            /* XXX used when ODBC was supported by JVM (Sergio Flores 2015-06-24)
             sql = "SELECT be.clave_e, DateValue(be.fecha_e) + TimeValue(be.hora_e), DateValue(bs.fecha_s) + TimeValue(bs.hora_s), be.placas, be.observa_e, be.conductor, be.peso_e, bs.peso_s, bs.peso_n, " + // 9
                     "p.clave_p, p.nombre_p, c.clave_c, c.nombre_c, u.nombre_u, be.clave_o, be.nombre_oe, be.turno_oe, be.bascula_e, be.completo " + // 19
                     "FROM (((boleto_ent AS be " +
@@ -234,7 +234,7 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
                 vTicRev.add(ticketRevuelta);
             }
 
-            /* XXX used when ODBC was supported by JVM (sflores, 2015-06-24)
+            /* XXX used when ODBC was supported by JVM (Sergio Flores 2015-06-24)
             sql = "SELECT be.clave_e, DateValue(be.fecha_e) + TimeValue(be.hora_e), DateValue(be.fecha_e) + TimeValue(be.hora_e), be.placas, be.observa_e, be.conductor, be.peso_e, be.peso_e, " + // 8
                     "p.clave_p, p.nombre_p, c.clave_c, c.nombre_c, u.nombre_u, be.clave_o, be.nombre_oe, be.turno_oe, be.bascula_e, be.completo " + // 18
                     "FROM ((boleto_ent AS be " +

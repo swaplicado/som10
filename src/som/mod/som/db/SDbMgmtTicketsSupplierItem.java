@@ -19,7 +19,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Sergio Flores
  */
 public class SDbMgmtTicketsSupplierItem extends SDbRegistry {
 
@@ -173,12 +173,12 @@ public class SDbMgmtTicketsSupplierItem extends SDbRegistry {
             mbLaboratory = resultSet.getBoolean("t.b_lab");
             mnFkUnitId = resultSet.getInt("it.fk_unit");
 
-            mnXtaYear = resultSet.getDate("se.dt_sta") == null ? SLibConsts.UNDEFINED : SLibTimeUtils.digestYear(resultSet.getDate("se.dt_sta"))[0];    // XXX this is a non reliable data!!! (sflores, 2015-06-15)
-            mnXtaFkExternalProducerId = resultSet.getInt("pr.fk_ext_prod_n");   // XXX this is a non reliable data!!! (sflores, 2015-06-15)
-            msXtaSeason = resultSet.getString(SDbConsts.FIELD_NAME);    // XXX this is a non reliable data!!! (sflores, 2015-06-15)
-            msXtaItem = resultSet.getString("it.name");                 // XXX this is a non reliable data!!! (sflores, 2015-06-15)
-            msXtaProducer = resultSet.getString("pr.name");             // XXX this is a non reliable data!!! (sflores, 2015-06-15)
-            msXtaProducerFiscalId = resultSet.getString("pr.fis_id");   // XXX this is a non reliable data!!! (sflores, 2015-06-15)
+            mnXtaYear = resultSet.getDate("se.dt_sta") == null ? SLibConsts.UNDEFINED : SLibTimeUtils.digestYear(resultSet.getDate("se.dt_sta"))[0];    // XXX this is a non reliable data!!! (Sergio Flores 2015-06-15)
+            mnXtaFkExternalProducerId = resultSet.getInt("pr.fk_ext_prod_n");   // XXX this is a non reliable data!!! (Sergio Flores 2015-06-15)
+            msXtaSeason = resultSet.getString(SDbConsts.FIELD_NAME);    // XXX this is a non reliable data!!! (Sergio Flores 2015-06-15)
+            msXtaItem = resultSet.getString("it.name");                 // XXX this is a non reliable data!!! (Sergio Flores 2015-06-15)
+            msXtaProducer = resultSet.getString("pr.name");             // XXX this is a non reliable data!!! (Sergio Flores 2015-06-15)
+            msXtaProducerFiscalId = resultSet.getString("pr.fis_id");   // XXX this is a non reliable data!!! (Sergio Flores 2015-06-15)
         }
 
         for (int i = 0; i < tickets.size(); i++) {
@@ -255,8 +255,8 @@ public class SDbMgmtTicketsSupplierItem extends SDbRegistry {
 
         for (SDbTicket ticket : mvChildTickets) {
 
-            if (ticket.isAuxRequiredCalculation()) {
-                ticket.computeTicketValue(session);
+            if (ticket.isAuxRequirePriceComputation()) {
+                ticket.computePrice(session);
             }
 
             // Fileds system

@@ -1088,7 +1088,7 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
             moRegistry.setFkSeasonId_n(mnSeasonId);
             moRegistry.setFkRegionId_n(mnRegionId);
             moRegistry.setFkProducerId(moKeyProducer.getValue()[0]);
-            moRegistry.computeTicketValue(miClient.getSession());
+            moRegistry.computePrice(miClient.getSession());
 
             // set values of ticket
 
@@ -1264,14 +1264,14 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         registry.setXtaProducer(moKeyProducer.getSelectedItem().getItem());
         registry.setMfgOutsourcing(moBoolMfgOutsourcing.getValue());
         registry.setRowEdited(true);
-        registry.setAuxRequiredCalculation(false);
+        registry.setAuxRequirePriceComputation(false);
 
         if (mnProducerId != moKeyProducer.getValue()[0]) {
             getSeasonRegion();
 
             registry.setFkSeasonId_n(mnSeasonId);
             registry.setFkRegionId_n(mnRegionId);
-            registry.setAuxRequiredCalculation(true);
+            registry.setAuxRequirePriceComputation(true);
             registry.setRevueltaImport1(false);
         }
 

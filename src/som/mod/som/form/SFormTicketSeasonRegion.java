@@ -19,7 +19,7 @@ import som.mod.som.db.SDbTicket;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Sergio Flores
  */
 public class SFormTicketSeasonRegion extends SBeanForm {
 
@@ -370,7 +370,7 @@ public class SFormTicketSeasonRegion extends SBeanForm {
         registry.setXtaRegion(moKeyRegion.getSelectedItem().getItem());
         registry.setXtaItem(moTextItem.getValue());
         registry.setRowEdited(true);
-        registry.setAuxRequiredCalculation(true);
+        registry.setAuxRequirePriceComputation(true);
 
         registry.setFkSeasonId_n(moKeyRegion.getValue()[0]);
         registry.setFkRegionId_n(moKeyRegion.getValue()[1]);

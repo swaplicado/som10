@@ -34,7 +34,7 @@ import som.mod.SModSysConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores, Alfredo Pérez
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores
  * 2019-01-07, Sergio Flores: Mostrar solo proveedores con movimientos en sección período actual, en notificación automática de recepción de boletos.
  * 2019-01-17, Sergio Flores: Mejoras reporte automático vía mail al tarar boletos:
  *   a) remoción de proveedores sin movimientos en todas las secciones. Antes aparecían todos.
@@ -62,13 +62,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected String msDriver;
     protected Date mtDatetimeArrival;
     protected Date mtDatetimeDeparture;
-    protected double mdPackageQuantityArrival;
-    protected double mdPackageQuantityDeparture;
-    protected double mdPackageEmptyQuantityArrival;
-    protected double mdPackageEmptyQuantityDeparture;
-    protected double mdPackageWeightArrival;
-    protected double mdPackageWeightDeparture;
-    protected double mdPackageWeightNet_r;
+    protected double mdPackingFullQuantityArrival;
+    protected double mdPackingFullQuantityDeparture;
+    protected double mdPackingEmptyQuantityArrival;
+    protected double mdPackingEmptyQuantityDeparture;
+    protected double mdPackingWeightArrival;
+    protected double mdPackingWeightDeparture;
+    protected double mdPackingWeightNet_r;
     protected double mdWeightSource;
     protected double mdWeightDestinyArrival;
     protected double mdWeightDestinyDeparture;
@@ -94,7 +94,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected boolean mbTared;
     protected boolean mbPayed;
     protected boolean mbAssorted;
-    protected boolean mbPackage;
+    protected boolean mbPacking;
     protected boolean mbLaboratory;
     protected boolean mbDpsSupply;
     /*
@@ -128,6 +128,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected Date mtTsUserPayed;
     protected Date mtTsUserAssorted;
 
+    protected boolean mbOldTared;
+    protected boolean mbOldPayed;
+    protected boolean mbOldAssorted;
+    
     protected String msXtaScaleName;
     protected String msXtaScaleCode;
     protected String msXtaSeason;
@@ -137,11 +141,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected String msXtaProducer;
     protected String msXtaProducerFiscalId;
 
-    protected boolean mbAuxFormerTared;
-    protected boolean mbAuxFormerPayed;
-    protected boolean mbAuxFormerAssorted;
     protected boolean mbAuxMoveNextOnSave;
-    protected boolean mbAuxRequiredCalculation;
+    protected boolean mbAuxRequirePriceComputation;
     protected boolean mbAuxSendMail;
     protected String msAuxRecipientsTo;
 
@@ -159,32 +160,6 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
      * Private methods
      */
 
-    private void computeWeights(SGuiSession session) {
-        SDbItem item = new SDbItem();
-        try {
-            item.read(session, new int[] { mnFkItemId });
-
-            mdPackageWeightArrival = mdPackageQuantityArrival * item.getPackageWeight();
-            mdPackageWeightDeparture = mdPackageQuantityDeparture * item.getPackageWeight();
-
-            mdWeightDestinyGross_r = mdWeightDestinyArrival - mdWeightDestinyDeparture;
-            mdPackageWeightNet_r = mdPackageWeightArrival - mdPackageWeightDeparture;
-            mdWeightDestinyNet_r = mdWeightDestinyDeparture == 0 ? 0 : mdWeightDestinyGross_r - mdPackageWeightNet_r;
-
-            mdWeightSource = !mbWeightSourceAvailable ? (mdWeightDestinyNet_r + mdPackageWeightArrival) : mdWeightSource;
-
-            mdQuantity = mdWeightDestinyNet_r / item.getUnitaryWeight();
-
-            computeTicketValue(session);
-        }
-        catch (SQLException e) {
-            SLibUtils.showException(this, e);
-        }
-        catch (Exception e) {
-            SLibUtils.showException(this, e);
-        }
-    }
-    
     private String composeHtmlTableKgPctHeader(String table, String itemName, String conceptName) {
         return "<b>Resumen " + SLibUtils.textToHtml(table) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
                 + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
@@ -518,13 +493,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setDriver(String s) { msDriver = s; }
     public void setDatetimeArrival(Date t) { mtDatetimeArrival = t; }
     public void setDatetimeDeparture(Date t) { mtDatetimeDeparture = t; }
-    public void setPackageQuantityArrival(double d) { mdPackageQuantityArrival = d; }
-    public void setPackageQuantityDeparture(double d) { mdPackageQuantityDeparture = d; }
-    public void setPackageEmptyQuantityArrival(double d) { mdPackageEmptyQuantityArrival = d; }
-    public void setPackageEmptyQuantityDeparture(double d) { mdPackageEmptyQuantityDeparture = d; }
-    public void setPackageWeightArrival(double d) { mdPackageWeightArrival = d; }
-    public void setPackageWeightDeparture(double d) { mdPackageWeightDeparture = d; }
-    public void setPackageWeightNet_r(double d) { mdPackageWeightNet_r = d; }
+    public void setPackingFullQuantityArrival(double d) { mdPackingFullQuantityArrival = d; }
+    public void setPackingFullQuantityDeparture(double d) { mdPackingFullQuantityDeparture = d; }
+    public void setPackingEmptyQuantityArrival(double d) { mdPackingEmptyQuantityArrival = d; }
+    public void setPackingEmptyQuantityDeparture(double d) { mdPackingEmptyQuantityDeparture = d; }
+    public void setPackingWeightArrival(double d) { mdPackingWeightArrival = d; }
+    public void setPackingWeightDeparture(double d) { mdPackingWeightDeparture = d; }
+    public void setPackingWeightNet_r(double d) { mdPackingWeightNet_r = d; }
     public void setWeightSource(double d) { mdWeightSource = d; }
     public void setWeightDestinyArrival(double d) { mdWeightDestinyArrival = d; }
     public void setWeightDestinyDeparture(double d) { mdWeightDestinyDeparture = d; }
@@ -550,7 +525,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setTared(boolean b) { mbTared = b; }
     public void setPayed(boolean b) { mbPayed = b; }
     public void setAssorted(boolean b) { mbAssorted = b; }
-    public void setPackage(boolean b) { mbPackage = b; }
+    public void setPacking(boolean b) { mbPacking = b; }
     public void setLaboratory(boolean b) { mbLaboratory = b; }
     public void setDpsSupply(boolean b) { mbDpsSupply = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
@@ -587,13 +562,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public String getDriver() { return msDriver; }
     public Date getDatetimeArrival() { return mtDatetimeArrival; }
     public Date getDatetimeDeparture() { return mtDatetimeDeparture; }
-    public double getPackageQuantityArrival() { return mdPackageQuantityArrival; }
-    public double getPackageQuantityDeparture() { return mdPackageQuantityDeparture; }
-    public double getPackageEmptyQuantityArrival() { return mdPackageEmptyQuantityArrival; }
-    public double getPackageEmptyQuantityDeparture() { return mdPackageEmptyQuantityDeparture; }
-    public double getPackageWeightArrival() { return mdPackageWeightArrival; }
-    public double getPackageWeightDeparture() { return mdPackageWeightDeparture; }
-    public double getPackageWeightNet_r() { return mdPackageWeightNet_r; }
+    public double getPackingFullQuantityArrival() { return mdPackingFullQuantityArrival; }
+    public double getPackingFullQuantityDeparture() { return mdPackingFullQuantityDeparture; }
+    public double getPackingEmptyQuantityArrival() { return mdPackingEmptyQuantityArrival; }
+    public double getPackingEmptyQuantityDeparture() { return mdPackingEmptyQuantityDeparture; }
+    public double getPackingWeightArrival() { return mdPackingWeightArrival; }
+    public double getPackingWeightDeparture() { return mdPackingWeightDeparture; }
+    public double getPackingWeightNet_r() { return mdPackingWeightNet_r; }
     public double getWeightSource() { return mdWeightSource; }
     public double getWeightDestinyArrival() { return mdWeightDestinyArrival; }
     public double getWeightDestinyDeparture() { return mdWeightDestinyDeparture; }
@@ -619,7 +594,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public boolean isTared() { return mbTared; }
     public boolean isPayed() { return mbPayed; }
     public boolean isAssorted() { return mbAssorted; }
-    public boolean isPackage() { return mbPackage; }
+    public boolean isPacking() { return mbPacking; }
     public boolean isLaboratory() { return mbLaboratory; }
     public boolean isDpsSupply() { return mbDpsSupply; }
     public boolean isDeleted() { return mbDeleted; }
@@ -656,11 +631,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setXtaProducer(String s) { msXtaProducer = s;  }
     public void setXtaProviderFiscalId(String s) { msXtaProducerFiscalId = s;  }
 
-    public void setAuxFormerTared(boolean b) { mbAuxFormerTared = b; }
-    public void setAuxFormerPayed(boolean b) { mbAuxFormerPayed = b; }
-    public void setAuxFormerAssorted(boolean b) { mbAuxFormerAssorted = b; }
     public void setAuxMoveNextOnSend(boolean b) { mbAuxMoveNextOnSave = b; }
-    public void setAuxRequiredCalculation(boolean b) { mbAuxRequiredCalculation = b; }
+    public void setAuxRequirePriceComputation(boolean b) { mbAuxRequirePriceComputation = b; }
     public void setAuxSendMail(boolean b) { mbAuxSendMail = b; }
     public void setAuxRecipientsTo(String s) { msAuxRecipientsTo = s; }
 
@@ -673,11 +645,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public String getXtaProducer() { return msXtaProducer; }
     public String getXtaProducerFiscalId() { return msXtaProducerFiscalId; }
 
-    public boolean isAuxFormerTared() { return mbAuxFormerTared; }
-    public boolean isAuxFormerPayed() { return mbAuxFormerPayed; }
-    public boolean isAuxFormerAssorted() { return mbAuxFormerAssorted; }
     public boolean isAuxMoveNextOnSend() { return mbAuxMoveNextOnSave; }
-    public boolean isAuxRequiredCalculation() { return mbAuxRequiredCalculation; }
+    public boolean isAuxRequirePriceComputation() { return mbAuxRequirePriceComputation; }
     public boolean isAuxSendMail() { return mbAuxSendMail; }
     public String getAuxRecipientsTo() { return msAuxRecipientsTo; }
 
@@ -712,13 +681,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         msDriver = "";
         mtDatetimeArrival = null;
         mtDatetimeDeparture = null;
-        mdPackageQuantityArrival = 0;
-        mdPackageQuantityDeparture = 0;
-        mdPackageEmptyQuantityArrival = 0;
-        mdPackageEmptyQuantityDeparture = 0;
-        mdPackageWeightArrival = 0;
-        mdPackageWeightDeparture = 0;
-        mdPackageWeightNet_r = 0;
+        mdPackingFullQuantityArrival = 0;
+        mdPackingFullQuantityDeparture = 0;
+        mdPackingEmptyQuantityArrival = 0;
+        mdPackingEmptyQuantityDeparture = 0;
+        mdPackingWeightArrival = 0;
+        mdPackingWeightDeparture = 0;
+        mdPackingWeightNet_r = 0;
         mdWeightSource = 0;
         mdWeightDestinyArrival = 0;
         mdWeightDestinyDeparture = 0;
@@ -744,7 +713,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mbTared = false;
         mbPayed = false;
         mbAssorted = false;
-        mbPackage = false;
+        mbPacking = false;
         mbLaboratory = false;
         mbDpsSupply = false;
         mbDeleted = false;
@@ -772,6 +741,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mtTsUserPayed = null;
         mtTsUserAssorted = null;
 
+        mbOldTared = false;
+        mbOldPayed = false;
+        mbOldAssorted = false;
+    
         msXtaScaleName = "";
         msXtaScaleCode = "";
         msXtaSeason = "";
@@ -779,14 +752,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         msXtaItem = "";
         msXtaInputType = "";
         msXtaProducer = "";
+        msXtaProducerFiscalId = "";
 
-        mbAuxFormerTared = false;
-        mbAuxFormerPayed = false;
-        mbAuxFormerAssorted = false;
         mbAuxMoveNextOnSave = false;
-
-        mbAuxRequiredCalculation = false;
-
+        mbAuxRequirePriceComputation = false;
         mbAuxSendMail = false;
         msAuxRecipientsTo = "";
 
@@ -860,13 +829,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             msDriver = resultSet.getString("t.drv");
             mtDatetimeArrival = resultSet.getTimestamp("t.ts_arr");
             mtDatetimeDeparture = resultSet.getTimestamp("t.ts_dep");
-            mdPackageQuantityArrival = resultSet.getDouble("t.pac_qty_arr");
-            mdPackageQuantityDeparture = resultSet.getDouble("t.pac_qty_dep");
-            mdPackageEmptyQuantityArrival = resultSet.getDouble("t.pac_emp_qty_arr");
-            mdPackageEmptyQuantityDeparture = resultSet.getDouble("t.pac_emp_qty_dep");
-            mdPackageWeightArrival = resultSet.getDouble("t.pac_wei_arr");
-            mdPackageWeightDeparture = resultSet.getDouble("t.pac_wei_dep");
-            mdPackageWeightNet_r = resultSet.getDouble("t.pac_wei_net_r");
+            mdPackingFullQuantityArrival = resultSet.getDouble("t.pac_qty_arr");
+            mdPackingFullQuantityDeparture = resultSet.getDouble("t.pac_qty_dep");
+            mdPackingEmptyQuantityArrival = resultSet.getDouble("t.pac_emp_qty_arr");
+            mdPackingEmptyQuantityDeparture = resultSet.getDouble("t.pac_emp_qty_dep");
+            mdPackingWeightArrival = resultSet.getDouble("t.pac_wei_arr");
+            mdPackingWeightDeparture = resultSet.getDouble("t.pac_wei_dep");
+            mdPackingWeightNet_r = resultSet.getDouble("t.pac_wei_net_r");
             mdWeightSource = resultSet.getDouble("t.wei_src");
             mdWeightDestinyArrival = resultSet.getDouble("t.wei_des_arr");
             mdWeightDestinyDeparture = resultSet.getDouble("t.wei_des_dep");
@@ -892,7 +861,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mbTared = resultSet.getBoolean("t.b_tar");
             mbPayed = resultSet.getBoolean("t.b_pay");
             mbAssorted = resultSet.getBoolean("t.b_ass");
-            mbPackage = resultSet.getBoolean("t.b_paq");
+            mbPacking = resultSet.getBoolean("t.b_paq");
             mbLaboratory = resultSet.getBoolean("t.b_lab");
             mbDpsSupply = resultSet.getBoolean("b_dps");
             mbDeleted = resultSet.getBoolean("t.b_del");
@@ -920,6 +889,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mtTsUserPayed = resultSet.getTimestamp("t.ts_usr_pay");
             mtTsUserAssorted = resultSet.getTimestamp("t.ts_usr_ass");
 
+            mbOldTared = mbTared;
+            mbOldPayed = mbPayed;
+            mbOldAssorted = mbAssorted;
+
             msXtaScaleName = resultSet.getString("sc.name");
             msXtaScaleCode = resultSet.getString("sc.code");
             msXtaSeason = resultSet.getString("s.name");
@@ -934,10 +907,6 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             msXtaInputType = resultSet.getString("it.name");
             msXtaProducer = resultSet.getString("p.name");
             msXtaProducerFiscalId = resultSet.getString("p.fis_id");
-
-            mbAuxFormerTared = mbTared;
-            mbAuxFormerPayed = mbPayed;
-            mbAuxFormerAssorted = mbAssorted;
 
             // Read aswell child registries:
 
@@ -974,13 +943,36 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void save(SGuiSession session) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = SDbConsts.SAVE_ERROR;
+        
+        computeWeight(session, true);
 
-        if (mbAuxRequiredCalculation) {
-            computeTicketValue(session);
+        if (mbAuxRequirePriceComputation) {
+            computePrice(session);
         }
         
         if (mbAuxMoveNextOnSave) {
             moveNext(session);
+        }
+        
+        if (mbTared && !mbOldTared) {
+            mnFkUserTaredId = session.getUser().getPkUserId();
+        }
+        else if (mnFkUserTaredId == 0) {
+            mnFkUserTaredId = SUtilConsts.USR_NA_ID;
+        }
+        
+        if (mbPayed && !mbOldPayed) {
+            mnFkUserPayedId = session.getUser().getPkUserId();
+        }
+        else if (mnFkUserPayedId == 0) {
+            mnFkUserPayedId = SUtilConsts.USR_NA_ID;
+        }
+        
+        if (mbAssorted && !mbOldAssorted) {
+            mnFkUserAssortedId = session.getUser().getPkUserId();
+        }
+        else if (mnFkUserAssortedId == 0) {
+            mnFkUserAssortedId = SUtilConsts.USR_NA_ID;
         }
 
         if (mbRegistryNew) {
@@ -993,9 +985,6 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
-            mnFkUserTaredId = SUtilConsts.USR_NA_ID;
-            mnFkUserPayedId = SUtilConsts.USR_NA_ID;
-            mnFkUserAssortedId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkTicketId + ", " +
@@ -1007,13 +996,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "'" + msDriver + "', " +
                     "'" + SLibUtils.DbmsDateFormatDatetime.format(mtDatetimeArrival) + "', " +
                     "'" + SLibUtils.DbmsDateFormatDatetime.format(mtDatetimeDeparture) + "', " +
-                    mdPackageQuantityArrival + ", " +
-                    mdPackageQuantityDeparture + ", " +
-                    mdPackageEmptyQuantityArrival + ", " +
-                    mdPackageEmptyQuantityDeparture + ", " +
-                    mdPackageWeightArrival + ", " +
-                    mdPackageWeightDeparture + ", " +
-                    mdPackageWeightNet_r + ", " +
+                    mdPackingFullQuantityArrival + ", " +
+                    mdPackingFullQuantityDeparture + ", " +
+                    mdPackingEmptyQuantityArrival + ", " +
+                    mdPackingEmptyQuantityDeparture + ", " +
+                    mdPackingWeightArrival + ", " +
+                    mdPackingWeightDeparture + ", " +
+                    mdPackingWeightNet_r + ", " +
                     mdWeightSource + ", " +
                     mdWeightDestinyArrival + ", " +
                     mdWeightDestinyDeparture + ", " +
@@ -1039,7 +1028,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     (mbTared ? 1 : 0) + ", " +
                     (mbPayed ? 1 : 0) + ", " +
                     (mbAssorted ? 1 : 0) + ", " +
-                    (mbPackage ? 1 : 0) + ", " +
+                    (mbPacking ? 1 : 0) + ", " +
                     (mbLaboratory ? 1 : 0) + ", " +
                     (mbDpsSupply ? 1 : 0) + ", " +
                     (mbDeleted ? 1 : 0) + ", " +
@@ -1083,13 +1072,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "drv = '" + msDriver + "', " +
                     "ts_arr = '" + SLibUtils.DbmsDateFormatDatetime.format(mtDatetimeArrival) + "', " +
                     "ts_dep = '" + SLibUtils.DbmsDateFormatDatetime.format(mtDatetimeDeparture) + "', " +
-                    "pac_qty_arr = " + mdPackageQuantityArrival + ", " +
-                    "pac_qty_dep = " + mdPackageQuantityDeparture + ", " +
-                    "pac_emp_qty_arr = " + mdPackageEmptyQuantityArrival + ", " +
-                    "pac_emp_qty_dep = " + mdPackageEmptyQuantityDeparture + ", " +
-                    "pac_wei_arr = " + mdPackageWeightArrival + ", " +
-                    "pac_wei_dep = " + mdPackageWeightDeparture + ", " +
-                    "pac_wei_net_r = " + mdPackageWeightNet_r + ", " +
+                    "pac_qty_arr = " + mdPackingFullQuantityArrival + ", " +
+                    "pac_qty_dep = " + mdPackingFullQuantityDeparture + ", " +
+                    "pac_emp_qty_arr = " + mdPackingEmptyQuantityArrival + ", " +
+                    "pac_emp_qty_dep = " + mdPackingEmptyQuantityDeparture + ", " +
+                    "pac_wei_arr = " + mdPackingWeightArrival + ", " +
+                    "pac_wei_dep = " + mdPackingWeightDeparture + ", " +
+                    "pac_wei_net_r = " + mdPackingWeightNet_r + ", " +
                     "wei_src = " + mdWeightSource + ", " +
                     "wei_des_arr = " + mdWeightDestinyArrival + ", " +
                     "wei_des_dep = " + mdWeightDestinyDeparture + ", " +
@@ -1115,7 +1104,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "b_tar = " + mbTared + ", " +
                     "b_pay = " + (mbPayed ? 1 : 0) + ", " +
                     "b_ass = " + (mbAssorted ? 1 : 0) + ", " +
-                    "b_paq = " + (mbPackage ? 1 : 0) + ", " +
+                    "b_paq = " + (mbPacking ? 1 : 0) + ", " +
                     "b_lab = " + (mbLaboratory ? 1 : 0) + ", " +
                     "b_dps = " + (mbDpsSupply ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
@@ -1134,14 +1123,14 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "fk_ext_dps_ety_n = " + (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
-                    "fk_usr_tar = " + (mbTared && !mbAuxFormerTared ? session.getUser().getPkUserId() : mnFkUserTaredId) + ", " +
-                    "fk_usr_pay = " + (mbPayed && !mbAuxFormerPayed ? session.getUser().getPkUserId() : mnFkUserPayedId) + ", " +
-                    "fk_usr_ass = " + (mbAssorted && !mbAuxFormerAssorted ? session.getUser().getPkUserId() : mnFkUserAssortedId) + ", " +
+                    "fk_usr_tar = " + mnFkUserTaredId + ", " +
+                    "fk_usr_pay = " + mnFkUserPayedId + ", " +
+                    "fk_usr_ass = " + mnFkUserAssortedId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
-                    "ts_usr_upd = " + "NOW()" + ", " +
-                    "ts_usr_tar = " + (mbTared && !mbAuxFormerTared ? "NOW()" : "'" + SLibUtils.DbmsDateFormatDatetime.format(mtTsUserTared) + "'") + ", " +
-                    "ts_usr_pay = " + (mbPayed && !mbAuxFormerPayed ? "NOW()" : "'" + SLibUtils.DbmsDateFormatDatetime.format(mtTsUserPayed) + "'") + ", " +
-                    "ts_usr_ass = " + (mbAssorted && !mbAuxFormerAssorted ? "NOW()" : "'" + SLibUtils.DbmsDateFormatDatetime.format(mtTsUserAssorted) + "'") + " " +
+                    "ts_usr_upd = " + "NOW()" +
+                    (mbTared && !mbOldTared ? ", ts_usr_tar = NOW()" : "") +
+                    (mbPayed && !mbOldPayed ? ", ts_usr_pay = NOW()" : "") +
+                    (mbAssorted && !mbOldAssorted ? ", ts_usr_ass = NOW()" : "") + " " +
                     getSqlWhere();
         }
 
@@ -1189,13 +1178,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setDriver(this.getDriver());
         registry.setDatetimeArrival(this.getDatetimeArrival());
         registry.setDatetimeDeparture(this.getDatetimeDeparture());
-        registry.setPackageQuantityArrival(this.getPackageQuantityArrival());
-        registry.setPackageQuantityDeparture(this.getPackageQuantityDeparture());
-        registry.setPackageEmptyQuantityArrival(this.getPackageEmptyQuantityArrival());
-        registry.setPackageEmptyQuantityDeparture(this.getPackageEmptyQuantityDeparture());
-        registry.setPackageWeightArrival(this.getPackageWeightArrival());
-        registry.setPackageWeightDeparture(this.getPackageWeightDeparture());
-        registry.setPackageWeightNet_r(this.getPackageWeightNet_r());
+        registry.setPackingFullQuantityArrival(this.getPackingFullQuantityArrival());
+        registry.setPackingFullQuantityDeparture(this.getPackingFullQuantityDeparture());
+        registry.setPackingEmptyQuantityArrival(this.getPackingEmptyQuantityArrival());
+        registry.setPackingEmptyQuantityDeparture(this.getPackingEmptyQuantityDeparture());
+        registry.setPackingWeightArrival(this.getPackingWeightArrival());
+        registry.setPackingWeightDeparture(this.getPackingWeightDeparture());
+        registry.setPackingWeightNet_r(this.getPackingWeightNet_r());
         registry.setWeightSource(this.getWeightSource());
         registry.setWeightDestinyArrival(this.getWeightDestinyArrival());
         registry.setWeightDestinyDeparture(this.getWeightDestinyDeparture());
@@ -1221,7 +1210,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setTared(this.isTared());
         registry.setPayed(this.isPayed());
         registry.setAssorted(this.isAssorted());
-        registry.setPackage(this.isPackage());
+        registry.setPacking(this.isPacking());
         registry.setLaboratory(this.isLaboratory());
         registry.setDpsSupply(this.isDpsSupply());
         registry.setDeleted(this.isDeleted());
@@ -1248,20 +1237,22 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setTsUserTared(this.getTsUserTared());
         registry.setTsUserPayed(this.getTsUserPayed());
         registry.setTsUserAssorted(this.getTsUserAssorted());
+        
+        registry.mbOldTared = this.mbOldTared;
+        registry.mbOldPayed = this.mbOldPayed;
+        registry.mbOldAssorted = this.mbOldAssorted;
 
         registry.setXtaScaleName(this.getXtaScaleName());
         registry.setXtaScaleCode(this.getXtaScaleCode());
         registry.setXtaSeason(this.getXtaSeason());
         registry.setXtaRegion(this.getXtaRegion());
         registry.setXtaItem(this.getXtaItem());
+        registry.setXtaInputType(this.getXtaInputType());
         registry.setXtaProducer(this.getXtaProducer());
         registry.setXtaProviderFiscalId(this.getXtaProducerFiscalId());
 
-        registry.setAuxFormerTared(this.isAuxFormerTared());
-        registry.setAuxFormerPayed(this.isAuxFormerPayed());
-        registry.setAuxFormerAssorted(this.isAuxFormerAssorted());
         registry.setAuxMoveNextOnSend(this.isAuxMoveNextOnSend());
-        registry.setAuxRequiredCalculation(this.isAuxRequiredCalculation());
+        registry.setAuxRequirePriceComputation(this.isAuxRequirePriceComputation());
         registry.setAuxSendMail(this.isAuxSendMail());
         registry.setAuxRecipientsTo(this.getAuxRecipientsTo());
 
@@ -1286,14 +1277,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             can = !SSomUtils.existsTicket(session, mnNumber, mnPkTicketId);
 
             if (!can) {
-                msQueryResult = "¡El boleto ya existe!";
-            }
-            else if (mbRegistryNew || (mbTared && !mbAuxFormerTared)) {
-                computeWeights(session);
-                if (mdWeightDestinyNet_r < 0) {
-                    can = false;
-                    msQueryResult = "¡El peso destino neto debe ser mayor que 0!";
-                }
+                msQueryResult = "¡El boleto #" + mnNumber + " ya existe!";
             }
         }
 
@@ -1490,6 +1474,79 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         return isLink;
     }
 
+    public void computeWeight(SGuiSession session, boolean computePrice) throws Exception {
+        double oldWeightDestinyNet = mdWeightDestinyNet_r;
+        SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int[] { mnFkItemId });
+
+        mdPackingWeightArrival = (mdPackingFullQuantityArrival + mdPackingEmptyQuantityArrival) * item.getPackingWeight();
+        mdPackingWeightDeparture = (mdPackingFullQuantityDeparture + mdPackingEmptyQuantityDeparture) * item.getPackingWeight();
+        mdPackingWeightNet_r = mdPackingWeightArrival - mdPackingWeightDeparture;
+        
+        mdWeightDestinyGross_r = mdWeightDestinyArrival - mdWeightDestinyDeparture;
+        mdWeightDestinyNet_r = mdWeightDestinyDeparture == 0 ? 0 : mdWeightDestinyGross_r - mdPackingWeightNet_r;
+
+        if (!mbWeightSourceAvailable) {
+            mdWeightSource = mdWeightDestinyGross_r;
+        }
+
+        mdQuantity = mdWeightDestinyNet_r / item.getUnitaryWeight();
+        
+        if (computePrice && oldWeightDestinyNet != 0 && Math.abs(oldWeightDestinyNet - mdWeightDestinyNet_r) > 0.001) {
+            computePrice(session);
+            mbAuxRequirePriceComputation = false;
+        }
+    }
+    
+    public void computePrice(SGuiSession session) {
+        double dMaxImpuritiesPer = 0;
+        double dMaxMoisturePer = 0;
+        double dPricePerTon = 0;
+        double dImpuritiesPer = 0;
+        double dMoisturePer = 0;
+        SDbSeasonRegion seasonRegion = null;
+        SDbSeasonProducer seasonProducer = null;
+        
+        /*
+         * Tickets are usually addressed to some season, but not allways to some region.
+         * So this is more likely to happen that region is missed.
+         */
+
+        if (mbLaboratory && mnFkSeasonId_n != SLibConsts.UNDEFINED && mnFkRegionId_n != SLibConsts.UNDEFINED) {
+            seasonRegion = (SDbSeasonRegion) session.readRegistry(SModConsts.SU_SEAS_REG, new int[] { mnFkSeasonId_n, mnFkRegionId_n, mnFkItemId });
+            seasonProducer = (SDbSeasonProducer) session.readRegistry(SModConsts.SU_SEAS_PROD, new int[] { mnFkSeasonId_n, mnFkRegionId_n, mnFkItemId, mnFkProducerId });
+
+            dMaxImpuritiesPer = seasonRegion.getMaximumImpuritiesPercentage();
+            dMaxMoisturePer = seasonRegion.getMaximumMoisturePercentage();
+            dPricePerTon = seasonProducer.isPricePerTon() ? seasonProducer.getPricePerTon() : seasonRegion.getPricePerTon();
+
+            if (!mvChildLaboratories.isEmpty()) {
+                mvChildLaboratories.get(0).computeTestsAverage();
+
+                dImpuritiesPer = (mvChildLaboratories.get(0).getImpuritiesPercentageAverage() - dMaxImpuritiesPer) <= 0 ? 0 : (mvChildLaboratories.get(0).getImpuritiesPercentageAverage() - dMaxImpuritiesPer);
+                dMoisturePer = (mvChildLaboratories.get(0).getMoisturePercentageAverage() - dMaxMoisturePer) <= 0 ? 0 : (mvChildLaboratories.get(0).getMoisturePercentageAverage() - dMaxMoisturePer);
+
+                mdSystemPenaltyPercentage = SLibUtils.round((dImpuritiesPer + dMoisturePer), SLibUtils.DecimalFormatPercentage4D.getMaximumFractionDigits());
+
+                mdUserPenaltyPercentage = mdSystemPenaltyPercentage;
+            }
+
+            // System computed values:
+
+            mdSystemWeightPayment = SLibUtils.round(((mdWeightSource - mdWeightDestinyNet_r * mdSystemPenaltyPercentage)), SLibUtils.DecimalFormatPercentage0D.getMaximumFractionDigits());
+            mdSystemPricePerTon = dPricePerTon;
+            mdSystemPayment_r = (mdSystemWeightPayment * mdSystemPricePerTon) / 1000;
+            mdSystemTotal_r = mdSystemPayment_r;
+
+            // User values:
+
+            mdUserWeightPayment = mdSystemWeightPayment;
+            mdUserPricePerTon = mdSystemPricePerTon;
+            mdUserPayment_r = mdSystemPayment_r;
+            mdUserFreight = mdSystemFreight;
+            mdUserTotal_r = mdSystemTotal_r;
+        }
+    }
+    
     public void movePrevious(final SGuiSession session) throws SQLException, Exception {
         String msg = "No puede regresar el boleto al estado anterior porque:\n";
 
@@ -1545,7 +1602,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             }
             else {
                 mnFkTicketStatusId = SModSysConsts.SS_TIC_ST_ADM;
-                computeTicketValue(session);
+                computePrice(session);
             }
         }
 
@@ -1554,55 +1611,5 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         }
 
         mbAuxMoveNextOnSave = false;
-    }
-
-    public void computeTicketValue(SGuiSession session) {
-        double dMaxImpuritiesPer = 0;
-        double dMaxMoisturePer = 0;
-        double dPricePerTon = 0;
-        double dImpuritiesPer = 0;
-        double dMoisturePer = 0;
-        SDbSeasonRegion seasonRegion = null;
-        SDbSeasonProducer seasonProducer = null;
-        
-        /*
-         * Tickets are usually addressed to some season, but not allways to some region.
-         * So this is more likely to happen that region is missed.
-         */
-
-        if (mbLaboratory && mnFkSeasonId_n != SLibConsts.UNDEFINED && mnFkRegionId_n != SLibConsts.UNDEFINED) {
-            seasonRegion = (SDbSeasonRegion) session.readRegistry(SModConsts.SU_SEAS_REG, new int[] { mnFkSeasonId_n, mnFkRegionId_n, mnFkItemId });
-            seasonProducer = (SDbSeasonProducer) session.readRegistry(SModConsts.SU_SEAS_PROD, new int[] { mnFkSeasonId_n, mnFkRegionId_n, mnFkItemId, mnFkProducerId });
-
-            dMaxImpuritiesPer = seasonRegion.getMaximumImpuritiesPercentage();
-            dMaxMoisturePer = seasonRegion.getMaximumMoisturePercentage();
-            dPricePerTon = seasonProducer.isPricePerTon() ? seasonProducer.getPricePerTon() : seasonRegion.getPricePerTon();
-
-            if (!mvChildLaboratories.isEmpty()) {
-                mvChildLaboratories.get(0).computeTestsAverage();
-
-                dImpuritiesPer = (mvChildLaboratories.get(0).getImpuritiesPercentageAverage() - dMaxImpuritiesPer) <= 0 ? 0 : (mvChildLaboratories.get(0).getImpuritiesPercentageAverage() - dMaxImpuritiesPer);
-                dMoisturePer = (mvChildLaboratories.get(0).getMoisturePercentageAverage() - dMaxMoisturePer) <= 0 ? 0 : (mvChildLaboratories.get(0).getMoisturePercentageAverage() - dMaxMoisturePer);
-
-                mdSystemPenaltyPercentage = SLibUtils.round((dImpuritiesPer + dMoisturePer), SLibUtils.DecimalFormatPercentage4D.getMaximumFractionDigits());
-
-                mdUserPenaltyPercentage = mdSystemPenaltyPercentage;
-            }
-
-            // System computed values:
-
-            mdSystemWeightPayment = SLibUtils.round(((mdWeightSource - mdWeightDestinyNet_r * mdSystemPenaltyPercentage)), SLibUtils.DecimalFormatPercentage0D.getMaximumFractionDigits());
-            mdSystemPricePerTon = dPricePerTon;
-            mdSystemPayment_r = (mdSystemWeightPayment * mdSystemPricePerTon) / 1000;
-            mdSystemTotal_r = mdSystemPayment_r;
-
-            // User values:
-
-            mdUserWeightPayment = mdSystemWeightPayment;
-            mdUserPricePerTon = mdSystemPricePerTon;
-            mdUserPayment_r = mdSystemPayment_r;
-            mdUserFreight = mdSystemFreight;
-            mdUserTotal_r = mdSystemTotal_r;
-        }
     }
 }

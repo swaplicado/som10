@@ -17,6 +17,7 @@ public abstract class SSomConsts {
     public static final String L = "l";
     public static final String M = "m";
     public static final String DEN = "u/dm³";
+    public static final String PIECE = "pza";
     
     public static final String SOM_MAIL_MAN = "Resumen recepciones semillas: ";
     public static final String ERR_MSG_PROD_EST = "Error al estimar la producción.";

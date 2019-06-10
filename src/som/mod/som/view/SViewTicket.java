@@ -37,7 +37,7 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores, Alfredo Pérez
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores
  */
 public class SViewTicket extends SGridPaneView implements ActionListener {
 
@@ -379,7 +379,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 
         filter = (int[]) moFiltersMap.get(SModConsts.SU_INP_CT);
         if (filter != null) {
-            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "it.fk_inp_ct" }, (int[]) filter);
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "itm.fk_inp_ct" }, (int[]) filter);
         }
 
         filter = (int[]) moFiltersMap.get(SModConsts.SU_ITEM);
@@ -408,20 +408,24 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.num AS " + SDbConsts.FIELD_NAME + ", "
                 + "v.num, "
                 + "v.dt, "
+                + "v.qty, " // seemingly unused
                 + "v.pla, "
                 + "v.pla_cag, "
                 + "v.drv, "
                 + "v.ts_arr, "
                 + "v.ts_dep, "
-                + "v.pac_wei_arr, "
-                + "v.pac_wei_dep, "
-                + "v.wei_src, "
-                + "v.wei_des_arr, "
-                + "v.wei_des_dep, "
-                + "v.wei_des_gro_r, "
-                + "v.wei_des_net_r, "
-                + "COALESCE(sr.prc_ton, 0.0) AS _prc_ton_reg, "
-                + "COALESCE(sp.prc_ton, 0.0) AS _prc_ton_prod, "
+                + "v.pac_qty_arr, "     // Quantity of full packing pieces at arrival
+                + "v.pac_qty_dep, "     // Quantity of full packing pieces at departure
+                + "v.pac_emp_qty_arr, " // Quantity of empty packing pieces at arrival
+                + "v.pac_emp_qty_dep, " // Quantity of empty packing pieces at departure
+                + "v.pac_wei_arr, "     // pwa: Weight of packing at arrival (full and empty?)
+                + "v.pac_wei_dep, "     // pwd: Weight of packing at departure (full and empty?)
+                + "v.pac_wei_net_r, "   // pwn: Weight of packing net (= pwa – pwd)
+                + "v.wei_src, "         // Declared weight at origin
+                + "v.wei_des_arr, "     // wda: Weigth at destiny at arrival
+                + "v.wei_des_dep, "     // wdd: Weigth at destiny at departure
+                + "v.wei_des_gro_r, "   // wdg: Weigth gross at destiny  (= wda – wdd)
+                + "v.wei_des_net_r, "   // wdn: Weigth net at destiny (= wdg – pwn)
                 + "v.sys_pen_per, "
                 + "v.sys_wei_pay, "
                 + "v.sys_prc_ton, "
@@ -434,36 +438,52 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.usr_pay_r, "
                 + "v.usr_fre, "
                 + "v.usr_tot_r, "
-                + "v.b_tar, "
-                + "v.b_pay, "
+                + "v.dps_dt_n, "
                 + "v.b_rev_1, "
                 + "v.b_rev_2, "
-                + "vs.name, "
-                + "vs.code, "
-                + "sc.id_sca, "
-                + "sc.name, "
-                + "sc.code, "
-                + "it.name, "
-                + "it.code, "
-                + "pr.name, "
-                + "pr.code, "
-                + "isrc.name, "
-                + "isrc.code, "
-                + "se.name, "
-                + "re.name, "
-                + "lb.num, "
-                + "lb.dt, "
-                + "lb.b_done, "
-                + "(v.pac_emp_qty_arr * it.paq_wei) AS f_pac_emp_qty_arr, "
-                + "(v.pac_emp_qty_dep * it.paq_wei) AS f_pac_emp_qty_dep, "
-                + "IF(v.wei_des_dep = 0, 0, IF(it.b_paq = 0, 0, "
-                + "(((v.wei_des_arr - v.wei_des_dep) - "
-                + "((v.pac_qty_arr + v.pac_emp_qty_arr) * it.paq_wei) + "
-                + "((v.pac_qty_dep + v.pac_emp_qty_dep) * it.paq_wei)) /"
-                + "(v.pac_qty_arr)))) AS f_wei_ave, "
-                + "if (lb.b_done, " + SGridConsts.ICON_OK + ", " + SGridConsts.ICON_NULL + ") AS f_done, "
+                + "v.b_wei_src, "
+                + "v.b_mfg_out, "
+                + "v.b_tar, "
+                + "v.b_pay, "
+                + "v.b_ass, "
+                + "v.b_paq, "
+                + "v.b_lab, "
+                + "v.b_dps, "
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
                 + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
+                + "sca.id_sca, "
+                + "sca.name, "
+                + "sca.code, "
+                + "tst.id_tic_st, "
+                + "tst.name, "
+                + "tst.code, "
+                + "itm.id_item, "
+                + "itm.name, "
+                + "itm.code, "
+                + "prd.id_prod, "
+                + "prd.name, "
+                + "prd.code, "
+                + "src.id_inp_src, "
+                + "src.name, "
+                + "src.code, "
+                + "sea.id_seas, "
+                + "sea.name, "
+                + "reg.id_reg, "
+                + "reg.name, "
+                + "lab.num, "
+                + "lab.dt, "
+                + "if (lab.b_done, " + SGridConsts.ICON_OK + ", " + SGridConsts.ICON_NULL + ") AS _lab_done, "
+                + "COALESCE(seareg.prc_ton, 0.0) AS _prc_ton_reg, "
+                + "COALESCE(seaprd.prc_ton, 0.0) AS _prc_ton_prd, "
+                + "(v.pac_qty_arr * itm.paq_wei) AS _pac_wei_arr, "
+                + "(v.pac_emp_qty_arr * itm.paq_wei) AS _pac_emp_wei_arr, "
+                + "(v.pac_qty_dep * itm.paq_wei) AS _pac_wei_dep, "
+                + "(v.pac_emp_qty_dep * itm.paq_wei) AS _pac_emp_wei_dep, "
+                + "IF(v.wei_des_dep = 0, 0, IF(itm.b_paq = 0, 0, "
+                + "(((v.wei_des_arr - v.wei_des_dep) - "
+                + "((v.pac_qty_arr + v.pac_emp_qty_arr) * itm.paq_wei) + "
+                + "((v.pac_qty_dep + v.pac_emp_qty_dep) * itm.paq_wei)) /"
+                + "(v.pac_qty_arr)))) AS _wei_ave, "
                 + "v.fk_usr_ins AS " + SDbConsts.FIELD_USER_INS_ID + ", "
                 + "v.fk_usr_upd AS " + SDbConsts.FIELD_USER_UPD_ID + ", "
                 + "v.ts_usr_ins AS " + SDbConsts.FIELD_USER_INS_TS + ", "
@@ -471,39 +491,37 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS v "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sc ON "
-                + "v.fk_sca = sc.id_sca "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_TIC_ST) + " AS vs ON "
-                + "v.fk_tic_st = vs.id_tic_st "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS it ON "
-                + "v.fk_item = it.id_item "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS pr ON "
-                + "v.fk_prod = pr.id_prod "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS isrc ON "
-                + "v.fk_inp_src = isrc.id_inp_src "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sca ON "
+                + "v.fk_sca = sca.id_sca "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_TIC_ST) + " AS tst ON "
+                + "v.fk_tic_st = tst.id_tic_st "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS itm ON "
+                + "v.fk_item = itm.id_item "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS prd ON "
+                + "v.fk_prod = prd.id_prod "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS src ON "
+                + "v.fk_inp_src = src.id_inp_src "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
                 + "v.fk_usr_upd = uu.id_usr "
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS) + " AS se ON "
-                + "v.fk_seas_n = se.id_seas "
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_REG) + " AS re ON "
-                + "v.fk_reg_n = re.id_reg "
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_LAB) + " AS lb ON "
-                + "v.fk_lab_n = lb.id_lab AND lb.b_del = 0 "
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_REG) + " AS sr ON "
-                + "v.fk_seas_n = sr.id_seas AND v.fk_reg_n = sr.id_reg AND v.fk_item = sr.id_item "
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_PROD) + " AS sp ON "
-                + "v.fk_seas_n = sp.id_seas AND v.fk_reg_n = sp.id_reg AND v.fk_item = sp.id_item AND v.fk_prod = sp.id_prod "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS) + " AS sea ON "
+                + "v.fk_seas_n = sea.id_seas "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_REG) + " AS reg ON "
+                + "v.fk_reg_n = reg.id_reg "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_LAB) + " AS lab ON "
+                + "v.fk_lab_n = lab.id_lab AND lab.b_del = 0 "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_REG) + " AS seareg ON "
+                + "v.fk_seas_n = seareg.id_seas AND v.fk_reg_n = seareg.id_reg AND v.fk_item = seareg.id_item "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_PROD) + " AS seaprd ON "
+                + "v.fk_seas_n = seaprd.id_seas AND v.fk_reg_n = seaprd.id_reg AND v.fk_item = seaprd.id_item AND v.fk_prod = seaprd.id_prod "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)
-                + "ORDER BY sc.code, sc.id_sca, v.num, v.id_tic ";
+                + "ORDER BY sca.code, sca.id_sca, v.num, v.id_tic ";
     }
 
     @Override
     public void createGridColumns() {
-        int col = 0;
-        int cols = 34;
-        SGridColumnView[] columns = null;
+        int cols = 40;
 
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
@@ -520,50 +538,62 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             default:
         }
 
-        columns = new SGridColumnView[cols];
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sc.code", "Báscula");
+        int col = 0;
+        SGridColumnView[] columns = new SGridColumnView[cols];
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca.code", "Báscula");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.num", "Boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt", SGridConsts.COL_TITLE_DATE + " boleto");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "pr.name", "Proveedor");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "pr.code", "Proveedor código");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "it.name", "Ítem");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "it.code", "Ítem código");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "prd.name", "Proveedor");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "prd.code", "Proveedor código");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "itm.name", "Ítem");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "itm.code", "Ítem código");
 
         if (mnGridSubtype == SLibConsts.UNDEFINED) {
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vs.name", "Estatus boleto");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "tst.name", "Estatus boleto");
         }
 
         if (mnGridSubtype == SModSysConsts.SS_TIC_ST_LAB) {
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "lb.num", "Análisis lab");
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE,  "lb.dt", SGridConsts.COL_TITLE_DATE + " análisis lab");
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_ICON, "f_done", "Terminado");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "lab.num", "Folio análisis lab");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE,  "lab.dt", SGridConsts.COL_TITLE_DATE + " análisis lab");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_ICON, "_lab_done", "Análisis lab terminado");
         }
 
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "se.name", "Temporada");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "re.name", "Región");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "isrc.name", "Origen insumo");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "sea.name", "Temporada");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "reg.name", "Región");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "src.name", "Origen insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla", "Placas");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla_cag", "Placas caja");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.drv", "Chofer");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "v.ts_arr", "TS entrada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "v.ts_dep", "TS salida");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_tar", "Tarado");
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_src", "Carga origen (" + SSomConsts.KG + ")");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "v.b_tar", "Tarado");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_src", "Peso origen (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_arr", "Peso entrada (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_dep", "Peso salida (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_wei_arr", "Cant empaque entrada");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_qty_arr", "Cant empaq lleno entrada (" + SSomConsts.PIECE + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "f_pac_emp_qty_arr", "Cant empaque vacío entrada");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_emp_qty_arr", "Cant empaq vacío entrada (" + SSomConsts.PIECE + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_wei_dep", "Cant empaque salida");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_qty_dep", "Cant empaq lleno salida (" + SSomConsts.PIECE + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "f_pac_emp_qty_dep", "Cant empaque vacío salida");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_emp_qty_dep", "Cant empaq vacío salida (" + SSomConsts.PIECE + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "f_wei_ave", "Peso promedio (" + SSomConsts.KG + "/empaque)");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_wei_arr", "Peso empaq lleno entrada (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_emp_wei_arr", "Peso empaq vacío entrada (" + SSomConsts.KG + ")");
+        columns[col++].setSumApplying(true);
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_wei_arr", "Peso empaq total entrada (" + SSomConsts.KG + ")");
+        columns[col++].setSumApplying(true);
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_wei_dep", "Peso empaq lleno salida (" + SSomConsts.KG + ")");
+        columns[col++].setSumApplying(true);
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_emp_wei_dep", "Peso empaq vacío salida (" + SSomConsts.KG + ")");
+        columns[col++].setSumApplying(true);
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_wei_dep", "Peso empaq total salida (" + SSomConsts.KG + ")");
+        columns[col++].setSumApplying(true);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_wei_ave", "Peso promedio (" + SSomConsts.KG + "/" + SSomConsts.PIECE + ")");
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_gro_r", "Carga destino bruto (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_net_r", "Carga destino neto (" + SSomConsts.KG + ")");
@@ -573,7 +603,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
 
         if (mnGridSubtype == SModSysConsts.SS_TIC_ST_ADM) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "_prc_ton_reg", "Precio ton reg $");
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "_prc_ton_prod", "Precio ton prod $");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "_prc_ton_prd", "Precio ton prod $");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "v.sys_pen_per", "Castigo sis");
             columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.sys_wei_pay", "Peso pago sis (" + SSomConsts.KG + ")");
             columns[col++].setSumApplying(true);

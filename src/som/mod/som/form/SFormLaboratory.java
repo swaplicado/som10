@@ -454,7 +454,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
                 if (moKeyItem.getSelectedIndex() > 0 ) {
                     if (moItem.isLaboratory()) {
-                        if (moItem.isPackage() && !moRegistry.isPackage()) {
+                        if (moItem.isPacking()&& !moRegistry.isPacking()) {
                             miClient.showMsgBoxInformation("El ítem '" + moKeyItem.getSelectedItem() + "' requiere cantidad de empaques, no capturados en el boleto.");
                         }
                         else {
@@ -750,8 +750,9 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         else if (!msPlates.equalsIgnoreCase(moTextPlates.getValue())) {
             registry.setRevueltaImport1(false);
         }
+        
         registry.setAuxMoveNextOnSend(mbIsSaveSend);
-        registry.setAuxRequiredCalculation(true);
+        registry.setAuxRequirePriceComputation(true);
 
         return registry;
     }

@@ -250,13 +250,13 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
         
         moDlgMfgEstimationVersionMovesXXX = new SDialogMfgEstimationVersionMoves(miClient, "Movimientos inventario");
 
-        /* Check if it code snippet is still required! (sflores, 2015-10-12) */
+        /* Check if it code snippet is still required! (Sergio Flores 2015-10-12) */
         jbReturnStepXXX = new JButton("Regresar movs. externos");
         jbReturnStepXXX.setPreferredSize(new Dimension(175, 23));
         jbReturnStepXXX.addActionListener(this);
         jbReturnStepXXX.setToolTipText("Regresar a movs. externos");
         jbReturnStepXXX.setEnabled(false);
-        /* Check if it code snippet is still required! (sflores, 2015-10-12) */
+        /* Check if it code snippet is still required! (Sergio Flores 2015-10-12) */
 
         moDateStockDay.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateStockDay.getText()), true);
         moKeyUnit.setKeySettings(miClient, SGuiUtils.getLabelName(jlUnit), true);

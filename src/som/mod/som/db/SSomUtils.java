@@ -25,7 +25,7 @@ import som.mod.cfg.db.SDbCompany;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores, Alfredo Pérez
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores
  */
 public abstract class SSomUtils {
     
@@ -239,7 +239,7 @@ public abstract class SSomUtils {
                 if (update) {
                     ticket.setFkSeasonId_n(seasonId);
                     ticket.setFkRegionId_n(regionId);
-                    ticket.setAuxRequiredCalculation(true);
+                    ticket.setAuxRequirePriceComputation(true);
                     ticket.save(session);
                     
                     if (seasonId != SLibConsts.UNDEFINED && regionId != SLibConsts.UNDEFINED) {
@@ -304,7 +304,7 @@ public abstract class SSomUtils {
                 ticket = (SDbTicket) session.readRegistry(SModConsts.S_TIC, new int[] { resultSet.getInt("id_tic") });
 
                 ticket.setSystemPricePerTon(priceTon);
-                ticket.setAuxRequiredCalculation(true);
+                ticket.setAuxRequirePriceComputation(true);
                 ticket.save(session);
                 update = false;
             }
@@ -485,7 +485,7 @@ public abstract class SSomUtils {
      * @param dQuantity double
      * @return SSomStock
      */
-    /* Check if this function is still needed (sflores, 2015-10-12).
+    /* Check if this function is still needed (Sergio Flores 2015-10-12).
     public static SSomStock validateStock(SGuiSession session, final int nYearId, final int nItemId, final int nUnitId, final int nItemTypeId,
             final int[] anWarehouseId, final int nDivisionId, final Date date, final double dQuantity) {
 
@@ -650,7 +650,7 @@ public abstract class SSomUtils {
      * @param dStockCull double
      * @return Vector<stock, item (optional), msg>
      */
-    /* Check if this function is still needed (sflores, 2015-10-12).
+    /* Check if this function is still needed (Sergio Flores 2015-10-12).
     public static double[] convertStockCulltoStockPT(SGuiSession session, final int nYearId, final int nItemPtId, final int nItemCullTypeId,
             final int[] anWarehouseId, final Date date, final double dStockCull) {
         double dCentimetersCull = 0;

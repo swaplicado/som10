@@ -963,9 +963,33 @@
                         <Property name="verticalGap" type="int" value="0"/>
                       </Layout>
                       <SubComponents>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolPackage">
+                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolPacking">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Aplica empaque"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[200, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JPanel" name="jPanel21">
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                        <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="0"/>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jlPackingName">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Nombre empaque:*"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[125, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextPackingName">
+                          <Properties>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[200, 23]"/>
                             </Property>
@@ -980,7 +1004,7 @@
                         <Property name="verticalGap" type="int" value="0"/>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlPackageWeight">
+                        <Component class="javax.swing.JLabel" name="jlPackingWeight">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Peso empaque:*"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -988,37 +1012,13 @@
                             </Property>
                           </Properties>
                         </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackageWeight">
+                        <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackingWeight">
                         </Component>
-                        <Component class="javax.swing.JLabel" name="jlPackageWeightUnit">
+                        <Component class="javax.swing.JLabel" name="jlPackingWeightUnit">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="UNIT"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                      </SubComponents>
-                    </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel21">
-
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                        <Property name="alignment" type="int" value="0"/>
-                        <Property name="verticalGap" type="int" value="0"/>
-                      </Layout>
-                      <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlPackageName">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Empaque:*"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[125, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextPackageName">
-                          <Properties>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[200, 23]"/>
                             </Property>
                           </Properties>
                         </Component>

@@ -30,7 +30,7 @@ import static som.mod.som.db.SSomUtils.getProperSeasonId;
 
 /**
  *
- * @author Alfredo Pérez
+ * @author Alfredo Pérez, Sergio Flores
  */
 public class SImportTicketsRevuelta {
 
@@ -109,13 +109,13 @@ public class SImportTicketsRevuelta {
                     registry.setDriver(rstRev.getString("Pes_Chofer"));
                     registry.setDatetimeArrival(rstRev.getTimestamp("Pes_FecHorPri"));
                     registry.setDatetimeDeparture(rstRev.getTimestamp("Pes_FecHorSeg") == null ? rstRev.getTimestamp("Pes_FecHorPri") : rstRev.getTimestamp("Pes_FecHorSeg"));
-                    //registry.setPackageQuantityArrival(PackageQuantityArrival());
-                    //registry.setPackageQuantityDeparture(PackageQuantityDeparture());
-                    //registry.setPackageEmptyQuantityArrival(PackageEmptyQuantityArrival());
-                    //registry.setPackageEmptyQuantityDeparture(PackageEmptyQuantityDeparture());
-                    //registry.setPackageWeightArrival(PackageWeightArrival());
-                    //registry.setPackageWeightDeparture(PackageWeightDeparture());
-                    //registry.setPackageWeightNet_r(PackageWeightNet_r());
+                    //registry.setPackingFullQuantityArrival(PackingFullQuantityArrival());
+                    //registry.setPackingFullQuantityDeparture(PackingFullQuantityDeparture());
+                    //registry.setPackingEmptyQuantityArrival(PackingEmptyQuantityArrival());
+                    //registry.setPackingEmptyQuantityDeparture(PackingEmptyQuantityDeparture());
+                    //registry.setPackingWeightArrival(PackingWeightArrival());
+                    //registry.setPackingWeightDeparture(PackingWeightDeparture());
+                    //registry.setPackingWeightNet_r(PackingWeightNet_r());
                     //registry.setWeightSource(WeightSource());
                     registry.setWeightDestinyArrival(rstRev.getDouble("Pes_PesoPri"));
                     registry.setWeightDestinyDeparture(rstRev.getString("Pes_PesoSeg") == null ? 0 : rstRev.getDouble("Pes_PesoSeg"));
@@ -141,7 +141,7 @@ public class SImportTicketsRevuelta {
                     //registry.setTared(this.isTared());
                     //registry.setPayed(this.isPayed());
                     //registry.setAssorted(this.isAssorted());
-                    registry.setPackage(dbItem.isPackage());
+                    registry.setPacking(dbItem.isPacking());
                     registry.setLaboratory(dbItem.isLaboratory());
                     //registry.setDpsSupply(this.isDpsSupply());
                     //registry.setDeleted(this.isDeleted());

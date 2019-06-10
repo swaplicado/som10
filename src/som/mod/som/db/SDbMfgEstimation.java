@@ -63,12 +63,12 @@ public class SDbMfgEstimation extends SDbRegistryUser {
 
     protected ArrayList<Object[]> maItemsStockDay;
     protected ArrayList<Object[]> maItemsStockSystem;
-    ///* XXX Evaluating code (sflores, 2015-10-13)...
+    ///* XXX Evaluating code (Sergio Flores 2015-10-13)...
     protected ArrayList<Object[]> maItemsStockSystemCurrently;
     //*/
 
     protected boolean mbAuxWasClosed;
-    ///* XXX Evaluating code (sflores, 2015-10-13)...
+    ///* XXX Evaluating code (Sergio Flores 2015-10-13)...
     protected String msAuxStockDaySkippedItem;
     protected String msAuxStockDaySkippedUnit;
     protected String msAuxStockDaySkippedCompany;
@@ -400,12 +400,12 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         double dStockQuantityDelivery = 0;
 
         try {
-            /* XXX Evaluating code (sflores, 2015-10-13)...
+            /* XXX Evaluating code (Sergio Flores 2015-10-13)...
             computeQueryStockDaySkipped(session);
             */
             computeQueryStockDaySkipped(session);
 
-            //sql = computeQueryStockDaySystem(true, false, false); (sflores, 2015-10-13)
+            //sql = computeQueryStockDaySystem(true, false, false); (Sergio Flores 2015-10-13)
             sql = composeSqlSentenceStockDay(SQL_MODE_GLB);// stock diary
             resultSet = session.getStatement().executeQuery(sql);
             if (!resultSet.next()) {
@@ -442,7 +442,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         //maItemsStockSystemCurrently.clear();  XXX
 
         try {
-            //sql = computeQueryStockDaySystem(true, true, false);  (sflores, 2015-10-13)
+            //sql = computeQueryStockDaySystem(true, true, false);  (Sergio Flores 2015-10-13)
             sql = composeSqlSentenceStockDay(SQL_MODE_DET);
             statement = session.getDatabase().getConnection().createStatement();
             resultSet = statement.executeQuery(sql);
@@ -604,7 +604,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
     }
 
     /**
-     * XXX Evaluating code (sflores, 2015-10-13)...
+     * XXX Evaluating code (Sergio Flores 2015-10-13)...
      */
     private void obtainProductionEstimateOpen(final SGuiSession session) throws Exception {
         String sql = "";
@@ -679,14 +679,14 @@ public class SDbMfgEstimation extends SDbRegistryUser {
     public ArrayList<SRowProductionInventory> getChildProductionInventories() { return maChildProductionInventories; }
     public ArrayList<SDbIog> getChildCanSaveIogs() { return maChildCanSaveIogs; }
     
-    /* XXX Evaluating code (sflores, 2015-10-13)...
+    /* XXX Evaluating code (Sergio Flores 2015-10-13)...
     public ArrayList<Object[]> getItemsStockDay() { return maItemsStockDay; }
     public ArrayList<Object[]> getItemsStockSystem() { return maItemsStockSystem; }
     public ArrayList<Object[]> getItemsStockSystemCurrently() { return maItemsStockSystemCurrently; }
     */
     
     /**
-     * XXX Evaluating code (sflores, 2015-10-13)...
+     * XXX Evaluating code (Sergio Flores 2015-10-13)...
      */
     public boolean validateEstimateProduction(SGuiSession session) throws Exception {
         boolean res = true;
@@ -697,11 +697,11 @@ public class SDbMfgEstimation extends SDbRegistryUser {
 
         // Obtain production estimate open:
 
-        obtainProductionEstimateOpen(session);  // evaluating: just 1 class call (sflores, 2015-10-13)
+        obtainProductionEstimateOpen(session);  // evaluating: just 1 class call (Sergio Flores 2015-10-13)
 
         // Validate if production estimate global is correct:
 
-        adStockDaySystem = productionEstimateGlobal(session);   // evaluating: 2 class calls (sflores, 2015-10-13)
+        adStockDaySystem = productionEstimateGlobal(session);   // evaluating: 2 class calls (Sergio Flores 2015-10-13)
 
         // Production estimate:
 
@@ -1101,7 +1101,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         maItemsStockSystem.clear();
         //maItemsStockSystemCurrently.clear();  XXX
 
-        /* XXX Evaluating code (sflores, 2015-10-13)...
+        /* XXX Evaluating code (Sergio Flores 2015-10-13)...
         msAuxStockDaySkippedItem = "";
         msAuxStockDaySkippedUnit = "";
         msAuxStockDaySkippedCompany = "";

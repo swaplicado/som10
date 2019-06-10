@@ -31,7 +31,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores, Alfredo Pérez
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
@@ -175,14 +175,14 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jLabel4 = new javax.swing.JLabel();
         moBoolAcidityPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel45 = new javax.swing.JPanel();
-        moBoolPackage = new sa.lib.gui.bean.SBeanFieldBoolean();
-        jPanel22 = new javax.swing.JPanel();
-        jlPackageWeight = new javax.swing.JLabel();
-        moDecPackageWeight = new sa.lib.gui.bean.SBeanFieldDecimal();
-        jlPackageWeightUnit = new javax.swing.JLabel();
+        moBoolPacking = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel21 = new javax.swing.JPanel();
-        jlPackageName = new javax.swing.JLabel();
-        moTextPackageName = new sa.lib.gui.bean.SBeanFieldText();
+        jlPackingName = new javax.swing.JLabel();
+        moTextPackingName = new sa.lib.gui.bean.SBeanFieldText();
+        jPanel22 = new javax.swing.JPanel();
+        jlPackingWeight = new javax.swing.JLabel();
+        moDecPackingWeight = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlPackingWeightUnit = new javax.swing.JLabel();
         jPanel33 = new javax.swing.JPanel();
         moBoolAutoMailNotification = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel34 = new javax.swing.JPanel();
@@ -640,35 +640,35 @@ public class SFormItem extends SBeanForm implements ItemListener {
 
         jPanel45.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolPackage.setText("Aplica empaque");
-        moBoolPackage.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel45.add(moBoolPackage);
+        moBoolPacking.setText("Aplica empaque");
+        moBoolPacking.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel45.add(moBoolPacking);
 
         jPanel18.add(jPanel45);
 
-        jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlPackageWeight.setText("Peso empaque:*");
-        jlPackageWeight.setPreferredSize(new java.awt.Dimension(125, 23));
-        jPanel22.add(jlPackageWeight);
-        jPanel22.add(moDecPackageWeight);
-
-        jlPackageWeightUnit.setText("UNIT");
-        jlPackageWeightUnit.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel22.add(jlPackageWeightUnit);
-
-        jPanel18.add(jPanel22);
-
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlPackageName.setText("Empaque:*");
-        jlPackageName.setPreferredSize(new java.awt.Dimension(125, 23));
-        jPanel21.add(jlPackageName);
+        jlPackingName.setText("Nombre empaque:*");
+        jlPackingName.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel21.add(jlPackingName);
 
-        moTextPackageName.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel21.add(moTextPackageName);
+        moTextPackingName.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel21.add(moTextPackingName);
 
         jPanel18.add(jPanel21);
+
+        jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlPackingWeight.setText("Peso empaque:*");
+        jlPackingWeight.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel22.add(jlPackingWeight);
+        jPanel22.add(moDecPackingWeight);
+
+        jlPackingWeightUnit.setText("UNIT");
+        jlPackingWeightUnit.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel22.add(jlPackingWeightUnit);
+
+        jPanel18.add(jPanel22);
 
         jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -855,9 +855,9 @@ public class SFormItem extends SBeanForm implements ItemListener {
     private javax.swing.JLabel jlMfgWastePercentage;
     private javax.swing.JLabel jlName;
     private javax.swing.JLabel jlNameShort;
-    private javax.swing.JLabel jlPackageName;
-    private javax.swing.JLabel jlPackageWeight;
-    private javax.swing.JLabel jlPackageWeightUnit;
+    private javax.swing.JLabel jlPackingName;
+    private javax.swing.JLabel jlPackingWeight;
+    private javax.swing.JLabel jlPackingWeightUnit;
     private javax.swing.JLabel jlRevueltaItemId;
     private javax.swing.JLabel jlStartingSeasonMonth;
     private javax.swing.JLabel jlUnit;
@@ -878,7 +878,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolMoisturePercentage;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolOilContentPercentage;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolOleicAcidPercentage;
-    private sa.lib.gui.bean.SBeanFieldBoolean moBoolPackage;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolPacking;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolPrintInputType;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolProteinPercentage;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolRefractionIndex;
@@ -890,7 +890,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
     private sa.lib.gui.bean.SBeanFieldDecimal moDecMfgFinishedGoodPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecMfgTotalPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecMfgWastePercentage;
-    private sa.lib.gui.bean.SBeanFieldDecimal moDecPackageWeight;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecPackingWeight;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecUnitaryWeight;
     private sa.lib.gui.bean.SBeanFieldInteger moIntStartingSeasonMonth;
     private sa.lib.gui.bean.SBeanFieldKey moKeyBranch;
@@ -913,7 +913,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
     private sa.lib.gui.bean.SBeanFieldText moTextExternalName;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
     private sa.lib.gui.bean.SBeanFieldText moTextNameShort;
-    private sa.lib.gui.bean.SBeanFieldText moTextPackageName;
+    private sa.lib.gui.bean.SBeanFieldText moTextPackingName;
     private sa.lib.gui.bean.SBeanFieldText moTextRevueltaItemId;
     private sa.lib.gui.bean.SBeanFieldText moTextUserMailNotificationBoxes;
     // End of variables declaration//GEN-END:variables
@@ -968,9 +968,9 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolAcidityPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolAcidityPercentage.getText()), false);
         moBoolFruit.setBooleanSettings(SGuiUtils.getLabelName(moBoolFruit.getText()), false);
         moDecFruitYieldAdjustmentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlFruitYieldAdjustmentPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
-        moBoolPackage.setBooleanSettings(SGuiUtils.getLabelName(moBoolPackage.getText()), false);
-        moDecPackageWeight.setDecimalSettings(SGuiUtils.getLabelName(jlPackageWeight), SGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moTextPackageName.setTextSettings(SGuiUtils.getLabelName(jlPackageName), 35);
+        moBoolPacking.setBooleanSettings(SGuiUtils.getLabelName(moBoolPacking.getText()), false);
+        moTextPackingName.setTextSettings(SGuiUtils.getLabelName(jlPackingName), 35);
+        moDecPackingWeight.setDecimalSettings(SGuiUtils.getLabelName(jlPackingWeight), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moBoolAutoMailNotification.setBooleanSettings(SGuiUtils.getLabelName(moBoolAutoMailNotification.getText()), false);
         moTextAutoMailNotificationBoxes.setTextSettings(SGuiUtils.getLabelName(jlAutoMailNotificationBoxes), 255);
         moTextAutoMailNotificationBoxes.setTextCaseType(SGuiConsts.TEXT_CASE_LOWER);
@@ -1024,9 +1024,9 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moFields.addField(moBoolAcidityPercentage);
         moFields.addField(moBoolFruit);
         moFields.addField(moDecFruitYieldAdjustmentPercentage);
-        moFields.addField(moBoolPackage);
-        moFields.addField(moDecPackageWeight);
-        moFields.addField(moTextPackageName);
+        moFields.addField(moBoolPacking);
+        moFields.addField(moTextPackingName);
+        moFields.addField(moDecPackingWeight);
         moFields.addField(moBoolAutoMailNotification);
         moFields.addField(moTextAutoMailNotificationBoxes);
         moFields.addField(moBoolUserMailNotification);
@@ -1038,7 +1038,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moFields.setFormButton(jbSave);
         
         jlUnitaryWeightUnit.setText(SSomConsts.KG);
-        jlPackageWeightUnit.setText(SSomConsts.KG);
+        jlPackingWeightUnit.setText(SSomConsts.KG);
         jlDensityUnit.setText(SSomConsts.DEN);
     }
 
@@ -1142,9 +1142,9 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moDecFruitYieldAdjustmentPercentage.setEnabled(moBoolLaboratory.getValue() && moBoolFruit.getValue());
     }
     
-    private void itemStateBoolPackage() {
-        moTextPackageName.setEditable(moBoolPackage.getValue());
-        moDecPackageWeight.setEditable(moBoolPackage.getValue());
+    private void itemStateBoolPacking() {
+        moTextPackingName.setEditable(moBoolPacking.getValue());
+        moDecPackingWeight.setEditable(moBoolPacking.getValue());
     }
 
     @Override
@@ -1153,7 +1153,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moKeyItemType.addItemListener(this);
         moBoolLaboratory.addItemListener(this);
         moBoolFruit.addItemListener(this);
-        moBoolPackage.addItemListener(this);
+        moBoolPacking.addItemListener(this);
         moKeyUnit.addItemListener(this);
         moBoolUserMailNotificationOnlyWhenMoves.addItemListener(this);
     }
@@ -1164,7 +1164,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moKeyItemType.removeItemListener(this);
         moBoolLaboratory.removeItemListener(this);
         moBoolFruit.removeItemListener(this);
-        moBoolPackage.removeItemListener(this);
+        moBoolPacking.removeItemListener(this);
         moKeyUnit.removeItemListener(this);
         moBoolUserMailNotificationOnlyWhenMoves.removeItemListener(this);
     }
@@ -1222,8 +1222,8 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moDecMfgFinishedGoodPercentage.setValue(moRegistry.getMfgFinishedGoodPercentage());
         moDecMfgByproductPercentage.setValue(moRegistry.getMfgByproductPercentage());
         moDecMfgWastePercentage.setValue(moRegistry.getMfgCullPercentage());
-        moTextPackageName.setValue(moRegistry.getPackageName());
-        moDecPackageWeight.setValue(moRegistry.getPackageWeight());
+        moTextPackingName.setValue(moRegistry.getPackingName());
+        moDecPackingWeight.setValue(moRegistry.getPackingWeight());
         moDecUnitaryWeight.setValue(moRegistry.getUnitaryWeight());
         moBoolImpuritiesPercentage.setValue(moRegistry.isImpuritiesPercentage());
         moBoolDensity.setValue(moRegistry.isDensity());
@@ -1239,7 +1239,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolAcidityPercentage.setValue(moRegistry.isAcidityPercentage());
         moBoolFruit.setValue(moRegistry.isFruit());
         moDecFruitYieldAdjustmentPercentage.setValue(moRegistry.getFruitYieldAdjustmentPercentage());
-        moBoolPackage.setValue(moRegistry.isPackage());
+        moBoolPacking.setValue(moRegistry.isPacking());
         moBoolLaboratory.setValue(moRegistry.isLaboratory());
         moKeyItemType.setValue(new int[] { moRegistry.getFkItemTypeId() });
         moKeyInputCategory.setValue(new int[] { moRegistry.getFkInputCategoryId() });
@@ -1273,7 +1273,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jlBranch.setEnabled(false);
         moKeyBranch.setEnabled(false);
 
-        itemStateBoolPackage();
+        itemStateBoolPacking();
         itemStateBoolLaboratory();
 
         if (moRegistry.isRegistryNew()) {
@@ -1315,18 +1315,18 @@ public class SFormItem extends SBeanForm implements ItemListener {
             registry.setMfgCullPercentage(0d);
         }
 
-        if (moBoolPackage.getValue()) {
-            registry.setPackageName(moTextPackageName.getValue());
-            registry.setPackageWeight(moDecPackageWeight.getValue());
+        if (moBoolPacking.getValue()) {
+            registry.setPackingName(moTextPackingName.getValue());
+            registry.setPackingWeight(moDecPackingWeight.getValue());
         }
         else {
-            registry.setPackageName("");
-            registry.setPackageWeight(0d);
+            registry.setPackingName("");
+            registry.setPackingWeight(0d);
         }
 
         registry.setUnitaryWeight(moDecUnitaryWeight.getValue());
         registry.setRevueltaItemId(moTextRevueltaItemId.getValue());
-        registry.setPackage(moBoolPackage.getValue());
+        registry.setPacking(moBoolPacking.getValue());
         registry.setLaboratory(moBoolLaboratory.getValue());
 
         if (moBoolLaboratory.getValue()) {
@@ -1522,8 +1522,8 @@ public class SFormItem extends SBeanForm implements ItemListener {
             else if (checkBox == moBoolFruit) {
                 itemStateBoolFruit();
             }
-            else if (checkBox == moBoolPackage) {
-                itemStateBoolPackage();
+            else if (checkBox == moBoolPacking) {
+                itemStateBoolPacking();
             }
         }
     }

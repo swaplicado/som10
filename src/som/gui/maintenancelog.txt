@@ -1,4 +1,11 @@
 ================================================================================
+2019-06-07, 1.0 062.1
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Mejoramiento y corrección a etiquetas y columnas en ítems y boletos para configurar y mostrar cantidad y peso de empaque (e.g., cajas).
+2) Corrección al cálculo del peso neto cuando intervienen empaque (e.g., cajas) llenos y vacíos en tara de boletos.
+
+================================================================================
 2019-06-03, 1.0 062.0
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
