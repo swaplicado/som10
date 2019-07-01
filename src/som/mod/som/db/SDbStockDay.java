@@ -255,13 +255,13 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE s.id_year = " + mnPkYearId + " AND " +
-            "s.id_item = " + mnPkItemId + " AND " +
-            "s.id_unit = " + mnPkUnitId + " AND " +
-            "s.id_co = " + mnPkCompanyId + " AND " +
-            "s.id_cob = " + mnPkBranchId + " AND " +
-            "s.id_wah = " + mnPkWarehouseId + " AND " +
-            "s.id_day = " + mnPkDayId + " ";
+        return "WHERE id_year = " + mnPkYearId + " AND " +
+            "id_item = " + mnPkItemId + " AND " +
+            "id_unit = " + mnPkUnitId + " AND " +
+            "id_co = " + mnPkCompanyId + " AND " +
+            "id_cob = " + mnPkBranchId + " AND " +
+            "id_wah = " + mnPkWarehouseId + " AND " +
+            "id_day = " + mnPkDayId + " ";
     }
 
     @Override

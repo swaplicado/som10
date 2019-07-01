@@ -549,7 +549,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         moKeyBranch.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranch.getText()), true);
         moKeyWarehouse.setKeySettings(miClient, SGuiUtils.getLabelName(jlWarehouse.getText()), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
-        moDecEmptiness.setDecimalSettings(SGuiUtils.getLabelName(jlEmptiness.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecEmptiness.setDecimalSettings(SGuiUtils.getLabelName(jlEmptiness.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moBoolEmpty.setBooleanSettings("Tanque vacio", false);
         moBoolStockDifferenceSkipped.setBooleanSettings("Omitir en estimación de la producción", false);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 50, 0);
