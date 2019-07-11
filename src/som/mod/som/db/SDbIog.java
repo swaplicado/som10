@@ -802,7 +802,7 @@ public class SDbIog extends SDbRegistryUser {
                         SLibTimeUtils.createDate(
                             SLibTimeUtils.digestDate(mtXtaStkDayDate)[0],
                             SLibTimeUtils.digestDate(mtXtaStkDayDate)[1],
-                            SLibTimeUtils.digestDate(mtXtaStkDayDate)[2]-1), false); // XXX Validate with first day of the month
+                            SLibTimeUtils.digestDate(mtXtaStkDayDate)[2]-1), false, false); // XXX Validate with first day of the month
 
                 dStockSystemInventory = (stock.getStock());
 
@@ -846,7 +846,7 @@ public class SDbIog extends SDbRegistryUser {
                                 SLibTimeUtils.createDate(
                                     SLibTimeUtils.digestDate(mtXtaStkDayDate)[0],
                                     SLibTimeUtils.digestDate(mtXtaStkDayDate)[1],
-                                    SLibTimeUtils.digestDate(mtXtaStkDayDate)[2]-1), false); // XXX Validate with first day of the month
+                                    SLibTimeUtils.digestDate(mtXtaStkDayDate)[2]-1), false, false); // XXX Validate with first day of the month
 
                             dStockSystemInventoryByTank = stock.getStock();
                             dQuantitytoTransferMove = resultSet.getDouble("d.stk_day") - dStockSystemInventoryByTank;

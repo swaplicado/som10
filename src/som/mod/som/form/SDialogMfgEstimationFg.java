@@ -336,7 +336,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
                             if (((SSomStock) SSomUtils.obtainStock(miClient.getSession(), SLibTimeUtils.digestYear(moDateDate.getValue())[0],
                                     mfgWhsProductProduction.getPkItemId(), mfgWhsProductProduction.getPkUnitId(), SModSysConsts.SS_ITEM_TP_FG,
                                     new int[] { mfgWhsProductProduction.getPkCompanyId(), mfgWhsProductProduction.getPkBranchId(), mfgWhsProductProduction.getPkWarehouseId() },
-                                    moKeyDivision.getValue()[0], null, SLibTimeUtils.addDate(moDateDate.getValue(), 0, 0, -1), false)).getStock() <
+                                    moKeyDivision.getValue()[0], null, SLibTimeUtils.addDate(moDateDate.getValue(), 0, 0, -1), false, false)).getStock() <
                                 (mfgWhsProductProduction.getQuantity() * -1)) {
 
                                 miClient.showMsgBoxError("No hay existencias sufientes para la división '" +
@@ -636,7 +636,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
 
         double stockSystem = ((SSomStock) SSomUtils.obtainStock(miClient.getSession(), SLibTimeUtils.digestYear(moDateDate.getValue())[0],
                 product.getPkItemId(), product.getPkUnitId(), SModSysConsts.SS_ITEM_TP_FG,
-                new int[] { product.getPkCompanyId(), product.getPkBranchId(), product.getPkWarehouseId() }, SLibConsts.UNDEFINED, null, moDateDate.getValue(), false)).getStock();
+                new int[] { product.getPkCompanyId(), product.getPkBranchId(), product.getPkWarehouseId() }, SLibConsts.UNDEFINED, null, moDateDate.getValue(), false, false)).getStock();
 
         result = true;
         if (SLibUtils.round(stockPhysical, SLibUtils.DecimalFormatValue4D.getMaximumFractionDigits()) !=

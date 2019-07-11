@@ -737,6 +737,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
                     SLibConsts.UNDEFINED,
                     null,
                     moDateDate.getValue(),
+                    false,
                     false);
 
                 moDecStockBefore.setValue(stock.getStock());
@@ -961,11 +962,12 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
 
                 stock = SSomUtils.obtainStock(miClient.getSession(), SLibTimeUtils.digestYear(moDateDate.getValue())[0],
                         moKeyItem.getValue()[0], moKeyItem.getSelectedItem().getForeignKey()[0], SLibConsts.UNDEFINED,
-                        moKeyWarehouse.getValue(), SLibConsts.UNDEFINED, null, moDateDate.getValue(), false);
+                        moKeyWarehouse.getValue(), SLibConsts.UNDEFINED, null, moDateDate.getValue(), false, false);
 
                 if (stock.getStock() == 0) {
+                    boolean skipWaste = true;
                     stock = SSomUtils.obtainStock(miClient.getSession(), SLibTimeUtils.digestYear(moDateDate.getValue())[0],
-                        SLibConsts.UNDEFINED, SLibConsts.UNDEFINED, SLibConsts.UNDEFINED, moKeyWarehouse.getValue(), SLibConsts.UNDEFINED, null, moDateDate.getValue(), false);
+                        SLibConsts.UNDEFINED, SLibConsts.UNDEFINED, SLibConsts.UNDEFINED, moKeyWarehouse.getValue(), SLibConsts.UNDEFINED, null, moDateDate.getValue(), false, skipWaste);
                     if (stock.getStock() > 0) {
                         validation.setMessage("El tanque: '" + moKeyWarehouse.getSelectedItem().getItem() + "' contiene existencias (sistema) de otro ítem.");
                         validation.setComponent(moKeyItem.getComponent());

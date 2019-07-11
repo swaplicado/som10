@@ -260,6 +260,7 @@ public class SDbMix extends SDbRegistryUser {
                         (pnFkMixTypeId == SModSysConsts.SS_MIX_TP_MIX_ACT ? pnFkDivisionDestinyId_n : pnFkDivisionSourceId_n),
                     null,
                     ptDate,
+                    false,
                     false);
 
                 if (stock.getStock() <= 0) {
@@ -761,6 +762,7 @@ public class SDbMix extends SDbRegistryUser {
                 nDivisionId,
                 null,
                 date,
+                false,
                 false);
 
          return stock;
@@ -901,7 +903,7 @@ public class SDbMix extends SDbRegistryUser {
                     manAuxWarehouseDestinyId, mnFkDivisionDestinyId_n, mnFkItemDestinyId, mnFkUnitDestinyId,
                     manAuxWarehouseDestinyId, mnFkDivisionSourceId_n, mnFkItemSourceId, mnFkUnitSourceId,
                     ((SSomStock) SSomUtils.obtainStock(session, SLibTimeUtils.digestYear(mtDate)[0], mnFkItemDestinyId, mnFkUnitDestinyId, SLibConsts.UNDEFINED, manAuxWarehouseDestinyId,
-                    mnFkDivisionDestinyId_n, null, mtDate, false)).getStock(),
+                    mnFkDivisionDestinyId_n, null, mtDate, false, false)).getStock(),
                     mtDate, mnPkMixId, mnFkMixTypeId, mbRegistryNew, mbDeleted,
                     maAuxConversionIogOut, maAuxConversionIogIn);
             if (result.isEmpty()) {
@@ -915,7 +917,7 @@ public class SDbMix extends SDbRegistryUser {
                     manAuxWarehouseDestinyId, mnFkDivisionDestinyId_n, mnFkItemDestinyId, mnFkUnitDestinyId,
                     manAuxWarehouseDestinyId, mnFkDivisionSourceId_n, mnFkItemSourceId, mnFkUnitSourceId,
                     ((SSomStock) SSomUtils.obtainStock(session, SLibTimeUtils.digestYear(mtDate)[0], mnFkItemDestinyId, mnFkUnitDestinyId, SLibConsts.UNDEFINED, manAuxWarehouseDestinyId,
-                    mnFkDivisionDestinyId_n, null, mtDate, false)).getStock(),
+                    mnFkDivisionDestinyId_n, null, mtDate, false, false)).getStock(),
                     mtDate, mnPkMixId, mnFkMixTypeId, mbRegistryNew, mbDeleted,
                     maAuxConversionIogOut, maAuxConversionIogIn);
             if (result.isEmpty()) {
