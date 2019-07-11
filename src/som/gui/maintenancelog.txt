@@ -2,7 +2,7 @@
 2019-07-11, 1.0 062.2
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
-1) Mejoramiento a etiquetas de forma de captura ítem y al reporte de recepciones del día o período.
+1) Mejoramiento a etiquetas de forma de captura ítem y del reporte de recepciones del día o período.
 
 ================================================================================
 2019-06-07, 1.0 062.1
