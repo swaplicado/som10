@@ -5,6 +5,12 @@ Sergio Abraham FLORES GUTIÉRREZ
 1) Mejoramiento a etiquetas de forma de captura ítem y del reporte de recepciones del día o período.
 
 ================================================================================
+2019-07-11, 1.0 062.2
+Edwin Omar CARMONA FIGUEROA
+--------------------------------------------------------------------------------
+1) Corrección a porcentajes de captura y presentación de valores de la toma física de inventarios.
+
+================================================================================
 2019-06-07, 1.0 062.1
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
