@@ -173,17 +173,17 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
             @Override
             public void createGridColumns() {
                 int col = 0;
-                SGridColumnForm[] columns = new SGridColumnForm[10  ];
+                SGridColumnForm[] columns = new SGridColumnForm[10];
 
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "Tanque");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_BOOL_S, "Vacío");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_2D, "Vacío (" + SSomConsts.M + ")");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_2D, "Residuos (" + SSomConsts.M + ")");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Vacío (" + SSomConsts.M + ")");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Residuos (" + SSomConsts.M + ")");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "Ítem");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "Ítem código");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_L, "Observaciones");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_2D, "Altura (" + SSomConsts.M + ")");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_2D, "Volumen (" + SSomConsts.L + ")");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Altura (" + SSomConsts.M + ")");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Volumen (" + SSomConsts.L + ")");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_BOOL_M, "Omitir en estimación");
 
                 for (col = 0; col < columns.length; col++) {
