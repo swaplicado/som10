@@ -344,7 +344,7 @@ public class SDialogMfgEstimationFgHandingOver extends SBeanFormDialog implement
                 moKeyWarehouse.getValue(),
                 SLibConsts.UNDEFINED,
                 null,
-                moDateDate.getValue(), false);
+                moDateDate.getValue(), false, false);
 
             moDecXtaStock.setValue(stock.getStock());
             jlXtaStockUnit.setText(moMfgWarehouseProductProduction.getUnitCode());

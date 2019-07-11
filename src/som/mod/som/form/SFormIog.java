@@ -1268,7 +1268,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
                 (origin ? (moKeyDivisionSource.getSelectedIndex() > 0 ? moKeyDivisionSource.getValue()[0] : SLibConsts.UNDEFINED) :
                     (moKeyDivisionDestiny.getSelectedIndex() > 0 ? moKeyDivisionDestiny.getValue()[0] : SLibConsts.UNDEFINED)),
                 null,
-                moDateDate.getValue(), false);
+                moDateDate.getValue(), false, false);
 
             if (origin) {
                 moDecXtaStock.setValue(stock.getStock());
