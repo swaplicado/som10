@@ -53,7 +53,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
 
     private void initComponentsCustom() {
         jbTicketTare = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tar_not.gif")), "Destarar boleto", this);
-        jbMailReceptions = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mail.gif")), "Enviar mail de recepciones del día", this);
+        jbMailReceptions = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mail.gif")), "Enviar mail de recepciones del día o período", this);
 
         moDialogDailyMail = new SDialogMailReceptions(miClient, SModConsts.SX_DAY_MAIL, "Recepciones del día");
 
@@ -119,17 +119,14 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         }
     }
 
-    private void actionMail() {
-        int count = 0;
-
+    private void actionMailReceptions() {
         if (jbMailReceptions.isEnabled()) {
-
             moDialogDailyMail.setFormReset();
             moDialogDailyMail.setVisible(true);
+            
             if (moDialogDailyMail.getFormResult() == SGuiConsts.FORM_RESULT_OK) {
-
                 try {
-                    count = SSomMailUtils.computeMailReceptions(miClient.getSession(), moDialogDailyMail.getDateStart(), moDialogDailyMail.getDateEnd());
+                    int count = SSomMailUtils.computeMailReceptions(miClient.getSession(), moDialogDailyMail.getDateStart(), moDialogDailyMail.getDateEnd());
                     miClient.showMsgBoxInformation(SLibConsts.MSG_PROCESS_FINISHED + "\nMails enviados: " + SLibUtils.DecimalFormatInteger.format(count) + ".");
                 }
                 catch (Exception e) {
@@ -399,7 +396,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 actionTicketTare();
             }
             else if (button == jbMailReceptions) {
-                actionMail();
+                actionMailReceptions();
             }
         }
     }
