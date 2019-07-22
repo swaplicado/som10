@@ -49,11 +49,12 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
         jPanel5 = new javax.swing.JPanel();
         jlName = new javax.swing.JLabel();
         moTextName = new sa.lib.gui.bean.SBeanFieldText();
+        moBoolDefault = new sa.lib.gui.bean.SBeanFieldBoolean();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -78,6 +79,9 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel5);
 
+        moBoolDefault.setText("Predeterminada");
+        jPanel2.add(moBoolDefault);
+
         jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -90,6 +94,7 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlName;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolDefault;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
     // End of variables declaration//GEN-END:variables
@@ -99,9 +104,11 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
 
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode.getText()), 5);
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName.getText()), 50);
+        moBoolDefault.setBooleanSettings(moBoolDefault.getText(), false);
 
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
+        moFields.addField(moBoolDefault);
 
         moFields.setFormButton(jbSave);
     }
@@ -141,6 +148,7 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
 
         moTextName.setValue(moRegistry.getName());
         moTextCode.setValue(moRegistry.getCode());
+        moBoolDefault.setValue(moRegistry.isDefault());
 
         setFormEditable(true);
 
@@ -155,6 +163,7 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
 
         registry.setName(moTextName.getValue());
         registry.setCode(moTextCode.getValue());
+        registry.setDefault(moBoolDefault.getValue());
 
         return registry;
     }

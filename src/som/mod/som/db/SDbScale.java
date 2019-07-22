@@ -23,6 +23,7 @@ public class SDbScale extends SDbRegistryUser {
     protected int mnPkScaleId;
     protected String msCode;
     protected String msName;
+    protected boolean mbDefault;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -44,6 +45,7 @@ public class SDbScale extends SDbRegistryUser {
     public void setPkScaleId(int n) { mnPkScaleId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
+    public void setDefault(boolean b) { mbDefault = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -58,6 +60,7 @@ public class SDbScale extends SDbRegistryUser {
     public int getPkScaleId() { return mnPkScaleId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
+    public boolean isDefault() { return mbDefault; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -86,6 +89,7 @@ public class SDbScale extends SDbRegistryUser {
         mnPkScaleId = 0;
         msCode = "";
         msName = "";
+        mbDefault = false;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -143,6 +147,7 @@ public class SDbScale extends SDbRegistryUser {
             mnPkScaleId = resultSet.getInt("id_sca");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
+            mbDefault = resultSet.getBoolean("b_def");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -180,6 +185,7 @@ public class SDbScale extends SDbRegistryUser {
                     mnPkScaleId + ", " +
                     "'" + msCode + "', " +
                     "'" + msName + "', " +
+                    (mbDefault ? 1 : 0) + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -199,6 +205,7 @@ public class SDbScale extends SDbRegistryUser {
                     //"id_sca = " + mnPkScaleId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
+                    "b_def = " + (mbDefault ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -224,6 +231,7 @@ public class SDbScale extends SDbRegistryUser {
         registry.setPkScaleId(this.getPkScaleId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
+        registry.setDefault(this.isDefault());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());

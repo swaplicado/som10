@@ -1,4 +1,13 @@
 ================================================================================
+2019-07-22, 1.0 063.0
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Implementación de báscula predeterminada, y mejoramiento a mail de notificación de 
+recepción de materias primas (boleto tarado), para optimizar la generación de información
+excluyendo secciones de báscula si no son necesarias, i.e., si la recepción correspondiente a 
+cada sección fue hecha en más de una báscula o en una báscula no predeterminada.
+
+================================================================================
 2019-07-11, 1.0 062.2
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

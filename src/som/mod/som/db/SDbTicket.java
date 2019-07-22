@@ -231,7 +231,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 Date dateEnd;
                 String[] months = SLibTimeUtils.createMonthsOfYear(Locale.getDefault(), Calendar.SHORT);
 
-                // list of reporting groups:
+                // list of all reporting groups:
 
                 msSql = "SELECT id_rep_grp, name, sort "
                         + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_REP_GRP) + " AS r "
@@ -240,9 +240,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 Statement repGroupStatement = session.getDatabase().getConnection().createStatement(); // prevent other result sets from being closed
                 ResultSet repGroupResultSet = repGroupStatement.executeQuery(msSql);
 
-                // list of scales:
+                // list of all scales:
 
-                msSql = "SELECT id_sca, name "
+                msSql = "SELECT id_sca, name, b_def "
                         + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " "
                         + "ORDER BY name, id_sca ";
                 
@@ -273,18 +273,28 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 
                 // SECTION 1.2. Current day summary by scale:
                 
-                body += composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+                int scaleRows = 0;
+                boolean scaleForce = false;
+                String scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
 
                 // compute scales:
                 
                 while (scaleResultSet.next()) { // first reading, cursor before first row
                     weight = SSomUtils.obtainWeightDestinyByScale(session, mnFkItemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"));
                     if (weight != 0) {
-                        body += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                        scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                        scaleRows++;
+                        if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
+                            scaleForce = true;
+                        }
                     }
                 }
 
-                body += composeHtmlTableKgPctFooter(section, weightTotal);
+                scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+                
+                if (scaleForce || scaleRows > 1) {
+                    body += scaleHtml; // more than one scale present or receptions done in a non-default scale
+                }
 
                 // SECTION 2. Current month:
                 
@@ -314,7 +324,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 
                 // SECTION 2.2: Current month summary by scale: 
                 
-                body += composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+                scaleRows = 0;
+                scaleForce = false;
+                scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
 
                 // compute scales:
                 
@@ -325,11 +337,19 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 while (scaleResultSet.next()) {
                     weight = SSomUtils.obtainWeightDestinyByScale(session, mnFkItemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"));
                     if (weight != 0) {
-                        body += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                        scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                        scaleRows++;
+                        if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
+                            scaleForce = true;
+                        }
                     }
                 }
 
-                body += composeHtmlTableKgPctFooter(section, weightTotal);
+                scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+                
+                if (scaleForce || scaleRows > 1) {
+                    body += scaleHtml; // more than one scale present or receptions done in a non-default scale
+                }
                 
                 // SECTION 3. Current season:
                 
@@ -375,7 +395,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
                 // SECTION 3.2 Current season summary by scale:
                 
-                body += composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+                scaleRows = 0;
+                scaleForce = false;
+                scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
 
                 // compute scales:
                 
@@ -386,11 +408,19 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 while (scaleResultSet.next()) {
                     weight = SSomUtils.obtainWeightDestinyByScale(session, mnFkItemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"));
                     if (weight != 0) {
-                        body += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                        scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                        scaleRows++;
+                        if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
+                            scaleForce = true;
+                        }
                     }
                 }
 
-                body += composeHtmlTableKgPctFooter(section, weightTotal);
+                scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+                
+                if (scaleForce || scaleRows > 1) {
+                    body += scaleHtml; // more than one scale present or receptions done in a non-default scale
+                }
                           
                 // SECTION 4. Season summary by month:
                 
