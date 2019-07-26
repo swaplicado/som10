@@ -654,7 +654,7 @@ public class SDbMix extends SDbRegistryUser {
                 iog.getFkDivisionId(),
                 null,
                 iog.getDate(),
-                iog.getQuantity());
+                iog.getQtyFinishedGoods());
             result = stock.getResult();
 */
 
@@ -667,7 +667,7 @@ public class SDbMix extends SDbRegistryUser {
                     mtDate,
                     iog.getFkItemId(),
                     iog.getFkUnitId(),
-                    iog.getQuantity(),
+                    iog.getQtyFinishedGoods(),
                     "",
                     false,
                     false);

@@ -9,7 +9,6 @@ import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
-import sa.lib.gui.SGuiFieldKeyGroup;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import som.gui.SGuiClientSessionCustom;
@@ -18,7 +17,7 @@ import som.mod.cfg.db.SDbBranchWarehouse;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Edwin Carmona
  */
 public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
@@ -57,6 +56,9 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         jPanel11 = new javax.swing.JPanel();
         jlWarehouseType = new javax.swing.JLabel();
         moKeyWarehouseType = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel12 = new javax.swing.JPanel();
+        jlProductionLine = new javax.swing.JLabel();
+        moKeyProductionLine = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel8 = new javax.swing.JPanel();
         jlDimensionBase = new javax.swing.JLabel();
         moDecDimensionBase = new sa.lib.gui.bean.SBeanFieldDecimal();
@@ -69,13 +71,17 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         jlCapacityRealLiter = new javax.swing.JLabel();
         moDecCapacityRealLiter = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlCapacityRealLiterUnit = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jlNote = new javax.swing.JLabel();
+        moTextNote = new sa.lib.gui.bean.SBeanFieldText();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
+        jPanel1.setPreferredSize(new java.awt.Dimension(560, 350));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(9, 1, 0, 5));
 
-        jPanel7.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlBranch.setForeground(new java.awt.Color(0, 0, 255));
         jlBranch.setText("Sucursal:*");
@@ -87,7 +93,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel7);
 
-        jPanel4.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCode.setText("Código:*");
         jlCode.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -98,7 +104,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel4);
 
-        jPanel5.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlName.setText("Nombre:*");
         jlName.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -110,7 +116,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel5);
 
-        jPanel11.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlWarehouseType.setText("Tipo:*");
         jlWarehouseType.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -121,7 +127,18 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel11);
 
-        jPanel8.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlProductionLine.setText("Línea de prod.:*");
+        jlProductionLine.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel12.add(jlProductionLine);
+
+        moKeyProductionLine.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel12.add(moKeyProductionLine);
+
+        jPanel2.add(jPanel12);
+
+        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDimensionBase.setText("Diámetro:");
         jlDimensionBase.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -134,7 +151,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel8);
 
-        jPanel9.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDimensionHeight.setText("Altura:");
         jlDimensionHeight.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -147,7 +164,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel9);
 
-        jPanel10.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCapacityRealLiter.setText("Capacidad real:");
         jlCapacityRealLiter.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -160,6 +177,18 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel10);
 
+        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlNote.setText("Nota:");
+        jlNote.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel6.add(jlNote);
+
+        moTextNote.setText("sBeanFieldText1");
+        moTextNote.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel6.add(moTextNote);
+
+        jPanel2.add(jPanel6);
+
         jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -168,10 +197,12 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
@@ -184,34 +215,42 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JLabel jlDimensionHeight;
     private javax.swing.JLabel jlDimensionHeightUnit;
     private javax.swing.JLabel jlName;
+    private javax.swing.JLabel jlNote;
+    private javax.swing.JLabel jlProductionLine;
     private javax.swing.JLabel jlWarehouseType;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecCapacityRealLiter;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDimensionBase;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDimensionHeight;
     private sa.lib.gui.bean.SBeanFieldKey moKeyBranch;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyProductionLine;
     private sa.lib.gui.bean.SBeanFieldKey moKeyWarehouseType;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
+    private sa.lib.gui.bean.SBeanFieldText moTextNote;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 480, 300);
+        SGuiUtils.setWindowBounds(this, 560, 350);
 
         moKeyBranch.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranch.getText()), true);
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode.getText()), 5);
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName.getText()), 50);
         moKeyWarehouseType.setKeySettings(miClient, SGuiUtils.getLabelName(jlWarehouseType.getText()), true);
+        moKeyProductionLine.setKeySettings(miClient, SGuiUtils.getLabelName(jlProductionLine.getText()), true);
         moDecDimensionBase.setDecimalSettings(SGuiUtils.getLabelName(jlDimensionBase.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecDimensionHeight.setDecimalSettings(SGuiUtils.getLabelName(jlDimensionHeight.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecCapacityRealLiter.setDecimalSettings(SGuiUtils.getLabelName(jlCapacityRealLiter.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 250, 0);
 
         moFields.addField(moKeyBranch);
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
         moFields.addField(moKeyWarehouseType);
+        moFields.addField(moKeyProductionLine);
         moFields.addField(moDecDimensionBase);
         moFields.addField(moDecDimensionHeight);
         moFields.addField(moDecCapacityRealLiter);
+        moFields.addField(moTextNote);
 
         moFields.setFormButton(jbSave);
     }
@@ -230,6 +269,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     public void reloadCatalogues() {
         miClient.getSession().populateCatalogue(moKeyBranch, SModConsts.CU_COB, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyWarehouseType, SModConsts.CS_WAH_TP, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyProductionLine, SModConsts.CU_PROD_LINES, SLibConsts.UNDEFINED, null);
     }
 
     @Override
@@ -269,6 +309,8 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         moDecDimensionHeight.setValue(moRegistry.getDimensionHeight());
         moDecCapacityRealLiter.setValue(moRegistry.getCapacityRealLiter());
         moKeyWarehouseType.setValue(new int[] { moRegistry.getFkWarehouseTypeId() });
+        moKeyProductionLine.setValue(new int[] { moRegistry.getFkProductionLineId() });
+        moTextNote.setValue(moRegistry.getNote());
 
         setFormEditable(true);
 
@@ -293,6 +335,8 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         registry.setDimensionHeight(moDecDimensionHeight.getValue());
         registry.setCapacityRealLiter(moDecCapacityRealLiter.getValue());
         registry.setFkWarehouseTypeId(moKeyWarehouseType.getValue()[0]);
+        registry.setFkProductionLineId(moKeyProductionLine.getValue()[0]);
+        registry.setNote(moTextNote.getValue());
 
         return registry;
     }

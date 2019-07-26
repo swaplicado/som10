@@ -67,6 +67,7 @@ public class SDbIog extends SDbRegistryUser {
     protected int mnFkExternalIogEntryId_n;
     protected int mnFkTicketId_n;
     protected int mnFkMfgEstimationId_n;
+    protected int mnFkMfgEstimationEtyId_n;
     protected int mnFkMfgEstimationVersionId_n;
     /*
     protected int mnFkUserInsertId;
@@ -635,6 +636,7 @@ public class SDbIog extends SDbRegistryUser {
     public void setFkExternalIogEntryId_n(int n) { mnFkExternalIogEntryId_n = n; }
     public void setFkTicketId_n(int n) { mnFkTicketId_n = n; }
     public void setFkMfgEstimationId_n(int n) { mnFkMfgEstimationId_n = n; }
+    public void setFkMfgEstimationEtyId_n(int n) { mnFkMfgEstimationEtyId_n = n; }
     public void setFkMfgEstimationVersionId_n(int n) { mnFkMfgEstimationVersionId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
@@ -674,6 +676,7 @@ public class SDbIog extends SDbRegistryUser {
     public int getFkExternalIogEntryId_n() { return mnFkExternalIogEntryId_n; }
     public int getFkTicketId_n() { return mnFkTicketId_n; }
     public int getFkMfgEstimationId_n() { return mnFkMfgEstimationId_n; }
+    public int getFkMfgEstimationEtyId_n() { return mnFkMfgEstimationEtyId_n; }
     public int getFkMfgEstimationVersionId_n() { return mnFkMfgEstimationVersionId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
@@ -941,6 +944,7 @@ public class SDbIog extends SDbRegistryUser {
         mnFkExternalIogEntryId_n = 0;
         mnFkTicketId_n = 0;
         mnFkMfgEstimationId_n = 0;
+        mnFkMfgEstimationEtyId_n = 0;
         mnFkMfgEstimationVersionId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -1088,6 +1092,8 @@ public class SDbIog extends SDbRegistryUser {
             if (resultSet.wasNull()) { mnFkTicketId_n = 0; }
             mnFkMfgEstimationId_n = resultSet.getInt("iog.fk_mfg_est_n");
             if (resultSet.wasNull()) { mnFkMfgEstimationId_n = 0; }
+            mnFkMfgEstimationEtyId_n = resultSet.getInt("iog.fk_mfg_est_ety_n");
+            if (resultSet.wasNull()) { mnFkMfgEstimationEtyId_n = 0; }
             mnFkMfgEstimationVersionId_n = resultSet.getInt("iog.fk_mfg_est_ver_n");
             if (resultSet.wasNull()) { mnFkMfgEstimationVersionId_n = 0; }
             mnFkUserInsertId = resultSet.getInt("iog.fk_usr_ins");
@@ -1233,6 +1239,7 @@ public class SDbIog extends SDbRegistryUser {
                     (mnFkExternalIogEntryId_n > 0 ? mnFkExternalIogEntryId_n : "NULL") + ", " +
                     (mnFkTicketId_n > 0 ? mnFkTicketId_n : "NULL") + ", " +
                     (mnFkMfgEstimationId_n > 0 ? mnFkMfgEstimationId_n : "NULL") + ", " +
+                    (mnFkMfgEstimationEtyId_n > 0 ? mnFkMfgEstimationEtyId_n : "NULL") + ", " +
                     (mnFkMfgEstimationVersionId_n > 0 ? mnFkMfgEstimationVersionId_n : "NULL") + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
@@ -1275,6 +1282,7 @@ public class SDbIog extends SDbRegistryUser {
                     "fk_ext_iog_ety_n = " + (mnFkExternalIogEntryId_n > 0 ? mnFkExternalIogEntryId_n : "NULL") + ", " +
                     "fk_tic_n = " + (mnFkTicketId_n > 0 ? mnFkTicketId_n : "NULL") + ", " +
                     "fk_mfg_est_n = " + (mnFkMfgEstimationId_n > 0 ? mnFkMfgEstimationId_n : "NULL") + ", " +
+                    "fk_mfg_est_ety_n = " + (mnFkMfgEstimationEtyId_n > 0 ? mnFkMfgEstimationEtyId_n : "NULL") + ", " +
                     "fk_mfg_est_ver_n = " + (mnFkMfgEstimationVersionId_n > 0 ? mnFkMfgEstimationVersionId_n : "NULL") + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
@@ -1460,6 +1468,7 @@ public class SDbIog extends SDbRegistryUser {
         registry.setFkExternalIogEntryId_n(this.getFkExternalIogEntryId_n());
         registry.setFkTicketId_n(this.getFkTicketId_n());
         registry.setFkMfgEstimationId_n(this.getFkMfgEstimationId_n());
+        registry.setFkMfgEstimationEtyId_n(this.getFkMfgEstimationEtyId_n());
         registry.setFkMfgEstimationVersionId_n(this.getFkMfgEstimationVersionId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());

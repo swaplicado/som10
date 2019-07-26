@@ -55,7 +55,7 @@ public class SViewMfgEstimation extends SGridPaneView {
             + "v.ver, "
             + "v.dt_mfg_est, "
             + "v.dt_stk_day, "
-            + "v.qty, "
+            + "v.mfg_fg_r, "
             + "v.b_clo, "
             + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
             + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
@@ -85,7 +85,7 @@ public class SViewMfgEstimation extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt_mfg_est", SGridConsts.COL_TITLE_DATE);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt_stk_day", SGridConsts.COL_TITLE_DATE);
         //columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.ver", SGridConsts.COL_TITLE_CODE);
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.qty", "Cantidad");                
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.mfg_fg_r", "Cantidad");                
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_clo", "Cerrado");        
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);

@@ -36,6 +36,7 @@ public abstract class SModConsts {
     public static final int CU_USR_RIG = 220009;
     public static final int CU_USR_SCA = 220010;
     public static final int CU_DIV = 220011;
+    public static final int CU_PROD_LINES = 220012;
     public static final int CU_REP_GRP = 220016;
 
     public static final int C_USR_GUI = 230001;
@@ -72,6 +73,7 @@ public abstract class SModConsts {
     public static final int S_IOG = 330021;
     public static final int S_IOG_NOTE = 330022;
     public static final int S_IOG_REF = 330023;
+    public static final int S_IOG_PROD = 330024;
     public static final int S_IOG_EXP = 330026;
     public static final int S_IOG_EXP_HIS = 330027;
     public static final int S_DPS_ASS = 330031;
@@ -79,6 +81,7 @@ public abstract class SModConsts {
     public static final int S_STK = 330052;
     public static final int S_MFG_EST = 330061;
     public static final int S_MFG_EST_ETY = 330062;
+    public static final int S_MFG_EST_RM_CON = 330063;
     public static final int S_MIX = 330071;
     public static final int S_MIX_NOTE = 330072;
 
@@ -149,6 +152,7 @@ public abstract class SModConsts {
     public static final int SR_IOG_LIST = 350010;
     public static final int SR_FRE_TIME = 350011;
     public static final int SR_ITEM_FRUIT = 350012;
+    public static final int SR_CH_OIL_PERC = 350013;
 
     public static final int E_TIC_REV = 430001;
 
@@ -174,6 +178,7 @@ public abstract class SModConsts {
         TablesMap.put(CU_USR_RIG, "cu_usr_rig");
         TablesMap.put(CU_USR_SCA, "cu_usr_sca");
         TablesMap.put(CU_DIV, "cu_div");
+        TablesMap.put(CU_PROD_LINES, "cu_line");
         TablesMap.put(CU_REP_GRP, "cu_rep_grp");
 
         TablesMap.put(C_USR_GUI, "c_usr_gui");
@@ -217,6 +222,7 @@ public abstract class SModConsts {
         TablesMap.put(S_STK, "s_stk");
         TablesMap.put(S_MFG_EST, "s_mfg_est");
         TablesMap.put(S_MFG_EST_ETY, "s_mfg_est_ety");
+        TablesMap.put(S_MFG_EST_RM_CON, "s_mfg_est_rm_con");
         TablesMap.put(S_MIX, "s_mix");
         TablesMap.put(S_MIX_NOTE, "s_mix_note");
 

@@ -13,17 +13,15 @@ import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
 import sa.lib.gui.SGuiClient;
 import som.mod.SModConsts;
-import static som.mod.SModConsts.CU_PROD_LINES;
-import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Sergio Flores
+ * @author Edwin Carmona
  */
-public class SViewBranchWarehouse extends SGridPaneView {
+public class SViewProductionLine extends SGridPaneView {
 
-    public SViewBranchWarehouse(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.CU_WAH, SLibConsts.UNDEFINED, title);
+    public SViewProductionLine(SGuiClient client, String title) {
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.CU_PROD_LINES, SLibConsts.UNDEFINED, title);
     }
 
     @Override
@@ -31,7 +29,7 @@ public class SViewBranchWarehouse extends SGridPaneView {
         String sql = "";
         Object filter = null;
 
-        moPaneSettings = new SGridPaneSettings(3);
+        moPaneSettings = new SGridPaneSettings(1);
         moPaneSettings.setUpdatableApplying(true);
         moPaneSettings.setDisableableApplying(true);
         moPaneSettings.setDeletableApplying(true);
@@ -45,19 +43,11 @@ public class SViewBranchWarehouse extends SGridPaneView {
         }
 
         msSql = "SELECT "
-                + "v.id_co AS " + SDbConsts.FIELD_ID + "1, "
-                + "v.id_cob AS " + SDbConsts.FIELD_ID + "2, "
-                + "v.id_wah AS " + SDbConsts.FIELD_ID + "3, "
+                + "v.id_line AS " + SDbConsts.FIELD_ID + "1, "
                 + "v.code AS " + SDbConsts.FIELD_CODE + ", "
                 + "v.name AS " + SDbConsts.FIELD_NAME + ", "
-                + "v.dim_base, "
-                + "v.dim_heig, "
-                + "v.cap_real_lt, "
                 + "co.name, "
                 + "cob.name, "
-                + "vt.id_wah_tp, "
-                + "vt.name, "
-                + "pl.name AS pl_name, "
                 + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
                 + "v.b_can_dis AS " + SDbConsts.FIELD_CAN_DIS + ", "
                 + "v.b_can_del AS " + SDbConsts.FIELD_CAN_DEL + ", "
@@ -70,37 +60,28 @@ public class SViewBranchWarehouse extends SGridPaneView {
                 + "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", "
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS v "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_PROD_LINES) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_CO) + " AS co ON "
-                + "v.id_co = co.id_co "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_PROD_LINES) + " AS pl ON "
-                + "v.fk_line = pl.id_line "
+                + "v.fk_pla_co = co.id_co "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_COB) + " AS cob ON "
-                + "v.id_co = cob.id_co AND v.id_cob = cob.id_cob "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CS_WAH_TP) + " AS vt ON "
-                + "v.fk_wah_tp = vt.id_wah_tp "
+                + "v.fk_pla_co = cob.id_co AND v.fk_pla_cob = cob.id_cob "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
                 + "v.fk_usr_upd = uu.id_usr "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)
-                + "ORDER BY v.name, v.id_co, v.id_cob, v.id_wah ";
+                + "ORDER BY v.name, v.id_line, v.code";
     }
 
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[16];
+        SGridColumnView[] columns = new SGridColumnView[11];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "co.name", "Empresa");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "cob.name", "Sucursal");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vt.name", SGridConsts.COL_TITLE_TYPE + " almacén");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "pl_name", "Línea de producción");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.dim_base", "Diámetro (" + SSomConsts.M + ")");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.dim_heig", "Altura (" + SSomConsts.M + ")");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.cap_real_lt", "Capacidad real (" + SSomConsts.L + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
@@ -118,5 +99,6 @@ public class SViewBranchWarehouse extends SGridPaneView {
         moSuscriptionsSet.add(SModConsts.CU_CO);
         moSuscriptionsSet.add(SModConsts.CU_COB);
         moSuscriptionsSet.add(SModConsts.CU_USR);
+        moSuscriptionsSet.add(SModConsts.CU_WAH);
     }
 }
