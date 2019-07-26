@@ -50,6 +50,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     protected boolean mbMailNotificationConfigAuth;
     protected String msCurrencyCode;
     protected double mdMaximumStockDifferenceKg;
+    protected double mdMaximumStockDifferenceM;
     protected String msRevueltaId;
     protected String msRevueltaOdbc;
     protected String msRevueltaPath;
@@ -213,6 +214,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public void setMailNotificationConfigAuth(boolean b) { mbMailNotificationConfigAuth = b; }
     public void setCurrencyCode(String s) { msCurrencyCode = s; }
     public void setMaximumStockDifferenceKg(double d) { mdMaximumStockDifferenceKg = d; }
+    public void setMaximumStockDifferenceM(double d) { mdMaximumStockDifferenceM = d; }
     public void setRevueltaId(String s) { msRevueltaId = s; }
     public void setRevueltaOdbc(String s) { msRevueltaOdbc = s; }
     public void setRevueltaPath(String s) { msRevueltaPath = s; }
@@ -255,6 +257,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public boolean isMailNotificationConfigAuth() { return mbMailNotificationConfigAuth; }
     public String getCurrencyCode() { return msCurrencyCode; }
     public double getMaximumStockDifferenceKg() { return mdMaximumStockDifferenceKg; }
+    public double getMaximumStockDifferenceM() { return mdMaximumStockDifferenceM; }
     public String getRevueltaId() { return msRevueltaId; }
     public String getRevueltaOdbc() { return msRevueltaOdbc; }
     public String getRevueltaPath() { return msRevueltaPath; }
@@ -313,6 +316,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         mbMailNotificationConfigAuth = false;
         msCurrencyCode = "";
         mdMaximumStockDifferenceKg = 0;
+        mdMaximumStockDifferenceM = 0;
         msRevueltaId = "";
         msRevueltaOdbc = "";
         msRevueltaPath = "";
@@ -403,6 +407,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
             mbMailNotificationConfigAuth = resultSet.getBoolean("b_mnc_auth");
             msCurrencyCode = resultSet.getString("cur_code");
             mdMaximumStockDifferenceKg = resultSet.getDouble("max_stk_dif_kg");
+            mdMaximumStockDifferenceM = resultSet.getDouble("max_stk_dif_m");
             msRevueltaId = resultSet.getString("rev_id");
             msRevueltaOdbc = resultSet.getString("rev_odbc");
             msRevueltaPath = resultSet.getString("rev_path");
@@ -486,6 +491,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     (mbMailNotificationConfigAuth ? 1 : 0) + ", " +
                     "'" + msCurrencyCode + "', " +
                     mdMaximumStockDifferenceKg + ", " +
+                    mdMaximumStockDifferenceM + ", " +
                     "'" + msRevueltaId + "', " +
                     "'" + msRevueltaOdbc + "', " +
                     "'" + msRevueltaPath + "', " + 
@@ -533,6 +539,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "b_mnc_auth = " + (mbMailNotificationConfigAuth ? 1 : 0) + ", " +
                     "cur_code = '" + msCurrencyCode + "', " +
                     "max_stk_dif_kg = " + mdMaximumStockDifferenceKg + ", " +
+                    "max_stk_dif_m = " + mdMaximumStockDifferenceM + ", " +
                     "rev_id = '" + msRevueltaId + "', " +
                     "rev_odbc = '" + msRevueltaOdbc + "', " +
                     "rev_path = '" + msRevueltaPath + "', " +
@@ -598,6 +605,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         registry.setMailNotificationConfigAuth(this.isMailNotificationConfigAuth());
         registry.setCurrencyCode(this.getCurrencyCode());
         registry.setMaximumStockDifferenceKg(this.getMaximumStockDifferenceKg());
+        registry.setMaximumStockDifferenceM(this.getMaximumStockDifferenceM());
         registry.setRevueltaId(this.getRevueltaId());
         registry.setRevueltaOdbc(this.getRevueltaOdbc());
         registry.setRevueltaPath(this.getRevueltaPath());

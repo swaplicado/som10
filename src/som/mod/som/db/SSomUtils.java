@@ -1202,7 +1202,8 @@ public abstract class SSomUtils {
     public static SSomProductionEstimateDistributeWarehouses productionEstimateDistribution(final SGuiSession session, final Date pDate, final int pnDivisionId,
             final int pnProductionEstimateId, final int pnProductionEstimateVersionId, final SSomMfgWarehouseProduct poMfgWarehouseProductProduction, int pnSource,
             final ArrayList<SSomMfgWarehouseProduct> paMfgWarehouseProductStorage) {
-        SDbIog iog = null;
+        SDbIog inIog = null;
+        SDbIog outIog = null;
         SSomProductionEstimateDistributeWarehouses productionEstimateDistribute = new SSomProductionEstimateDistributeWarehouses();
         SSomMfgWarehouseProduct mfgWarehouseProductStorage = null;
 
@@ -1235,23 +1236,23 @@ public abstract class SSomUtils {
 
                     // Production move out (warehouse production):
 
-                    iog = new SDbIog();
-                    iog.computeIog(SLibTimeUtils.createDate(SLibTimeUtils.digestDate(pDate)[0], SLibTimeUtils.digestDate(pDate)[1], SLibTimeUtils.digestDate(pDate)[2]-1),
+                    inIog = new SDbIog();
+                    inIog.computeIog(SLibTimeUtils.createDate(SLibTimeUtils.digestDate(pDate)[0], SLibTimeUtils.digestDate(pDate)[1], SLibTimeUtils.digestDate(pDate)[2]-1),
                         productionEstimateDistribute.getProductionAssigned(), true, SModSysConsts.SS_IOG_TP_OUT_MFG_FG_ASD, SModSysConsts.SU_IOG_ADJ_TP_NA, poMfgWarehouseProductProduction.getPkItemId(), poMfgWarehouseProductProduction.getPkUnitId(),
                         new int[] { poMfgWarehouseProductProduction.getPkCompanyId(), poMfgWarehouseProductProduction.getPkBranchId(), poMfgWarehouseProductProduction.getPkWarehouseId() }, pnDivisionId, pnProductionEstimateId,
                         pnProductionEstimateVersionId, session.getUser().getPkUserId());
-                    iog.setSystem(true);
-                    productionEstimateDistribute.getIogOut().add(iog);
+                    inIog.setSystem(true);
+                    productionEstimateDistribute.getIogOut().add(inIog);
 
                     // Production move in (warehouse storage):
 
-                    iog = new SDbIog();
-                    iog.computeIog(SLibTimeUtils.createDate(SLibTimeUtils.digestDate(pDate)[0], SLibTimeUtils.digestDate(pDate)[1], SLibTimeUtils.digestDate(pDate)[2]-1),
+                    outIog = new SDbIog();
+                    outIog.computeIog(SLibTimeUtils.createDate(SLibTimeUtils.digestDate(pDate)[0], SLibTimeUtils.digestDate(pDate)[1], SLibTimeUtils.digestDate(pDate)[2]-1),
                         productionEstimateDistribute.getProductionAssigned(), true, SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD, SModSysConsts.SU_IOG_ADJ_TP_NA, mfgWarehouseProductStorage.getPkItemId(), mfgWarehouseProductStorage.getPkUnitId(),
                         new int[] { mfgWarehouseProductStorage.getPkCompanyId(), mfgWarehouseProductStorage.getPkBranchId(), mfgWarehouseProductStorage.getPkWarehouseId() }, pnDivisionId, pnProductionEstimateId,
                         pnProductionEstimateVersionId, session.getUser().getPkUserId());
-                    iog.setSystem(true);
-                    productionEstimateDistribute.getIogIn().add(iog);
+                    outIog.setSystem(true);
+                    productionEstimateDistribute.getIogIn().add(outIog);
 
                     // Each one moving in/out production, decrease the amount of storage in the warehouse:
 

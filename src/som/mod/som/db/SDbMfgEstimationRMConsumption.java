@@ -15,69 +15,51 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Néstor Ávalos
+ * @author Edwin Carmona
  */
-public class SDbMfgEstimationEntry extends SDbRegistryUser {
+public class SDbMfgEstimationRMConsumption extends SDbRegistryUser {
 
     protected int mnPkMfgEstimationId;
-    protected int mnPkEntryId;
+    protected int mnPkRmConsumptionId;
+    protected double mdOilPercentage;
     protected double mdMfgFinishedGood;
     protected double mdMfgByproduct;
     protected double mdMfgCull;
     protected double mdConsumptionRawMaterial;
-    protected int mnFkItemMfgFinishedGoodId;
-    protected int mnFkItemMfgByproductId_n;
-    protected int mnFkItemMfgCullId_n;
     protected int mnFkItemConsumptionRawMaterialId;
-    protected int mnFkWarehouseCompanyId;
-    protected int mnFkWarehouseBranchId;
-    protected int mnFkWarehouseWarehouseId;
-    protected int mnFkProductionLineId;
 
-    public SDbMfgEstimationEntry() {
-        super(SModConsts.S_MFG_EST_ETY);
+    public SDbMfgEstimationRMConsumption() {
+        super(SModConsts.S_MFG_EST_RM_CON);
         initRegistry();
     }
 
     public void setPkMfgEstimationId(int n) { mnPkMfgEstimationId = n; }
-    public void setPkEntryId(int n) { mnPkEntryId = n; }
+    public void setPkRmConsumptionId(int n) { mnPkRmConsumptionId = n; }
+    public void setOilPercentage(double d) { mdOilPercentage = d; }
     public void setMfgFinishedGood(double d) { mdMfgFinishedGood = d; }
     public void setMfgByproduct(double d) { mdMfgByproduct = d; }
     public void setMfgCull(double d) { mdMfgCull = d; }
     public void setConsumptionRawMaterial(double d) { mdConsumptionRawMaterial = d; }
-    public void setFkItemMfgFinishedGoodId(int n) { mnFkItemMfgFinishedGoodId = n; }
-    public void setFkItemMfgByproductId_n(int n) { mnFkItemMfgByproductId_n = n; }
-    public void setFkItemMfgCullId_n(int n) { mnFkItemMfgCullId_n = n; }
     public void setFkItemConsumptionRawMaterialId(int n) { mnFkItemConsumptionRawMaterialId = n; }
-    public void setFkWarehouseCompanyId(int n) { mnFkWarehouseCompanyId = n; }
-    public void setFkWarehouseBranchId(int n) { mnFkWarehouseBranchId = n; }
-    public void setFkWarehouseWarehouseId(int n) { mnFkWarehouseWarehouseId = n; }
-    public void setFkProductionLineId(int n) { mnFkProductionLineId = n; }
 
     public int getPkMfgEstimationId() { return mnPkMfgEstimationId; }
-    public int getPkEntryId() { return mnPkEntryId; }
+    public int getPkRmConsumptionId() { return mnPkRmConsumptionId; }
+    public double getOilPercentage() { return mdOilPercentage; }
     public double getMfgFinishedGood() { return mdMfgFinishedGood; }
     public double getMfgByproduct() { return mdMfgByproduct; }
     public double getMfgCull() { return mdMfgCull; }
     public double getConsumptionRawMaterial() { return mdConsumptionRawMaterial; }
-    public int getFkItemMfgFinishedGoodId() { return mnFkItemMfgFinishedGoodId; }
-    public int getFkItemMfgByproductId_n() { return mnFkItemMfgByproductId_n; }
-    public int getFkItemMfgCullId_n() { return mnFkItemMfgCullId_n; }
     public int getFkItemConsumptionRawMaterialId() { return mnFkItemConsumptionRawMaterialId; }
-    public int getFkWarehouseCompanyId() { return mnFkWarehouseCompanyId; }
-    public int getFkWarehouseBranchId() { return mnFkWarehouseBranchId; }
-    public int getFkWarehouseWarehouseId() { return mnFkWarehouseWarehouseId; }
-    public int getFkProductionLineId() { return mnFkProductionLineId; }
-
+    
     @Override
     public void setPrimaryKey(int[] pk) {
         mnPkMfgEstimationId = pk[0];
-        mnPkEntryId = pk[1];
+        mnPkRmConsumptionId = pk[1];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkMfgEstimationId, mnPkEntryId };
+        return new int[] { mnPkMfgEstimationId, mnPkRmConsumptionId };
     }
 
     @Override
@@ -85,19 +67,12 @@ public class SDbMfgEstimationEntry extends SDbRegistryUser {
         initBaseRegistry();
 
         mnPkMfgEstimationId = 0;
-        mnPkEntryId = 0;
+        mnPkRmConsumptionId = 0;
+        mdOilPercentage = 0;
         mdMfgFinishedGood = 0;
         mdMfgByproduct = 0;
         mdMfgCull = 0;
-        mdConsumptionRawMaterial = 0;
-        mnFkItemMfgFinishedGoodId = 0;
-        mnFkItemMfgByproductId_n = 0;
-        mnFkItemMfgCullId_n = 0;
         mnFkItemConsumptionRawMaterialId = 0;
-        mnFkWarehouseCompanyId = 0;
-        mnFkWarehouseBranchId = 0;
-        mnFkWarehouseWarehouseId = 0;
-        mnFkProductionLineId = 0;
     }
 
     @Override
@@ -107,24 +82,24 @@ public class SDbMfgEstimationEntry extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_mfg_est = " + mnPkMfgEstimationId + " AND id_ety = " + mnPkEntryId;
+        return "WHERE id_mfg_est = " + mnPkMfgEstimationId + " AND id_rm_con = " + mnPkRmConsumptionId;
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_mfg_est = " + pk[0] + " AND id_ety = " + pk[1];
+        return "WHERE id_mfg_est = " + pk[0] + " AND id_rm_con = " + pk[1];
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkEntryId = 0;
+        mnPkRmConsumptionId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_ety), 0) + 1 FROM " + getSqlTable() + " WHERE id_mfg_est = " + mnPkMfgEstimationId;
+        msSql = "SELECT COALESCE(MAX(id_rm_con), 0) + 1 FROM " + getSqlTable() + " WHERE id_mfg_est = " + mnPkMfgEstimationId;
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkEntryId = resultSet.getInt(1);
+            mnPkRmConsumptionId = resultSet.getInt(1);
         }
     }
 
@@ -143,19 +118,13 @@ public class SDbMfgEstimationEntry extends SDbRegistryUser {
         }
         else {
             mnPkMfgEstimationId = resultSet.getInt("id_mfg_est");
-            mnPkEntryId = resultSet.getInt("id_ety");
+            mnPkRmConsumptionId = resultSet.getInt("id_rm_con");
+            mdOilPercentage = resultSet.getDouble("oil_per");
             mdMfgFinishedGood = resultSet.getDouble("mfg_fg");
             mdMfgByproduct = resultSet.getDouble("mfg_bp");
             mdMfgCull = resultSet.getDouble("mfg_cu");
             mdConsumptionRawMaterial = resultSet.getDouble("con_rm");
-            mnFkItemMfgFinishedGoodId = resultSet.getInt("fk_item_mfg_fg");
-            mnFkItemMfgByproductId_n = resultSet.getInt("fk_item_mfg_bp_n");
-            mnFkItemMfgCullId_n = resultSet.getInt("fk_item_mfg_cu_n");
             mnFkItemConsumptionRawMaterialId = resultSet.getInt("fk_item_con_rm");
-            mnFkWarehouseCompanyId = resultSet.getInt("fk_wah_co");
-            mnFkWarehouseBranchId = resultSet.getInt("fk_wah_cob");
-            mnFkWarehouseWarehouseId = resultSet.getInt("fk_wah_wah");
-            mnFkProductionLineId = resultSet.getInt("fk_line");
 
             mbRegistryNew = false;
         }
@@ -181,19 +150,13 @@ public class SDbMfgEstimationEntry extends SDbRegistryUser {
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +                    
                 mnPkMfgEstimationId + ", " + 
-                mnPkEntryId + ", " + 
+                mnPkRmConsumptionId + ", " + 
+                mdOilPercentage + ", " + 
                 mdMfgFinishedGood + ", " + 
                 mdMfgByproduct + ", " + 
                 mdMfgCull + ", " + 
                 mdConsumptionRawMaterial + ", " + 
-                mnFkItemMfgFinishedGoodId + ", " + 
-                (mnFkItemMfgByproductId_n > 0 ? mnFkItemMfgByproductId_n : "NULL") + ", " + 
-                (mnFkItemMfgCullId_n > 0 ? mnFkItemMfgCullId_n : "NULL") + ", " + 
-                mnFkItemConsumptionRawMaterialId + ", " + 
-                mnFkWarehouseCompanyId + ", " +
-                mnFkWarehouseBranchId + ", " +
-                mnFkWarehouseWarehouseId + ", " +
-                mnFkProductionLineId + " " +
+                mnFkItemConsumptionRawMaterialId + " " + 
             ")";
         }
         else {
@@ -201,46 +164,33 @@ public class SDbMfgEstimationEntry extends SDbRegistryUser {
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
                 //"id_mfg_est = " + mnPkMfgEstimationId + ", " +                 
-                //"id_ety = " + mnPkEntryId + ", " +
+                //"id_rm_con = " + mnPkRmConsumptionId + ", " +
+                "oil_per = " + mdOilPercentage + ", " +
                 "mfg_fg = " + mdMfgFinishedGood + ", " +
                 "mfg_bp = " + mdMfgByproduct + ", " +
                 "mfg_cu = " + mdMfgCull + ", " +
                 "con_rm = " + mdConsumptionRawMaterial + ", " +
-                "fk_item_mfg_fg = " + mnFkItemMfgFinishedGoodId + ", " +
-                "fk_item_mfg_bp_n = " + (mnFkItemMfgByproductId_n > 0 ? mnFkItemMfgByproductId_n : "NULL") + ", " +
-                "fk_item_mfg_cu_n = " + (mnFkItemMfgCullId_n > 0 ? mnFkItemMfgCullId_n : "NULL") + ", " +
-                "fk_item_con_rm = " + mnFkItemConsumptionRawMaterialId + ", " +
-                "fk_wah_co = " + mnFkWarehouseCompanyId + ", " +
-                "fk_wah_cob = " + mnFkWarehouseBranchId + ", " +
-                "fk_wah_wah = " + mnFkWarehouseWarehouseId + ", " +
-                "fk_line = " + mnFkProductionLineId + " " +
+                "fk_item_con_rm = " + mnFkItemConsumptionRawMaterialId + " " +
                 getSqlWhere();
         }
 
         session.getStatement().execute(msSql);
-        
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
-    public SDbMfgEstimationEntry clone() throws CloneNotSupportedException {
-        SDbMfgEstimationEntry registry = new SDbMfgEstimationEntry();
+    public SDbMfgEstimationRMConsumption clone() throws CloneNotSupportedException {
+        SDbMfgEstimationRMConsumption registry = new SDbMfgEstimationRMConsumption();
 
         registry.setPkMfgEstimationId(this.getPkMfgEstimationId());
-        registry.setPkEntryId(this.getPkEntryId());
+        registry.setPkRmConsumptionId(this.getPkRmConsumptionId());
+        registry.setOilPercentage(this.getOilPercentage());
         registry.setMfgFinishedGood(this.getMfgFinishedGood());
         registry.setMfgByproduct(this.getMfgByproduct());
         registry.setMfgCull(this.getMfgCull());
         registry.setConsumptionRawMaterial(this.getConsumptionRawMaterial());
-        registry.setFkItemMfgFinishedGoodId(this.getFkItemMfgFinishedGoodId());
-        registry.setFkItemMfgByproductId_n(this.getFkItemMfgByproductId_n());
-        registry.setFkItemMfgCullId_n(this.getFkItemMfgCullId_n());
         registry.setFkItemConsumptionRawMaterialId(this.getFkItemConsumptionRawMaterialId());
-        registry.setFkWarehouseCompanyId(this.getFkWarehouseCompanyId());
-        registry.setFkWarehouseBranchId(this.getFkWarehouseBranchId());
-        registry.setFkWarehouseWarehouseId(this.getFkWarehouseWarehouseId());
-        registry.setFkProductionLineId(this.getFkProductionLineId());
         
         registry.setRegistryNew(this.isRegistryNew());
         return registry;

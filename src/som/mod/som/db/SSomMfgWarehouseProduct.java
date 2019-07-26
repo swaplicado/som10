@@ -24,9 +24,12 @@ public class SSomMfgWarehouseProduct implements SGridRow {
     protected String msBranchCode;
     protected String msWarehouseCode;
     protected String msWarehouseTypeCode;
+    protected String msProductionLineCode;
+    protected String msProductionLine;
     protected double mdQuantity;
     protected double mdQuantityDelivery;
     protected int mnFkWarehouseTypeId;
+    protected int mnFkProductionLineId;
     protected int mnFkItemSource1Id_n;
     protected int mnFkItemSource2Id_n;
 
@@ -41,9 +44,12 @@ public class SSomMfgWarehouseProduct implements SGridRow {
     public void setBranchCode(String s) { msBranchCode = s; }
     public void setWarehouseCode(String s) { msWarehouseCode = s; }
     public void setWarehouseTypeCode(String s) { msWarehouseTypeCode = s; }
+    public void setProductionLineCode(String s) { msProductionLineCode = s; }
+    public void setProductionLine(String s) { msProductionLine = s; }
     public void setQuantity(double d) { mdQuantity = d; }
     public void setQuantityDelivery(double d) { mdQuantityDelivery = d; }
     public void setFkWarehouseTypeId(int n) { mnFkWarehouseTypeId = n; }
+    public void setFkProductionLineId(int n) { mnFkProductionLineId = n; }
     public void setFkItemSource1Id_n(int n) { mnFkItemSource1Id_n = n; }
     public void setFkItemSource2Id_n(int n) { mnFkItemSource2Id_n = n; }
 
@@ -58,9 +64,12 @@ public class SSomMfgWarehouseProduct implements SGridRow {
     public String getBranchCode() { return msBranchCode; }
     public String getWarehouseCode() { return msWarehouseCode; }
     public String getWarehouseTypeCode() { return msWarehouseTypeCode; }
+    public String getProductionLineCode() { return msProductionLineCode; }
+    public String getProductionLine() { return msProductionLine; }
     public double getQuantity() { return mdQuantity; }
     public double getQuantityDelivery() { return mdQuantityDelivery; }
     public int getFkWarehouseTypeId() { return mnFkWarehouseTypeId; }
+    public int getFkProductionLineId() { return mnFkProductionLineId; }
     public int getFkItemSource1Id_n() { return mnFkItemSource1Id_n; }
     public int getFkItemSource2Id_n() { return mnFkItemSource2Id_n; }
 
@@ -77,9 +86,12 @@ public class SSomMfgWarehouseProduct implements SGridRow {
         msBranchCode = "";
         msWarehouseCode = "";
         msWarehouseTypeCode = "";
+        msProductionLineCode = "";
+        msProductionLine = "";
         mdQuantity = 0;
         mdQuantityDelivery = 0;
         mnFkWarehouseTypeId = 0;
+        mnFkProductionLineId = 0;
         mnFkItemSource1Id_n = 0;
         mnFkItemSource2Id_n = 0;
     }
@@ -140,15 +152,18 @@ public class SSomMfgWarehouseProduct implements SGridRow {
                 value = msWarehouseTypeCode;
                 break;
             case 5:
-                value = mdQuantity;
+                value = msProductionLineCode;
                 break;
             case 6:
-                value = msUnitCode;
+                value = mdQuantity;
                 break;
             case 7:
-                value = mdQuantityDelivery;
+                value = msUnitCode;
                 break;
             case 8:
+                value = mdQuantityDelivery;
+                break;
+            case 9:
                 value = msUnitCode;
                 break;
             default:
@@ -169,6 +184,7 @@ public class SSomMfgWarehouseProduct implements SGridRow {
             case 6:
             case 7:
             case 8:
+            case 9:
                 break;
             default:
         }
@@ -189,9 +205,12 @@ public class SSomMfgWarehouseProduct implements SGridRow {
         registry.setBranchCode(this.getBranchCode());
         registry.setWarehouseCode(this.getWarehouseCode());
         registry.setWarehouseTypeCode(this.getWarehouseTypeCode());
+        registry.setProductionLineCode(this.getProductionLineCode());
+        registry.setProductionLine(this.getProductionLine());
         registry.setQuantity(this.getQuantity());
         registry.setQuantityDelivery(this.getQuantityDelivery());
         registry.setFkWarehouseTypeId(this.getFkWarehouseTypeId());
+        registry.setFkProductionLineId(this.getFkProductionLineId());
         registry.setFkItemSource1Id_n(this.getFkItemSource1Id_n());
         registry.setFkItemSource2Id_n(this.getFkItemSource2Id_n());
 
