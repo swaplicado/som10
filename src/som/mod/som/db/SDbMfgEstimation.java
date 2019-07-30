@@ -176,12 +176,14 @@ public class SDbMfgEstimation extends SDbRegistryUser {
             case SQL_MODE_DET:
                 // Get all warehouses' detail daily stock:
                 
-                keys = "sd.id_item, sd.id_unit, sd.id_co, sd.id_cob, sd.id_wah, i.fk_item_src_1_n, i.fk_item_src_2_n, w.fk_wah_tp";
-                names = "i.name, i.code, u.name, u.code, c.code, cb.code, w.code, wt.code";
+                keys = "sd.id_item, sd.id_unit, sd.id_co, sd.id_cob, sd.id_wah, i.fk_item_src_1_n, i.fk_item_src_2_n, w.fk_wah_tp, w.fk_line";
+                names = "i.name, i.code, u.name, u.code, c.code, cb.code, w.code, wt.code, pl.code, pl.name";
                 
                 sql += ", " + keys + ", " + names;
                 
                 sql += " FROM " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS w " +
+                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_PROD_LINES) + " AS pl ON " +
+                        "w.fk_line = pl.id_line " +
                         "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CS_WAH_TP) + " AS wt ON " +
                         "w.fk_wah_tp = wt.id_wah_tp " +
                         "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_COB) + " AS cb ON " +
@@ -462,7 +464,8 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                     resultSet.getDouble("f_stk_day"), resultSet.getString("u.code"), resultSet.getString("cb.code"),
                     resultSet.getString("w.code"), resultSet.getInt("sd.id_co"), resultSet.getInt("sd.id_cob"),
                     resultSet.getInt("sd.id_wah"), resultSet.getInt("w.fk_wah_tp"), resultSet.getString("wt.code"),
-                    resultSet.getInt("fk_item_src_1_n"), resultSet.getInt("fk_item_src_2_n") });
+                    resultSet.getInt("fk_item_src_1_n"), resultSet.getInt("fk_item_src_2_n"), resultSet.getString("pl.code"), 
+                    resultSet.getString("pl.name"), resultSet.getInt("w.fk_line") });
             }
 
             sql = computeQueryStockDaySystem(false, true, false);
@@ -582,6 +585,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                 mfgWarehouseProduct.setFkWarehouseTypeId((Integer) oItemStockDay[10]);
                 mfgWarehouseProduct.setFkItemSource1Id_n((Integer) oItemStockDay[12]);
                 mfgWarehouseProduct.setFkItemSource2Id_n((Integer) oItemStockDay[13]);
+                mfgWarehouseProduct.setProductionLineCode((String) oItemStockDay[14]);
+                mfgWarehouseProduct.setProductionLine((String) oItemStockDay[15]);
+                mfgWarehouseProduct.setFkProductionLineId((Integer) oItemStockDay[16]);
 
                 if (mfgWarehouseProduct.getQuantityDelivery() < mfgWarehouseProduct.getQuantity()) {
                     maChildMfgWarehouseProducts.add(mfgWarehouseProduct);
