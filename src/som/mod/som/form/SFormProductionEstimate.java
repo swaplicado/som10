@@ -816,13 +816,6 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
         moGridMfgEstimation.clearGridRows();
         
         setFormEditable(true);
-
-        if (moRegistry.isRegistryNew()) {
-            // add code here...
-        }
-        else {
-            // add code here...
-        }
         
         updateFieldsStatus();
 
@@ -835,14 +828,7 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
         SDbMfgEstimation registry = (SDbMfgEstimation) moRegistry.clone();
         SRowProductionInventory rpi = null;
         SDbIog iog = null;
-
-        if (moRegistry.isRegistryNew()) {
-            // add code here...
-        }
-        else {
-            // add code here...
-        }
-
+        
         registry.setDateStockDay(moDateStockDay.getValue());
         registry.setDateMfgEstimation(SLibTimeUtils.addDate(moDateStockDay.getValue(), 0, 0, -1));
         registry.setFkUnitId(moKeyUnit.getValue()[0]);

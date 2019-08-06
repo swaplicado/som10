@@ -630,7 +630,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         String sql = "";
         Statement statement = null;
         ResultSet resultSet = null;
-
+        
         statement = session.getDatabase().getConnection().createStatement();
         
         sql = "SELECT COALESCE(id_mfg_est, 0) AS f_mfg_est, COALESCE(MAX(ver), 0) AS f_ver " +
@@ -648,6 +648,8 @@ public class SDbMfgEstimation extends SDbRegistryUser {
 
             read(session, new int[] { resultSet.getInt("f_mfg_est") });
         }
+        
+        this.setRegistryNew(false);
     }
 
     /*
@@ -1384,10 +1386,14 @@ public class SDbMfgEstimation extends SDbRegistryUser {
             String msSqlAux = "UPDATE " + getSqlTable() + " SET " +
                 "mfg_fg_r = " + dOilTotal + ", " +
                 "mfg_bp_r = " + dSubProductTotal + ", " +
-                "mfg_cu_r = " + dCullTotal + " " +
+                "mfg_cu_r = " + dCullTotal + ", " +
+                "b_clo = true, " +
+                "fk_usr_clo = " + mnFkUserUpdateId + " " +
                 getSqlWhere();
         
             session.getStatement().executeUpdate(msSqlAux);
+            
+            mbClosed = true;
         }
 
         mbRegistryNew = false;

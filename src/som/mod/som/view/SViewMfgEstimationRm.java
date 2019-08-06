@@ -13,11 +13,13 @@ import sa.lib.SLibConsts;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
 import sa.lib.grid.SGridConsts;
+import sa.lib.grid.SGridFilterDatePeriod;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
 import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
+import sa.lib.gui.SGuiDate;
 import som.mod.SModConsts;
 import som.mod.som.form.SDialogEstOilPercentage;
 
@@ -27,6 +29,7 @@ import som.mod.som.form.SDialogEstOilPercentage;
  */
 public class SViewMfgEstimationRm extends SGridPaneView implements ActionListener {
     
+    private SGridFilterDatePeriod moFilterDatePeriod;
     private JButton moButtonChangePercentage;
 
     public SViewMfgEstimationRm(SGuiClient client, String title) {
@@ -35,6 +38,10 @@ public class SViewMfgEstimationRm extends SGridPaneView implements ActionListene
     }
     
     private void initComponentsCustom() {
+        moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
+        moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+        
         moButtonChangePercentage = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_lab.gif")), "% Aceite", this);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moButtonChangePercentage);
     }
@@ -62,6 +69,9 @@ public class SViewMfgEstimationRm extends SGridPaneView implements ActionListene
         if ((Boolean) filter) {
             sql += (sql.isEmpty() ? "" : "AND ") + "me.b_del = 0 ";
         }
+        
+        filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
+        sql += (sql.isEmpty() ? "" : "AND ") + SGridUtils.getSqlFilterDate("me.dt_mfg_est", (SGuiDate) filter);
 
         msSql = "SELECT "
             + "me.id_mfg_est AS " + SDbConsts.FIELD_ID + "1, "
