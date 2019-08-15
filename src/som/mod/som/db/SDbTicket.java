@@ -200,12 +200,11 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int[] { mnFkItemId });
                 SDbProducer prodr = (SDbProducer) session.readRegistry(SModConsts.SU_PROD, new int[] { mnFkProducerId });
                 String itemName = SLibUtils.textProperCase(item.getName());
-                String prodrName = prodr.getName();
 
                 subject = "[SOM] " + "Boleto " + mnNumber + ": " +
                         SLibUtils.textToHtml(itemName) + "; " +
                         SLibUtils.DecimalFormatValue2D.format(mdWeightDestinyNet_r) + " " + SSomConsts.KG + "; " +
-                        SLibUtils.textToHtml(prodrName);
+                        SLibUtils.textToHtml(prodr.getNameTrade());
 
                 // REPORT HEADER. Ticket info:
 
