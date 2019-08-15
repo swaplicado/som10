@@ -38,10 +38,10 @@ import som.mod.som.db.SSomConsts;
  */
 public class SViewTicketsLog extends SGridPaneView implements ActionListener {
 
-    private SGridFilterDateRange moFilterDateRange;
-    private SPaneFilter moPaneFilterInputCategory;
-    private SPaneFilter moPaneFilter;
-    private JButton mjbPrint;
+    private final SGridFilterDateRange moFilterDateRange;
+    private final SPaneFilter moPaneFilterInputCategory;
+    private final SPaneFilter moPaneFilter;
+    private final JButton mjbPrint;
 
     public SViewTicketsLog(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_TIC_LOG, SLibConsts.UNDEFINED, title);
@@ -127,14 +127,13 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
                 + "(v.pac_qty_arr - v.pac_qty_dep) AS f_pac_qty, "
                 + "v.wei_des_net_r, "
                 + "v.b_tar, "
-                + "vp.name, "
                 + "vp.code "
+                + "vp.name, "
+                + "vp.name_trd, "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS v "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS vi ON v.fk_item = vi.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS vp ON v.fk_prod = vp.id_prod "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS vi ON "
-                + "v.fk_item = vi.id_item "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)
-                + "GROUP BY " + SDbConsts.FIELD_CODE + ", v.dt, v.id_tic "
                 + "ORDER BY " + SDbConsts.FIELD_CODE + ", v.dt, v.id_tic ";
     }
 
@@ -143,11 +142,12 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[9];
+        columns = new SGridColumnView[10];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, SDbConsts.FIELD_CODE, "Boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt", SGridConsts.COL_TITLE_DATE + " boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "vp.name", "Proveedor");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vp.name_trd", "Proveedor nombre comercial");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "vp.code", "Proveedor código");
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_src", "Carga origen (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);

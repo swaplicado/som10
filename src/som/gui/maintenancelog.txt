@@ -3,6 +3,7 @@
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
 1) Cambio a texto en asunto de notificación de tara de boleto: nombre comercial en vez del nombre del productor.
+2) Inclusión de campo "proveedor" y "proveedor nombre comercial" en consultas de boletos y de resultados de laboratorio.
 
 ================================================================================
 2019-07-30, 1.0 063.2
