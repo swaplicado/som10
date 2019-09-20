@@ -5,13 +5,18 @@
 package som.mod.som.form;
 
 import erp.lib.SLibUtilities;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import sa.lib.SLibConsts;
+import sa.lib.SLibTimeConsts;
+import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
 import sa.lib.gui.SGuiClient;
@@ -20,6 +25,8 @@ import sa.lib.gui.SGuiFieldKeyGroup;
 import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
+import sa.lib.gui.bean.SBeanFieldInteger;
+import sa.lib.gui.bean.SBeanFieldText;
 import sa.lib.gui.bean.SBeanForm;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
@@ -35,7 +42,7 @@ import som.mod.som.db.SSomUtils;
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
-public class SFormItem extends SBeanForm implements ItemListener {
+public class SFormItem extends SBeanForm implements ItemListener, FocusListener {
 
     private SDbItem moRegistry;
     private SGuiFieldKeyGroup moFieldKeyGroup;
@@ -98,6 +105,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel49 = new javax.swing.JPanel();
         jlStartingSeasonMonth = new javax.swing.JLabel();
         moIntStartingSeasonMonth = new sa.lib.gui.bean.SBeanFieldInteger();
+        jlStartingSeasonMonthTip = new javax.swing.JLabel();
         jPanel19 = new javax.swing.JPanel();
         jlItemType = new javax.swing.JLabel();
         moKeyItemType = new sa.lib.gui.bean.SBeanFieldKey();
@@ -326,10 +334,15 @@ public class SFormItem extends SBeanForm implements ItemListener {
 
         jPanel49.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlStartingSeasonMonth.setText("Mes inicia temporada:");
+        jlStartingSeasonMonth.setText("Mes inicio temporada:");
         jlStartingSeasonMonth.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel49.add(jlStartingSeasonMonth);
         jPanel49.add(moIntStartingSeasonMonth);
+
+        jlStartingSeasonMonthTip.setForeground(java.awt.Color.gray);
+        jlStartingSeasonMonthTip.setText("mes");
+        jlStartingSeasonMonthTip.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel49.add(jlStartingSeasonMonthTip);
 
         jPanel2.add(jPanel49);
 
@@ -649,7 +662,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPackingName.setText("Nombre empaque:*");
-        jlPackingName.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlPackingName.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel21.add(jlPackingName);
 
         moTextPackingName.setPreferredSize(new java.awt.Dimension(200, 23));
@@ -660,7 +673,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlPackingWeight.setText("Peso empaque:*");
-        jlPackingWeight.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlPackingWeight.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel22.add(jlPackingWeight);
         jPanel22.add(moDecPackingWeight);
 
@@ -672,8 +685,8 @@ public class SFormItem extends SBeanForm implements ItemListener {
 
         jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolAutoMailNotification.setText("Aplica envío automático de mail");
-        moBoolAutoMailNotification.setPreferredSize(new java.awt.Dimension(250, 23));
+        moBoolAutoMailNotification.setText("Aplica envío automático de mail (al tararse boleto en báscula)");
+        moBoolAutoMailNotification.setPreferredSize(new java.awt.Dimension(400, 23));
         jPanel33.add(moBoolAutoMailNotification);
 
         jPanel18.add(jPanel33);
@@ -681,23 +694,23 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlAutoMailNotificationBoxes.setText("Destinatario(s) mail:");
-        jlAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel34.add(jlAutoMailNotificationBoxes);
 
-        moTextAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(300, 23));
+        moTextAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(350, 23));
         jPanel34.add(moTextAutoMailNotificationBoxes);
 
         jLabel1.setForeground(java.awt.Color.gray);
         jLabel1.setText("separar con ';'");
-        jLabel1.setPreferredSize(new java.awt.Dimension(100, 23));
+        jLabel1.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel34.add(jLabel1);
 
         jPanel18.add(jPanel34);
 
         jPanel46.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolUserMailNotification.setText("Aplica envío manual de mail");
-        moBoolUserMailNotification.setPreferredSize(new java.awt.Dimension(250, 23));
+        moBoolUserMailNotification.setText("Aplica envío manual de mail (en recepciones del día o período)");
+        moBoolUserMailNotification.setPreferredSize(new java.awt.Dimension(400, 23));
         jPanel46.add(moBoolUserMailNotification);
 
         jPanel18.add(jPanel46);
@@ -705,15 +718,15 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel47.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlUserMailNotificationBoxes.setText("Destinatario(s) mail:");
-        jlUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel47.add(jlUserMailNotificationBoxes);
 
-        moTextUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(300, 23));
+        moTextUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(350, 23));
         jPanel47.add(moTextUserMailNotificationBoxes);
 
         jLabel2.setForeground(java.awt.Color.gray);
         jLabel2.setText("separar con ';'");
-        jLabel2.setPreferredSize(new java.awt.Dimension(100, 23));
+        jLabel2.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel47.add(jLabel2);
 
         jPanel18.add(jPanel47);
@@ -729,7 +742,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlRevueltaItemId.setText("Clave Revuelta:");
-        jlRevueltaItemId.setPreferredSize(new java.awt.Dimension(125, 23));
+        jlRevueltaItemId.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel23.add(jlRevueltaItemId);
         jPanel23.add(moTextRevueltaItemId);
 
@@ -860,6 +873,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
     private javax.swing.JLabel jlPackingWeightUnit;
     private javax.swing.JLabel jlRevueltaItemId;
     private javax.swing.JLabel jlStartingSeasonMonth;
+    private javax.swing.JLabel jlStartingSeasonMonthTip;
     private javax.swing.JLabel jlUnit;
     private javax.swing.JLabel jlUnitaryWeight;
     private javax.swing.JLabel jlUnitaryWeightUnit;
@@ -936,6 +950,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moDecUnitaryWeight.setDecimalSettings(SGuiUtils.getLabelName(jlUnitaryWeight), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDecDensity.setDecimalSettings(SGuiUtils.getLabelName(jlDensity), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moIntStartingSeasonMonth.setIntegerSettings(SGuiUtils.getLabelName(jlStartingSeasonMonth), SGuiConsts.GUI_TYPE_INT_CAL_MONTH, false);
+        moIntStartingSeasonMonth.setMaxInteger(SLibTimeConsts.MONTH_MAX);
 
         moKeyItemType.setKeySettings(miClient, SGuiUtils.getLabelName(jlItemType), true);
         moKeyInputCategory.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputCategory), true);
@@ -1146,6 +1161,37 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moTextPackingName.setEditable(moBoolPacking.getValue());
         moDecPackingWeight.setEditable(moBoolPacking.getValue());
     }
+    
+    private void updateStartingSeasonMonthTip() {
+        int month = moIntStartingSeasonMonth.getValue();
+        
+        if (month >= SLibTimeConsts.MONTH_MIN && month <= SLibTimeConsts.MONTH_MAX) {
+            jlStartingSeasonMonthTip.setText(SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[month - 1]);
+        }
+        else {
+            jlStartingSeasonMonthTip.setText("mes");
+        }
+    }
+    
+    private void updateAutoMailNotificationBoxesTip() {
+        moTextAutoMailNotificationBoxes.setToolTipText(moTextAutoMailNotificationBoxes.getValue().isEmpty() ? null : moTextAutoMailNotificationBoxes.getValue());
+    }
+    
+    private void updateUserMailNotificationBoxesTip() {
+        moTextUserMailNotificationBoxes.setToolTipText(moTextUserMailNotificationBoxes.getValue().isEmpty() ? null : moTextUserMailNotificationBoxes.getValue());
+    }
+    
+    private void focusLostStartingSeasonMonth() {
+        updateStartingSeasonMonthTip();
+    }
+
+    private void focusLostAutoMailNotificationBoxes() {
+        updateAutoMailNotificationBoxesTip();
+    }
+    
+    private void focusLostUserMailNotificationBoxes() {
+        updateUserMailNotificationBoxesTip();
+    }
 
     @Override
     public void addAllListeners() {
@@ -1156,6 +1202,9 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolPacking.addItemListener(this);
         moKeyUnit.addItemListener(this);
         moBoolUserMailNotificationOnlyWhenMoves.addItemListener(this);
+        moIntStartingSeasonMonth.addFocusListener(this);
+        moTextAutoMailNotificationBoxes.addFocusListener(this);
+        moTextUserMailNotificationBoxes.addFocusListener(this);
     }
 
     @Override
@@ -1167,6 +1216,9 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moBoolPacking.removeItemListener(this);
         moKeyUnit.removeItemListener(this);
         moBoolUserMailNotificationOnlyWhenMoves.removeItemListener(this);
+        moIntStartingSeasonMonth.removeFocusListener(this);
+        moTextAutoMailNotificationBoxes.removeFocusListener(this);
+        moTextUserMailNotificationBoxes.removeFocusListener(this);
     }
 
     @Override
@@ -1218,6 +1270,7 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moKeyUnit.setValue(new int[] { moRegistry.getFkUnitId() });
         moDecDensity.setValue(moRegistry.getDensity());
         moIntStartingSeasonMonth.setValue(moRegistry.getStartingSeasonMonth());
+        updateStartingSeasonMonthTip();
         moKeyExternalWarehouse_n.setValue(new int[] { moRegistry.getFkExternalWarehouseId() });
         moDecMfgFinishedGoodPercentage.setValue(moRegistry.getMfgFinishedGoodPercentage());
         moDecMfgByproductPercentage.setValue(moRegistry.getMfgByproductPercentage());
@@ -1253,8 +1306,10 @@ public class SFormItem extends SBeanForm implements ItemListener {
         moKeyWarehouse.setValue(new int[] { moRegistry.getFkWarehouseCompanyId_n(), moRegistry.getFkWarehouseBranchId_n(), moRegistry.getFkWarehouseWarehouseId_n() });
         moBoolAutoMailNotification.setValue(moRegistry.isAutoMailNotification());
         moTextAutoMailNotificationBoxes.setValue(moRegistry.getAutoMailNotificationBoxes());
+        updateAutoMailNotificationBoxesTip();
         moBoolUserMailNotification.setValue(moRegistry.isUserMailNotification());
         moTextUserMailNotificationBoxes.setValue(moRegistry.getUserMailNotificationBoxes());
+        updateUserMailNotificationBoxesTip();
         moBoolUserMailNotificationOnlyWhenMoves.setValue(moRegistry.isUserMailNotificationOnlyWhenMoves());
         moTextRevueltaItemId.setValue(moRegistry.getRevueltaItemId());
         moBoolPrintInputType.setValue(moRegistry.isPrintInputType());
@@ -1491,13 +1546,6 @@ public class SFormItem extends SBeanForm implements ItemListener {
             }
         }
         
-        if (validation.isValid()) {
-            if (moIntStartingSeasonMonth.getValue() > 12) { // 12 = december
-                validation.setComponent(moIntStartingSeasonMonth);
-                validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(jlStartingSeasonMonth.getText()) + "'" + SGuiConsts.ERR_MSG_FIELD_VAL_LESS_EQUAL + "12.");
-            }
-        }
-
         return validation;
     }
 
@@ -1524,6 +1572,32 @@ public class SFormItem extends SBeanForm implements ItemListener {
             }
             else if (checkBox == moBoolPacking) {
                 itemStateBoolPacking();
+            }
+        }
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+        
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        if (e.getSource() instanceof SBeanFieldInteger) {
+            SBeanFieldInteger field = (SBeanFieldInteger) e.getSource();
+            
+            if (field == moIntStartingSeasonMonth) {
+                focusLostStartingSeasonMonth();
+            }
+        }
+        else if (e.getSource() instanceof SBeanFieldText) {
+            SBeanFieldText field = (SBeanFieldText) e.getSource();
+            
+            if (field == moTextAutoMailNotificationBoxes) {
+                focusLostAutoMailNotificationBoxes();
+            }
+            else if (field == moTextUserMailNotificationBoxes) {
+                focusLostUserMailNotificationBoxes();
             }
         }
     }

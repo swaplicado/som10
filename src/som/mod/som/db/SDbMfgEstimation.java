@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
 import sa.lib.SLibTimeUtils;
@@ -18,8 +20,10 @@ import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistry;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
+import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
+import som.mod.cfg.db.SDbBranchWarehouse;
 
 /**
  *
@@ -34,7 +38,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
     protected int mnVersion;
     protected Date mtDateMfgEstimation;
     protected Date mtDateStockDay;
-    protected double mdQuantity;
+    protected double mdQtyFinishedGoods;
+    protected double mdQtySubProducts;
+    protected double mdQtyWaste;
     protected boolean mbClosed;
     /*
     protected boolean mbDeleted;
@@ -170,12 +176,14 @@ public class SDbMfgEstimation extends SDbRegistryUser {
             case SQL_MODE_DET:
                 // Get all warehouses' detail daily stock:
                 
-                keys = "sd.id_item, sd.id_unit, sd.id_co, sd.id_cob, sd.id_wah, i.fk_item_src_1_n, i.fk_item_src_2_n, w.fk_wah_tp";
-                names = "i.name, i.code, u.name, u.code, c.code, cb.code, w.code, wt.code";
+                keys = "sd.id_item, sd.id_unit, sd.id_co, sd.id_cob, sd.id_wah, i.fk_item_src_1_n, i.fk_item_src_2_n, w.fk_wah_tp, w.fk_line";
+                names = "i.name, i.code, u.name, u.code, c.code, cb.code, w.code, wt.code, pl.code, pl.name";
                 
                 sql += ", " + keys + ", " + names;
                 
                 sql += " FROM " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS w " +
+                        "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_PROD_LINES) + " AS pl ON " +
+                        "w.fk_line = pl.id_line " +
                         "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CS_WAH_TP) + " AS wt ON " +
                         "w.fk_wah_tp = wt.id_wah_tp " +
                         "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_COB) + " AS cb ON " +
@@ -323,8 +331,10 @@ public class SDbMfgEstimation extends SDbRegistryUser {
 
             sql = "SELECT COALESCE(SUM(sd.stk_day), 0) AS f_stk_day " + (by_warehouse_product ? ", " +
                     "sd.id_item, sd.id_unit, sd.id_co, sd.id_cob, sd.id_wah, i.name, i.code, u.code, COALESCE(i.fk_item_src_1_n, 0) AS f_fk_item_src_1_n, " +
-                    "COALESCE(i.fk_item_src_2_n, 0) AS f_fk_item_src_2_n, cb.code, w.code, w.cap_real_lt, w.fk_wah_tp, wt.code " : "") + " " +
+                    "COALESCE(i.fk_item_src_2_n, 0) AS f_fk_item_src_2_n, cb.code, w.code, w.cap_real_lt, w.fk_wah_tp, w.fk_line, wt.code, pl.code, pl.name " : "") + " " +
                 "FROM " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS w " +
+                "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_PROD_LINES) + " AS pl ON " +
+                "w.fk_line = pl.id_line " +
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_COB) + " AS cb ON " +
                 "w.id_co = cb.id_co AND w.id_cob = cb.id_cob " +
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CS_WAH_TP) + " AS wt ON " +
@@ -362,7 +372,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                 (stk_sys_currently ? ", '" + SLibUtils.DbmsDateFormatDate.format(mtDateStockDay) + "'" : "") + ")" +
                 "), 0) AS f_stock " + (by_warehouse_product ? ", " +
                 "s.id_item, s.id_unit, s.id_co, s.id_cob, s.id_wah, i.id_item, i.name, i.code, u.code, COALESCE(i.fk_item_src_1_n, 0) AS f_fk_item_src_1_n, " +
-                "COALESCE(i.fk_item_src_2_n, 0) AS f_fk_item_src_2_n, cb.code, w.code, w.cap_real_lt, w.fk_wah_tp, wt.code " : "") + " " +
+                "COALESCE(i.fk_item_src_2_n, 0) AS f_fk_item_src_2_n, cb.code, w.code, w.cap_real_lt, w.fk_wah_tp, w.fk_line, wt.code, pl.code, pl.name " : "") + " " +
                 ", COALESCE((SELECT SUM(s.mov_in - s.mov_out) " +
                 "FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS g " +
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.S_STK) + " AS s ON " +
@@ -373,6 +383,8 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS w ON " +
                 "s.id_co = w.id_co AND s.id_cob = w.id_cob AND s.id_wah = w.id_wah AND " +
                 "w.fk_wah_tp IN (" + SModSysConsts.CS_WAH_TP_TAN + ", " + SModSysConsts.CS_WAH_TP_TAN_MFG + ") " +
+                "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_PROD_LINES) + " AS pl ON " +
+                "w.fk_line = pl.id_line " +
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_COB) + " AS cb ON " +
                 "w.id_co = cb.id_co AND w.id_cob = cb.id_cob " +
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CS_WAH_TP) + " AS wt ON " +
@@ -452,7 +464,8 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                     resultSet.getDouble("f_stk_day"), resultSet.getString("u.code"), resultSet.getString("cb.code"),
                     resultSet.getString("w.code"), resultSet.getInt("sd.id_co"), resultSet.getInt("sd.id_cob"),
                     resultSet.getInt("sd.id_wah"), resultSet.getInt("w.fk_wah_tp"), resultSet.getString("wt.code"),
-                    resultSet.getInt("fk_item_src_1_n"), resultSet.getInt("fk_item_src_2_n") });
+                    resultSet.getInt("fk_item_src_1_n"), resultSet.getInt("fk_item_src_2_n"), resultSet.getString("pl.code"), 
+                    resultSet.getString("pl.name"), resultSet.getInt("w.fk_line") });
             }
 
             sql = computeQueryStockDaySystem(false, true, false);
@@ -463,7 +476,8 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                     resultSet.getDouble("f_stock"), resultSet.getString("u.code"), resultSet.getString("f_stock_dly"),
                     resultSet.getString("cb.code"), resultSet.getString("w.code"), resultSet.getInt("s.id_co"),
                     resultSet.getInt("s.id_cob"), resultSet.getInt("s.id_wah"), resultSet.getInt("w.fk_wah_tp"),
-                    resultSet.getString("wt.code"), resultSet.getInt("f_fk_item_src_1_n"), resultSet.getInt("f_fk_item_src_2_n") });
+                    resultSet.getString("wt.code"), resultSet.getInt("f_fk_item_src_1_n"), resultSet.getInt("f_fk_item_src_2_n"),
+                    resultSet.getString("pl.code"), resultSet.getString("pl.name"), resultSet.getInt("w.fk_line")});
             }
 
             /* XXX
@@ -484,7 +498,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         }
     }
 
-    private void obtainManufacturedProducts(SGuiSession session) throws SQLException {
+    public void obtainManufacturedProducts(SGuiSession session) throws SQLException {
         boolean existStockDayItem = false;
         double quantityDelivery = 0;
         SSomMfgWarehouseProduct mfgWarehouseProduct = null;
@@ -528,6 +542,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                         mfgWarehouseProduct.setFkWarehouseTypeId((Integer) oItemStockSystem[11]);
                         mfgWarehouseProduct.setFkItemSource1Id_n((Integer) oItemStockSystem[13]);
                         mfgWarehouseProduct.setFkItemSource2Id_n((Integer) oItemStockSystem[14]);
+                        mfgWarehouseProduct.setProductionLineCode((String) oItemStockSystem[15]);
+                        mfgWarehouseProduct.setProductionLine((String) oItemStockSystem[16]);
+                        mfgWarehouseProduct.setFkProductionLineId((Integer) oItemStockSystem[17]);
 
                         quantityDelivery = obtainQuantityDelivery(session,
                                 mfgWarehouseProduct.getPkItemId(),
@@ -568,6 +585,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                 mfgWarehouseProduct.setFkWarehouseTypeId((Integer) oItemStockDay[10]);
                 mfgWarehouseProduct.setFkItemSource1Id_n((Integer) oItemStockDay[12]);
                 mfgWarehouseProduct.setFkItemSource2Id_n((Integer) oItemStockDay[13]);
+                mfgWarehouseProduct.setProductionLineCode((String) oItemStockDay[14]);
+                mfgWarehouseProduct.setProductionLine((String) oItemStockDay[15]);
+                mfgWarehouseProduct.setFkProductionLineId((Integer) oItemStockDay[16]);
 
                 if (mfgWarehouseProduct.getQuantityDelivery() < mfgWarehouseProduct.getQuantity()) {
                     maChildMfgWarehouseProducts.add(mfgWarehouseProduct);
@@ -610,7 +630,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         String sql = "";
         Statement statement = null;
         ResultSet resultSet = null;
-
+        
         statement = session.getDatabase().getConnection().createStatement();
         
         sql = "SELECT COALESCE(id_mfg_est, 0) AS f_mfg_est, COALESCE(MAX(ver), 0) AS f_ver " +
@@ -628,6 +648,8 @@ public class SDbMfgEstimation extends SDbRegistryUser {
 
             read(session, new int[] { resultSet.getInt("f_mfg_est") });
         }
+        
+        this.setRegistryNew(false);
     }
 
     /*
@@ -638,7 +660,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
     public void setVersion(int n) { mnVersion = n; }
     public void setDateMfgEstimation(Date t) { mtDateMfgEstimation = t; }
     public void setDateStockDay(Date t) { mtDateStockDay = t; }
-    public void setQuantity(double d) { mdQuantity = d; }
+    public void setQtyFinishedGoods(double d) { mdQtyFinishedGoods = d; }
+    public void setQtySubProducts(double d) { mdQtySubProducts = d; }
+    public void setQtyWaste(double d) { mdQtyWaste = d; }
     public void setClosed(boolean b) { mbClosed = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
@@ -654,7 +678,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
     public int getVersion() { return mnVersion; }
     public Date getDateMfgEstimation() { return mtDateMfgEstimation; }
     public Date getDateStockDay() { return mtDateStockDay; }
-    public double getQuantity() { return mdQuantity; }
+    public double getQtyFinishedGoods() { return mdQtyFinishedGoods; }
+    public double getQtySubProducts() { return mdQtySubProducts; }
+    public double getQtyWaste() { return mdQtyWaste; }
     public boolean isClosed() { return mbClosed; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
@@ -705,52 +731,73 @@ public class SDbMfgEstimation extends SDbRegistryUser {
 
         // Production estimate:
 
-        mdQuantity = adStockDaySystem[0] - adStockDaySystem[1];
+        mdQtyFinishedGoods = adStockDaySystem[0] - adStockDaySystem[1];
         mdXtaQuantityDelivery = adStockDaySystem[2];
 
         return res;
     }
 
     public void validateProductionEstimateByProduct(SGuiSession session) {
+        double maxStockDiffM = ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMaximumStockDifferenceM();
+        
+        try {
+            productionEstimateByWarehouseProduct(session);
+            for (Object[] oItemStockDay : maItemsStockDay) {
+                for (Object[] oItemStockSystem : maItemsStockSystem) {
 
-        productionEstimateByWarehouseProduct(session);
-        for (Object[] oItemStockDay : maItemsStockDay) {
-            for (Object[] oItemStockSystem : maItemsStockSystem) {
+                    // Compare warehouse item:
 
-                // Compare warehouse item:
+                    if ((Integer) oItemStockDay[7] == (Integer) oItemStockSystem[8] && // Company
+                        (Integer) oItemStockDay[8] == (Integer) oItemStockSystem[9] && // Branch
+                        (Integer) oItemStockDay[9] == (Integer) oItemStockSystem[10] && // Warehouse
+                        (Integer) oItemStockDay[0] == (Integer) oItemStockSystem[0]) { // Item
 
-                if ((Integer) oItemStockDay[7] == (Integer) oItemStockSystem[8] && // Company
-                    (Integer) oItemStockDay[8] == (Integer) oItemStockSystem[9] && // Branch
-                    (Integer) oItemStockDay[9] == (Integer) oItemStockSystem[10] && // Warehouse
-                    (Integer) oItemStockDay[0] == (Integer) oItemStockSystem[0]) { // Item
+                        // Compare quantity:
+                        SDbBranchWarehouse whs = new SDbBranchWarehouse();
+                        int[] whsPk = {(Integer) oItemStockSystem[8], (Integer) oItemStockSystem[9], (Integer) oItemStockSystem[10]};
+                        whs.read(session, whsPk);
+                        double maxStockDiffVolume = Math.PI * Math.pow(whs.getDimensionBase()/2, 2) * maxStockDiffM;
+                        
+                        SDbItem item = new SDbItem();
+                        item.read(session, new int[] { (Integer) oItemStockSystem[0] });
+                        double maxStockDiffKg = maxStockDiffVolume * item.getDensity();
+                        
+                        double stockDifference = ((Double) oItemStockSystem[3]).intValue() - ((Double) oItemStockDay[3]).intValue();
+                        // la existencia del sistema es mayor a la existencia física
+                        if (stockDifference > maxStockDiffKg && (Integer) oItemStockSystem[11] == SModSysConsts.CS_WAH_TP_TAN) {
 
-                    // Compare quantity:
-
-                    if (((Double) oItemStockDay[3]).intValue() < ((Double) oItemStockSystem[3]).intValue() &&
-                            (Integer) oItemStockSystem[11] == SModSysConsts.CS_WAH_TP_TAN) {
-
-                        msQueryResult = "No se puede estimar la producción debido a que la existencia de sistema (" +
-                                SLibUtils.DecimalFormatValue2D.format((Double) oItemStockSystem[3]) + " " + (String) oItemStockSystem[4] + ") del ítem: \n'" +
-                                (String) oItemStockSystem[1] + " (" + (String) oItemStockSystem[2] + ")' es mayor a la existencia física (" +
-                                SLibUtils.DecimalFormatValue2D.format((Double) oItemStockDay[3]) + " " +  (String) oItemStockSystem[4] + ") en el almacén '" + (String) oItemStockSystem[7] + "'.";
-                        mnQueryResultId = SDbConsts.READ_ERROR;
-                        break;
+                            msQueryResult = "No se puede estimar la producción debido a que la existencia de sistema (" +
+                                    SLibUtils.DecimalFormatValue2D.format((Double) oItemStockSystem[3]) + " " + (String) oItemStockSystem[4] + ") del ítem: \n'" +
+                                    (String) oItemStockSystem[1] + " (" + (String) oItemStockSystem[2] + ")' es mayor a la existencia física (" +
+                                    SLibUtils.DecimalFormatValue2D.format((Double) oItemStockDay[3]) + " " +  (String) oItemStockSystem[4] + ") en el almacén '" + (String) oItemStockSystem[7] + "'.";
+                            mnQueryResultId = SDbConsts.READ_ERROR;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (mnQueryResultId == SDbConsts.READ_ERROR) {
-                break;
-            }
-            else {
-                mnQueryResultId = SDbConsts.READ_OK;
+                if (mnQueryResultId == SDbConsts.READ_ERROR) {
+                    break;
+                }
+                else {
+                    mnQueryResultId = SDbConsts.READ_OK;
+                }
             }
         }
+        catch (Exception e) {
+            
+        }
     }
-
+    
+    /**
+     * Llena los arrayList de maChildProductionEmpties y maChildProductionInventories
+     * 
+     * @param session
+     * @throws SQLException
+     * @throws Exception 
+     */
     public void computeProductionEstimate(SGuiSession session) throws SQLException, Exception {
         String sql = "";
-
         Statement statement = null;
         ResultSet resultSet = null;
         SDbItem itemRawMaterial = null;
@@ -1076,7 +1123,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         mnVersion = 0;
         mtDateMfgEstimation = null;
         mtDateStockDay = null;
-        mdQuantity = 0;
+        mdQtyFinishedGoods = 0;
+        mdQtySubProducts = 0;
+        mdQtyWaste = 0;
         mbClosed = false;
         mbDeleted = false;
         mbSystem = false;
@@ -1157,7 +1206,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
             mnVersion = resultSet.getInt("ver");
             mtDateMfgEstimation = resultSet.getDate("dt_mfg_est");
             mtDateStockDay = resultSet.getDate("dt_stk_day");
-            mdQuantity = resultSet.getDouble("qty");
+            mdQtyFinishedGoods = resultSet.getDouble("mfg_fg_r");
+            mdQtySubProducts = resultSet.getDouble("mfg_bp_r");
+            mdQtyWaste = resultSet.getDouble("mfg_cu_r");
             mbClosed = resultSet.getBoolean("b_clo");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
@@ -1198,7 +1249,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                 mnVersion + ", " +
                 "'" + SLibUtils.DbmsDateFormatDate.format(mtDateMfgEstimation) + "', " +
                 "'" + SLibUtils.DbmsDateFormatDate.format(mtDateStockDay) + "', " +
-                mdQuantity + ", " +
+                mdQtyFinishedGoods + ", " +
+                mdQtySubProducts + ", " +
+                mdQtyWaste + ", " +
                 (mbClosed ? 1 : 0) + ", " +
                 (mbDeleted ? 1 : 0) + ", " +
                 (mbSystem ? 1 : 0) + ", " +
@@ -1222,7 +1275,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                 "ver = " + mnVersion + ", " +
                 "dt_mfg_est = '" + SLibUtils.DbmsDateFormatDate.format(mtDateMfgEstimation) + "', " +
                 "dt_stk_day = '" + SLibUtils.DbmsDateFormatDate.format(mtDateStockDay) + "', " +
-                "qty = " + mdQuantity + ", " +
+                "mfg_fg_r = " + mdQtyFinishedGoods + ", " +
+                "mfg_bp_r = " + mdQtySubProducts + ", " +
+                "mfg_cu_r = " + mdQtyWaste + ", " +
                 "b_clo = " + (mbClosed ? 1 : 0) + ", " +
                 "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                 "b_sys = " + (mbSystem ? 1 : 0) + ", " +
@@ -1243,29 +1298,102 @@ public class SDbMfgEstimation extends SDbRegistryUser {
 
         msSql = "DELETE FROM " + SModConsts.TablesMap.get(SModConsts.S_MFG_EST_ETY) + " WHERE id_mfg_est = " + mnPkMfgEstimationId;
         session.getStatement().execute(msSql);
+        
+        msSql = "DELETE FROM " + SModConsts.TablesMap.get(SModConsts.S_MFG_EST_RM_CON) + " WHERE id_mfg_est = " + mnPkMfgEstimationId;
+        session.getStatement().execute(msSql);
 
         // Save entries
+        
+        if (! maChildMfgWarehouseProducts.isEmpty()) {
+            double dSubProductTotal = 0d;
+            double dCullTotal = 0d;
+            double dOilTotal = 0d;
+        
+            Map<Integer, SDbMfgEstimationRMConsumption> rmConsumptions = new HashMap();
 
-        for (SRowProductionInventory inventory : maChildProductionInventories) {
+            for (SSomMfgWarehouseProduct estimationRow : maChildMfgWarehouseProducts) {
+                entry = new SDbMfgEstimationEntry();
 
-            entry = new SDbMfgEstimationEntry();
+                SDbItem item = new SDbItem();
+                item.read(session, new int[] { estimationRow.getPkItemId() });
+                SDbItem itemRawMaterial = new SDbItem();
+                itemRawMaterial.read(session, new int[] { item.getFkItemRowMaterialId_n() });
 
-            entry.setPkMfgEstimationId(mnPkMfgEstimationId);
-            entry.setMfgFinishedGood(inventory.getXtaEstimateProductionFG());
-            entry.setMfgByproduct(inventory.getXtaEstimateProductionBP());
-            entry.setMfgCull(inventory.getXtaEstimateProductionCU());
-            entry.setConsumptionRawMaterial(inventory.getXtaEstimateConsumptionRM());
-            entry.setFkItemMfgFinishedGoodId(inventory.getPkItemId());
-            entry.setFkItemMfgByproductId_n(inventory.getXtaFkItemByProduct());
-            entry.setFkItemMfgCullId_n(inventory.getXtaFkItemCull());
-            entry.setFkItemConsumptionRawMaterialId(inventory.getXtaFkItemRawMaterial());
+                double rawMaterial = estimationRow.getQuantity() / itemRawMaterial.getMfgFinishedGoodPercentage();
+                double subProduct = rawMaterial * itemRawMaterial.getMfgByproductPercentage();
+                double cull = rawMaterial * itemRawMaterial.getMfgCullPercentage();
+                
+                dSubProductTotal += subProduct;
+                dCullTotal += cull;
+                dOilTotal += estimationRow.getQuantity();
 
-            entry.save(session);
+                entry.setPkMfgEstimationId(mnPkMfgEstimationId);
+                entry.setMfgFinishedGood(estimationRow.getQuantity());
+                entry.setMfgByproduct(subProduct);
+                entry.setMfgCull(cull);
+                entry.setConsumptionRawMaterial(rawMaterial);
+                entry.setFkItemMfgFinishedGoodId(estimationRow.getPkItemId());
+                entry.setFkItemMfgByproductId_n(item.getFkItemByproductId_n());
+                entry.setFkItemMfgCullId_n(item.getFkItemCullId_n());
+                entry.setFkItemConsumptionRawMaterialId(item.getFkItemRowMaterialId_n());
+                entry.setFkWarehouseCompanyId(estimationRow.getPkCompanyId());
+                entry.setFkWarehouseBranchId(estimationRow.getPkBranchId());
+                entry.setFkWarehouseWarehouseId(estimationRow.getPkWarehouseId());
+                entry.setFkProductionLineId(estimationRow.getFkProductionLineId());
 
-            if (entry.getQueryResultId() != SDbConsts.SAVE_OK) {
-                mnQueryResultId = SDbConsts.SAVE_ERROR;
-                break;
+                entry.save(session);
+
+                if (entry.getQueryResultId() != SDbConsts.SAVE_OK) {
+                    mnQueryResultId = SDbConsts.SAVE_ERROR;
+                    break;
+                }
+
+                if (rmConsumptions.containsKey(itemRawMaterial.getPkItemId())) {
+                    SDbMfgEstimationRMConsumption rmCons = rmConsumptions.get(itemRawMaterial.getPkItemId());
+
+                    rmCons.setMfgFinishedGood(rmCons.getMfgFinishedGood() + estimationRow.getQuantity());
+                    rmCons.setMfgByproduct(rmCons.getMfgByproduct() + subProduct);
+                    rmCons.setMfgCull(rmCons.getMfgCull() + cull);
+                    rmCons.setConsumptionRawMaterial(rmCons.getConsumptionRawMaterial() + rawMaterial);                
+                }
+                else {
+                    SDbMfgEstimationRMConsumption rmCons = new SDbMfgEstimationRMConsumption();
+
+                    rmCons.setPkMfgEstimationId(mnPkMfgEstimationId);
+                    rmCons.setOilPercentage(0);
+                    rmCons.setMfgFinishedGood(estimationRow.getQuantity());
+                    rmCons.setMfgByproduct(subProduct);
+                    rmCons.setMfgCull(cull);
+                    rmCons.setConsumptionRawMaterial(rawMaterial);
+                    rmCons.setFkItemConsumptionRawMaterialId(itemRawMaterial.getPkItemId());
+
+                    rmConsumptions.put(itemRawMaterial.getPkItemId(), rmCons);
+                }
             }
+
+            // Save consumptions entries
+
+            for (Map.Entry<Integer, SDbMfgEstimationRMConsumption> rCons : rmConsumptions.entrySet()) {
+                SDbMfgEstimationRMConsumption value = rCons.getValue();
+                value.save(session);
+
+                if (value.getQueryResultId() != SDbConsts.SAVE_OK) {
+                    mnQueryResultId = SDbConsts.SAVE_ERROR;
+                    break;
+                }
+            }
+            
+            String msSqlAux = "UPDATE " + getSqlTable() + " SET " +
+                "mfg_fg_r = " + dOilTotal + ", " +
+                "mfg_bp_r = " + dSubProductTotal + ", " +
+                "mfg_cu_r = " + dCullTotal + ", " +
+                "b_clo = true, " +
+                "fk_usr_clo = " + mnFkUserUpdateId + " " +
+                getSqlWhere();
+        
+            session.getStatement().executeUpdate(msSqlAux);
+            
+            mbClosed = true;
         }
 
         mbRegistryNew = false;
@@ -1279,7 +1407,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         registry.setVersion(this.getVersion());
         registry.setDateMfgEstimation(this.getDateMfgEstimation());
         registry.setDateStockDay(this.getDateStockDay());
-        registry.setQuantity(this.getQuantity());
+        registry.setQtyFinishedGoods(this.getQtyFinishedGoods());
+        registry.setQtySubProducts(this.getQtySubProducts());
+        registry.setQtyWaste(this.getQtyWaste());
         registry.setClosed(this.isClosed());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());

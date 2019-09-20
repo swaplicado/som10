@@ -48,7 +48,10 @@ import som.mod.som.view.SViewExternalDpsReturn;
 import som.mod.som.view.SViewExternalDpsSupply;
 import som.mod.som.view.SViewIog;
 import som.mod.som.view.SViewIogExportation;
+import som.mod.som.view.SViewIogProd;
 import som.mod.som.view.SViewMfgEstimation;
+import som.mod.som.view.SViewMfgEstimationEty;
+import som.mod.som.view.SViewMfgEstimationRm;
 import som.mod.som.view.SViewMix;
 import som.mod.som.view.SViewStock;
 import som.mod.som.view.SViewStockDays;
@@ -97,6 +100,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjDocInvFgOut;
     private JMenuItem mjDocInvStkMoves;
     private JMenuItem mjDocInvStkMovesDet;
+    private JMenuItem mjDocInvStkMovesEst;
     private JMenuItem mjDocInvOpenProc;
     private JMenu mjDocMix;
     private JMenuItem mjDocMixtures;
@@ -106,6 +110,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjOilWizardDps;
     private JMenuItem mjOilProdEstProc;
     private JMenuItem mjOilProdEstLog;
+    private JMenuItem mjOilProdEstLogEty;
+    private JMenuItem mjOilProdEstLogCons;
     private JMenuItem mjOilIogExpProc;
     private JMenuItem mjOilIogExpLog;
     private JMenu mjStk;
@@ -233,6 +239,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjDocInvFgOut = new JMenuItem("Doctos. devolución de producto terminado (PT)");
         mjDocInvStkMoves = new JMenuItem("Movimientos de inventarios");
         mjDocInvStkMovesDet = new JMenuItem("Movimientos de inventarios a detalle");
+        mjDocInvStkMovesEst = new JMenuItem("Movimientos de inventarios de estimaciones");
         mjDocInvOpenProc = new JMenuItem("Generación de inventarios iniciales...");
 
         mjDocInv.add(mjDocInvDocs);
@@ -245,6 +252,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjDocInv.addSeparator();
         mjDocInv.add(mjDocInvStkMoves);
         mjDocInv.add(mjDocInvStkMovesDet);
+        mjDocInv.add(mjDocInvStkMovesEst);
         mjDocInv.addSeparator();
         mjDocInv.add(mjDocInvOpenProc);
 
@@ -255,6 +263,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjDocInvFgOut.addActionListener(this);
         mjDocInvStkMoves.addActionListener(this);
         mjDocInvStkMovesDet.addActionListener(this);
+        mjDocInvStkMovesEst.addActionListener(this);
         mjDocInvOpenProc.addActionListener(this);
 
         mjDocMix = new JMenu("Doctos. mezclas");
@@ -270,6 +279,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilWizardDps = new JMenuItem("Movimientos externos...");
         mjOilProdEstProc = new JMenuItem("Estimación de la producción...");
         mjOilProdEstLog = new JMenuItem("Bitácora estimación de la producción");
+        mjOilProdEstLogEty = new JMenuItem("Bitácora estimación por almacén");
+        mjOilProdEstLogCons = new JMenuItem("Bitácora estimación de consumo por ítem");
         mjOilIogExpProc = new JMenuItem("Exportación de documentos de inventarios...");
         mjOilIogExpLog = new JMenuItem("Bitácora exportación de documentos de inventarios");
 
@@ -282,6 +293,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         */
         mjOil.add(mjOilProdEstProc);
         mjOil.add(mjOilProdEstLog);
+        mjOil.add(mjOilProdEstLogEty);
+        mjOil.add(mjOilProdEstLogCons);
         mjOil.addSeparator();
         mjOil.add(mjOilIogExpProc);
         mjOil.add(mjOilIogExpLog);
@@ -289,6 +302,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilStockDays.addActionListener(this);
         mjOilProdEstProc.addActionListener(this);
         mjOilProdEstLog.addActionListener(this);
+        mjOilProdEstLogEty.addActionListener(this);
+        mjOilProdEstLogCons.addActionListener(this);
         mjOilStockDaysLog.addActionListener(this);
         mjOilWizardDps.addActionListener(this);
         mjOilIogExpProc.addActionListener(this);
@@ -362,12 +377,15 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjDocInvFgOut.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OS, SModSysConsts.CS_RIG_STK_OS }));
         mjDocInvStkMoves.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OS, SModSysConsts.CS_RIG_STK_OS, SModSysConsts.CS_RIG_REV_OS }));
         mjDocInvStkMovesDet.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OS, SModSysConsts.CS_RIG_STK_OS, SModSysConsts.CS_RIG_REV_OS }));
+        mjDocInvStkMovesEst.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OS, SModSysConsts.CS_RIG_STK_OS }));
         mjDocInvOpenProc.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
 
         mjOil.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OS, SModSysConsts.CS_RIG_STK_OS }));
         mjOilStockDays.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OS, SModSysConsts.CS_RIG_STK_OS }));
         mjOilProdEstProc.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
         mjOilProdEstLog.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
+        mjOilProdEstLogEty.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
+        mjOilProdEstLogCons.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
         mjOilStockDaysLog.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OS, SModSysConsts.CS_RIG_STK_OS }));
         mjOilWizardDps.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OS, SModSysConsts.CS_RIG_STK_OS }));
         mjOilIogExpProc.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
@@ -600,8 +618,21 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                         break;
                 }
                 break;
+            case SModConsts.S_IOG_PROD:
+                switch (subtype) {
+                    case SModConsts.SX_INV_IN_FG:
+                        view = new SViewIogProd(miClient, "Doctos. estimaciones", subtype);
+                        break;
+                }
+                break;
             case SModConsts.S_MFG_EST:
                 view = new SViewMfgEstimation(miClient, "Bit. estimación prod.");
+                break;
+            case SModConsts.S_MFG_EST_ETY:
+                view = new SViewMfgEstimationEty(miClient, "Estimación por almacén");
+                break;
+            case SModConsts.S_MFG_EST_RM_CON:
+                view = new SViewMfgEstimationRm(miClient, "Estimación de consumo por ítem");
                 break;
             case SModConsts.S_MIX:
                 view = new SViewMix(miClient, "Doctos. mezclas");
@@ -856,6 +887,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             else if (menuItem == mjDocInvStkMovesDet) {
                 showView(SModConsts.SX_STK_MOVE, SModConsts.SX_STK_MOVE_DET, null);
             }
+            else if (menuItem == mjDocInvStkMovesEst) {
+                showView(SModConsts.S_IOG_PROD, SModConsts.SX_INV_IN_FG, null);
+            }
             else if (menuItem == mjDocInvOpenProc) {
                 new SFormDialogStockClosing(miClient, "Generación de inventarios iniciales").setVisible(true);
             }
@@ -867,6 +901,12 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjOilProdEstLog) {
                 showView(SModConsts.S_MFG_EST, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjOilProdEstLogEty) {
+                showView(SModConsts.S_MFG_EST_ETY, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjOilProdEstLogCons) {
+                showView(SModConsts.S_MFG_EST_RM_CON, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjOilStockDaysLog) {
                 showView(SModConsts.SX_STK_DAYS_LOG, SLibConsts.UNDEFINED, null);

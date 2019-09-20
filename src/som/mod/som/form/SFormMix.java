@@ -860,7 +860,7 @@ public class SFormMix extends sa.lib.gui.bean.SBeanForm implements ActionListene
                 (origin ? (mnParamFkMixTypeId != SModSysConsts.SS_MIX_TP_CNV && moKeyDivisionSource.getSelectedIndex() > 0 ? moKeyDivisionSource.getValue()[0] : SLibConsts.UNDEFINED) :
                     (mnParamFkMixTypeId != SModSysConsts.SS_MIX_TP_CNV && moKeyDivisionDestiny.getSelectedIndex() > 0 ? moKeyDivisionDestiny.getValue()[0] : SLibConsts.UNDEFINED)),
                 null,
-                moDateDate.getValue(), false);
+                moDateDate.getValue(), false, false);
 
             if (origin) {
                 moDecXtaSourceStock.setValue(stock.getStock());

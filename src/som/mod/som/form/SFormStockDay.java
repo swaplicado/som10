@@ -549,7 +549,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         moKeyBranch.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranch.getText()), true);
         moKeyWarehouse.setKeySettings(miClient, SGuiUtils.getLabelName(jlWarehouse.getText()), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
-        moDecEmptiness.setDecimalSettings(SGuiUtils.getLabelName(jlEmptiness.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecEmptiness.setDecimalSettings(SGuiUtils.getLabelName(jlEmptiness.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moBoolEmpty.setBooleanSettings("Tanque vacio", false);
         moBoolStockDifferenceSkipped.setBooleanSettings("Omitir en estimación de la producción", false);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 50, 0);
@@ -737,6 +737,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
                     SLibConsts.UNDEFINED,
                     null,
                     moDateDate.getValue(),
+                    false,
                     false);
 
                 moDecStockBefore.setValue(stock.getStock());
@@ -961,11 +962,12 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
 
                 stock = SSomUtils.obtainStock(miClient.getSession(), SLibTimeUtils.digestYear(moDateDate.getValue())[0],
                         moKeyItem.getValue()[0], moKeyItem.getSelectedItem().getForeignKey()[0], SLibConsts.UNDEFINED,
-                        moKeyWarehouse.getValue(), SLibConsts.UNDEFINED, null, moDateDate.getValue(), false);
+                        moKeyWarehouse.getValue(), SLibConsts.UNDEFINED, null, moDateDate.getValue(), false, false);
 
                 if (stock.getStock() == 0) {
+                    boolean skipWaste = true;
                     stock = SSomUtils.obtainStock(miClient.getSession(), SLibTimeUtils.digestYear(moDateDate.getValue())[0],
-                        SLibConsts.UNDEFINED, SLibConsts.UNDEFINED, SLibConsts.UNDEFINED, moKeyWarehouse.getValue(), SLibConsts.UNDEFINED, null, moDateDate.getValue(), false);
+                        SLibConsts.UNDEFINED, SLibConsts.UNDEFINED, SLibConsts.UNDEFINED, moKeyWarehouse.getValue(), SLibConsts.UNDEFINED, null, moDateDate.getValue(), false, skipWaste);
                     if (stock.getStock() > 0) {
                         validation.setMessage("El tanque: '" + moKeyWarehouse.getSelectedItem().getItem() + "' contiene existencias (sistema) de otro ítem.");
                         validation.setComponent(moKeyItem.getComponent());

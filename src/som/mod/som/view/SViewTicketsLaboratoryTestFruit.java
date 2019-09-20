@@ -60,8 +60,11 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
                 + "t.dt, "
                 + "sca.code, "
                 + "sca.name, "
-                + "i.code AS " + SDbConsts.FIELD_CODE + ", "
-                + "i.name AS " + SDbConsts.FIELD_NAME + ", "
+                + "itm.code AS " + SDbConsts.FIELD_CODE + ", "
+                + "itm.name AS " + SDbConsts.FIELD_NAME + ", "
+                + "prd.code, "
+                + "prd.name, "
+                + "prd.name_trd, "
                 + "src.code, "
                 + "src.name, "
                 + "l.id_lab, "
@@ -87,11 +90,12 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
                 + "@fruit_oil_per - lt.fruit_yield_adj_per AS _fruit_yield "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sca ON T.fk_sca = sca.id_sca "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON t.fk_item = i.id_item AND NOT t.b_del "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS itm ON t.fk_item = itm.id_item "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS prd ON t.fk_prod = prd.id_prod "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS src ON t.fk_inp_src = src.id_inp_src "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_LAB) + " AS l ON t.fk_lab_n = l.id_lab AND NOT l.b_del "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_LAB_TEST) + " AS lt ON l.id_lab = lt.id_lab "
-                + "WHERE i.b_fruit " + (sql.isEmpty() ? "" : "AND " + sql)
+                + "WHERE NOT t.b_del AND itm.b_fruit " + (sql.isEmpty() ? "" : "AND " + sql)
                 + "ORDER BY t.num, t.id_tic, lt.id_lab, lt.id_test;";
     }
 
@@ -100,10 +104,13 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[26];
+        columns = new SGridColumnView[29];
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca.code", "Báscula");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "t.num", "Boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "t.dt", SGridConsts.COL_TITLE_DATE + " boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "prd.name", "Proveedor");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "prd.name_trd", "Proveedor nombre comercial");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "prd.code", "Proveedor código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, SDbConsts.FIELD_NAME, "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, SDbConsts.FIELD_CODE, "Ítem código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "src.name", "Origen insumo");

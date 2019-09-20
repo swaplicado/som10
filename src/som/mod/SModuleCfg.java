@@ -27,6 +27,7 @@ import som.mod.cfg.db.SDbBranchWarehouse;
 import som.mod.cfg.db.SDbCompany;
 import som.mod.cfg.db.SDbCompanyBranch;
 import som.mod.cfg.db.SDbDivision;
+import som.mod.cfg.db.SDbProductionLine;
 import som.mod.cfg.db.SDbReportingGroup;
 import som.mod.cfg.db.SDbUser;
 import som.mod.cfg.db.SDbUserRight;
@@ -37,11 +38,13 @@ import som.mod.cfg.form.SFormBranchPlant;
 import som.mod.cfg.form.SFormBranchWarehouse;
 import som.mod.cfg.form.SFormCompany;
 import som.mod.cfg.form.SFormCompanyBranch;
+import som.mod.cfg.form.SFormProductionLine;
 import som.mod.cfg.form.SFormReportingGroup;
 import som.mod.cfg.form.SFormUser;
 import som.mod.cfg.form.SFormYear;
 import som.mod.cfg.view.SViewBranchPlant;
 import som.mod.cfg.view.SViewBranchWarehouse;
+import som.mod.cfg.view.SViewProductionLine;
 import som.mod.cfg.view.SViewCompany;
 import som.mod.cfg.view.SViewCompanyBranch;
 import som.mod.cfg.view.SViewReportingGroup;
@@ -60,6 +63,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
     private JMenu mjCat;
     private JMenuItem mjCatCompany;
     private JMenuItem mjCatCompanyBranch;
+    private JMenuItem mjCatProductionLine;
     private JMenuItem mjCatWarehouse;
     private JMenuItem mjCatPlant;
     private JMenuItem mjCatScale;
@@ -72,6 +76,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
 
     private SFormCompany moFormCompany;
     private SFormCompanyBranch moFormCompanyBranch;
+    private SFormProductionLine moFormProductionLine;
     private SFormBranchWarehouse moFormWarehouse;
     private SFormBranchPlant moFormPlant;
     private SFormReportingGroup moFormReportingGroup;
@@ -87,12 +92,14 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjCat = new JMenu("Catálogos");
         mjCatCompany = new JMenuItem("Empresas");
         mjCatCompanyBranch = new JMenuItem("Sucursales");
+        mjCatProductionLine = new JMenuItem("Líneas de producción");
         mjCatWarehouse = new JMenuItem("Almacenes");
         mjCatPlant = new JMenuItem("Plantas");
         mjCatScale = new JMenuItem("Básculas");
 
         mjCat.add(mjCatCompany);
         mjCat.add(mjCatCompanyBranch);
+        mjCat.add(mjCatProductionLine);
         mjCat.add(mjCatWarehouse);
         mjCat.add(mjCatPlant);
         mjCat.addSeparator();
@@ -100,6 +107,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
 
         mjCatCompany.addActionListener(this);
         mjCatCompanyBranch.addActionListener(this);
+        mjCatProductionLine.addActionListener(this);
         mjCatWarehouse.addActionListener(this);
         mjCatPlant.addActionListener(this);
         mjCatScale.addActionListener(this);
@@ -165,6 +173,9 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.CU_COB:
                 registry = new SDbCompanyBranch();
+                break;
+            case SModConsts.CU_PROD_LINES:
+                registry = new SDbProductionLine();
                 break;
             case SModConsts.CU_WAH:
                 registry = new SDbBranchWarehouse();
@@ -288,6 +299,14 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 "
                         + "ORDER BY name, id_co, id_cob, id_pla ";
                 break;
+            case SModConsts.CU_PROD_LINES:
+                settings = new SGuiCatalogueSettings("Línea de producción", 1);
+                settings.setCodeApplying(true);
+                sql = "SELECT id_line AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", "
+                        + "code AS " + SDbConsts.FIELD_CODE + ", id_line AS " + SDbConsts.FIELD_FK + "1 "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 "
+                        + "ORDER BY name, id_line, id_line";
+                break;
             case SModConsts.CU_LAN:
                 settings = new SGuiCatalogueSettings("Idioma", 1);
                 settings.setCodeApplying(true);
@@ -354,6 +373,9 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.CU_COB:
                 view = new SViewCompanyBranch(miClient, "Sucursales");
                 break;
+            case SModConsts.CU_PROD_LINES:
+                view = new SViewProductionLine(miClient, "Líneas de Producción");
+                break;
             case SModConsts.CU_WAH:
                 view = new SViewBranchWarehouse(miClient, "Almacenes");
                 break;
@@ -406,6 +428,10 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 if (moFormCompanyBranch == null) moFormCompanyBranch = new SFormCompanyBranch(miClient, "Sucursal");
                 form = moFormCompanyBranch;
                 break;
+            case SModConsts.CU_PROD_LINES:
+                if (moFormProductionLine == null) moFormProductionLine = new SFormProductionLine(miClient, "Línea de producción");
+                form = moFormProductionLine;
+                break;
             case SModConsts.CU_WAH:
                 if (moFormWarehouse == null) moFormWarehouse = new SFormBranchWarehouse(miClient, "Almacén");
                 form = moFormWarehouse;
@@ -448,6 +474,9 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatCompanyBranch) {
                 showView(SModConsts.CU_COB, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatProductionLine) {
+                showView(SModConsts.CU_PROD_LINES, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatWarehouse) {
                 showView(SModConsts.CU_WAH, SLibConsts.UNDEFINED, null);

@@ -1,4 +1,50 @@
 ================================================================================
+2019-08-16, 1.0 063.4
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Corrección a estatus habilitado/deshabilitado de campo "origen insumo" en forma de captura de boletos de báscula.
+
+================================================================================
+2019-08-15, 1.0 063.3
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Cambio a texto en asunto de notificación de tara de boleto: nombre comercial en vez del nombre del productor.
+2) Inclusión de campo "proveedor" y "proveedor nombre comercial" en consultas de boletos y de resultados de laboratorio.
+
+================================================================================
+2019-07-30, 1.0 063.2
+Edwin Omar CARMONA FIGUEROA
+--------------------------------------------------------------------------------
+1) Adición de información faltante a columnas del resultado de la estimación de la producción.
+
+================================================================================
+2019-07-26, 1.0 063.1
+Edwin Omar CARMONA FIGUEROA
+--------------------------------------------------------------------------------
+1) Revisión general y mejora a estimación de la producción y consumo de materias primas.
+
+================================================================================
+2019-07-22, 1.0 063.0
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Implementación de báscula predeterminada, y mejoramiento a mail de notificación de 
+recepción de materias primas (boleto báscula tarado), para optimizar la generación de información
+excluyendo secciones de báscula si no son necesarias, i.e., si la recepción correspondiente a 
+cada sección fue hecha en más de una báscula o en una báscula no predeterminada.
+
+================================================================================
+2019-07-11, 1.0 062.2
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Mejoramiento a etiquetas de forma de captura ítem y del reporte de recepciones del día o período.
+
+================================================================================
+2019-07-11, 1.0 062.2
+Edwin Omar CARMONA FIGUEROA
+--------------------------------------------------------------------------------
+1) Corrección a porcentajes de captura y presentación de valores de la toma física de inventarios.
+
+================================================================================
 2019-06-07, 1.0 062.1
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

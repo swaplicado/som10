@@ -15,14 +15,13 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Néstor Ávalos
+ * @author Néstor Ávalos, Sergio Flores
  */
 public class SDialogMailReceptions extends SBeanFormDialog {
 
     /**
-     * Creates new form SDialogPayrollDate
+     * Creates new form SDialogMailReceptions
      */
-
     public SDialogMailReceptions(SGuiClient client, int formSubtype, String title) {
         setFormSettings(client, SModConsts.SX_DAY_MAIL, formSubtype, SLibConsts.UNDEFINED, title);
         initComponents();
@@ -50,7 +49,7 @@ public class SDialogMailReceptions extends SBeanFormDialog {
         jlDateEnd = new javax.swing.JLabel();
         moDateEnd = new sa.lib.gui.bean.SBeanFieldDate();
 
-        setTitle("Recepciones");
+        setTitle("Recepciones del día o período");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());

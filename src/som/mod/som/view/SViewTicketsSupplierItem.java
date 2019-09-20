@@ -66,13 +66,14 @@ public class SViewTicketsSupplierItem extends SGridPaneView {
                 + "i.code, "
                 + "i.name, "
                 + "p.code, "
-                + "p.name "
+                + "p.name, "
+                + "p.name_trd "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON t.fk_item = i.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS p ON t.fk_prod = p.id_prod "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS) + " AS s ON t.fk_seas_n = s.id_seas "
                 + "WHERE t.b_del = 0 " + sqlAux + " " 
-                + "GROUP BY " + SDbConsts.FIELD_ID + "1, " + SDbConsts.FIELD_ID + "2, " + SDbConsts.FIELD_ID + "3, " + SDbConsts.FIELD_ID + "4, s.code, s.name, i.code, i.name, p.code, p.name "
+                + "GROUP BY " + SDbConsts.FIELD_ID + "1, " + SDbConsts.FIELD_ID + "2, " + SDbConsts.FIELD_ID + "3, " + SDbConsts.FIELD_ID + "4, s.code, s.name, i.code, i.name, p.code, p.name, p.name_trd "
                 + "ORDER BY s.name, s.code, " + SDbConsts.FIELD_ID + "1, i.name, i.code, " + SDbConsts.FIELD_ID + "2, p.code, p.name, " + SDbConsts.FIELD_ID + "3, " + SDbConsts.FIELD_ID + "4 ";
     }
 
@@ -81,13 +82,14 @@ public class SViewTicketsSupplierItem extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = null;
         
-        columns = new SGridColumnView[6];
+        columns = new SGridColumnView[7];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, SDbConsts.FIELD_NAME, "Temporada");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "i.name", SGridConsts.COL_TITLE_NAME + " ítem");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "i.code", SGridConsts.COL_TITLE_CODE + " ítem");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_L, "p.name", SGridConsts.COL_TITLE_NAME + " proveedor");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "p.code", SGridConsts.COL_TITLE_CODE + " proveedor");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "i.name", "Ítem");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "i.code", "Ítem código");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_L, "p.name", "Proveedor");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "p.name_trd", "Proveedor nombre comercial");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "p.code", "Proveedor código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, SDbConsts.FIELD_ID + "4", "Es maquila");
 
         moModel.getGridColumns().addAll(Arrays.asList(columns));

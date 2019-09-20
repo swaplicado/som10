@@ -97,12 +97,6 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
         moPaneSettings.setUserInsertApplying(true);
         moPaneSettings.setUserUpdateApplying(true);
 
-        /*
-        filter = (Boolean) moFiltersMap.get(SGridConsts.FILTER_DELETED);
-        if ((Boolean) filter) {
-            sql += (sql.isEmpty() ? "" : "AND ") + "v.b_del = 0 ";
-        }
-        */
         sql += (sql.isEmpty() ? "" : "AND ") + "v.b_del = 0 ";
 
         filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
@@ -127,18 +121,18 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
 
         if (isSummary()) {
             msSql += "count(*) AS f_tests, "
-                    + "SUM(vt.den) / SUM(vt.den<>0) as f_den, "
-                    + "SUM(vt.iod_val) / SUM(vt.iod_val<>0) as f_iod_val, "
-                    + "SUM(vt.ref_ind) / SUM(vt.ref_ind<>0) as f_ref_ind, "
-                    + "ROUND(SUM(vt.imp_per) / SUM(vt.imp_per<>0), 4) as f_imp_per, "
-                    + "ROUND(SUM(vt.moi_per) / SUM(vt.moi_per<>0), 4) as f_moi_per, "
-                    + "SUM(vt.pro_per) / SUM(vt.pro_per<>0) as f_pro_per, "
-                    + "SUM(vt.oil_per) / SUM(vt.oil_per<>0) as f_oil_per, "
-                    + "SUM(vt.ole_per) / SUM(vt.ole_per<>0) as f_ole_per, "
-                    + "SUM(vt.lin_per) / SUM(vt.lin_per<>0) as f_lin_per, "
-                    + "SUM(vt.llc_per) / SUM(vt.llc_per<>0) as f_llc_per, "
-                    + "SUM(vt.eru_per) / SUM(vt.eru_per<>0) as f_eru_per, "
-                    + "SUM(vt.aci_per) / SUM(vt.aci_per<>0) as f_aci_per, ";
+                    + "SUM(vt.den) / SUM(vt.den <> 0) as f_den, "
+                    + "SUM(vt.iod_val) / SUM(vt.iod_val <> 0) as f_iod_val, "
+                    + "SUM(vt.ref_ind) / SUM(vt.ref_ind <> 0) as f_ref_ind, "
+                    + "ROUND(SUM(vt.imp_per) / SUM(vt.imp_per <> 0), 4) as f_imp_per, "
+                    + "ROUND(SUM(vt.moi_per) / SUM(vt.moi_per <> 0), 4) as f_moi_per, "
+                    + "SUM(vt.pro_per) / SUM(vt.pro_per <> 0) as f_pro_per, "
+                    + "SUM(vt.oil_per) / SUM(vt.oil_per <> 0) as f_oil_per, "
+                    + "SUM(vt.ole_per) / SUM(vt.ole_per <> 0) as f_ole_per, "
+                    + "SUM(vt.lin_per) / SUM(vt.lin_per <> 0) as f_lin_per, "
+                    + "SUM(vt.llc_per) / SUM(vt.llc_per <> 0) as f_llc_per, "
+                    + "SUM(vt.eru_per) / SUM(vt.eru_per <> 0) as f_eru_per, "
+                    + "SUM(vt.aci_per) / SUM(vt.aci_per <> 0) as f_aci_per, ";
         }
         else {
             msSql += "vt.id_test, "
@@ -158,15 +152,16 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
 
         msSql += "t.num, "
                 + "t.dt, "
-                + "ts.name, "
                 + "ts.code, "
+                + "ts.name, "
                 + "sc.id_sca, "
-                + "sc.name, "
                 + "sc.code, "
-                + "it.name, "
+                + "sc.name, "
                 + "it.code, "
-                + "pr.name, "
+                + "it.name, "
                 + "pr.code, "
+                + "pr.name, "
+                + "pr.name_trd, "
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
                 + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
                 + "v.fk_usr_ins AS " + SDbConsts.FIELD_USER_INS_ID + ", "
@@ -206,7 +201,7 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[30];
+        SGridColumnView[] columns = new SGridColumnView[31];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.num", "Análisis lab");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt", SGridConsts.COL_TITLE_DATE + " análisis lab");
@@ -215,6 +210,7 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "t.num", "Boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "t.dt", SGridConsts.COL_TITLE_DATE + " boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "pr.name", "Proveedor");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "pr.name_trd", "Proveedor nombre comercial");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "pr.code", "Proveedor código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "it.name", "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "it.code", "Ítem código");

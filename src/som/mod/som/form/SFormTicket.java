@@ -653,7 +653,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             jbCleanTicket.setEnabled(!enable);
             moKeyProducer.setEnabled(enable);
             moKeyItem.setEnabled(enable);
-            moKeyInputSource.setEnabled(enable);
+            moKeyInputSource.setEnabled(enable && moKeyInputSource.getItemCount() > 1);
             moTextPlates.setEditable(enable);
             moTextPlatesCage.setEditable(true);
             moTextDriver.setEditable(enable);
@@ -681,7 +681,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             jbCleanTicket.setEnabled(!enable && !moRegistry.isTared());
             moKeyProducer.setEnabled(enable);
             moKeyItem.setEnabled(enable);
-            moKeyInputSource.setEnabled(enable);
+            moKeyInputSource.setEnabled(enable && moKeyInputSource.getItemCount() > 1);
             moTextPlates.setEditable(enable);
             moTextPlatesCage.setEditable(!moRegistry.isTared());
             moTextDriver.setEditable(enable);
@@ -1284,6 +1284,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                         dummy.setPackingEmptyQuantityDeparture(moDecPackingEmptyQuantityDeparture.getValue());
                         dummy.setWeightDestinyArrival(moDecWeightDestinyArrival.getValue());
                         dummy.setWeightDestinyDeparture(moDecWeightDestinyDeparture.getValue());
+                        dummy.setFkItemId(moKeyItem.getValue()[0]);
                         try {
                             dummy.computeWeight(miClient.getSession(), false);
                             if (dummy.getWeightDestinyNet_r() < 0) {

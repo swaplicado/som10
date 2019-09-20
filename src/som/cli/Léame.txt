@@ -1,0 +1,24 @@
+================================================================================
+Ejecución automática de funcionalides CLI
+================================================================================
+
+1) Generación y envío vía mail de reporte comparativo histórico mansual reecepción de materia prima (e.g., aguacate).
+    Desencadenador:
+        Cada semana, lunes, 12:00 hr, indefinidamente.
+    Acción: iniciar un programa:
+        "C:\Program Files\Java\jre1.8.0_45\bin\javaw.exe"
+    Argumentos:
+        -classpath dist/som10.jar som.cli.SCliReportMailer 6 2010 ggomezs@aeth.mx;gortiz@aeth.mx sflores@swaplicado.com.mx
+    Iniciar en:
+        F:\swap\som
+
+2) Importación automática de boletos Revuelta a SOM.
+    Desencadenador:
+        Cada hora, indefinidamente.
+    Acción: iniciar un programa:
+        "C:\Program Files\Java\jre1.8.0_45\bin\javaw.exe"
+    Argumentos:
+        -classpath dist/som10.jar som.cli.SImportTicketsRevuelta
+    Iniciar en:
+        F:\swap\som
+#eof

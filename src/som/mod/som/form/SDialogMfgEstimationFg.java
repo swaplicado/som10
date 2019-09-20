@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 import javax.swing.JButton;
 import sa.lib.SLibConsts;
@@ -29,6 +31,7 @@ import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.som.db.SDbIog;
 import som.mod.som.db.SDbMfgEstimation;
+import som.mod.som.db.SRowProductionByLine;
 import som.mod.som.db.SSomMfgWarehouseProduct;
 import som.mod.som.db.SSomProductionEstimateDistributeWarehouses;
 import som.mod.som.db.SSomProductionEstimateToDistribute;
@@ -45,6 +48,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
     private SDialogMfgEstimationFgHandingOver moDlgMfgEstimationFgHandingOver;
     private SGridPaneForm moGridProducts;
     private ArrayList<SSomMfgWarehouseProduct> maProductionProducts;
+    private SDialogProductionByLine moDetailDialog;
 
     /**
      * Creates new form SDialogProductionEstimateFg
@@ -78,6 +82,9 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
         jPanel30 = new javax.swing.JPanel();
         jlDivision = new javax.swing.JLabel();
         moKeyDivision = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel31 = new javax.swing.JPanel();
+        jlDivision1 = new javax.swing.JLabel();
+        jbViewProductionDetail = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jpWarehouses = new javax.swing.JPanel();
         jbProductDelivery = new javax.swing.JButton();
@@ -85,7 +92,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
-        jPanel2.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -129,6 +136,18 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
 
         jPanel2.add(jPanel30);
 
+        jPanel31.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlDivision1.setText("Detalle de producción:");
+        jlDivision1.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel31.add(jlDivision1);
+
+        jbViewProductionDetail.setText("Por línea de producción");
+        jbViewProductionDetail.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel31.add(jbViewProductionDetail);
+
+        jPanel2.add(jPanel31);
+
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
         jPanel6.setLayout(new java.awt.GridLayout(1, 2));
@@ -136,7 +155,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
         jpWarehouses.setBorder(javax.swing.BorderFactory.createTitledBorder("Almacenes:"));
         jpWarehouses.setLayout(new java.awt.BorderLayout());
 
-        jbProductDelivery.setText("Entregar de producción");
+        jbProductDelivery.setText("Entregar producción");
         jbProductDelivery.setToolTipText("Entregar producto");
         jbProductDelivery.setMargin(new java.awt.Insets(0, 0, 0, 0));
         jbProductDelivery.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -155,11 +174,14 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
     private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel30;
+    private javax.swing.JPanel jPanel31;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JButton jbProductDelivery;
+    private javax.swing.JButton jbViewProductionDetail;
     private javax.swing.JLabel jlDate;
     private javax.swing.JLabel jlDivision;
+    private javax.swing.JLabel jlDivision1;
     private javax.swing.JLabel jlQuantity;
     private javax.swing.JLabel jlUnit;
     private javax.swing.JPanel jpWarehouses;
@@ -193,6 +215,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
         moFields.addField(moKeyDivision);
 
         jbProductDelivery.addActionListener(this);
+        jbViewProductionDetail.addActionListener(this);
 
         moGridProducts = new SGridPaneForm(miClient, SModConsts.SX_STK_PROD_FG, SLibConsts.UNDEFINED, "Productos", null) {
             @Override
@@ -203,13 +226,14 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
             @Override
             public void createGridColumns() {
                 int col = 0;
-                SGridColumnForm[] columns = new SGridColumnForm[9];
+                SGridColumnForm[] columns = new SGridColumnForm[10];
 
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "Ítem");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "Ítem código");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_CO, "Sucursal");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_CO, "Almacén");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_CO, "Tipo almacén");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_CO, "Línea prod");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Cantidad producida");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_UNT, "Unidad");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Cantidad entregada");
@@ -226,6 +250,8 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
         moGridProducts.setForm(moDlgMfgEstimationFgHandingOver);
         moGridProducts.setPaneFormOwner(null);
         moGridProducts.getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbProductDelivery);
+        
+        moDetailDialog = new SDialogProductionByLine(miClient);
 
         jpWarehouses.add(moGridProducts, BorderLayout.CENTER);
 
@@ -268,13 +294,13 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
         SDbIog iogOut = null;
         SDbIog iogIn = null;
 
-        SSomMfgWarehouseProduct mfgWarehouseProduct = null;
+        SSomMfgWarehouseProduct rowWarehouseProduct = null;
         SSomMfgWarehouseProduct mfgWarehouseProductAux = null;
         SSomProductionEstimateDistributeWarehouses productionEstimateDistributeWarehouses = null;
         SSomProductionEstimateToDistribute productToDistribute = null;
 
-        ArrayList<SSomMfgWarehouseProduct> aMfgWarehouseProductProduction = new ArrayList<SSomMfgWarehouseProduct>();
-        ArrayList<SSomMfgWarehouseProduct> aMfgWarehouseProductStorage = new ArrayList<SSomMfgWarehouseProduct>();
+        ArrayList<SSomMfgWarehouseProduct> aProductsToProductionWhs = new ArrayList<SSomMfgWarehouseProduct>();
+        ArrayList<SSomMfgWarehouseProduct> aProductsToStorageWhs = new ArrayList<SSomMfgWarehouseProduct>();
         ArrayList<SSomProductionEstimateToDistribute> aProductionEstimateToDistributeByProduct = new ArrayList<SSomProductionEstimateToDistribute>();
 
         /*
@@ -288,29 +314,27 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
 
         for (SGridRow row : moGridProducts.getModel().getGridRows()) {
 
-            mfgWarehouseProduct = ((SSomMfgWarehouseProduct) row).clone();
-            if (mfgWarehouseProduct.getQuantity() < 0) {
+            rowWarehouseProduct = ((SSomMfgWarehouseProduct) row).clone();
+            if (rowWarehouseProduct.getQuantity() < 0) {
 
                 assignQuantityProduction = true;
-                quantityTotalProductionDistribute += mfgWarehouseProduct.getQuantity();
-                unitProduction = mfgWarehouseProduct.getUnitCode();
+                quantityTotalProductionDistribute += rowWarehouseProduct.getQuantity();
+                unitProduction = rowWarehouseProduct.getUnitCode();
             }
 
             // Assign production warehouse and storage warehouse to arrayList:
+            if (rowWarehouseProduct.getFkWarehouseTypeId() == SModSysConsts.CS_WAH_TP_TAN) {
 
-            if (mfgWarehouseProduct.getFkWarehouseTypeId() == SModSysConsts.CS_WAH_TP_TAN) {
-
-                aMfgWarehouseProductStorage.add(mfgWarehouseProduct);
-                quantityTotalProductStorage += mfgWarehouseProduct.getQuantity();
-                unitStorage = mfgWarehouseProduct.getUnitCode();
+                aProductsToStorageWhs.add(rowWarehouseProduct);
+                quantityTotalProductStorage += rowWarehouseProduct.getQuantity();
+                unitStorage = rowWarehouseProduct.getUnitCode();
             }
             else {
-
-                aMfgWarehouseProductProduction.add(mfgWarehouseProduct);
+                aProductsToProductionWhs.add(rowWarehouseProduct);
             }
         }
 
-        // Validate whether the amount should be distributed production warehouse into storage warehouse:
+        // Validate whether the quantity should be distributed production warehouse into storage warehouse:
 
         try {
             fillWarehouses = true;
@@ -328,20 +352,26 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
                 }
 
                 // Validate if quantity production by warehouse production by division is enough:
-
+                
                 if (fillWarehouses) {
-                    for (SSomMfgWarehouseProduct mfgWhsProductProduction : aMfgWarehouseProductProduction) {
-                        if (mfgWhsProductProduction.getQuantity() < 0) {
+                    for (SSomMfgWarehouseProduct rowProductWhsProduction : aProductsToProductionWhs) {
+                        if (rowProductWhsProduction.getQuantity() < 0) {
+                            double dStock = ((SSomStock) SSomUtils.obtainStock(miClient.getSession(), 
+                                                SLibTimeUtils.digestYear(moDateDate.getValue())[0],
+                                                rowProductWhsProduction.getPkItemId(), 
+                                                rowProductWhsProduction.getPkUnitId(), 
+                                                SModSysConsts.SS_ITEM_TP_FG,
+                                                new int[] { rowProductWhsProduction.getPkCompanyId(), rowProductWhsProduction.getPkBranchId(), rowProductWhsProduction.getPkWarehouseId() },
+                                                moKeyDivision.getValue()[0], 
+                                                null, 
+                                                SLibTimeUtils.addDate(moDateDate.getValue(), 0, 0, -1), 
+                                                false, 
+                                                false)).getStock();
 
-                            if (((SSomStock) SSomUtils.obtainStock(miClient.getSession(), SLibTimeUtils.digestYear(moDateDate.getValue())[0],
-                                    mfgWhsProductProduction.getPkItemId(), mfgWhsProductProduction.getPkUnitId(), SModSysConsts.SS_ITEM_TP_FG,
-                                    new int[] { mfgWhsProductProduction.getPkCompanyId(), mfgWhsProductProduction.getPkBranchId(), mfgWhsProductProduction.getPkWarehouseId() },
-                                    moKeyDivision.getValue()[0], null, SLibTimeUtils.addDate(moDateDate.getValue(), 0, 0, -1), false)).getStock() <
-                                (mfgWhsProductProduction.getQuantity() * -1)) {
-
+                            if (dStock < (rowProductWhsProduction.getQuantity() * -1)) {
                                 miClient.showMsgBoxError("No hay existencias sufientes para la división '" +
-                                        moKeyDivision.getSelectedItem().getCode() + "' en el tanque de producción '" + mfgWhsProductProduction.getWarehouseCode() + "'.\n" +
-                                        "Ítem '" + mfgWhsProductProduction.getItem() + " (" + mfgWhsProductProduction.getItemCode() + ")" + "'.");
+                                        moKeyDivision.getSelectedItem().getCode() + "' en el tanque de producción '" + rowProductWhsProduction.getWarehouseCode() + "'.\n" +
+                                        "Ítem '" + rowProductWhsProduction.getItem() + " (" + rowProductWhsProduction.getItemCode() + ")" + "'.");
                                 fillWarehouses = false;
                                 bContinue = false;
                                 break;
@@ -356,7 +386,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
 
                     // Obtain products of warehouses production to distribute production:
 
-                    for (SSomMfgWarehouseProduct mfgWhsproductProduction : aMfgWarehouseProductProduction) {
+                    for (SSomMfgWarehouseProduct mfgWhsproductProduction : aProductsToProductionWhs) {
                         if (mfgWhsproductProduction.getQuantity() < 0) {
 
                             existProduct = false;
@@ -390,7 +420,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
                     for (SSomProductionEstimateToDistribute productDistribute : aProductionEstimateToDistributeByProduct) {
 
                         quantityByProductStorage = 0;
-                        for (SSomMfgWarehouseProduct mfgWhsProductStorage : aMfgWarehouseProductStorage) {
+                        for (SSomMfgWarehouseProduct mfgWhsProductStorage : aProductsToStorageWhs) {
 
                             if ((productDistribute.getFkItemId() == mfgWhsProductStorage.getFkItemSource1Id_n()) ||
                                  (productDistribute.getFkItemId() == mfgWhsProductStorage.getFkItemSource2Id_n())) {
@@ -415,14 +445,14 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
                 // Storage warehouses sort ascending amount:
 
                 if (fillWarehouses) {
-                    for (int i=0; i<aMfgWarehouseProductStorage.size()-1; i++) {
-                        for (int j=i+1; j<aMfgWarehouseProductStorage.size(); j++) {
+                    for (int i=0; i<aProductsToStorageWhs.size()-1; i++) {
+                        for (int j=i+1; j<aProductsToStorageWhs.size(); j++) {
 
-                            mfgWarehouseProduct = aMfgWarehouseProductStorage.get(i);
-                            mfgWarehouseProductAux = aMfgWarehouseProductStorage.get(j);
-                            if (mfgWarehouseProduct.getQuantity() > mfgWarehouseProductAux.getQuantity()) {
-                                aMfgWarehouseProductStorage.set(i, mfgWarehouseProductAux);
-                                aMfgWarehouseProductStorage.set(j, mfgWarehouseProduct);
+                            rowWarehouseProduct = aProductsToStorageWhs.get(i);
+                            mfgWarehouseProductAux = aProductsToStorageWhs.get(j);
+                            if (rowWarehouseProduct.getQuantity() > mfgWarehouseProductAux.getQuantity()) {
+                                aProductsToStorageWhs.set(i, mfgWarehouseProductAux);
+                                aProductsToStorageWhs.set(j, rowWarehouseProduct);
                             }
                         }
                     }
@@ -430,7 +460,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
                     // Distribute production of warehouse production to warehouse storage:
 
                     productionEstimateDistributeWarehouses = SSomUtils.productionEstimateDistribute(miClient.getSession(), moDateDate.getValue(), moKeyDivision.getValue()[0],
-                    moMfgEstimation.getPkMfgEstimationId(), moMfgEstimation.getVersion(), aMfgWarehouseProductProduction, aMfgWarehouseProductStorage);
+                    moMfgEstimation.getPkMfgEstimationId(), moMfgEstimation.getVersion(), aProductsToProductionWhs, aProductsToStorageWhs);
 
                     // Validate whether the production is fully distributed:
 
@@ -497,8 +527,8 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
                     if (productionEstimateDistributeWarehouses == null) {
 
                         productionEstimateDistributeWarehouses = new SSomProductionEstimateDistributeWarehouses();
-                        productionEstimateDistributeWarehouses.getMfgWarehouseProductProduction().addAll(aMfgWarehouseProductProduction);
-                        productionEstimateDistributeWarehouses.getMfgWarehouseProductStorage().addAll(aMfgWarehouseProductStorage);
+                        productionEstimateDistributeWarehouses.getMfgWarehouseProductProduction().addAll(aProductsToProductionWhs);
+                        productionEstimateDistributeWarehouses.getMfgWarehouseProductStorage().addAll(aProductsToStorageWhs);
                     }
 
                     for (SSomMfgWarehouseProduct product : productionEstimateDistributeWarehouses.getMfgWarehouseProductProduction()) {
@@ -636,7 +666,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
 
         double stockSystem = ((SSomStock) SSomUtils.obtainStock(miClient.getSession(), SLibTimeUtils.digestYear(moDateDate.getValue())[0],
                 product.getPkItemId(), product.getPkUnitId(), SModSysConsts.SS_ITEM_TP_FG,
-                new int[] { product.getPkCompanyId(), product.getPkBranchId(), product.getPkWarehouseId() }, SLibConsts.UNDEFINED, null, moDateDate.getValue(), false)).getStock();
+                new int[] { product.getPkCompanyId(), product.getPkBranchId(), product.getPkWarehouseId() }, SLibConsts.UNDEFINED, null, moDateDate.getValue(), false, false)).getStock();
 
         result = true;
         if (SLibUtils.round(stockPhysical, SLibUtils.DecimalFormatValue4D.getMaximumFractionDigits()) !=
@@ -651,7 +681,35 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
 
         return result;
     }
-
+    
+    private void actionViewProductionDetail() {
+        moDetailDialog.formReset();
+        
+        if (maProductionProducts.isEmpty()) {
+            return;
+        }
+        
+        Map<String, SRowProductionByLine> lines = new HashMap();  
+        
+        for (SSomMfgWarehouseProduct maProductionProduct : maProductionProducts) {
+            if (lines.containsKey(maProductionProduct.getProductionLine())) {
+                SRowProductionByLine obj = lines.get(maProductionProduct.getProductionLine());
+                obj.setProduction(obj.getProduction() + maProductionProduct.getQuantity());
+            }
+            else {
+                SRowProductionByLine n = new SRowProductionByLine();
+                
+                n.setProductionLine(maProductionProduct.getProductionLine());
+                n.setProduction(maProductionProduct.getQuantity());
+                n.setUnit(maProductionProduct.getUnitCode());
+                
+                lines.put(maProductionProduct.getProductionLine(), n);
+            }
+        }
+        
+        moDetailDialog.setFormParams(lines);
+        moDetailDialog.setVisible(true);
+    }
 
     /*
     * Public methods
@@ -660,11 +718,13 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
     @Override
     public void addAllListeners() {
         jbProductDelivery.addActionListener(this);
+        jbViewProductionDetail.addActionListener(this);
     }
 
     @Override
     public void removeAllListeners() {
         jbProductDelivery.removeActionListener(this);
+        jbViewProductionDetail.removeActionListener(this);
     }
 
     @Override
@@ -748,6 +808,9 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
                 catch (Exception ex) {
                     SLibUtils.printException(this, ex);
                 }
+            }
+            else if (button == jbViewProductionDetail) {
+                actionViewProductionDetail();
             }
         }
     }

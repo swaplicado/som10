@@ -422,7 +422,7 @@ public abstract class SSomUtils {
      * @return SSomStock
      */
     public static SSomStock obtainStock(SGuiSession session, final int yearId, final int itemId, final int unitId, final int itemTypeId,
-            final int[] warehouseKey, final int divisionId, final int[] stockMoveKey, final Date date, final boolean absolute) {
+            final int[] warehouseKey, final int divisionId, final int[] stockMoveKey, final Date date, final boolean absolute, boolean skipWaste) {
         String sql = "";
         ResultSet resultSet = null;
         SSomStock stock = new SSomStock("", "", 0d, "");
@@ -453,6 +453,7 @@ public abstract class SSomUtils {
                 (unitId > SLibConsts.UNDEFINED ? "AND s.id_unit = " + unitId : "") + " " +
                 (itemTypeId > SLibConsts.UNDEFINED ? "AND i.fk_item_tp = " + itemTypeId : "") + " AND " +
                 "s.id_co = " + warehouseKey[0] + " " +
+                (skipWaste ? "AND i.fk_item_tp != " + SModSysConsts.SS_ITEM_TP_CU + " " : "") +
                 (warehouseKey.length >= 2 ? "AND s.id_cob = " + warehouseKey[1] : "") + " " +
                 (warehouseKey.length >= 3 ? "AND s.id_wah = " + warehouseKey[2] : "") + " " +
                 (divisionId > SLibConsts.UNDEFINED ? "AND s.id_div = " + divisionId : "") + " " +
@@ -519,12 +520,12 @@ public abstract class SSomUtils {
             final int[] anWarehouseId, final int nDivisionId, final int[] anStockMoveId, final Date date, final double dQuantity) {
         SSomStock stock = null;
 
-        stock = obtainStock(session, nYearId, nItemId, nUnitId, nItemTypeId, anWarehouseId, nDivisionId, anStockMoveId, date, false);
+        stock = obtainStock(session, nYearId, nItemId, nUnitId, nItemTypeId, anWarehouseId, nDivisionId, anStockMoveId, date, false, false);
         if (stock.getStock() < 0 || stock.getStock() < dQuantity) {
             stock.setResult("No hay existencias suficientes del producto '" + stock.getItem() + "' a la fecha '" + SLibUtils.DateFormatDate.format(date) + "'.");
         }
         else {
-            stock = obtainStock(session, nYearId, nItemId, nUnitId, nItemTypeId, anWarehouseId, nDivisionId, anStockMoveId, SLibTimeUtils.getBeginOfYear(date), true);
+            stock = obtainStock(session, nYearId, nItemId, nUnitId, nItemTypeId, anWarehouseId, nDivisionId, anStockMoveId, SLibTimeUtils.getBeginOfYear(date), true, false);
             if (stock.getStock() < 0 || stock.getStock() < dQuantity) {
                 stock.setResult("No hay existencias absolutas suficientes.\n"
                         + "Existen movimientos posteriores que hacen que las existencias queden negativas.");
@@ -1201,7 +1202,8 @@ public abstract class SSomUtils {
     public static SSomProductionEstimateDistributeWarehouses productionEstimateDistribution(final SGuiSession session, final Date pDate, final int pnDivisionId,
             final int pnProductionEstimateId, final int pnProductionEstimateVersionId, final SSomMfgWarehouseProduct poMfgWarehouseProductProduction, int pnSource,
             final ArrayList<SSomMfgWarehouseProduct> paMfgWarehouseProductStorage) {
-        SDbIog iog = null;
+        SDbIog inIog = null;
+        SDbIog outIog = null;
         SSomProductionEstimateDistributeWarehouses productionEstimateDistribute = new SSomProductionEstimateDistributeWarehouses();
         SSomMfgWarehouseProduct mfgWarehouseProductStorage = null;
 
@@ -1234,23 +1236,23 @@ public abstract class SSomUtils {
 
                     // Production move out (warehouse production):
 
-                    iog = new SDbIog();
-                    iog.computeIog(SLibTimeUtils.createDate(SLibTimeUtils.digestDate(pDate)[0], SLibTimeUtils.digestDate(pDate)[1], SLibTimeUtils.digestDate(pDate)[2]-1),
+                    inIog = new SDbIog();
+                    inIog.computeIog(SLibTimeUtils.createDate(SLibTimeUtils.digestDate(pDate)[0], SLibTimeUtils.digestDate(pDate)[1], SLibTimeUtils.digestDate(pDate)[2]-1),
                         productionEstimateDistribute.getProductionAssigned(), true, SModSysConsts.SS_IOG_TP_OUT_MFG_FG_ASD, SModSysConsts.SU_IOG_ADJ_TP_NA, poMfgWarehouseProductProduction.getPkItemId(), poMfgWarehouseProductProduction.getPkUnitId(),
                         new int[] { poMfgWarehouseProductProduction.getPkCompanyId(), poMfgWarehouseProductProduction.getPkBranchId(), poMfgWarehouseProductProduction.getPkWarehouseId() }, pnDivisionId, pnProductionEstimateId,
                         pnProductionEstimateVersionId, session.getUser().getPkUserId());
-                    iog.setSystem(true);
-                    productionEstimateDistribute.getIogOut().add(iog);
+                    inIog.setSystem(true);
+                    productionEstimateDistribute.getIogOut().add(inIog);
 
                     // Production move in (warehouse storage):
 
-                    iog = new SDbIog();
-                    iog.computeIog(SLibTimeUtils.createDate(SLibTimeUtils.digestDate(pDate)[0], SLibTimeUtils.digestDate(pDate)[1], SLibTimeUtils.digestDate(pDate)[2]-1),
+                    outIog = new SDbIog();
+                    outIog.computeIog(SLibTimeUtils.createDate(SLibTimeUtils.digestDate(pDate)[0], SLibTimeUtils.digestDate(pDate)[1], SLibTimeUtils.digestDate(pDate)[2]-1),
                         productionEstimateDistribute.getProductionAssigned(), true, SModSysConsts.SS_IOG_TP_IN_MFG_FG_ASD, SModSysConsts.SU_IOG_ADJ_TP_NA, mfgWarehouseProductStorage.getPkItemId(), mfgWarehouseProductStorage.getPkUnitId(),
                         new int[] { mfgWarehouseProductStorage.getPkCompanyId(), mfgWarehouseProductStorage.getPkBranchId(), mfgWarehouseProductStorage.getPkWarehouseId() }, pnDivisionId, pnProductionEstimateId,
                         pnProductionEstimateVersionId, session.getUser().getPkUserId());
-                    iog.setSystem(true);
-                    productionEstimateDistribute.getIogIn().add(iog);
+                    outIog.setSystem(true);
+                    productionEstimateDistribute.getIogIn().add(outIog);
 
                     // Each one moving in/out production, decrease the amount of storage in the warehouse:
 

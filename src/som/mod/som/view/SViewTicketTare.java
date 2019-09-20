@@ -53,7 +53,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
 
     private void initComponentsCustom() {
         jbTicketTare = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tar_not.gif")), "Destarar boleto", this);
-        jbMailReceptions = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mail.gif")), "Enviar mail de recepciones del día", this);
+        jbMailReceptions = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mail.gif")), "Enviar mail de recepciones del día o período", this);
 
         moDialogDailyMail = new SDialogMailReceptions(miClient, SModConsts.SX_DAY_MAIL, "Recepciones del día");
 
@@ -119,17 +119,14 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         }
     }
 
-    private void actionMail() {
-        int count = 0;
-
+    private void actionMailReceptions() {
         if (jbMailReceptions.isEnabled()) {
-
             moDialogDailyMail.setFormReset();
             moDialogDailyMail.setVisible(true);
+            
             if (moDialogDailyMail.getFormResult() == SGuiConsts.FORM_RESULT_OK) {
-
                 try {
-                    count = SSomMailUtils.computeMailReceptions(miClient.getSession(), moDialogDailyMail.getDateStart(), moDialogDailyMail.getDateEnd());
+                    int count = SSomMailUtils.computeMailReceptions(miClient.getSession(), moDialogDailyMail.getDateStart(), moDialogDailyMail.getDateEnd());
                     miClient.showMsgBoxInformation(SLibConsts.MSG_PROCESS_FINISHED + "\nMails enviados: " + SLibUtils.DecimalFormatInteger.format(count) + ".");
                 }
                 catch (Exception e) {
@@ -234,20 +231,21 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
                 + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
                 + "sca.id_sca, "
-                + "sca.name, "
                 + "sca.code, "
+                + "sca.name, "
                 + "tst.id_tic_st, "
-                + "tst.name, "
                 + "tst.code, "
+                + "tst.name, "
                 + "itm.id_item, "
-                + "itm.name, "
                 + "itm.code, "
+                + "itm.name, "
                 + "prd.id_prod, "
-                + "prd.name, "
                 + "prd.code, "
+                + "prd.name, "
+                + "prd.name_trd, "
                 + "src.id_inp_src, "
-                + "src.name, "
                 + "src.code, "
+                + "src.name, "
                 + "sea.id_seas, "
                 + "sea.name, "
                 + "reg.id_reg, "
@@ -297,7 +295,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
 
     @Override
     public void createGridColumns() {
-        int cols = 40;
+        int cols = 41;
 
         switch (mnGridSubtype) {
             case SModConsts.SX_TIC_TARE:
@@ -314,6 +312,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.num", "Boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt", SGridConsts.COL_TITLE_DATE + " boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "prd.name", "Proveedor");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "prd.name_trd", "Proveedor nombre comercial");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "prd.code", "Proveedor código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "itm.name", "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "itm.code", "Ítem código");
@@ -399,7 +398,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 actionTicketTare();
             }
             else if (button == jbMailReceptions) {
-                actionMail();
+                actionMailReceptions();
             }
         }
     }

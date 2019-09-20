@@ -5,13 +5,18 @@
 package som.mod.som.view;
 
 import java.util.Arrays;
+import javax.swing.ImageIcon;
 import sa.lib.SLibConsts;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
 import sa.lib.grid.SGridConsts;
+import sa.lib.grid.SGridFilterDatePeriod;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
+import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
+import sa.lib.gui.SGuiConsts;
+import sa.lib.gui.SGuiDate;
 import som.mod.SModConsts;
 
 /**
@@ -20,8 +25,17 @@ import som.mod.SModConsts;
  */
 public class SViewMfgEstimation extends SGridPaneView {
 
+    private SGridFilterDatePeriod moFilterDatePeriod;
+    
     public SViewMfgEstimation(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_MFG_EST, SLibConsts.UNDEFINED, title);
+        initComponentsCustom();
+    }
+    
+    private void initComponentsCustom() {
+        moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
+        moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
     }
 
     @Override
@@ -32,7 +46,7 @@ public class SViewMfgEstimation extends SGridPaneView {
         jbRowNew.setEnabled(false);
         jbRowEdit.setEnabled(false);
         jbRowCopy.setEnabled(false);
-        jbRowDelete.setEnabled(false);
+        jbRowDelete.setEnabled(true);
         jbRowDisable.setEnabled(false);
         
         moPaneSettings = new SGridPaneSettings(1);
@@ -47,6 +61,9 @@ public class SViewMfgEstimation extends SGridPaneView {
         if ((Boolean) filter) {
             sql += (sql.isEmpty() ? "" : "AND ") + "v.b_del = 0 ";
         }
+        
+        filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
+        sql += (sql.isEmpty() ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt_mfg_est", (SGuiDate) filter);
 
         msSql = "SELECT "
             + "v.id_mfg_est AS " + SDbConsts.FIELD_ID + "1, "
@@ -55,7 +72,7 @@ public class SViewMfgEstimation extends SGridPaneView {
             + "v.ver, "
             + "v.dt_mfg_est, "
             + "v.dt_stk_day, "
-            + "v.qty, "
+            + "v.mfg_fg_r, "
             + "v.b_clo, "
             + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
             + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
@@ -85,7 +102,7 @@ public class SViewMfgEstimation extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt_mfg_est", SGridConsts.COL_TITLE_DATE);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt_stk_day", SGridConsts.COL_TITLE_DATE);
         //columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.ver", SGridConsts.COL_TITLE_CODE);
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.qty", "Cantidad");                
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.mfg_fg_r", "Cantidad");                
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_clo", "Cerrado");        
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);

@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -38,6 +39,7 @@ import som.mod.som.db.SDbIog;
 import som.mod.som.db.SDbMfgEstimation;
 import som.mod.som.db.SRowProductionInventory;
 import som.mod.som.db.SSomConsts;
+import som.mod.som.db.SSomMfgWarehouseProduct;
 import som.mod.som.db.SSomProductionEmpty;
 
 /**
@@ -48,8 +50,8 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
 
     private SDbMfgEstimation moRegistry;
     private SGridPaneForm moGridMfgEstimation;
-    private SDialogMfgEstimationVersionMoves moDlgMfgEstimationVersionMovesXXX;
     private JButton jbReturnStepXXX;
+    private ArrayList<SSomMfgWarehouseProduct> lEstimationRows = new ArrayList<>();
 
     /**
      * Creates new form SFormProductionEstimate
@@ -81,7 +83,6 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
         jPanel29 = new javax.swing.JPanel();
         jlUnit = new javax.swing.JLabel();
         moKeyUnit = new sa.lib.gui.bean.SBeanFieldKey();
-        jbLockUnit = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jlXtaProductionDelivery = new javax.swing.JLabel();
         moDecXtaProductionDelivery = new sa.lib.gui.bean.SBeanFieldDecimal();
@@ -134,10 +135,6 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
 
         moKeyUnit.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel29.add(moKeyUnit);
-
-        jbLockUnit.setText("Bloquear unidad");
-        jbLockUnit.setPreferredSize(new java.awt.Dimension(125, 23));
-        jPanel29.add(jbLockUnit);
 
         jPanel2.add(jPanel29);
 
@@ -221,7 +218,6 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JButton jbEstimateMfg;
-    private javax.swing.JButton jbLockUnit;
     private javax.swing.JButton jbMoveInAdjustment;
     private javax.swing.JButton jbMoveOutAdjustment;
     private javax.swing.JButton jbMoveOutTransfer;
@@ -247,8 +243,6 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
 
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 1024, 640);
-        
-        moDlgMfgEstimationVersionMovesXXX = new SDialogMfgEstimationVersionMoves(miClient, "Movimientos inventario");
 
         /* Check if it code snippet is still required! (Sergio Flores 2015-10-12) */
         jbReturnStepXXX = new JButton("Regresar movs. externos");
@@ -354,11 +348,7 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
             moDateStockDay.setEditable(false);
             moKeyUnit.setEnabled(false);
             moKeyDivision.setEnabled(false);
-            jbLockUnit.setEnabled(false);
             jbEstimateMfg.setEnabled(false);
-            
-            
-            
             
             if (moRegistry.isClosed()) {
                 throw new Exception(SSomConsts.ERR_MSG_PROD_EST + "\nEl día '" + SGuiUtils.getLabelName(jlDateStockDay) + "' está cerrado.");
@@ -394,16 +384,22 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
             }
             else {
                 moRegistry.computeProductionEstimate(miClient.getSession());
-                moDecXtaProductionEstimate.setValue(moRegistry.getQuantity());
+                moDecXtaProductionEstimate.setValue(moRegistry.getQtyFinishedGoods());
                 moDecXtaProductionDelivery.setValue(moRegistry.getXtaQuantityDelivery());
+                
+                ArrayList<SSomMfgWarehouseProduct> estimationRows = moRegistry.getChildMfgWarehouseProducts();
+                lEstimationRows.clear();
+                for (SSomMfgWarehouseProduct sSomMfgWarehouseProduct : estimationRows) {
+                    lEstimationRows.add(sSomMfgWarehouseProduct.clone());
+                }
 
                 dlgMfgEstimationFg = new SDialogMfgEstimationFg(miClient, "Productos fabricados");
                 dlgMfgEstimationFg.setValue(SModConsts.S_MFG_EST, moRegistry);
                 dlgMfgEstimationFg.setValue(SGuiConsts.PARAM_DATE, moDateStockDay.getValue());
                 dlgMfgEstimationFg.setValue(SModConsts.SU_UNIT, moKeyUnit.getValue());
                 dlgMfgEstimationFg.setValue(SModConsts.CU_DIV, moKeyDivision.getValue());
-                dlgMfgEstimationFg.setValue(SModConsts.SX_STK_PROD_FG, moRegistry.getChildMfgWarehouseProducts());
-                dlgMfgEstimationFg.setValue(SModConsts.SX_STK_PROD_EST, moRegistry.getQuantity());
+                dlgMfgEstimationFg.setValue(SModConsts.SX_STK_PROD_FG, estimationRows);
+                dlgMfgEstimationFg.setValue(SModConsts.SX_STK_PROD_EST, moRegistry.getQtyFinishedGoods());
                 dlgMfgEstimationFg.setVisible(true);
 
                 if (dlgMfgEstimationFg.getFormResult() != SGuiConsts.FORM_RESULT_OK) {
@@ -529,7 +525,7 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
             }
 
             moGridMfgEstimation.populateGrid(rows);
-
+            
             updateFieldsStatus();
         }
     }
@@ -539,14 +535,12 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
             moDateStockDay.setEnabled(false);
             moKeyUnit.setEnabled(false);
             moKeyDivision.setEnabled(false);
-            jbLockUnit.setEnabled(false);
             jbEstimateMfg.setEnabled(false);
         }
         else {
             moDateStockDay.setEnabled(moRegistry.isRegistryNew());
             moKeyUnit.setEnabled(true);
             moKeyDivision.setEnabled(true);
-            jbLockUnit.setEnabled(true);
             jbEstimateMfg.setEnabled(true);
         }
     }
@@ -713,29 +707,6 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
         }
     }
 
-    private void actionSelectUnit() {
-        if (jbLockUnit.isEnabled()) {
-
-            if (moKeyUnit.getSelectedIndex() > 0 &&
-                miClient.showMsgBoxConfirm(SGuiConsts.MSG_CNF_FIELD_VAL_ + SGuiUtils.getLabelName(jlUnit) + SGuiConsts.MSG_CNF_FIELD_VAL_EQU + "'" + moKeyUnit.getSelectedItem().getItem() + "'.\n" + SGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION) {
-
-                jbLockUnit.setEnabled(false);
-                moKeyUnit.setEnabled(false);
-                moKeyDivision.requestFocus();
-            }
-        }
-    }
-
-    private void actionMovesVersion() {
-        /*if (jbProductionDeliveryMoves.isEnabled()) {
-
-            moMovesVersion.setValue(SModConsts.SU_UNIT, moKeyUnit.getValue());
-            moMovesVersion.setValue(SGuiConsts.PARAM_DATE, moDate.getValue());
-            moMovesVersion.setValue(SModConsts.SX_STK_PROD_EST, moDecXtaProductionEstimate.getValue());
-            moMovesVersion.setVisible(true);
-        } */
-    }
-
     private void actionReturnStep() {
         SGuiParams params = null;
         SDbRegistry registry = null;
@@ -787,7 +758,6 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
 
     @Override
     public void addAllListeners() {
-        jbLockUnit.addActionListener(this);
         jbEstimateMfg.addActionListener(this);
         //jbProductionDeliveryMoves.addActionListener(this);
         jbMoveInAdjustment.addActionListener(this);
@@ -799,7 +769,6 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
 
     @Override
     public void removeAllListeners() {
-        jbLockUnit.removeActionListener(this);
         jbEstimateMfg.removeActionListener(this);
         //jbProductionDeliveryMoves.removeActionListener(this);
         jbMoveInAdjustment.removeActionListener(this);
@@ -847,13 +816,6 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
         moGridMfgEstimation.clearGridRows();
         
         setFormEditable(true);
-
-        if (moRegistry.isRegistryNew()) {
-            // add code here...
-        }
-        else {
-            // add code here...
-        }
         
         updateFieldsStatus();
 
@@ -866,14 +828,7 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
         SDbMfgEstimation registry = (SDbMfgEstimation) moRegistry.clone();
         SRowProductionInventory rpi = null;
         SDbIog iog = null;
-
-        if (moRegistry.isRegistryNew()) {
-            // add code here...
-        }
-        else {
-            // add code here...
-        }
-
+        
         registry.setDateStockDay(moDateStockDay.getValue());
         registry.setDateMfgEstimation(SLibTimeUtils.addDate(moDateStockDay.getValue(), 0, 0, -1));
         registry.setFkUnitId(moKeyUnit.getValue()[0]);
@@ -927,6 +882,8 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
                 }
             }
         }
+        
+        registry.getChildMfgWarehouseProducts().addAll(lEstimationRows);
 
         miClient.getSession().notifySuscriptors(SModConsts.S_IOG);
         miClient.getSession().notifySuscriptors(SModConsts.S_STK);
@@ -943,7 +900,6 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
             case SModConsts.SU_UNIT:
                 moKeyUnit.setValue((int[]) value);
                 moKeyUnit.setEnabled(false);
-                jbLockUnit.setEnabled(false);
             default:
         }
     }
@@ -1016,10 +972,7 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
         if (evt.getSource() instanceof JButton) {
             JButton button = (JButton) evt.getSource();
 
-            if (button == jbLockUnit) {
-                actionSelectUnit();
-            }
-            else if (button == jbEstimateMfg) {
+            if (button == jbEstimateMfg) {
                 actionEstimateMfg();
             }
             else if (button == jbMoveInAdjustment && jbMoveInAdjustment.isEnabled()) {

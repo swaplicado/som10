@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package som.mod.som.form;
+package som.mod.cfg.form;
 
 import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
@@ -11,22 +11,23 @@ import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
+import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
-import som.mod.som.db.SDbScale;
+import som.mod.cfg.db.SDbProductionLine;
 
 /**
  *
- * @author Sergio Flores
+ * @author Edwin Carmona
  */
-public class SFormScale extends sa.lib.gui.bean.SBeanForm {
+public class SFormProductionLine extends sa.lib.gui.bean.SBeanForm {
 
-    private SDbScale moRegistry;
+    private SDbProductionLine moRegistry;
 
     /**
-     * Creates new form SFormScale
+     * Creates new form SFormCompany
      */
-    public SFormScale(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_SCA, SLibConsts.UNDEFINED, title);
+    public SFormProductionLine(SGuiClient client, String title) {
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.CU_PROD_LINES, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -43,18 +44,32 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
         jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        jlBranch = new javax.swing.JLabel();
+        moKeyBranch = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel4 = new javax.swing.JPanel();
         jlCode = new javax.swing.JLabel();
         moTextCode = new sa.lib.gui.bean.SBeanFieldText();
         jPanel5 = new javax.swing.JPanel();
         jlName = new javax.swing.JLabel();
         moTextName = new sa.lib.gui.bean.SBeanFieldText();
-        moBoolDefault = new sa.lib.gui.bean.SBeanFieldBoolean();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(9, 1, 0, 5));
+
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlBranch.setForeground(new java.awt.Color(0, 0, 255));
+        jlBranch.setText("Sucursal:*");
+        jlBranch.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel7.add(jlBranch);
+
+        moKeyBranch.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel7.add(moKeyBranch);
+
+        jPanel2.add(jPanel7);
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -79,9 +94,6 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel5);
 
-        moBoolDefault.setText("Predeterminada");
-        jPanel2.add(moBoolDefault);
-
         jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -92,9 +104,11 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JLabel jlBranch;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlName;
-    private sa.lib.gui.bean.SBeanFieldBoolean moBoolDefault;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyBranch;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
     // End of variables declaration//GEN-END:variables
@@ -102,13 +116,13 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 480, 300);
 
+        moKeyBranch.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranch.getText()), true);
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode.getText()), 5);
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName.getText()), 50);
-        moBoolDefault.setBooleanSettings(moBoolDefault.getText(), false);
 
+        moFields.addField(moKeyBranch);
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
-        moFields.addField(moBoolDefault);
 
         moFields.setFormButton(jbSave);
     }
@@ -125,12 +139,15 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
 
     @Override
     public void reloadCatalogues() {
-
+        miClient.getSession().populateCatalogue(moKeyBranch, SModConsts.CU_COB, SLibConsts.UNDEFINED, null);
     }
 
     @Override
     public void setRegistry(SDbRegistry registry) throws Exception {
-        moRegistry = (SDbScale) registry;
+        int idCompany = SLibConsts.UNDEFINED;
+        int idBranch = SLibConsts.UNDEFINED;
+
+        moRegistry = (SDbProductionLine) registry;
 
         mnFormResult = SLibConsts.UNDEFINED;
         mbFirstActivation = true;
@@ -139,6 +156,15 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
         reloadCatalogues();
 
         if (moRegistry.isRegistryNew()) {
+            idCompany = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getPkCompanyId();
+            idBranch = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getChildBranches().get(0).getPkBranchId();
+        }
+        else {
+            idCompany = moRegistry.getPkCompanyId();
+            idBranch = moRegistry.getPkBranchId();
+        }
+        
+        if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
             jtfRegistryKey.setText("");
         }
@@ -146,24 +172,26 @@ public class SFormScale extends sa.lib.gui.bean.SBeanForm {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
         }
 
+        moKeyBranch.setValue(new int[] { idCompany, idBranch });
         moTextName.setValue(moRegistry.getName());
         moTextCode.setValue(moRegistry.getCode());
-        moBoolDefault.setValue(moRegistry.isDefault());
 
         setFormEditable(true);
+
+        jlBranch.setEnabled(false);
+        moKeyBranch.setEnabled(false);
 
         addAllListeners();
     }
 
     @Override
     public SDbRegistry getRegistry() throws Exception {
-        SDbScale registry = moRegistry.clone();
-
-        if (registry.isRegistryNew()) { }
+        SDbProductionLine registry = moRegistry.clone();
 
         registry.setName(moTextName.getValue());
         registry.setCode(moTextCode.getValue());
-        registry.setDefault(moBoolDefault.getValue());
+        registry.setFkCompanyId(moKeyBranch.getValue()[0]);
+        registry.setFkBranchId(moKeyBranch.getValue()[1]);
 
         return registry;
     }

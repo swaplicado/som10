@@ -313,13 +313,24 @@
                       <SubComponents>
                         <Component class="javax.swing.JLabel" name="jlStartingSeasonMonth">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Mes inicia temporada:"/>
+                            <Property name="text" type="java.lang.String" value="Mes inicio temporada:"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[125, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
                         <Component class="sa.lib.gui.bean.SBeanFieldInteger" name="moIntStartingSeasonMonth">
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jlStartingSeasonMonthTip">
+                          <Properties>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="80" green="80" id="gray" palette="1" red="80" type="palette"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="mes"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[100, 23]"/>
+                            </Property>
+                          </Properties>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -984,7 +995,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Nombre empaque:*"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[125, 23]"/>
+                              <Dimension value="[100, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1008,7 +1019,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Peso empaque:*"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[125, 23]"/>
+                              <Dimension value="[100, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1033,9 +1044,9 @@
                       <SubComponents>
                         <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolAutoMailNotification">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Aplica env&#xed;o autom&#xe1;tico de mail"/>
+                            <Property name="text" type="java.lang.String" value="Aplica env&#xed;o autom&#xe1;tico de mail (al tararse boleto en b&#xe1;scula)"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[250, 23]"/>
+                              <Dimension value="[400, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1052,14 +1063,14 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Destinatario(s) mail:"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[125, 23]"/>
+                              <Dimension value="[100, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
                         <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextAutoMailNotificationBoxes">
                           <Properties>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[300, 23]"/>
+                              <Dimension value="[350, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1070,7 +1081,7 @@
                             </Property>
                             <Property name="text" type="java.lang.String" value="separar con &apos;;&apos;"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
+                              <Dimension value="[75, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1085,9 +1096,9 @@
                       <SubComponents>
                         <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolUserMailNotification">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Aplica env&#xed;o manual de mail"/>
+                            <Property name="text" type="java.lang.String" value="Aplica env&#xed;o manual de mail (en recepciones del d&#xed;a o per&#xed;odo)"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[250, 23]"/>
+                              <Dimension value="[400, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1104,14 +1115,14 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Destinatario(s) mail:"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[125, 23]"/>
+                              <Dimension value="[100, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
                         <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextUserMailNotificationBoxes">
                           <Properties>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[300, 23]"/>
+                              <Dimension value="[350, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1122,7 +1133,7 @@
                             </Property>
                             <Property name="text" type="java.lang.String" value="separar con &apos;;&apos;"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
+                              <Dimension value="[75, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -1156,7 +1167,7 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Clave Revuelta:"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[125, 23]"/>
+                              <Dimension value="[100, 23]"/>
                             </Property>
                           </Properties>
                         </Component>

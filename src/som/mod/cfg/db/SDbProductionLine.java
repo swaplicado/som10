@@ -16,19 +16,13 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Sergio Flores
+ * @author Edwin Carmona
  */
-public class SDbBranchWarehouse extends SDbRegistryUser {
+public class SDbProductionLine extends SDbRegistryUser {
 
-    protected int mnPkCompanyId;
-    protected int mnPkBranchId;
-    protected int mnPkWarehouseId;
+    protected int mnPkProductionLineId;
     protected String msCode;
     protected String msName;
-    protected double mdDimensionBase;
-    protected double mdDimensionHeight;
-    protected double mdCapacityRealLiter;
-    protected String msNote;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -37,8 +31,10 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     protected boolean mbDeleted;
     protected boolean mbSystem;
     */
-    protected int mnFkWarehouseTypeId;
-    protected int mnFkProductionLineId;
+
+    protected int mnFkCompanyId;
+    protected int mnFkBranchId;
+    protected int mnFkPlantId;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -46,50 +42,40 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-    public SDbBranchWarehouse() {
-        super(SModConsts.CU_WAH);
+    public SDbProductionLine() {
+        super(SModConsts.CU_PROD_LINES);
         initRegistry();
     }
 
-    public void setPkCompanyId(int n) { mnPkCompanyId = n; }
-    public void setPkBranchId(int n) { mnPkBranchId = n; }
-    public void setPkWarehouseId(int n) { mnPkWarehouseId = n; }
+    public void setPkProductionLineId(int n) { mnPkProductionLineId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
-    public void setDimensionBase(double d) { mdDimensionBase = d; }
-    public void setDimensionHeight(double d) { mdDimensionHeight = d; }
-    public void setCapacityRealLiter(double d) { mdCapacityRealLiter = d; }
-    public void setNote(String s) { msNote = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
     public void setDisabled(boolean b) { mbDisabled = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
-    public void setFkWarehouseTypeId(int n) { mnFkWarehouseTypeId = n; }
-    public void setFkProductionLineId(int n) { mnFkProductionLineId = n; }
+    public void setFkPlantId(int n) { mnFkPlantId = n; }
+    public void setFkCompanyId(int n) { mnFkCompanyId = n; }
+    public void setFkBranchId(int n) { mnFkBranchId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkCompanyId() { return mnPkCompanyId; }
-    public int getPkBranchId() { return mnPkBranchId; }
-    public int getPkWarehouseId() { return mnPkWarehouseId; }
+    public int getPkProductionLineId() { return mnPkProductionLineId; }
+    public int getPkCompanyId() { return mnFkCompanyId; }
+    public int getPkBranchId() { return mnFkBranchId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
-    public double getDimensionBase() { return mdDimensionBase; }
-    public double getDimensionHeight() { return mdDimensionHeight; }
-    public double getCapacityRealLiter() { return mdCapacityRealLiter; }
-    public String getNote() { return msNote; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
     public boolean isDisabled() { return mbDisabled; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
-    public int getFkWarehouseTypeId() { return mnFkWarehouseTypeId; }
-    public int getFkProductionLineId() { return mnFkProductionLineId; }
+    public int getFkPlantId() { return mnFkPlantId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -97,37 +83,30 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkCompanyId = pk[0];
-        mnPkBranchId = pk[1];
-        mnPkWarehouseId = pk[2];
+        mnPkProductionLineId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkCompanyId, mnPkBranchId, mnPkWarehouseId };
+        return new int[] { mnPkProductionLineId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkCompanyId = 0;
-        mnPkBranchId = 0;
-        mnPkWarehouseId = 0;
+        mnPkProductionLineId = 0;
         msCode = "";
         msName = "";
-        mdDimensionBase = 0;
-        mdDimensionHeight = 0;
-        mdCapacityRealLiter = 0;
-        msNote = "";
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
         mbDisabled = false;
         mbDeleted = false;
         mbSystem = false;
-        mnFkWarehouseTypeId = 0;
-        mnFkProductionLineId = 0;
+        mnFkCompanyId = 0;
+        mnFkBranchId = 0;
+        mnFkPlantId = 1;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -141,30 +120,24 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_co = " + mnPkCompanyId + " AND " +
-                "id_cob = " + mnPkBranchId + " AND " +
-                "id_wah = " + mnPkWarehouseId + " ";
+        return "WHERE id_line = " + mnPkProductionLineId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_co = " + pk[0] + " AND " +
-                "id_cob = " + pk[1] + " AND " +
-                "id_wah = " + pk[2] + " ";
+        return "WHERE id_line = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkWarehouseId = 0;
+        mnPkProductionLineId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_wah), 0) + 1 FROM " + getSqlTable() + " " +
-                "WHERE id_co = " + mnPkCompanyId + " AND " +
-                "id_cob = " + mnPkBranchId + " ";
+        msSql = "SELECT COALESCE(MAX(id_line), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkWarehouseId = resultSet.getInt(1);
+            mnPkProductionLineId = resultSet.getInt(1);
         }
     }
 
@@ -182,23 +155,18 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkCompanyId = resultSet.getInt("id_co");
-            mnPkBranchId = resultSet.getInt("id_cob");
-            mnPkWarehouseId = resultSet.getInt("id_wah");
+            mnPkProductionLineId = resultSet.getInt("id_line");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
-            mdDimensionBase = resultSet.getDouble("dim_base");
-            mdDimensionHeight = resultSet.getDouble("dim_heig");
-            mdCapacityRealLiter = resultSet.getDouble("cap_real_lt");
-            msNote = resultSet.getString("note");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkWarehouseTypeId = resultSet.getInt("fk_wah_tp");
-            mnFkProductionLineId = resultSet.getInt("fk_line");
+            mnFkCompanyId = resultSet.getInt("fk_pla_co");
+            mnFkBranchId = resultSet.getInt("fk_pla_cob");
+            mnFkPlantId = resultSet.getInt("fk_pla_pla");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -227,23 +195,18 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkCompanyId + ", " +
-                    mnPkBranchId + ", " +
-                    mnPkWarehouseId + ", " +
+                    mnPkProductionLineId + ", " +
                     "'" + msCode + "', " +
                     "'" + msName + "', " +
-                    mdDimensionBase + ", " +
-                    mdDimensionHeight + ", " +
-                    mdCapacityRealLiter + ", " +
-                    (msNote.equals("") ? "'-'" : msNote) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
                     (mbDisabled ? 1 : 0) + ", " +
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
-                    mnFkWarehouseTypeId + ", " +
-                    mnFkProductionLineId + ", " +
+                    mnFkCompanyId + ", " +
+                    mnFkBranchId + ", " +
+                    mnFkPlantId + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     "NOW()" + ", " +
@@ -254,23 +217,17 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    //"id_co = " + mnPkCompanyId + ", " +
-                    //"id_cob = " + mnPkBranchId + ", " +
-                    //"id_wah = " + mnPkWarehouseId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
-                    "dim_base = " + mdDimensionBase + ", " +
-                    "dim_heig = " + mdDimensionHeight + ", " +
-                    "cap_real_lt = " + mdCapacityRealLiter + ", " +
-                    "note = " + (msNote.equals("") ? "'-'" : "'" + msNote + "'") + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_wah_tp = " + mnFkWarehouseTypeId + ", " +
-                    "fk_line = " + mnFkProductionLineId + ", " +
+                    "fk_pla_co = " + mnFkCompanyId + ", " +
+                    "fk_pla_cob = " + mnFkBranchId + ", " +
+                    "fk_pla_pla = " + mnFkPlantId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -284,26 +241,21 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     }
 
     @Override
-    public SDbBranchWarehouse clone() throws CloneNotSupportedException {
-        SDbBranchWarehouse registry = new SDbBranchWarehouse();
+    public SDbProductionLine clone() throws CloneNotSupportedException {
+        SDbProductionLine registry = new SDbProductionLine();
 
-        registry.setPkCompanyId(this.getPkCompanyId());
-        registry.setPkBranchId(this.getPkBranchId());
-        registry.setPkWarehouseId(this.getPkWarehouseId());
+        registry.setPkProductionLineId(this.getPkProductionLineId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
-        registry.setDimensionBase(this.getDimensionBase());
-        registry.setDimensionHeight(this.getDimensionHeight());
-        registry.setCapacityRealLiter(this.getCapacityRealLiter());
-        registry.setNote(this.getNote());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
         registry.setDisabled(this.isDisabled());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
-        registry.setFkWarehouseTypeId(this.getFkWarehouseTypeId());
-        registry.setFkProductionLineId(this.getFkProductionLineId());
+        registry.setFkCompanyId(this.getPkCompanyId());
+        registry.setFkBranchId(this.getPkBranchId());
+        registry.setFkPlantId(this.getFkPlantId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
