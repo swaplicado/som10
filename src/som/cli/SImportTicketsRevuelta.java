@@ -10,7 +10,6 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -32,37 +31,39 @@ import static som.mod.som.db.SSomUtils.getProperSeasonId;
 
 /**
  *
- * @author Alfredo Pérez, Sergio Flores
+ * @author Alfredo Pérez
+ * TODO 2019-09-20 Sergio Flores: ¡Refactorizar esta clase y convertirla al paradigma OO!
  */
 public class SImportTicketsRevuelta {
 
     private static Connection moConnectionRev;
     private static Connection moConnectionSom;
     private static int mnLastImportedTicket;
-    private static SGuiSession session;
-    private static String PlateCageLabels;
+    private static SGuiSession moSession;
+    private static String msPlateCageLabels;
 
     public static int getLastImportedTicket() { return mnLastImportedTicket; }
     public static void setLastImportedTicket(int lastId) { mnLastImportedTicket = lastId; }
-    
+
     public static void main(String[] args) {
-        session = new SGuiSession(null);
+        moSession = new SGuiSession(null);
         moConnectionRev = openConnectionRevuelta();
         moConnectionSom = openConnectionSom();
 
         SDbDatabase database = new SDbDatabase(SDbConsts.DBMS_MYSQL);
         database.connect("192.168.1.233", "3306", "som_com", "root", "msroot");
-        session.setDatabase(database);
+        moSession.setDatabase(database);
+        
         try {
             SDbCompany company = new SDbCompany();
-            company.read(session, new int[] { SUtilConsts.BPR_CO_ID });
-            PlateCageLabels = company.getPlateCageLabels();
-            
-            run(session);
+            company.read(moSession, new int[] { SUtilConsts.BPR_CO_ID });
+            msPlateCageLabels = company.getPlateCageLabels();
+
+            run(moSession);
             database.disconnect();
             moConnectionRev.close();
             moConnectionSom.close();
-        } 
+        }
         catch (Exception e) {
             SLibUtils.printException(SImportTicketsRevuelta.class.getName(), e);
         }
@@ -77,7 +78,9 @@ public class SImportTicketsRevuelta {
         rstSoom.next();
         setLastImportedTicket(rstSoom.getInt(1));
         String sql = "SELECT "
-                + "Pes_ID, Pes_FecHorPri, Pes_ObsPri, Pes_PesoPri, Pes_Bruto, Pes_FecHorSeg, Pes_UnidadPri, Pes_PesoSeg, Pes_Tara, Pes_Neto, Pes_Placas, Pes_Chofer, Pro_ID, Emp_ID "
+                + "Pes_ID, Pes_FecHorPri, Pes_ObsPri, Pes_PesoPri, Pes_Bruto, "
+                + "Pes_FecHorSeg, Pes_UnidadPri, Pes_PesoSeg, Pes_Tara, Pes_Neto, Pes_Placas, Pes_Chofer, "
+                + "Pro_ID, Emp_ID "
                 + "FROM dba.Pesadas "
                 + "WHERE Pes_ID >= " + getLastImportedTicket() + " AND Usb_ID = 'ACTH' ORDER BY Pes_ID";
 
@@ -98,6 +101,7 @@ public class SImportTicketsRevuelta {
             if (!rstSoom.next()) {
                 idItem = SSomUtils.mapItemSomRevuelta(session, rstRev.getString("Pro_ID"));
                 idProd = SSomUtils.mapProducerSomRevuelta(session, rstRev.getString("Emp_ID"));
+                
                 if (idItem != 0 && idProd != 0) {
                     SDbItem dbItem = new SDbItem();
                     dbItem.read(session, new int[] { idItem });
@@ -107,7 +111,7 @@ public class SImportTicketsRevuelta {
                     registry.setDate(rstRev.getDate("Pes_FecHorPri"));
                     //registry.setQuantity(Quantity());
                     registry.setPlate(rstRev.getString("Pes_Placas"));
-                    registry.setPlateCage(getContainerPlates(PlateCageLabels, rstRev.getString("Pes_ObsPri")));
+                    registry.setPlateCage(getContainerPlates(msPlateCageLabels, rstRev.getString("Pes_ObsPri")));
                     registry.setDriver(rstRev.getString("Pes_Chofer"));
                     registry.setDatetimeArrival(rstRev.getTimestamp("Pes_FecHorPri"));
                     registry.setDatetimeDeparture(rstRev.getTimestamp("Pes_FecHorSeg") == null ? rstRev.getTimestamp("Pes_FecHorPri") : rstRev.getTimestamp("Pes_FecHorSeg"));
@@ -135,7 +139,7 @@ public class SImportTicketsRevuelta {
                     //registry.setUserPayment_r(UserPayment_r());
                     //registry.setUserFreight(UserFreight());
                     //registry.setUserTotal_r(UserTotal_r());
-                    //registry.setDpsSupplyDate_n(DpsSupplyDate_n());
+                    //registry.setDpsSupplyDate_n(DpsSupplyDate_n()); 
                     registry.setRevueltaImport1(true);
                     //registry.setRevueltaImport2(this.isRevueltaImport2());
                     //registry.setWeightSourceAvailable(this.isWeightSourceAvailable());
@@ -148,7 +152,7 @@ public class SImportTicketsRevuelta {
                     //registry.setDpsSupply(this.isDpsSupply());
                     //registry.setDeleted(this.isDeleted());
                     //registry.setSystem(this.isSystem());
-                    registry.setFkScaleId(1);   //Revuelta
+                    registry.setFkScaleId(1); // Revuelta XXX
                     registry.setFkTicketStatusId(SModSysConsts.SS_TIC_ST_SCA);
                     registry.setFkProducerId(idProd);
                     registry.setFkItemId(idItem);
@@ -156,7 +160,7 @@ public class SImportTicketsRevuelta {
                     registry.setFkSeasonId_n(seasonId);
                     registry.setFkRegionId_n(getProperRegionId(session, seasonId, registry.getFkItemId(), registry.getFkProducerId()));
                     registry.setFkUnitId(dbItem.getFkUnitId());
-                    registry.setFkInputSourceId(1);
+                    registry.setFkInputSourceId(1); // XXX
                     registry.setFkLaboratoryId_n(0);
                     //registry.setFkExternalDpsYearId_n(FkExternalDpsYearId_n());
                     //registry.setFkExternalDpsDocId_n(FkExternalDpsDocId_n());
@@ -189,80 +193,110 @@ public class SImportTicketsRevuelta {
                     note.setNote(rstRev.getString("Pes_ObsPri"));
                     registry.getChildTicketNotes().add(note);
                     registry.save(session);
-                    writeLog("Boleto importado con exito: " + rstRev.getInt("Pes_ID"));
-                    }
-                    //else {
-                        //writeLog("El boleto " + rstRev.getInt("Pes_ID") + " NO pudo ser importado debido al item: " + rstRev.getString("Pro_ID"));
-                    //}
+                    
+                    String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " importado!";
+                    System.out.println(entry);             // ONLY FOR DEBUG
+                    writeLog(entry);
+                }
+                else {
+                    String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " NO fue importado! Producto: " + rstRev.getString("Pro_ID") + ".";
+                    System.out.println(entry);
+                    writeLog(entry);
+                }
             }
         }
     }
 
-    public static void writeLog(String str) throws Exception {
+    /**
+     * Guarda la entrada en el archivo de bitacora *.log dentro de la carpeta raiz de SOM.
+     * @param entry Entrada a guardar en la bitacora.
+     * @throws Exception
+     */
+    public static void writeLog(String entry) throws Exception {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("SImportTicketsRevuelta.log", true))) {
-            writer.append(System.getProperty( "line.separator" ));
-            writer.append(str);
+            writer.append(System.getProperty("line.separator"));
+            writer.append(entry);
+            writer.close();
         }
     }
 
+    /**
+     * Establece conexion con la base de datos (Sybase) de Revuelta.
+     * @return 
+     */
     private static Connection openConnectionRevuelta() {
-        Connection connectionRevuelta = null;
         try {
             Class.forName("com.sybase.jdbc3.jdbc.SybDriver").newInstance();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        }
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             SLibUtils.printException(SImportTicketsRevuelta.class.getName(), e);
         }
-        String url = "jdbc:sybase:Tds:192.168.1.33:2638/Revuelta";  // AETH
-        Properties prop = new Properties();
-        prop.put("user", "usuario");
-        prop.put("password", "revuelta");
+        
+        Connection connection = null;
+        String url = "jdbc:sybase:Tds:192.168.1.33:2638/Revuelta"; // XXX WTF!
+        Properties properties = new Properties();
+        properties.put("user", "usuario"); // XXX WTF!
+        properties.put("password", "revuelta"); // XXX WTF!
+        
         try {
-            connectionRevuelta = DriverManager.getConnection(url, prop);
-        } catch (Exception e) {
+            connection = DriverManager.getConnection(url, properties);
+        }
+        catch (Exception e) {
             SLibUtils.printException(SImportTicketsRevuelta.class.getName(), e);
         }
-        return connectionRevuelta;
-    }
-
-    private static java.sql.Connection openConnectionSom() {
-        String DB = "som_com";
-        String url = "jdbc:mysql://192.168.1.233:3306/" + DB;
-        String username = "root";
-        String password = "msroot";
-        java.sql.Connection connection;
-        try {
-            connection = DriverManager.getConnection(url, username, password);
-        } catch (SQLException e) {
-            throw new IllegalStateException("Cannot connect the database!", e);
-        }
+        
         return connection;
     }
 
     /**
-     * 
-     * @param aBuscar Palabras a buscar separadas por ; (punto y coma).
-     * @param cadena Cadena de texto en donde se van a buscar las palabras.
-     * @return Regresa la siguiente palabra encontrada despues de la palabra buscada.
-     * ejemplo:
-     * aBuscar = "jaula;tolva;tq";
-     * cadena = "PESO TEORICO: 37990 KG JAULA: 293XS3 pedido 0068049 carga completa";
-     * return = "293XS3";
+     * Esteablece conexion con la base de datos (MySQL) de SOM.
+     * @return 
      */
-    private static String getContainerPlates(String aBuscar, String cadena) {
-        String[] valuesSplit = aBuscar.split(";");
-        String placas = "";
-        for (String value : valuesSplit) {
-            
-            Pattern pattern = Pattern.compile(value + "([\\s:]*[\\w]*)", Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(cadena);
-            
+    private static Connection openConnectionSom() {
+        Connection connection = null;
+        String url = "jdbc:mysql://192.168.1.233:3306/som_com"; // XXX WTF!
+        String username = "root"; // XXX WTF!
+        String password = "msroot"; // XXX WTF!
+        
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+        }
+        catch (Exception e) {
+            throw new IllegalStateException("Cannot connect to database SOM!", e);
+        }
+        
+        return connection;
+    }
+
+    /**
+     * Obtiene el texto que contiene el número de placas del contenedor.
+     * 
+     * @param targetWords Palabras objetivo a buscar separadas por ; (punto y coma).
+     * @param textToScan Texto a escanear para buscar las palabras objetivo.
+     * @return Regresa la siguiente palabra encontrada después de la primer palabra objetivo encontrada.
+     * Ejemplo: 
+     * targetWords: "jaula;tolva;tq"; 
+     * textToScan: "PESO TEÓRICO: 37990 KG JAULA: 293XS3 pedido 0068049 carga completa"; 
+     * valor de retorno: "293XS3";
+     */
+    private static String getContainerPlates(String targetWords, String textToScan) {
+        if (textToScan == null) {
+            return "";
+        }
+        
+        for (String targetWord : targetWords.split(";")) {
+            String plates = "";
+            Pattern pattern = Pattern.compile(targetWord + "([\\s:]*[\\w]*)", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(textToScan);
+
             if (matcher.find()) {
-                placas = matcher.group(1).replaceAll("[\\s:]","");
+                plates = matcher.group(1).replaceAll("[\\s:]", "");
             }
-            if (!"".equals(placas)){
-                return placas;
+            if (plates != null && !plates.equals("")) {
+                return plates;
             }
         }
+        
         return "";
     }
 }
