@@ -117,8 +117,8 @@ public class SViewMfgEstimationRm extends SGridPaneView implements ActionListene
         int col = 0;
         SGridColumnView[] columns = new SGridColumnView[17];
 
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "me.dt_mfg_est", SGridConsts.COL_TITLE_DATE);
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "me.dt_stk_day", SGridConsts.COL_TITLE_DATE);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "me.dt_mfg_est", "Fecha estimación");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "me.dt_stk_day", "Fecha toma física");
         //columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.ver", SGridConsts.COL_TITLE_CODE);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "me.mfg_fg_r", "Cantidad");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "si.name", "Ítem MP");

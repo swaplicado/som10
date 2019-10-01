@@ -82,6 +82,7 @@ public abstract class SModConsts {
     public static final int S_MFG_EST = 330061;
     public static final int S_MFG_EST_ETY = 330062;
     public static final int S_MFG_EST_RM_CON = 330063;
+    public static final int S_MFG_EST_PL = 330064;
     public static final int S_MIX = 330071;
     public static final int S_MIX_NOTE = 330072;
 

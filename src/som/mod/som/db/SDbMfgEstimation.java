@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
 import sa.lib.SLibTimeUtils;
@@ -635,7 +637,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         
         sql = "SELECT COALESCE(id_mfg_est, 0) AS f_mfg_est, COALESCE(MAX(ver), 0) AS f_ver " +
                 "FROM " + SModConsts.TablesMap.get(SModConsts.S_MFG_EST) + " " +
-                "WHERE b_clo = 0 AND dt_stk_day = '" +  SLibUtils.DbmsDateFormatDate.format(mtDateStockDay) + "' " +
+                "WHERE b_clo = 0 AND b_del = 0 AND dt_stk_day = '" +  SLibUtils.DbmsDateFormatDate.format(mtDateStockDay) + "' " +
                 "ORDER BY id_mfg_est ";
         resultSet = statement.executeQuery(sql);
         if (!resultSet.next() || resultSet.getInt("f_mfg_est") == 0) {
@@ -1397,6 +1399,43 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         }
 
         mbRegistryNew = false;
+    }
+    
+    @Override
+    public boolean canDelete(SGuiSession session) {
+        return !mbDeleted;
+    }
+    
+    @Override
+    public void delete(SGuiSession session) {
+        System.out.println(this.getPrimaryKey()[0]);
+        
+        String delSql = "UPDATE " + getSqlTable() + " SET " +
+                "b_del = true, " +
+                "b_clo = false, " +
+                "fk_usr_upd = " + mnFkUserUpdateId + " " +
+                getSqlWhere();
+        
+        String iogSql = "UPDATE s_iog "
+                        + "SET b_del = true "
+                        + "WHERE fk_mfg_est_n = " + mnPkMfgEstimationId + ";";
+        
+        String stkSql = "UPDATE s_stk "
+                        + "SET b_del = true "
+                        + "WHERE fk_iog IN "
+                                + "(SELECT id_iog FROM s_iog WHERE fk_mfg_est_n = " + mnPkMfgEstimationId + ");";
+        
+        try {
+            
+            session.getStatement().execute(delSql);
+            session.getStatement().execute(iogSql);
+            session.getStatement().execute(stkSql);
+            
+            mnQueryResultId = SDbConsts.SAVE_OK;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(SDbMfgEstimation.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

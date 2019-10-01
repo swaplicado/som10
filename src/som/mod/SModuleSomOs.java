@@ -51,6 +51,7 @@ import som.mod.som.view.SViewIogExportation;
 import som.mod.som.view.SViewIogProd;
 import som.mod.som.view.SViewMfgEstimation;
 import som.mod.som.view.SViewMfgEstimationEty;
+import som.mod.som.view.SViewMfgEstimationProductionLine;
 import som.mod.som.view.SViewMfgEstimationRm;
 import som.mod.som.view.SViewMix;
 import som.mod.som.view.SViewStock;
@@ -111,6 +112,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjOilProdEstProc;
     private JMenuItem mjOilProdEstLog;
     private JMenuItem mjOilProdEstLogEty;
+    private JMenuItem mjOilProdEstLogPL;
     private JMenuItem mjOilProdEstLogCons;
     private JMenuItem mjOilIogExpProc;
     private JMenuItem mjOilIogExpLog;
@@ -280,6 +282,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilProdEstProc = new JMenuItem("Estimación de la producción...");
         mjOilProdEstLog = new JMenuItem("Bitácora estimación de la producción");
         mjOilProdEstLogEty = new JMenuItem("Bitácora estimación por almacén");
+        mjOilProdEstLogPL = new JMenuItem("Bitácora estimación por línea de producción");
         mjOilProdEstLogCons = new JMenuItem("Bitácora estimación de consumo por ítem");
         mjOilIogExpProc = new JMenuItem("Exportación de documentos de inventarios...");
         mjOilIogExpLog = new JMenuItem("Bitácora exportación de documentos de inventarios");
@@ -294,6 +297,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOil.add(mjOilProdEstProc);
         mjOil.add(mjOilProdEstLog);
         mjOil.add(mjOilProdEstLogEty);
+        mjOil.add(mjOilProdEstLogPL);
         mjOil.add(mjOilProdEstLogCons);
         mjOil.addSeparator();
         mjOil.add(mjOilIogExpProc);
@@ -303,6 +307,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilProdEstProc.addActionListener(this);
         mjOilProdEstLog.addActionListener(this);
         mjOilProdEstLogEty.addActionListener(this);
+        mjOilProdEstLogPL.addActionListener(this);
         mjOilProdEstLogCons.addActionListener(this);
         mjOilStockDaysLog.addActionListener(this);
         mjOilWizardDps.addActionListener(this);
@@ -385,6 +390,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilProdEstProc.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
         mjOilProdEstLog.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
         mjOilProdEstLogEty.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
+        mjOilProdEstLogPL.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
         mjOilProdEstLogCons.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OS));
         mjOilStockDaysLog.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OS, SModSysConsts.CS_RIG_STK_OS }));
         mjOilWizardDps.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OS, SModSysConsts.CS_RIG_STK_OS }));
@@ -630,6 +636,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.S_MFG_EST_ETY:
                 view = new SViewMfgEstimationEty(miClient, "Estimación por almacén");
+                break;
+            case SModConsts.S_MFG_EST_PL:
+                view = new SViewMfgEstimationProductionLine(miClient, "Estimación por línea de producción");
                 break;
             case SModConsts.S_MFG_EST_RM_CON:
                 view = new SViewMfgEstimationRm(miClient, "Estimación de consumo por ítem");
@@ -904,6 +913,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjOilProdEstLogEty) {
                 showView(SModConsts.S_MFG_EST_ETY, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjOilProdEstLogPL) {
+                showView(SModConsts.S_MFG_EST_PL, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjOilProdEstLogCons) {
                 showView(SModConsts.S_MFG_EST_RM_CON, SLibConsts.UNDEFINED, null);

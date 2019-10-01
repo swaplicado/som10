@@ -120,8 +120,8 @@ public class SViewMfgEstimationEty extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = new SGridColumnView[25];
 
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "me.dt_mfg_est", SGridConsts.COL_TITLE_DATE);
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "me.dt_stk_day", SGridConsts.COL_TITLE_DATE);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "me.dt_mfg_est", "Fecha estimación");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "me.dt_stk_day", "Fecha toma física");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, "wah.code", "Cod. Alm.");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "wah.name", "Almacén");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "pl.name", "Línea prod.");
