@@ -1,4 +1,11 @@
 ================================================================================
+2019-08-16, 1.0 063.5
+Edwin CARMONA
+--------------------------------------------------------------------------------
+Puntos 5 y 6 de minuta de reunión.
+5) Corrección SOM: Asegurar que al eliminarse una estimación de la producción se eliminen también sus respectivos movimientos de almacén.
+6) Mejora SOM: Separar el resumen de la estimación de la producción por departamento de producción: prensas, extracción, aguacate.
+================================================================================
 2019-08-16, 1.0 063.4
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
