@@ -1,4 +1,13 @@
 ================================================================================
+2019-10-03, 1.0 063.6
+Edwin Omar CARMONA FIGUEROA
+--------------------------------------------------------------------------------
+Punto 7 de minuta de reunión.
+
+7) Mejora SOM: Permitir en la captura del inventario físico el cambio de ítem de
+    tanques vacíos para el registro de la producción de un nuevo tipo de aceite.
+
+================================================================================
 2019-10-02, 1.0 063.5
 Edwin Omar CARMONA FIGUEROA
 --------------------------------------------------------------------------------

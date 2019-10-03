@@ -1311,7 +1311,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
             double dCullTotal = 0d;
             double dOilTotal = 0d;
         
-            Map<Integer, SDbMfgEstimationRMConsumption> rmConsumptions = new HashMap();
+            Map<Integer, SDbMfgEstimationRMConsumption> rmConsumptions = new HashMap<>();
 
             for (SSomMfgWarehouseProduct estimationRow : maChildMfgWarehouseProducts) {
                 entry = new SDbMfgEstimationEntry();
