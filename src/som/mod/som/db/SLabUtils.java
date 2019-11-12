@@ -15,56 +15,92 @@ import sa.lib.SLibUtils;
 public abstract class SLabUtils {
     
     /**
-     * Estimates percentage (pct.) of fruit oil from pct. of dry matter of sample.
-     * A conversion table of pct. of fruit oil from pct. of dry matter of sample is used in estimation.
+     * Estimate the percentage of oil given a percentage of dry matter in a fruit sample.
+     * A conversion table is used in this estimation.
+     * The original table is bounded to 81 rows (pair of values: pct. of dry matter to pct. of oil).
+     * Due the pair of values of the table seem to be lineal, the table is extended up to 250 row of values.
      * @param fruit Fruit type.
-     * @param dryMatterSamplePct Percentage of dry matter in fruit sample.
+     * @param sampleDryMatterPct Percentage of dry matter in a fruit sample.
      * @return
      * @throws Exception 
      */
-    public static double estimateFruitOilPct(int fruit, double dryMatterSamplePct) throws Exception {
+    public static double estimateFruitOilPct(final int fruit, final double sampleDryMatterPct) throws Exception {
         double fruitOilPct = 0;
         
         switch (fruit) {
             case SLabConsts.FRUIT_AVOCADO:
-                double dryMatterMin = 0.1586;   // minimun value (pct.) in conversion table for dry matter in avocado
-                //double dryMatterMax = 0.3533; // maximun value (pct.) in conversion table for dry matter in avocado (for 81 value pairs or rows)
-                double dryMatterMax = 0.7645;   // maximun value (pct.) in conversion table for dry matter in avocado (for 250 value pairs or rows)
-                double dryMatterInc = 0.0024333333; // observable increment between value pairs in conversion table for pct. of dry matter
+                // values for conversion table from pct. of dry matter to pct. of oil in avocado:
                 
-                if (dryMatterSamplePct < dryMatterMin || dryMatterSamplePct > dryMatterMax) {
-                    throw new Exception ("¡ADVERTENCIA! El porcentaje de materia seca de la muestra : " + SLibUtils.DecimalFormatPercentage2D.format(dryMatterSamplePct) + " está fuera de rango:\n"
-                            + "No puede ser menor que " + SLibUtils.DecimalFormatPercentage2D.format(dryMatterMin) + " o mayor que " + SLibUtils.DecimalFormatPercentage2D.format(dryMatterMax) + ".");
+                double stdFruitOilPctMin = 0.0400; // minimun pct. of oil in table
+                double stdFruitOilPctInc = 0.0025; // observable increment between rows in table for pct. of oil
+
+                //int rows = 81; // fixed number of rows in original table
+                int rows = 250;  // fixed number of rows in "extended" table
+                
+                double stdDryMatterMin = 0.1586; // minimun pct. of dry matter in table
+                
+                double stdDryMatterInc = 0.0024333333; // observable increment between rows in table for pct. of dry matter
+                
+                //double stdDryMatterMax = 0.3533; // fixed maximun pct. of dry matter in table (for 81 rows)
+                //double stdDryMatterMax = 0.7645; // fixed maximun pct. of dry matter in table (for 250 rows)
+                double stdDryMatterMax = SLibUtils.round(stdDryMatterMin + (stdDryMatterInc * (rows - 1)), 4); // calculated maximun pct. of dry matter in table
+                
+                if (sampleDryMatterPct < stdDryMatterMin) {
+                    int extraPairsMax = (int) (stdFruitOilPctMin / stdFruitOilPctInc);
+                    int extraPairsReq = (int) ((stdDryMatterMin - sampleDryMatterPct) / stdDryMatterInc) + 1;
+                    
+                    if (extraPairsReq > extraPairsMax) {
+                        throw new Exception ("¡ADVERTENCIA! El % de materia seca de la muestra : " + SLibUtils.DecimalFormatPercentage2D.format(sampleDryMatterPct) + " está fuera de rango:\n"
+                                + "No debería ser menor que " + SLibUtils.DecimalFormatPercentage2D.format(stdDryMatterMin) + " ni mayor que " 
+                                + SLibUtils.DecimalFormatPercentage2D.format(stdDryMatterMax) + " de acuerdo a la tabla de conversión de referencia.\n"
+                                + "No obstante, se intentó ajustar el % mínimo de materia seca de la tabla, pero no puede ser menor a " + SLibUtils.DecimalFormatPercentage2D.format(stdDryMatterMin - (stdDryMatterInc * extraPairsMax)) + ".\n"
+                                + "Para este valor corresponde un 0% de aceite.");
+                    }
+                    else {
+                        // adjust conversion table:
+                        stdFruitOilPctMin = SLibUtils.round(stdFruitOilPctMin - stdFruitOilPctInc * extraPairsReq, 4);
+                        rows += extraPairsReq;
+                        stdDryMatterMin = SLibUtils.round(stdDryMatterMin - stdDryMatterInc * extraPairsReq, 4);
+                        stdDryMatterMax = SLibUtils.round(stdDryMatterMin + (stdDryMatterInc * (rows - 1)), 4); // max. value should remain without any change!
+                    }
+                }
+                else if (sampleDryMatterPct > stdDryMatterMax) {
+                    throw new Exception ("¡ADVERTENCIA! El % de materia seca de la muestra : " + SLibUtils.DecimalFormatPercentage2D.format(sampleDryMatterPct) + " está fuera de rango:\n"
+                            + "No debería ser menor que " + SLibUtils.DecimalFormatPercentage2D.format(stdDryMatterMin) + " ni mayor que " 
+                            + SLibUtils.DecimalFormatPercentage2D.format(stdDryMatterMax) + " de acuerdo a la tabla de conversión de referencia.");
                 }
                 
-                double fruitOilPctMin = 0.0400; // minimun value in conversion table for fruit oil in avocado (is %)
-                double fruitOilPctInc = 0.0025; // observable increment between value pairs in conversion table for pct. of fruit oil
-                //int valuePairs = 81;  // fixed number of value pairs (or rows) in conversion table for avocado
-                int valuePairs = 250;   // fixed number of value pairs (or rows) in conversion table for avocado
+                double auxDryMatter = stdDryMatterMin;
+                double auxDryMatterInf;
+                double auxDryMatterSup;
 
-                double dryMatter = dryMatterMin;
-                double dryMatterInf;
-                double dryMatterSup;
-
-                for (int valuePair = 1; valuePair <= valuePairs; valuePair++) {
-                    dryMatterInf = dryMatter;
-                    dryMatter += dryMatterInc;
-                    dryMatterSup = dryMatter;
+                for (int row = 1; row <= rows; row++) {
+                    auxDryMatterInf = auxDryMatter;
+                    auxDryMatter += stdDryMatterInc;
+                    auxDryMatterSup = auxDryMatter;
 
                     // lookup pct. of dry matter of sample in conversion table:
-                    if (dryMatterSamplePct <= dryMatterSup) {
-                        // interpolate pct. of fruit oil:
-                        double dryMatterDiff = SLibUtils.round(SLibUtils.round(dryMatterSup, 4) - SLibUtils.round(dryMatterInf, 4), 4);
-                        double pos = SLibUtils.round((SLibUtils.round(dryMatterInf, 4) - dryMatterMin) / dryMatterInc, 0);
-                        double fruitOilPctInf = pos * fruitOilPctInc + fruitOilPctMin;
-                        double fruitOilPctSup = fruitOilPctInf + fruitOilPctInc;
+                    if (sampleDryMatterPct <= auxDryMatterSup) {
+                        // interpolate for pct. of oil:
+                        
+                        /* former and inefficient calculus:
+                        double dryMatterDiff = SLibUtils.round(SLibUtils.round(auxDryMatterSup, 4) - SLibUtils.round(auxDryMatterInf, 4), 4);
+                        double pos = SLibUtils.round((SLibUtils.round(auxDryMatterInf, 4) - stdDryMatterMin) / stdDryMatterInc, 0);
+                        double fruitOilPctInf = pos * stdFruitOilPctInc + stdFruitOilPctMin;
+                        double fruitOilPctSup = fruitOilPctInf + stdFruitOilPctInc;
                         double fruitOilPctDiff = SLibUtils.round(fruitOilPctSup - fruitOilPctInf, 4);
                         double ratio = fruitOilPctDiff / dryMatterDiff;
-                        fruitOilPct = SLibUtils.round((dryMatterSamplePct - SLibUtils.round(dryMatterInf, 4)) * ratio + fruitOilPctInf, 4);
+                        fruitOilPct = SLibUtils.round((sampleDryMatterPct - SLibUtils.round(auxDryMatterInf, 4)) * ratio + fruitOilPctInf, 4);
+                        */
+                        
+                        double calcFruitOilPctInf = stdFruitOilPctMin + ((row - 1) * stdFruitOilPctInc);
+                        double calcRatio = stdFruitOilPctInc / stdDryMatterInc; // increments in table are both constants for fruit oil and dry matter
+                        fruitOilPct = calcFruitOilPctInf + (sampleDryMatterPct - auxDryMatterInf) * calcRatio;
                         break;
                     }
                 }
                 break;
+                
             default:
                 throw new Exception(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }

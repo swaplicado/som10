@@ -21,7 +21,7 @@ import som.mod.SModConsts;
  * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
  */
 public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
-    
+
     public static final String RESET_FRUIT_PARAMS = "Reset Fruit Params";
 
     protected int mnPkLaboratoryId;
@@ -97,7 +97,10 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     public double getFruitPulpHumidityPercentage() { return mdFruitPulpHumidityPercentage; }
     public double getFruitPulpOilPercentage() { return mdFruitPulpOilPercentage; }
     public double getFruitYieldAdjustmentPercentage() { return mdFruitYieldAdjustmentPercentage; }
-    
+
+    /**
+     * Compute fruit related parameters: moisture pct. and oil content pct.
+     */
     public void computeFruitParams() {
         if (!msFruitClass.isEmpty()) {
             if (mdFruitWeightTotal == 0 || mdFruitWeightTotal <= mdFruitWeightPeelPit || msFruitClass.equals(RESET_FRUIT_PARAMS)) {

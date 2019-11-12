@@ -1,4 +1,11 @@
 ================================================================================
+2019-10-15, 1.0 063.6
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Mejoramiento al cálculo de % de aceite a partir de % de materia seca en fruta aguacate:
+    Se flexibiliza la tabla de referencia, recorriendo el valor mínimo de % de materia seca hasta el límite permisible.
+
+================================================================================
 2019-10-02, 1.0 063.5
 Edwin Omar CARMONA FIGUEROA
 --------------------------------------------------------------------------------

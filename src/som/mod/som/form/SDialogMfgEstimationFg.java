@@ -689,7 +689,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
             return;
         }
         
-        Map<String, SRowProductionByLine> lines = new HashMap();  
+        Map<String, SRowProductionByLine> lines = new HashMap<>();
         
         for (SSomMfgWarehouseProduct maProductionProduct : maProductionProducts) {
             if (lines.containsKey(maProductionProduct.getProductionLine())) {

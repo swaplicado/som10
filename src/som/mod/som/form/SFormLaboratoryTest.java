@@ -512,6 +512,11 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         fieldDecimal.setValue(SLibUtils.round(fieldDecimal.getValue(), SLibUtils.DecimalFormatPercentage4D.getMaximumFractionDigits()));
     }
     
+    /**
+     * Compute fruit related parameters: moisture pct. and oil content pct.
+     * PLEASE NOTICE THAT, to prevent from duplicating calculations, 
+     * a public method of class SDbLaboratoryTest is invoked on a disposable clone of the main register of this form.
+     */
     private void computeFruitParams() {
         if (moParamsItem.isFruit()) {
             try {
@@ -526,7 +531,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
                 test.setFruitPulpDryMatterPercentage(moDecFruitPulpDryMatterPercentage.getValue()); // no really required for computation
                 test.setFruitPulpHumidityPercentage(moDecFruitPulpHumidityPercentage.getValue());
                 test.setFruitPulpOilPercentage(moDecFruitPulpOilPercentage.getValue());
-                test.computeFruitParams();
+                test.computeFruitParams(); // prevents from duplicating calculations already defined in class SDbLaboratoryTest
 
                 // retrieve computed params from registry:
                 moDecMoisturePercentage.setValue(test.getMoisturePercentage());
@@ -564,25 +569,32 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
 
     /**
      * Note that by now works only for avocado! No other fruit considered!
+     * @param preserveOldOilPct Preserve old oil percentage when an exception occurs.
      */
     private void actionPerformedComputeFruitPulpParams() {
+        double oilPct = 0;
+        
         try {
             SGuiValidation validation = moDecFruitPulpDryMatterPercentage.validateField();
+            
             if (SGuiUtils.computeValidation(miClient, validation)) {
                 if (moDecFruitPulpDryMatterPercentage.getValue() == 0) {
                     moDecFruitPulpHumidityPercentage.setValue(1.0);
-                    moDecFruitPulpOilPercentage.setValue(0.0);
                 }
                 else {
                     moDecFruitPulpHumidityPercentage.setValue(1.0 - moDecFruitPulpDryMatterPercentage.getValue());
-                    moDecFruitPulpOilPercentage.setValue(SLabUtils.estimateFruitOilPct(SLabConsts.FRUIT_AVOCADO, moDecFruitPulpDryMatterPercentage.getValue()));
+                    
+                    oilPct = SLabUtils.estimateFruitOilPct(SLabConsts.FRUIT_AVOCADO, moDecFruitPulpDryMatterPercentage.getValue());
                 }
-                
-                computeFruitParams();
             }
         }
         catch (Exception e) {
             SLibUtils.showException(this, e);
+        }
+        finally {
+            moDecFruitPulpOilPercentage.setValue(oilPct);
+            
+            computeFruitParams();
         }
     }
 

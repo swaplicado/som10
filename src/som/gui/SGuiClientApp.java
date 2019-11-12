@@ -62,7 +62,7 @@ import som.mod.cfg.db.SDbUserGui;
 
 /**
  *
- * @author Sergio Flores, Alfredo Pérez
+ * @author Sergio Flores, Alfredo Pérez, Sergio Flores
  */
 public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener {
 
@@ -71,8 +71,11 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
     public static final String APP_COPYRIGHT = "2013-2019";
     public static final String APP_PROVIDER = "Software Aplicado SA de CV";
 
-    public static final String VENDOR_COPYRIGHT = APP_NAME + " ©" + APP_COPYRIGHT + " " + APP_PROVIDER;
+    public static final String VENDOR = APP_PROVIDER;
+    public static final String VENDOR_COPYRIGHT = APP_NAME + " ©" + APP_COPYRIGHT + " " + VENDOR;
+    public static final String VENDOR_PHONE = "(443) 204-1032";
     public static final String VENDOR_WEBSITE = "www.swaplicado.com.mx";
+    public static final String VENDOR_MAIL = "contacto@swaplicado.com.mx";
 
     private int mnTerminal;
     private boolean mbFirstActivation;
