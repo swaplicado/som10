@@ -25,17 +25,19 @@ public class SEstimationUtils {
      * 
      * @param client
      * @param estimationId pk de la estimación
-     * @param rawMaterialId id del item de materia prima correspondiente
      * @param rMConsumptionId pk del renglón de consumo de la estimación
+     * @param rawMaterialId id del item de materia prima correspondiente
      * @param oilPercentage porcentaje de aceite comprendido del  0 al 1
      * @return
      * @throws SQLException
      * @throws Exception 
      */
     public static boolean changeOilPercentage(SGuiClient client, final int estimationId, 
-                                                final int rawMaterialId, final int rMConsumptionId, 
+                                                final int rMConsumptionId, final int rawMaterialId, 
                                                 final double oilPercentage) throws SQLException, Exception {
-        String query = "SELECT id_ety, mfg_fg FROM som_com." + SModConsts.TablesMap.get(SModConsts.S_MFG_EST_ETY)
+        
+        String query = "SELECT id_ety, mfg_fg "
+                + "FROM som_com." + SModConsts.TablesMap.get(SModConsts.S_MFG_EST_ETY)
                 + " WHERE id_mfg_est = " + estimationId + " AND fk_item_con_rm = " + rawMaterialId + ";";
 
         //lectura del ítem de materia prima
@@ -49,8 +51,8 @@ public class SEstimationUtils {
         double cullTotal = 0d;
         double otherPercentages = item.getMfgByproductPercentage() + item.getMfgCullPercentage();
         double diffPercentages = 1d - oilPercentage;
-        double subProdPercentage = (item.getMfgByproductPercentage() / otherPercentages) * diffPercentages;
-        double cullPercentage = (item.getMfgCullPercentage() / otherPercentages) * diffPercentages;
+        double subProdPercentage = otherPercentages == 0d ? 0 : ((item.getMfgByproductPercentage() / otherPercentages) * diffPercentages);
+        double cullPercentage = otherPercentages == 0d ? 0 : ((item.getMfgCullPercentage() / otherPercentages) * diffPercentages);
         double oilQuantity;
         double rawMaterial;
         
@@ -81,7 +83,7 @@ public class SEstimationUtils {
         
         // Actualizar renglones de consumos de materia prima de la estimación
         
-        String sUpdConsumption = "UPDATE som_com.s_mfg_est_rm_con " +
+        String sUpdConsumption = "UPDATE som_com." + SModConsts.TablesMap.get(SModConsts.S_MFG_EST_RM_CON) + " " +
                                     "SET " +
                                     "    oil_per = " + oilPercentage + "," +
                                     "    mfg_bp = " + subProductTotal + "," +

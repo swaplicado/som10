@@ -154,6 +154,7 @@ public class SViewMfgEstimationRm extends SGridPaneView implements ActionListene
                 int[] pk = super.getSelectedGridRow().getRowPrimaryKey();
                 SDialogEstOilPercentage dialog = new SDialogEstOilPercentage(miClient);
                 dialog.formReset();
+                // id estimación, id consumo, id item consumo mp
                 dialog.setFormParams(pk[0], pk[1], pk[2], (Double) super.getSelectedGridRow().getRowValueAt(6));
                 dialog.setVisible(true);
                 
