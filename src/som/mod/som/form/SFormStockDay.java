@@ -748,6 +748,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         }
         moDecDiference.setValue(diference);
         moBoolStockDifferenceSkipped.setEnabled(Math.abs(diference) < ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getMaximumStockDifferenceKg());
+        moKeyItem.setEnabled(moDecStockBefore.getValue() == 0d);
     }
 
     private void setFieldsEditable(boolean b) {
@@ -873,8 +874,9 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
                     new int[] { moRegistry.getPkCompanyId(), moRegistry.getPkBranchId() });
         }
         else {
+            moKeyItem.setEnabled(moRegistry.isEmpty());
+            
             moKeyWarehouse.setEnabled(false);
-            moKeyItem.setEnabled(false);
             actionKeyWarehouseStateChanged();
         }
         moBoolStockDifferenceSkipped.setEnabled(false);
@@ -890,12 +892,13 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
 
         if (registry.isRegistryNew()) {
             registry.setPkYearId(SLibTimeUtils.digestYear(moDateDate.getValue())[0]);
-            registry.setPkItemId(moKeyItem.getValue()[0]);
-            registry.setPkUnitId(moKeyItem.getSelectedItem().getForeignKey()[0]);
             registry.setPkCompanyId(moKeyWarehouse.getValue()[0]);
             registry.setPkBranchId(moKeyWarehouse.getValue()[1]);
             registry.setPkWarehouseId(moKeyWarehouse.getValue()[2]);
         }
+        
+        registry.setPkItemId(moKeyItem.getValue()[0]);
+        registry.setPkUnitId(moKeyItem.getSelectedItem().getForeignKey()[0]);
 
         registry.obtainXtaValues(miClient.getSession(), registry.getPrimaryKey());
 

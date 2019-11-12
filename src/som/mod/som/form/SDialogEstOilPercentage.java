@@ -128,7 +128,7 @@ public class SDialogEstOilPercentage extends SBeanFormDialog implements ActionLi
         }
         
         try {
-            bRes = SEstimationUtils.changeOilPercentage(miClient, mnEstimationId, mnRawMaterialId, mnConsumptionRowId, sBFOilPercentage.getValue() / 100);
+            bRes = SEstimationUtils.changeOilPercentage(miClient, mnEstimationId, mnConsumptionRowId, mnRawMaterialId, sBFOilPercentage.getValue() / 100);
             setVisible(false);
         }
         catch (Exception ex) {
@@ -148,10 +148,11 @@ public class SDialogEstOilPercentage extends SBeanFormDialog implements ActionLi
     private sa.lib.gui.bean.SBeanFieldDecimal sBFOilPercentage;
     // End of variables declaration//GEN-END:variables
 
-    public void setFormParams(int estimationId, int rawMaterialId, int consumptionRowId, double percentage) {
+    public void setFormParams(int estimationId, int consumptionRowId, int rawMaterialId, double percentage) {
         mnEstimationId = estimationId;
-        mnRawMaterialId = rawMaterialId;
         mnConsumptionRowId = consumptionRowId;
+        mnRawMaterialId = rawMaterialId;
+        
         if ((percentage < 1d && percentage > 0)) {
             percentage = percentage * 100;
         }

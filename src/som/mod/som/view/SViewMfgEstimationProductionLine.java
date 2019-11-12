@@ -27,7 +27,7 @@ public class SViewMfgEstimationProductionLine extends SGridPaneView {
     private SGridFilterDatePeriod moFilterDatePeriod;
 
     public SViewMfgEstimationProductionLine(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_MFG_EST_ETY, SLibConsts.UNDEFINED, title);
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_MFG_EST_PL, SLibConsts.UNDEFINED, title);
         initComponentsCustom();
     }
     

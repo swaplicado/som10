@@ -1,9 +1,23 @@
 ================================================================================
+2019-11-12, 1.0 063.7
+Edwin Omar CARMONA FIGUEROA
+--------------------------------------------------------------------------------
+1) Modificación de la actualización del porcentaje de aceite en materia prima en la bitácora de estimaciones.
+
+================================================================================
 2019-10-15, 1.0 063.6
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
 1) Mejoramiento al cálculo de % de aceite a partir de % de materia seca en fruta aguacate:
     Se flexibiliza la tabla de referencia, recorriendo el valor mínimo de % de materia seca hasta el límite permisible.
+
+================================================================================
+2019-10-03, 1.0 063.6
+Edwin Omar CARMONA FIGUEROA
+--------------------------------------------------------------------------------
+Punto 7 de minuta de reunión.
+7) Mejora SOM: Permitir en la captura del inventario físico el cambio de ítem de
+    tanques vacíos para el registro de la producción de un nuevo tipo de aceite.
 
 ================================================================================
 2019-10-02, 1.0 063.5

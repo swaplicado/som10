@@ -57,6 +57,7 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
     protected double mdXtaHeight;
     protected double mdXtaCapacityTotalKg;
     protected double mdXtaCapacityAvailable;
+    protected int mnXtaItemBefore;
 
     public SDbStockDay() {
         super(SModConsts.S_STK_DAY);
@@ -141,6 +142,7 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
     public void setXtaHeight(Double d) { mdXtaHeight = d; }
     public void setXtaCapacityTotalKg(Double d) { mdXtaCapacityTotalKg = d; }
     public void setXtaCapacityAvailable(Double d) { mdXtaCapacityAvailable = d; }
+    public void setXtaItemBefore(int n) { mnXtaItemBefore = n; }
 
     public boolean getXtaCopy() { return mbXtaCopy; }
     public boolean getXtaRegistryEditing() { return mbXtaRegistryEditing; }
@@ -153,6 +155,7 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
     public double getXtaHeight() { return mdXtaHeight; }
     public double getXtaCapacityTotalKg() { return mdXtaCapacityTotalKg; }
     public double getXtaCapacityAvailable() { return mdXtaCapacityAvailable; }
+    public int getXtaItemBefore() { return mnXtaItemBefore; }
 
     public void obtainXtaValues(SGuiSession session, int[] key) throws SQLException, Exception {
         ResultSet resultSet = null;
@@ -246,6 +249,7 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
         mdXtaHeight = 0;
         mdXtaCapacityTotalKg = 0;
         mdXtaCapacityAvailable = 0;
+        mnXtaItemBefore = 0;
     }
 
     @Override
@@ -256,7 +260,7 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
     @Override
     public String getSqlWhere() {
         return "WHERE id_year = " + mnPkYearId + " AND " +
-            "id_item = " + mnPkItemId + " AND " +
+            "id_item = " + (mnXtaItemBefore != mnPkItemId ? mnXtaItemBefore : mnPkItemId) + " AND " +
             "id_unit = " + mnPkUnitId + " AND " +
             "id_co = " + mnPkCompanyId + " AND " +
             "id_cob = " + mnPkBranchId + " AND " +
@@ -354,6 +358,8 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
             mdXtaHeight = resultSet.getDouble("f_heig");
             mdXtaCapacityTotalKg = resultSet.getDouble("f_cap_real");
             mdXtaCapacityAvailable = resultSet.getDouble("f_cap_avai");
+            
+            mnXtaItemBefore = resultSet.getInt("s.id_item");
 
             // Finish registry reading:
 
@@ -369,6 +375,8 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
         mnQueryResultId = SDbConsts.SAVE_ERROR;
 
         if (mbRegistryNew) {
+            mnXtaItemBefore = mnPkItemId;
+            
             computePrimaryKey(session);
             mbDeleted = false;
             mbSystem = false;
@@ -404,7 +412,7 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
 
             msSql = "UPDATE " + getSqlTable() + " AS s SET " +
                 //"s.id_year = " + mnPkYearId + ", " +
-                //"s.id_item = " + mnPkItemId + ", " +
+                (mnXtaItemBefore != mnPkItemId ?  ("s.id_item = " + mnPkItemId + ", ") : "") +
                 //"s.id_unit = " + mnPkUnitId + ", " +
                 //"s.id_co = " + mnPkCompanyId + ", " +
                 //"s.id_cob = " + mnPkBranchId + ", " +
@@ -480,6 +488,7 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
         registry.setXtaHeight(this.getXtaHeight());
         registry.setXtaCapacityTotalKg(this.getXtaCapacityTotalKg());
         registry.setXtaCapacityAvailable(this.getXtaCapacityAvailable());
+        registry.setXtaItemBefore(this.getXtaItemBefore());
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
