@@ -28,6 +28,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     protected double mdDimensionBase;
     protected double mdDimensionHeight;
     protected double mdCapacityRealLiter;
+    protected double mdAcidity;
     protected String msNote;
     /*
     protected boolean mbUpdatable;
@@ -59,6 +60,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     public void setDimensionBase(double d) { mdDimensionBase = d; }
     public void setDimensionHeight(double d) { mdDimensionHeight = d; }
     public void setCapacityRealLiter(double d) { mdCapacityRealLiter = d; }
+    public void setAcidity(double d) { mdAcidity = d; }
     public void setNote(String s) { msNote = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
@@ -81,6 +83,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     public double getDimensionBase() { return mdDimensionBase; }
     public double getDimensionHeight() { return mdDimensionHeight; }
     public double getCapacityRealLiter() { return mdCapacityRealLiter; }
+    public double getAcidity() { return mdAcidity; }
     public String getNote() { return msNote; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
@@ -119,6 +122,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
         mdDimensionBase = 0;
         mdDimensionHeight = 0;
         mdCapacityRealLiter = 0;
+        mdAcidity = 0;
         msNote = "";
         mbUpdatable = false;
         mbDisableable = false;
@@ -190,6 +194,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
             mdDimensionBase = resultSet.getDouble("dim_base");
             mdDimensionHeight = resultSet.getDouble("dim_heig");
             mdCapacityRealLiter = resultSet.getDouble("cap_real_lt");
+            mdAcidity = resultSet.getDouble("acidity");
             msNote = resultSet.getString("note");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
@@ -235,6 +240,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
                     mdDimensionBase + ", " +
                     mdDimensionHeight + ", " +
                     mdCapacityRealLiter + ", " +
+                    mdAcidity + ", " +
                     (msNote.equals("") ? "'-'" : msNote) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
@@ -262,6 +268,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
                     "dim_base = " + mdDimensionBase + ", " +
                     "dim_heig = " + mdDimensionHeight + ", " +
                     "cap_real_lt = " + mdCapacityRealLiter + ", " +
+                    "acidity = " + mdAcidity + ", " +
                     "note = " + (msNote.equals("") ? "'-'" : "'" + msNote + "'") + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
@@ -295,6 +302,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
         registry.setDimensionBase(this.getDimensionBase());
         registry.setDimensionHeight(this.getDimensionHeight());
         registry.setCapacityRealLiter(this.getCapacityRealLiter());
+        registry.setAcidity(this.getAcidity());
         registry.setNote(this.getNote());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());

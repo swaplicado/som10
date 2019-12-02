@@ -31,6 +31,7 @@ import som.mod.som.db.SDbMix;
 import som.mod.som.db.SDbStock;
 import som.mod.som.db.SDbStockDay;
 import som.mod.som.db.SSomStockDays;
+import som.mod.som.form.SDialogDailyStock;
 import som.mod.som.form.SDialogRepIogList;
 import som.mod.som.form.SDialogRepStock;
 import som.mod.som.form.SDialogRepStockComparate;
@@ -131,6 +132,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjRepIogList;
     private JMenuItem mjRepStockDay;
     private JMenuItem mjRepStockComp;
+    private JMenuItem mjRepStockDaily;
 
     private SFormIog moFormIog;
     private SFormStockDay moFormStockDay;
@@ -340,6 +342,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjRepIogList = new JMenuItem("Documentos inventarios...");
         mjRepStockDay = new JMenuItem("Inventario diario (toma física)...");
         mjRepStockComp = new JMenuItem("Inventario producción real vs. teórico...");
+        mjRepStockDaily = new JMenuItem("Estimaciones e inventarios diarios...");
 
         mjRep.add(mjRepStock);
         mjRep.add(mjRepStockDiv);
@@ -352,6 +355,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjRep.addSeparator();
         mjRep.add(mjRepStockDay);
         mjRep.add(mjRepStockComp);
+        mjRep.add(mjRepStockDaily);
 
         mjRepStock.addActionListener(this);
         mjRepStockDiv.addActionListener(this);
@@ -362,6 +366,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjRepIogList.addActionListener(this);
         mjRepStockDay.addActionListener(this);
         mjRepStockComp.addActionListener(this);
+        mjRepStockDaily.addActionListener(this);
 
         // Privileges
 
@@ -970,6 +975,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjRepStockComp) {
                 new SDialogRepStockComparate(miClient, "Reporte inventario producción real vs. teórico").setVisible(true);
+            }
+            else if (menuItem == mjRepStockDaily) {
+                new SDialogDailyStock(miClient).setVisible(true);
             }
         }
     }

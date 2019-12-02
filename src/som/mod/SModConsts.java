@@ -154,6 +154,7 @@ public abstract class SModConsts {
     public static final int SR_FRE_TIME = 350011;
     public static final int SR_ITEM_FRUIT = 350012;
     public static final int SR_CH_OIL_PERC = 350013;
+    public static final int SR_STK_DAILY = 350014;
 
     public static final int E_TIC_REV = 430001;
 

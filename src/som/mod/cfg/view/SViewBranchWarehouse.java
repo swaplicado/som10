@@ -53,6 +53,7 @@ public class SViewBranchWarehouse extends SGridPaneView {
                 + "v.dim_base, "
                 + "v.dim_heig, "
                 + "v.cap_real_lt, "
+                + "v.acidity, "
                 + "co.name, "
                 + "cob.name, "
                 + "vt.id_wah_tp, "
@@ -90,7 +91,7 @@ public class SViewBranchWarehouse extends SGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[16];
+        SGridColumnView[] columns = new SGridColumnView[17];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
@@ -101,6 +102,7 @@ public class SViewBranchWarehouse extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.dim_base", "Diámetro (" + SSomConsts.M + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.dim_heig", "Altura (" + SSomConsts.M + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.cap_real_lt", "Capacidad real (" + SSomConsts.L + ")");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.acidity", "Acidez (%)");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);

@@ -38,8 +38,8 @@ public class SViewMfgEstimationRm extends SGridPaneView implements ActionListene
     }
     
     private void initComponentsCustom() {
-        moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
-        moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
+        moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE);
+        moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_DATE, miClient.getSession().getWorkingDate().getTime()));
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
         
         moButtonChangePercentage = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_lab.gif")), "% Aceite", this);
@@ -86,6 +86,7 @@ public class SViewMfgEstimationRm extends SGridPaneView implements ActionListene
             + "(merc.oil_per * 100) AS oil_percentage, "
             + "(si.mfg_fg_per * 100) AS fg_percentage , "
             + "si.name, "
+            + "merc.mfg_fg, "
             + "merc.con_rm, "
             + "su.code, "
             + "me.b_clo, "
@@ -115,13 +116,14 @@ public class SViewMfgEstimationRm extends SGridPaneView implements ActionListene
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[17];
+        SGridColumnView[] columns = new SGridColumnView[18];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "me.dt_mfg_est", "Fecha estimación");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "me.dt_stk_day", "Fecha toma física");
         //columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.ver", SGridConsts.COL_TITLE_CODE);
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "me.mfg_fg_r", "Cantidad");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "me.mfg_fg_r", "Cantidad estimación");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "si.name", "Ítem MP");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "merc.mfg_fg", "Aceite producido x ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "merc.con_rm", "Semilla");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_UNT, "su.code", "Un.");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "oil_percentage", "% aceite manual");

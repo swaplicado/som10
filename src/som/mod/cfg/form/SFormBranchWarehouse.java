@@ -71,6 +71,9 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         jlCapacityRealLiter = new javax.swing.JLabel();
         moDecCapacityRealLiter = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlCapacityRealLiterUnit = new javax.swing.JLabel();
+        jlAcidity = new javax.swing.JLabel();
+        moDecAcidity = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlAcidityUnit = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jlNote = new javax.swing.JLabel();
         moTextNote = new sa.lib.gui.bean.SBeanFieldText();
@@ -175,6 +178,15 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         jlCapacityRealLiterUnit.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel10.add(jlCapacityRealLiterUnit);
 
+        jlAcidity.setText("Acidez:");
+        jlAcidity.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel10.add(jlAcidity);
+        jPanel10.add(moDecAcidity);
+
+        jlAcidityUnit.setText("%");
+        jlAcidityUnit.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel10.add(jlAcidityUnit);
+
         jPanel2.add(jPanel10);
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -206,6 +218,8 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JLabel jlAcidity;
+    private javax.swing.JLabel jlAcidityUnit;
     private javax.swing.JLabel jlBranch;
     private javax.swing.JLabel jlCapacityRealLiter;
     private javax.swing.JLabel jlCapacityRealLiterUnit;
@@ -218,6 +232,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JLabel jlNote;
     private javax.swing.JLabel jlProductionLine;
     private javax.swing.JLabel jlWarehouseType;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecAcidity;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecCapacityRealLiter;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDimensionBase;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDimensionHeight;
@@ -240,6 +255,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         moDecDimensionBase.setDecimalSettings(SGuiUtils.getLabelName(jlDimensionBase.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecDimensionHeight.setDecimalSettings(SGuiUtils.getLabelName(jlDimensionHeight.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecCapacityRealLiter.setDecimalSettings(SGuiUtils.getLabelName(jlCapacityRealLiter.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecAcidity.setDecimalSettings(SGuiUtils.getLabelName(jlCapacityRealLiter.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 250, 0);
 
         moFields.addField(moKeyBranch);
@@ -250,6 +266,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         moFields.addField(moDecDimensionBase);
         moFields.addField(moDecDimensionHeight);
         moFields.addField(moDecCapacityRealLiter);
+        moFields.addField(moDecAcidity);
         moFields.addField(moTextNote);
 
         moFields.setFormButton(jbSave);
@@ -308,6 +325,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         moDecDimensionBase.setValue(moRegistry.getDimensionBase());
         moDecDimensionHeight.setValue(moRegistry.getDimensionHeight());
         moDecCapacityRealLiter.setValue(moRegistry.getCapacityRealLiter());
+        moDecAcidity.setValue(moRegistry.getAcidity());
         moKeyWarehouseType.setValue(new int[] { moRegistry.getFkWarehouseTypeId() });
         moKeyProductionLine.setValue(new int[] { moRegistry.getFkProductionLineId() });
         moTextNote.setValue(moRegistry.getNote());
@@ -334,6 +352,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         registry.setDimensionBase(moDecDimensionBase.getValue());
         registry.setDimensionHeight(moDecDimensionHeight.getValue());
         registry.setCapacityRealLiter(moDecCapacityRealLiter.getValue());
+        registry.setAcidity(moDecAcidity.getValue());
         registry.setFkWarehouseTypeId(moKeyWarehouseType.getValue()[0]);
         registry.setFkProductionLineId(moKeyProductionLine.getValue()[0]);
         registry.setNote(moTextNote.getValue());
