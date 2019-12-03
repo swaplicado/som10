@@ -156,7 +156,7 @@
                 <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyProducer">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[300, 23]"/>
+                      <Dimension value="[600, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -180,7 +180,7 @@
                 <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyItem">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[300, 23]"/>
+                      <Dimension value="[600, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -589,7 +589,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="sBeanFieldText2"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[300, 23]"/>
+                      <Dimension value="[600, 23]"/>
                     </Property>
                   </Properties>
                 </Component>

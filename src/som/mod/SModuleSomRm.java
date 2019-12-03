@@ -39,6 +39,7 @@ import som.mod.som.form.SDialogRepFreightTime;
 import som.mod.som.form.SDialogRepIodineRank;
 import som.mod.som.form.SDialogRepReceivedFruit;
 import som.mod.som.form.SDialogRepReceivedSeed;
+import som.mod.som.form.SDialogTicketsSearch;
 import som.mod.som.form.SFormDialogAssignSeasonRegion;
 import som.mod.som.form.SFormLaboratory;
 import som.mod.som.form.SFormMgmtSupplierInputType;
@@ -66,7 +67,7 @@ import som.mod.som.view.SViewTicketsSupplierItemInputType;
 
 /**
  * 
- * @author Néstor Ávalos, Juan Barajas, Sergio Flores, Alfredo Pérez
+ * @author Néstor Ávalos, Juan Barajas, Alfredo Pérez, Sergio Flores
  * 2019-01-17, Sergio Flores: Cambio de ubicación del catálogo de agrupadores de reporte, del módulo configuración al módulo materias primas.
  */
 public class SModuleSomRm extends SGuiModule implements ActionListener {
@@ -97,7 +98,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjTicTare;
     private JMenuItem mjTicManSupplierItem;
     private JMenuItem mjTicManSupplierInputType;
-    private JMenuItem mjTicCfg;
+    private JMenuItem mjTicRank;
+    private JMenuItem mjTicSearch;
     private JMenu mjQa;    // Quality Assurrance
     private JMenuItem mjQaLabTest;
     private JMenuItem mjQaLabTestDet;
@@ -206,7 +208,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicTare = new JMenuItem("Boletos tarados");
         mjTicManSupplierItem = new JMenuItem("Boletos por proveedor por ítem");
         mjTicManSupplierInputType = new JMenuItem("Boletos por proveedor por tipo de insumo");
-        mjTicCfg = new JMenuItem("Clasificar boletos sin temporada y/o región...");
+        mjTicRank = new JMenuItem("Clasificar boletos sin temporada y/o región...");
+        mjTicSearch = new JMenuItem("Buscar boletos...");
 
         mjTic.add(mjTicTicketSca);
         mjTic.add(mjTicTicketLab);
@@ -219,7 +222,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTic.add(mjTicManSupplierItem);
         mjTic.add(mjTicManSupplierInputType);
         mjTic.addSeparator();
-        mjTic.add(mjTicCfg);
+        mjTic.add(mjTicRank);
+        mjTic.addSeparator();
+        mjTic.add(mjTicSearch);
 
         mjTicTicketSca.addActionListener(this);
         mjTicTicketLab.addActionListener(this);
@@ -229,7 +234,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicTare.addActionListener(this);
         mjTicManSupplierItem.addActionListener(this);
         mjTicManSupplierInputType.addActionListener(this);
-        mjTicCfg.addActionListener(this);
+        mjTicRank.addActionListener(this);
+        mjTicSearch.addActionListener(this);
 
         mjQa = new JMenu("Control calidad");
         mjQaLabTest = new JMenuItem("Análisis de laboratorio");
@@ -297,7 +303,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicTare.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA }));
         mjTicManSupplierItem.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REV_RM }));
         mjTicManSupplierInputType.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REV_RM }));
-        mjTicCfg.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
+        mjTicRank.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
+        mjTicSearch.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_REV_RM }));
 
         mjQa.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REV_RM, SModSysConsts.CS_RIG_LAB }));
 
@@ -726,8 +733,11 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             else if (menuItem == mjTicManSupplierInputType) {
                 showView(SModConsts.SX_TIC_MAN_SUP_INP_TP, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == mjTicCfg) {
+            else if (menuItem == mjTicRank) {
                 showForm(SModConsts.SX_SEAS_REG, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjTicSearch) {
+                new SDialogTicketsSearch(miClient).setVisible(true);
             }
             else if (menuItem == mjRepSeedReceived) {
                 new SDialogRepReceivedSeed(miClient, SModConsts.SR_ITEM_REC, "Reporte materia prima recibida").setVisible(true);

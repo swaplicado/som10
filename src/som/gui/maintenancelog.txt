@@ -1,5 +1,12 @@
 ================================================================================
-2019-11-12, 1.0 063.7
+2019-12-03, 1.0 064.1
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición de columnas capacidad teórica y diferencia capacidad teórica vs. capacidad real en vista Almacenes.
+2) Implementación de búsqueda de boletos por número.
+
+================================================================================
+2019-11-12, 1.0 064.0
 Edwin Omar CARMONA FIGUEROA
 --------------------------------------------------------------------------------
 1) Modificación de la actualización del porcentaje de aceite en materia prima en la bitácora de estimaciones.

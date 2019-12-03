@@ -13,7 +13,6 @@ import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
 import sa.lib.gui.SGuiClient;
 import som.mod.SModConsts;
-import static som.mod.SModConsts.CU_PROD_LINES;
 import som.mod.som.db.SSomConsts;
 
 /**
@@ -59,6 +58,8 @@ public class SViewBranchWarehouse extends SGridPaneView {
                 + "vt.id_wah_tp, "
                 + "vt.name, "
                 + "pl.name AS pl_name, "
+                + "@cap := PI() * POW(dim_base / 2.0, 2.0) * dim_heig * 1000.0 AS _cap_theo, "
+                + "@cap - cap_real_lt AS _cap_diff, "
                 + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
                 + "v.b_can_dis AS " + SDbConsts.FIELD_CAN_DIS + ", "
                 + "v.b_can_del AS " + SDbConsts.FIELD_CAN_DEL + ", "
@@ -91,7 +92,7 @@ public class SViewBranchWarehouse extends SGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[17];
+        SGridColumnView[] columns = new SGridColumnView[19];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
@@ -102,6 +103,8 @@ public class SViewBranchWarehouse extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.dim_base", "Diámetro (" + SSomConsts.M + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.dim_heig", "Altura (" + SSomConsts.M + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.cap_real_lt", "Capacidad real (" + SSomConsts.L + ")");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "_cap_theo", "Capacidad teórica (" + SSomConsts.L + ")");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "_cap_diff", "Diferencia capacidad (" + SSomConsts.L + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.acidity", "Acidez (%)");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);

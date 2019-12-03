@@ -222,7 +222,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jlProducer.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel10.add(jlProducer);
 
-        moKeyProducer.setPreferredSize(new java.awt.Dimension(300, 23));
+        moKeyProducer.setPreferredSize(new java.awt.Dimension(600, 23));
         jPanel10.add(moKeyProducer);
 
         jPanel2.add(jPanel10);
@@ -233,7 +233,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jlItem.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel12.add(jlItem);
 
-        moKeyItem.setPreferredSize(new java.awt.Dimension(300, 23));
+        moKeyItem.setPreferredSize(new java.awt.Dimension(600, 23));
         jPanel12.add(moKeyItem);
 
         jPanel2.add(jPanel12);
@@ -430,7 +430,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jPanel5.add(jlNote);
 
         moTextNote.setText("sBeanFieldText2");
-        moTextNote.setPreferredSize(new java.awt.Dimension(300, 23));
+        moTextNote.setPreferredSize(new java.awt.Dimension(600, 23));
         jPanel5.add(moTextNote);
 
         jPanel2.add(jPanel5);

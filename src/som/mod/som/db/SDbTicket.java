@@ -52,6 +52,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     
     private static final int MAX_LEN_PROD = 20;
     private static final int MAX_LEN_NAME = 25;
+    private static final int MAX_SEARCH_TICKETS = 100;
 
     protected int mnPkTicketId;
     protected int mnNumber;
@@ -138,6 +139,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected String msXtaRegion;
     protected String msXtaItem;
     protected String msXtaInputType;
+    protected String msXtaInputSource;
     protected String msXtaProducer;
     protected String msXtaProducerFiscalId;
 
@@ -657,6 +659,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setXtaRegion(String s) { msXtaRegion = s;  }
     public void setXtaItem(String s) { msXtaItem = s;  }
     public void setXtaInputType(String s) { msXtaInputType = s;  }
+    public void setXtaInputSource(String s) { msXtaInputSource = s;  }
     public void setXtaProducer(String s) { msXtaProducer = s;  }
     public void setXtaProviderFiscalId(String s) { msXtaProducerFiscalId = s;  }
 
@@ -671,6 +674,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public String getXtaRegion() { return msXtaRegion; }
     public String getXtaItem() { return msXtaItem; }
     public String getXtaInputType() { return msXtaInputType;  }
+    public String getXtaInputSource() { return msXtaInputSource;  }
     public String getXtaProducer() { return msXtaProducer; }
     public String getXtaProducerFiscalId() { return msXtaProducerFiscalId; }
 
@@ -780,6 +784,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         msXtaRegion = "";
         msXtaItem = "";
         msXtaInputType = "";
+        msXtaInputSource = "";
         msXtaProducer = "";
         msXtaProducerFiscalId = "";
 
@@ -829,7 +834,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         initQueryMembers();
         mnQueryResultId = SDbConsts.READ_ERROR;
 
-        msSql = "SELECT t.*, sc.name, sc.code, p.name, p.fis_id, i.name, i.fk_unit, it.name, s.name, r.name " +
+        msSql = "SELECT t.*, sc.name, sc.code, p.name, p.fis_id, i.name, i.fk_unit, it.name, src.name, s.name, r.name " +
                 "FROM " + getSqlTable() + " AS t "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sc ON "
                 + "t.fk_sca = sc.id_sca "
@@ -839,6 +844,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 + "t.fk_item = i.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_TP) + " AS it ON "
                 + "i.fk_inp_ct = it.id_inp_ct AND i.fk_inp_cl = it.id_inp_cl AND i.fk_inp_tp = it.id_inp_tp "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS src ON "
+                + "t.fk_inp_src = src.id_inp_src "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS) + " AS s ON "
                 + "t.fk_seas_n = s.id_seas "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_REG) + " AS r ON "
@@ -934,6 +941,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             }
             msXtaItem = resultSet.getString("i.name");
             msXtaInputType = resultSet.getString("it.name");
+            msXtaInputSource = resultSet.getString("src.name");
             msXtaProducer = resultSet.getString("p.name");
             msXtaProducerFiscalId = resultSet.getString("p.fis_id");
 
@@ -1277,6 +1285,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setXtaRegion(this.getXtaRegion());
         registry.setXtaItem(this.getXtaItem());
         registry.setXtaInputType(this.getXtaInputType());
+        registry.setXtaInputSource(this.getXtaInputSource());
         registry.setXtaProducer(this.getXtaProducer());
         registry.setXtaProviderFiscalId(this.getXtaProducerFiscalId());
 
@@ -1640,5 +1649,38 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         }
 
         mbAuxMoveNextOnSave = false;
+    }
+    
+    /**
+     * Get tickets by number with fuzzy search on ticket number.
+     * @param session GUI session.
+     * @param number Number to search.
+     * @return Array of tickets.
+     * @throws SQLException
+     * @throws Exception 
+     */
+    public static ArrayList<SDbTicket> getTicketsByNumber(final SGuiSession session, final int number) throws SQLException, Exception {
+        int count = 0;
+        ArrayList<SDbTicket> tickets = new ArrayList<>();
+        
+        String sql = "SELECT id_tic "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " "
+                + "WHERE num LIKE '%" + number + "%' "
+                + "ORDER BY num, id_tic;";
+        try (Statement statement = session.getStatement().getConnection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
+            
+            while (resultSet.next()) {
+                if (++count > MAX_SEARCH_TICKETS) {
+                    session.getClient().showMsgBoxWarning("La búsqueda arrojó demasiados resultados, y se acotó a " + MAX_SEARCH_TICKETS + " registros.");
+                    break;
+                }
+                
+                SDbTicket ticket = (SDbTicket) session.readRegistry(SModConsts.S_TIC, new int[] { resultSet.getInt(1) });
+                tickets.add(ticket);
+            }
+        }
+        
+        return tickets;
     }
 }
