@@ -22,7 +22,7 @@ import som.mod.som.db.data.SDailyStockUtils;
  * @author Edwin Carmona
  * 
  */
-public class SDialogDailyStock extends SBeanFormDialog implements ActionListener {
+public class SDialogDailyStockReport extends SBeanFormDialog implements ActionListener {
 
     private SGuiClient miClient;
 
@@ -30,7 +30,7 @@ public class SDialogDailyStock extends SBeanFormDialog implements ActionListener
     
     /** Creates new form SDialogStockCardex
      * @param client */
-    public SDialogDailyStock(SGuiClient client) {
+    public SDialogDailyStockReport(SGuiClient client) {
         miClient = client;
         initComponents();
         initComponentsExtra();
@@ -77,8 +77,8 @@ public class SDialogDailyStock extends SBeanFormDialog implements ActionListener
 
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlDateCutOff.setText("Fecha de corte:*");
-        jlDateCutOff.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateCutOff.setText("Fecha de toma física:*");
+        jlDateCutOff.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel12.add(jlDateCutOff);
         jPanel12.add(moDateCutOff);
 
@@ -133,7 +133,7 @@ public class SDialogDailyStock extends SBeanFormDialog implements ActionListener
             }
         }
         catch (Exception ex) {
-            Logger.getLogger(SDialogDailyStock.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SDialogDailyStockReport.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

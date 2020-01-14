@@ -5,6 +5,7 @@
  */
 package som.mod.som.db.data;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,7 +17,12 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import sa.lib.gui.SGuiSession;
+import sa.lib.mail.SMail;
+import sa.lib.mail.SMailConsts;
+import sa.lib.mail.SMailSender;
+import sa.lib.mail.SMailUtils;
 import som.mod.SModSysConsts;
 
 /**
@@ -49,12 +55,28 @@ public class SDailyStockUtils {
             ArrayList<ArrayList> resumeStock = SDailyStockUtils.getStockResume(session, stockDate, AVOCADO_STOCK);
             ArrayList<ArrayList> allStock = SDailyStockUtils.getStock(session, stockDate, ALL_STOCK);
             
-            return SDailyStockReportWriter.writer(est, estEty, productionStock, resumeStock, allStock);
+            File res = SDailyStockReportWriter.writer(est, estEty, productionStock, resumeStock, allStock);
+            
+            SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "AETHSOM", "som@aeth.mx");
+            //SMailSender sender = new SMailSender("mail.swaplicado.com.mx", "26", "smtp", false, true, "sflores@swaplicado.com.mx", "Ch3c0m4n", "sflores@swaplicado.com.mx");
+            ArrayList<String> mails = new ArrayList();
+            mails.add("edwin.carmona@swaplicado.com.mx");
+            
+            SMail mail = new SMail(sender, SMailUtils.encodeSubjectUtf8("Inventario diario"), SDailyStockReportWriter.createMailBody(est, estEty, productionStock, resumeStock, allStock), mails);
+            mail.getAttachments().add(res);
+            mail.getBccRecipients().addAll(mails);
+            mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
+            mail.send();
         }
         catch (SQLException | IOException ex) {
             Logger.getLogger(SDailyStockUtils.class.getName()).log(Level.SEVERE, null, ex);
             return false;
+        } catch (MessagingException ex) {
+            Logger.getLogger(SDailyStockUtils.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
+        
+        return true;
     }
     
     /**
