@@ -18,6 +18,12 @@ Edwin Omar CARMONA FIGUEROA
 1) Modificación de la actualización del porcentaje de aceite en materia prima en la bitácora de estimaciones.
 
 ================================================================================
+2019-11-12, 1.0 064.0
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición de la columna acidez en el catálogo de Almacenes.
+
+================================================================================
 2019-10-15, 1.0 063.6
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
