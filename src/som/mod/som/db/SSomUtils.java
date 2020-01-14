@@ -764,10 +764,10 @@ public abstract class SSomUtils {
         try {
             Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
             SDbCompany company = ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany();
-            String url="jdbc:sybase:Tds:" + company.getRevueltaHost() + ":" + company.getRevueltaPort() + "/Revuelta";
+            String url = "jdbc:sybase:Tds:" + company.getRevueltaHost() + ":" + company.getRevueltaPort() + "/Revuelta"; // XXX 2020-01-14, Sergio Flores: Improve this. This paramater is fixed!
             Properties prop = new Properties();
-            prop.put("user", "usuario");
-            prop.put("password", "revuelta");
+            prop.put("user", "usuario"); // XXX 2020-01-14, Sergio Flores: Improve this. This paramater is fixed!
+            prop.put("password", "revuelta"); // XXX 2020-01-14, Sergio Flores: Improve this. This paramater is fixed!
             connection = DriverManager.getConnection(url, prop);
         }
         catch (ClassNotFoundException | SQLException e) {
