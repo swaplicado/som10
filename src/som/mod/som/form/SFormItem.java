@@ -995,7 +995,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moTextUserMailNotificationBoxes.setTextCaseType(SGuiConsts.TEXT_CASE_LOWER);
         moTextUserMailNotificationBoxes.setMinLength(0);
         moBoolUserMailNotificationOnlyWhenMoves.setBooleanSettings(SGuiUtils.getLabelName(moBoolAutoMailNotification.getText()), false);
-        moTextRevueltaItemId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaItemId), 4, 0);
+        moTextRevueltaItemId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaItemId), 10, 0);
         moBoolPrintInputType.setBooleanSettings(SGuiUtils.getLabelName(moBoolPrintInputType.getText()), false);
 
         moFields.addField(moKeyExternalItem);
