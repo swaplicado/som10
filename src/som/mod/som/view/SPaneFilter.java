@@ -118,6 +118,14 @@ public class SPaneFilter extends JPanel implements SGridFilter {
                 jtfOption.setPreferredSize(new Dimension(50, 23));
                 path = "/som/gui/img/icon_std_filter_cal.gif";
                 break;
+            case SModConsts.CU_LINK_ITEMS:
+                jtfOption.setPreferredSize(new Dimension(50, 23));
+                path = "/som/gui/img/icon_std_filter_item.gif";
+                break;
+            case SModConsts.SU_LOT:
+                jtfOption.setPreferredSize(new Dimension(50, 23));
+                path = "/som/gui/img/icon_std_filter.gif";
+                break;
             default:
         }
 

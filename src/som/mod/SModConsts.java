@@ -38,6 +38,9 @@ public abstract class SModConsts {
     public static final int CU_DIV = 220011;
     public static final int CU_PROD_LINES = 220012;
     public static final int CU_REP_GRP = 220016;
+    public static final int CU_PARAMS = 220017;
+    public static final int CU_LINK_ITEM_PARAM = 220018;
+    public static final int CU_LINK_ITEMS = 220019;
 
     public static final int C_USR_GUI = 230001;
 
@@ -63,6 +66,10 @@ public abstract class SModConsts {
     public static final int SU_SEAS_REG = 320012;
     public static final int SU_SEAS_PROD = 320013;
     public static final int SU_IOD_VAL_RANK = 320014;
+    public static final int SU_LOT = 320016;
+    public static final int SU_LAB_GRINDING = 320018;
+    public static final int SU_GRINDING_EVENT = 320019;
+    public static final int SU_GRINDINGS = 320020;
     public static final int SU_INP_SRC = 320021;
 
     public static final int S_LAB = 330001;
@@ -182,6 +189,9 @@ public abstract class SModConsts {
         TablesMap.put(CU_DIV, "cu_div");
         TablesMap.put(CU_PROD_LINES, "cu_line");
         TablesMap.put(CU_REP_GRP, "cu_rep_grp");
+        TablesMap.put(CU_PARAMS, "cu_grin_params");
+        TablesMap.put(CU_LINK_ITEM_PARAM, "cu_link_itm_params");
+        TablesMap.put(CU_LINK_ITEMS, "su_item");
 
         TablesMap.put(C_USR_GUI, "c_usr_gui");
 
@@ -207,7 +217,11 @@ public abstract class SModConsts {
         TablesMap.put(SU_SEAS_REG, "su_seas_reg");
         TablesMap.put(SU_SEAS_PROD, "su_seas_prod");
         TablesMap.put(SU_IOD_VAL_RANK, "su_iod_val_rank");
+        TablesMap.put(SU_LOT, "su_lots");
         TablesMap.put(SU_INP_SRC, "su_inp_src");
+        TablesMap.put(SU_GRINDING_EVENT, "su_grin_events");
+        TablesMap.put(SU_LAB_GRINDING, "su_grin_res");
+        TablesMap.put(SU_GRINDINGS, "su_grinding");
 
         TablesMap.put(S_LAB, "s_lab");
         TablesMap.put(S_LAB_NOTE, "s_lab_note");

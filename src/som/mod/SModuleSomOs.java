@@ -31,7 +31,7 @@ import som.mod.som.db.SDbMix;
 import som.mod.som.db.SDbStock;
 import som.mod.som.db.SDbStockDay;
 import som.mod.som.db.SSomStockDays;
-import som.mod.som.form.SDialogDailyStock;
+import som.mod.som.form.SDialogDailyStockReport;
 import som.mod.som.form.SDialogRepIogList;
 import som.mod.som.form.SDialogRepStock;
 import som.mod.som.form.SDialogRepStockComparate;
@@ -977,7 +977,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 new SDialogRepStockComparate(miClient, "Reporte inventario producción real vs. teórico").setVisible(true);
             }
             else if (menuItem == mjRepStockDaily) {
-                new SDialogDailyStock(miClient).setVisible(true);
+                new SDialogDailyStockReport(miClient).setVisible(true);
             }
         }
     }

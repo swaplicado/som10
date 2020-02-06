@@ -26,6 +26,7 @@ import som.mod.som.db.SDbInputSource;
 import som.mod.som.db.SDbInputType;
 import som.mod.som.db.SDbIodineValueRank;
 import som.mod.som.db.SDbItem;
+import som.mod.som.db.SDbLot;
 import som.mod.som.db.SDbProducer;
 import som.mod.som.db.SDbScale;
 import som.mod.som.db.SDbUnit;
@@ -36,6 +37,7 @@ import som.mod.som.form.SFormInputSource;
 import som.mod.som.form.SFormInputType;
 import som.mod.som.form.SFormIodineValueRank;
 import som.mod.som.form.SFormItem;
+import som.mod.som.form.SFormLot;
 import som.mod.som.form.SFormProducer;
 import som.mod.som.form.SFormScale;
 import som.mod.som.view.SViewExternalWarehouse;
@@ -45,6 +47,7 @@ import som.mod.som.view.SViewInputSource;
 import som.mod.som.view.SViewInputType;
 import som.mod.som.view.SViewIodineValueRank;
 import som.mod.som.view.SViewItem;
+import som.mod.som.view.SViewLots;
 import som.mod.som.view.SViewProducer;
 import som.mod.som.view.SViewScale;
 
@@ -60,6 +63,7 @@ public class SModuleSom extends SGuiModule {
     private SFormInputType moFormInputType;
     private SFormInputSource moformFormInputSource;
     private SFormItem moFormItem;
+    private SFormLot SFormLot;
     private SFormScale moFormScale;
     private SFormProducer moFormProducer;
     private SFormIodineValueRank moFormIodineValueRank;
@@ -104,6 +108,9 @@ public class SModuleSom extends SGuiModule {
                 break;
             case SModConsts.SU_ITEM:
                 registry = new SDbItem();
+                break;
+            case SModConsts.SU_LOT:
+                registry = new SDbLot();
                 break;
             case SModConsts.SU_SCA:
                 registry = new SDbScale();
@@ -257,6 +264,34 @@ public class SModuleSom extends SGuiModule {
                 sql = "SELECT id_prod AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_prod ";
                 break;
+            case SModConsts.SU_LOT:
+                settings = new SGuiCatalogueSettings("Lotes", 1);
+                settings.setCodeApplying(false);
+                
+                if (params != null) {
+                    value = params.getParamsMap().get(SModConsts.SX_EXT_ITEM);
+                    if (value != null) {
+                        aux += "AND fk_item_id = " + ((int[]) value)[0] + " ";
+                    }
+                }
+                
+                sql = "SELECT id_lot AS " + SDbConsts.FIELD_ID + "1, lot AS " + SDbConsts.FIELD_ITEM + ", lot AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 " + aux + " ORDER BY id_lot DESC, lot ASC;";
+                break;
+            case SModConsts.CU_PARAMS:
+                settings = new SGuiCatalogueSettings("Parámetros", 1);
+                settings.setCodeApplying(true);
+                sql = "SELECT id_parameter AS " + SDbConsts.FIELD_ID + "1, parameter AS " + SDbConsts.FIELD_ITEM + ", param_code AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY parameter, id_parameter ";
+                break;
+            case SModConsts.CU_LINK_ITEMS:
+                settings = new SGuiCatalogueSettings("Ítems configurados", 1);
+                settings.setCodeApplying(true);
+                sql = "SELECT id_item AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND id_item IN "
+                        + "(SELECT DISTINCT fk_item_id FROM cu_link_itm_params WHERE b_del = 0) "
+                        + "ORDER BY name, id_item ";
+                break;
             case SModConsts.SU_IOD_VAL_RANK:
                 settings = new SGuiCatalogueSettings("Rango de yodo", 2, 1);
                 sql = "SELECT s.id_item AS " + SDbConsts.FIELD_ID + "1, s.id_rank AS " + SDbConsts.FIELD_ID + "2, CONCAT(IF(s.lim_low_n IS NULL, 0, ROUND(s.lim_low_n, 4)), ' - ', IF(s.lim_top_n IS NULL, 0, ROUND(s.lim_top_n, 4))) AS " + SDbConsts.FIELD_ITEM + ", "
@@ -301,6 +336,9 @@ public class SModuleSom extends SGuiModule {
                 break;
             case SModConsts.SU_ITEM:
                 view = new SViewItem(miClient, "Ítems");
+                break;
+            case SModConsts.SU_LOT:
+                view = new SViewLots(miClient, "Lotes");
                 break;
             case SModConsts.SU_SCA:
                 view = new SViewScale(miClient, "Básculas");
@@ -351,6 +389,10 @@ public class SModuleSom extends SGuiModule {
             case SModConsts.SU_ITEM:
                 if (moFormItem == null) moFormItem = new SFormItem(miClient, "Ítem");
                 form = moFormItem;
+                break;
+            case SModConsts.SU_LOT:
+                if (SFormLot == null) SFormLot = new SFormLot(miClient, "Lote");
+                form = SFormLot;
                 break;
             case SModConsts.SU_SCA:
                 if (moFormScale == null) moFormScale = new SFormScale(miClient, "Báscula");
