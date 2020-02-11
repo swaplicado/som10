@@ -58,7 +58,7 @@ public class SDailyStockUtils {
             File res = SDailyStockReportWriter.writer(est, estEty, productionStock, resumeStock, allStock);
             
             SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "AETHSOM", "som@aeth.mx");
-            //SMailSender sender = new SMailSender("mail.swaplicado.com.mx", "26", "smtp", false, true, "sflores@swaplicado.com.mx", "Ch3c0m4n", "sflores@swaplicado.com.mx");
+            
             ArrayList<String> mails = new ArrayList();
             mails.add("edwin.carmona@swaplicado.com.mx");
             
@@ -68,10 +68,7 @@ public class SDailyStockUtils {
             mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
             mail.send();
         }
-        catch (SQLException | IOException ex) {
-            Logger.getLogger(SDailyStockUtils.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } catch (MessagingException ex) {
+        catch (SQLException | IOException | MessagingException ex) {
             Logger.getLogger(SDailyStockUtils.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }

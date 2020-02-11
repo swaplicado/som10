@@ -31,10 +31,10 @@ public class SGrindingResultsUtils {
     public final static int NEXT = 3;
     public final static int LAST = 4;
     
-    public final static int RESID_PASTA = 8;
-    public final static int CONT_ACEITE_SEM = 12;
+    public final static int RESID_PASTA = 7;
+    public final static int CONT_ACEITE_SEM = 11;
     public final static int RESID_PRENSA = 2;
-    public final static int PROTEINA = 9;
+    public final static int PROTEINA = 8;
     
     public final static int ITEM = 1;
     public final static int LOT = 2;
@@ -80,6 +80,14 @@ public class SGrindingResultsUtils {
         }
     }
     
+    /**
+     * Obtiene el último id lote capturado en base al ítem recibido.
+     * 
+     * @param client
+     * @param item
+     * 
+     * @return int id del lote
+     */
     public static int getLastLotByItem(SGuiClient client, final int item) {
         String sql = "SELECT fk_lot_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_LAB_GRINDING) + 
                         " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY id_result DESC;";
@@ -101,6 +109,8 @@ public class SGrindingResultsUtils {
     }
     
     /**
+     * genera los resultados para el día en cuestión del ítem y lote recibidos.
+     * Esto lo hace basándose en la configuración de la tabla links_item_parameter
      * 
      * @param client
      * @param bAllItems
@@ -264,6 +274,18 @@ public class SGrindingResultsUtils {
         }
     }
     
+    /**
+     * Obtiene el promedio general de un parámetro e ítem en específico por mes, podría
+     * ser considerado como un promedio de promedios.
+     * No toma en cuenta los ceros.
+     * 
+     * @param client
+     * @param dtDate
+     * @param item
+     * @param parameter
+     * 
+     * @return 
+     */
     public static double getMonthAverage(SGuiClient client, final Date dtDate, final int item, final int parameter) {
         
         String sql = "SELECT " +
@@ -393,16 +415,25 @@ public class SGrindingResultsUtils {
     }
     
     /**
+     * Obtiene el promedio ponderado de un día o de todo el mes dependiendo 
+     * del parámetro onlyCurrentDay.
+     * Funciona solamente para un parámetro de molienda y un ítem a la vez.
      * 
      * @param client
-     * @param dtDate
-     * @param monthGrinding
-     * @param nItemId
-     * @param parameterId
-     * @param onlyCurrentDay
-     * @return 
+     * @param dtDate fecha de captura
+     * @param monthGrinding molienda del mes (total a considerar para el promedio ponderado)
+     * @param nItemId id del item
+     * @param parameterId id del parámetro de molienda
+     * @param onlyCurrentDay si es verdadero retorna solamente el promedio ponderado del día recibido.
+     * @param isWeightedAverage verdadero si se requiere el promedio ponderado, si es falso regresa
+     *                          el promedio normal
+     * 
+     * @return double
      */
-    public static double getWeightedAverage(SGuiClient client, final Date dtDate, final double monthGrinding, final int nItemId, final int parameterId, final boolean onlyCurrentDay) {
+    public static double getWeightedAverage(SGuiClient client, final Date dtDate, 
+                                    final double monthGrinding, final int nItemId, 
+                                    final int parameterId, final boolean onlyCurrentDay,
+                                    final boolean isWeightedAverage) {
         String sql = "SELECT @prom := COALESCE((COALESCE(result_08, 0) + COALESCE(result_10, 0) + COALESCE(result_12, 0) + " +
                     "	COALESCE(result_14, 0) + COALESCE(result_16, 0) + COALESCE(result_18, 0) + " +
                     "	COALESCE(result_20, 0) + COALESCE(result_22, 0) + COALESCE(result_00, 0) + " +
@@ -427,7 +458,7 @@ public class SGrindingResultsUtils {
             resIdResult = client.getSession().getStatement().getConnection().createStatement().executeQuery(sql);
             
             if (resIdResult.next()) {
-                return resIdResult.getDouble("ponderado");
+                return isWeightedAverage ? resIdResult.getDouble("ponderado") : resIdResult.getDouble("promedio");
             }
             
         }
@@ -438,6 +469,14 @@ public class SGrindingResultsUtils {
         return 0d;
     }
     
+    /**
+     * Guarda el objeto y retorna este mismo con el id correspondiente una vez guardado.
+     * 
+     * @param client
+     * @param grindingResult SDbGrinding a guardar
+     * 
+     * @return SDbGrinding guardado
+     */
     public static SDbGrinding saveGrinding(SGuiClient client, SDbGrinding grindingResult) {
         try {
             grindingResult.save(client.getSession());
@@ -451,6 +490,15 @@ public class SGrindingResultsUtils {
         return null;
     }
     
+    /**
+     * obtiene un objeto SDbGrinding basado en su fecha de captura en caso de no
+     * ser encontrado devuelve un objeto nuevo
+     * 
+     * @param client
+     * @param dtDate fecha de captura del registro
+     * 
+     * @return SDbGrinding object
+     */
     public static SDbGrinding getGrindingByDate(SGuiClient client, Date dtDate) {
         SDbGrinding grindingResult = new SDbGrinding();
         
@@ -481,9 +529,21 @@ public class SGrindingResultsUtils {
             Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return  new SDbGrinding();
+        return new SDbGrinding();
     }
     
+    /**
+     * Obtiene la molienda por báscula y por porcentaje de aceite por mes o de un mes
+     * hacia atrás de un ítem específico, retorna un ArrayList de objetos SGrindingData
+     * 
+     * @param client
+     * @param dtDate esta fecha solo se utiliza para obtener el mes
+     * @param nItemId id del ítem del cual se quiere obtener la molienda
+     * @param onlyCurrentMonth si este parámetro es verdadero devuelve solo el mes actual,
+     *                      si es falso devuelve el mes actual y los anteriores (solo el presente año) 
+     * 
+     * @return ArrayList[SGrindingData] 
+     */
     public static ArrayList<SGrindingData> getGrindingByMonth(SGuiClient client, Date dtDate, final int nItemId, final boolean onlyCurrentMonth) {
         ArrayList<SGrindingData> grindings = new ArrayList<>();
         

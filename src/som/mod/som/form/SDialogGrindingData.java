@@ -24,6 +24,7 @@ import sa.lib.grid.SGridConsts;
 import sa.lib.grid.SGridPaneForm;
 import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiClient;
+import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiUtils;
 import som.mod.SModConsts;
 import som.mod.som.db.SDbGrinding;
@@ -46,7 +47,6 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
     private Date mtParamDate;
     private int mnItem;
     private int mnLot;
-    private int mnGrindingId;
 
     /** Creates new form SDialogStockCardex */
     public SDialogGrindingData(SGuiClient client) {
@@ -74,6 +74,10 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         jlGrinBas = new javax.swing.JLabel();
         moGrindingBasc = new sa.lib.gui.bean.SBeanFieldDecimal();
         jbSaveBasc = new javax.swing.JButton();
+        jPanel12 = new javax.swing.JPanel();
+        jlRT = new javax.swing.JLabel();
+        moDecRendTeo = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jLabel1 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jlDate2 = new javax.swing.JLabel();
         moTextDate = new sa.lib.gui.bean.SBeanFieldText();
@@ -96,7 +100,7 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         jpParams.setLayout(new java.awt.BorderLayout(5, 0));
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Fecha:"));
-        jPanel4.setLayout(new java.awt.GridLayout(2, 4, 0, 5));
+        jPanel4.setLayout(new java.awt.GridLayout(2, 3, 0, 5));
 
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -123,6 +127,20 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         jPanel9.add(jbSaveBasc);
 
         jPanel4.add(jPanel9);
+
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlRT.setText("Rend. teórico:");
+        jlRT.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel12.add(jlRT);
+
+        moDecRendTeo.setEditable(false);
+        jPanel12.add(moDecRendTeo);
+
+        jLabel1.setText("%");
+        jPanel12.add(jLabel1);
+
+        jPanel4.add(jPanel12);
 
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -167,7 +185,7 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
 
         getContentPane().add(jpControls, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(656, 389));
+        setSize(new java.awt.Dimension(736, 439));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -176,9 +194,10 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
     }//GEN-LAST:event_formWindowActivated
 
     private void initComponentsExtra() {
-        SGuiUtils.setWindowBounds(this, 640, 400);
+        SGuiUtils.setWindowBounds(this, 720, 450);
 
         moTextMonth.setTextSettings(SGuiUtils.getLabelName(jlDate.getText()), 50);
+        moDecRendTeo.setDecimalSettings(SGuiUtils.getLabelName(jlRT.getText()), SGuiConsts.GUI_TYPE_DEC, false);
 
         moGridEvents = new SGridPaneForm(miClient, SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, "Eventos durante molienda") {
             @Override
@@ -309,7 +328,9 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         }
         
         boolean onlyCurrentDay = false;
-        double dWeightedAvgContSem =  SGrindingResultsUtils.getWeightedAverage(miClient, mtParamDate, dTotalGrindingOilPercent, mnItem, SGrindingResultsUtils.CONT_ACEITE_SEM, onlyCurrentDay);
+        boolean isWeightedAverage = true;
+        double dWeightedAvgContSem =  SGrindingResultsUtils.getWeightedAverage(miClient, mtParamDate, dTotalGrindingOilPercent, 
+                                                        mnItem, SGrindingResultsUtils.CONT_ACEITE_SEM, onlyCurrentDay, isWeightedAverage);
         SRowData row1 = new SRowData();
             
         row1.setData("Ponderado Cont. Aceite Semilla");
@@ -318,7 +339,8 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
 
         rows.add(row1);
         
-        double dWeightedAvgResPasta =  SGrindingResultsUtils.getWeightedAverage(miClient, mtParamDate, dTotalGrindingOilPercent, mnItem, SGrindingResultsUtils.RESID_PASTA, onlyCurrentDay);
+        double dWeightedAvgResPasta =  SGrindingResultsUtils.getWeightedAverage(miClient, mtParamDate, dTotalGrindingOilPercent, 
+                                                            mnItem, SGrindingResultsUtils.RESID_PASTA, onlyCurrentDay, isWeightedAverage);
         
         SRowData row = new SRowData();
             
@@ -327,6 +349,21 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         row.setUnit("%");
 
         rows.add(row);
+        
+        SRowData rowRt = new SRowData();
+            
+        rowRt.setData("Ponderado rendmiento teórico");
+        rowRt.setValueD(1 - (1 - dWeightedAvgContSem)/(1 - dWeightedAvgResPasta));
+        rowRt.setUnit("%");
+
+        rows.add(rowRt);
+        
+        double resPasta = SGrindingResultsUtils.getWeightedAverage(miClient, mtParamDate, 0d, 
+                                                            mnItem, SGrindingResultsUtils.RESID_PASTA, true, false);
+        double conAcSem = SGrindingResultsUtils.getWeightedAverage(miClient, mtParamDate, 0d, 
+                                                            mnItem, SGrindingResultsUtils.CONT_ACEITE_SEM, true, false);
+        
+        moDecRendTeo.setValue((1 - (1 - (conAcSem / 100)) / (1 - (resPasta / 100))) * 100);
         
         moGridEvents.clearGridRows();
         moGridEvents.populateGrid(rows);
@@ -337,8 +374,10 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
@@ -349,9 +388,11 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
     private javax.swing.JLabel jlDate2;
     private javax.swing.JLabel jlDate3;
     private javax.swing.JLabel jlGrinBas;
+    private javax.swing.JLabel jlRT;
     private javax.swing.JPanel jpControls;
     private javax.swing.JPanel jpEvents;
     private javax.swing.JPanel jpParams;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecRendTeo;
     private sa.lib.gui.bean.SBeanFieldDecimal moGrindingBasc;
     private sa.lib.gui.bean.SBeanFieldDecimal moGrindingOilPercent;
     private sa.lib.gui.bean.SBeanFieldText moTextDate;
