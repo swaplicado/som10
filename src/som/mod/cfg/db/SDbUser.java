@@ -111,21 +111,22 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
 
         switch (module) {
             case SModConsts.MOD_CFG:
-                access = isAdministrator();
+                access = isAdministrator() ||
+                        hasPrivilege(SModSysConsts.CS_RIG_PER_OC);
                 break;
             case SModConsts.MOD_SOM:
                 access = isAdministrator() ||
-                        hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) || hasPrivilege(SModSysConsts.CS_RIG_STK_RM) ||
-                        hasPrivilege(SModSysConsts.CS_RIG_MAN_OS) || hasPrivilege(SModSysConsts.CS_RIG_STK_OS);
+                        hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_RM) ||
+                        hasPrivilege(SModSysConsts.CS_RIG_MAN_OM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_OM);
                 break;
             case SModConsts.MOD_SOM_RM:
                 access = isAdministrator() ||
-                        hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) || hasPrivilege(SModSysConsts.CS_RIG_STK_RM) || hasPrivilege(SModSysConsts.CS_RIG_REV_RM) ||
+                        hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_RM) || hasPrivilege(SModSysConsts.CS_RIG_REP_RM) ||
                         hasPrivilege(SModSysConsts.CS_RIG_LAB) || hasPrivilege(SModSysConsts.CS_RIG_SCA);
                 break;
             case SModConsts.MOD_SOM_OS:
                 access = isAdministrator() ||
-                        hasPrivilege(SModSysConsts.CS_RIG_MAN_OS) || hasPrivilege(SModSysConsts.CS_RIG_STK_OS)  ||hasPrivilege(SModSysConsts.CS_RIG_REV_OS);
+                        hasPrivilege(SModSysConsts.CS_RIG_MAN_OM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_OM)  ||hasPrivilege(SModSysConsts.CS_RIG_REP_OM);
                 break;
             default:
         }

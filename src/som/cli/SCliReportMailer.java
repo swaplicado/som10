@@ -111,7 +111,7 @@ public class SCliReportMailer {
             SDbInputCategory inputCategory = new SDbInputCategory();
             inputCategory.read(session, new int[] { item.getFkInputCategoryId() });
             
-            String mailSubject = "[SOM] Histórico mensual " + inputCategory.getName().toLowerCase() + " " + SLibUtils.DateFormatDate.format(new Date());
+            String mailSubject = "[SOM] Historico mensual " + inputCategory.getName().toLowerCase() + " " + SLibUtils.DateFormatDate.format(new Date());
             
             // prepare mail recepients:
             

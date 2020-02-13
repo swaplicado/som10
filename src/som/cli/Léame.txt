@@ -2,7 +2,8 @@
 Ejecución automática de funcionalides CLI
 ================================================================================
 
-1) Generación y envío vía mail de reporte comparativo histórico mansual reecepción de materia prima (e.g., aguacate).
+1) Generación y envío vía mail de reporte comparativo histórico mensual de recepción de materia prima (e.g., aguacate).
+    En Windows Task Scheduler:
     Desencadenador:
         Cada semana, lunes, 12:00 hr, indefinidamente.
     Acción: iniciar un programa:
@@ -13,6 +14,7 @@ Ejecución automática de funcionalides CLI
         F:\swap\som
 
 2) Importación automática de boletos Revuelta a SOM.
+    En Windows Task Scheduler:
     Desencadenador:
         Cada hora, indefinidamente.
     Acción: iniciar un programa:

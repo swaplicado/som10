@@ -112,6 +112,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjCatPlant.addActionListener(this);
         mjCatScale.addActionListener(this);
 
+        mjCat.setEnabled(miClient.getSession().getUser().isAdministrator());
         mjCatCompany.setEnabled(miClient.getSession().getUser().isSupervisor());
 
         mjUsr = new JMenu("Usuarios");
@@ -136,6 +137,8 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjCtr.add(mjCtrYear);
 
         mjCtrYear.addActionListener(this);
+        
+        mjCtr.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_PER_OC));
     }
 
     @Override
