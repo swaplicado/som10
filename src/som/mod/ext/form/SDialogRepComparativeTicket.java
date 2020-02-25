@@ -179,7 +179,7 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
             */
 
             sql = "SELECT Usu_Clave, Pes_ID, Pro_ID, Emp_ID, Pes_Placas, Pes_Chofer, Pes_Completo, Pes_FecHorPri, Pes_FecHorSeg, Usb_Nombre, Emp_Nombre, Pro_Nombre, Pes_BasPri, Pes_OpeNomPri, Pes_ObsPri, Pes_PesoPri, Pes_PesoSeg, Pes_FecHorSeg, Pes_BasSeg, Pes_Bruto, Pes_Tara, Pes_Neto, Pes_OpeNomSeg, Pes_ObsSeg, Pes_Neto " + 
-                    "FROM dba.Pesadas  as P INNER JOIN dba.Usuarios as U ON U.Usu_Nombre = P.Pes_OpeNomPri " + 
+                    "FROM dba.Pesadas as P INNER JOIN dba.Usuarios as U ON U.Usu_Nombre = P.Pes_OpeNomPri " + 
                     "WHERE Pes_FecHorPri BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(start) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(end) +  "' AND Usb_ID = '" +  revueltaId + "' " +
                     (sqlMapItems.isEmpty() ? "" : ("AND Pro_ID IN (" + sqlMapItems + ") "));
             resulset = statement.executeQuery(sql);
@@ -256,7 +256,7 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
             */
             
             sql = "SELECT Usu_Clave, Pes_ID, Pro_ID, Emp_ID, Pes_Placas, Pes_Chofer, Pes_Completo, Pes_FecHorPri, Pes_FecHorSeg, Usb_Nombre, Emp_Nombre, Pro_Nombre, Pes_BasPri, Pes_OpeNomPri, Pes_ObsPri, Pes_PesoPri, Pes_PesoSeg, Pes_FecHorSeg, Pes_BasSeg, Pes_Bruto, Pes_Tara, Pes_Neto, Pes_OpeNomSeg, Pes_ObsSeg, Pes_Neto " + 
-                    "FROM dba.Pesadas  as P INNER JOIN dba.Usuarios as U ON U.Usu_Nombre = P.Pes_OpeNomPri " + 
+                    "FROM dba.Pesadas as P INNER JOIN dba.Usuarios as U ON U.Usu_Nombre = P.Pes_OpeNomPri " + 
                     "WHERE Pes_FecHorPri BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(start) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(end) +  "' " +
                     (sqlMapItems.isEmpty() ? "" : ("AND Pro_ID IN (" + sqlMapItems + ") "));
             
