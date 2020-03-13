@@ -16,8 +16,9 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  * 2019-01-17, Sergio Flores: Cambio en vista productores en columna código por nombre para catálogo de agrupadores de reporte.
+ * 2020-02-27, Isabel Servín: Se agrego la columna de origen insumo.
  */
 public class SViewProducer extends SGridPaneView {
 
@@ -59,6 +60,7 @@ public class SViewProducer extends SGridPaneView {
                 + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
                 + "r.name, "
                 + "v.fk_rep_grp, "
+                + "s.name, "
                 + "v.fk_usr_ins AS " + SDbConsts.FIELD_USER_INS_ID + ", "
                 + "v.fk_usr_upd AS " + SDbConsts.FIELD_USER_UPD_ID + ", "
                 + "v.ts_usr_ins AS " + SDbConsts.FIELD_USER_INS_TS + ", "
@@ -68,6 +70,8 @@ public class SViewProducer extends SGridPaneView {
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_REP_GRP) + " AS r ON "
                 + "v.fk_rep_grp = r.id_rep_grp "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS s ON "
+                + "v.fk_inp_src = s.id_inp_src "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -79,7 +83,7 @@ public class SViewProducer extends SGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[14];
+        SGridColumnView[] columns = new SGridColumnView[15];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_L, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
@@ -87,6 +91,7 @@ public class SViewProducer extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.fis_id", "RFC");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.rev_prod_id", "Clave Revuelta");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "r.name", "Agrupador reporte");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "s.name", "Origen insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_fre_pay", "Se paga flete");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);

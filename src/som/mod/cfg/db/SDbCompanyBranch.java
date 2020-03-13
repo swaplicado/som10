@@ -19,7 +19,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
 public class SDbCompanyBranch extends SDbRegistryUser implements SGuiConfigBranch {
 
@@ -45,8 +45,6 @@ public class SDbCompanyBranch extends SDbRegistryUser implements SGuiConfigBranc
 
     public SDbCompanyBranch() {
         super(SModConsts.CU_COB);
-        mvChildPlants = new Vector<SDbBranchPlant>();
-        mvChildWarehouses = new Vector<SDbBranchWarehouse>();
         initRegistry();
     }
 
@@ -113,8 +111,8 @@ public class SDbCompanyBranch extends SDbRegistryUser implements SGuiConfigBranc
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
 
-        mvChildPlants.clear();
-        mvChildWarehouses.clear();
+        mvChildPlants = new Vector<SDbBranchPlant>();
+        mvChildWarehouses = new Vector<SDbBranchWarehouse>();
     }
 
     @Override

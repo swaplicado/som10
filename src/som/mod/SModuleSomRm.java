@@ -38,6 +38,7 @@ import som.mod.som.db.SDbTicket;
 import som.mod.som.form.SDialogRepFreightTime;
 import som.mod.som.form.SDialogRepIodineRank;
 import som.mod.som.form.SDialogRepReceivedFruit;
+import som.mod.som.form.SDialogRepReceivedFruitHist;
 import som.mod.som.form.SDialogRepReceivedSeed;
 import som.mod.som.form.SDialogTicketsSearch;
 import som.mod.som.form.SFormDialogAssignSeasonRegion;
@@ -67,7 +68,7 @@ import som.mod.som.view.SViewTicketsSupplierItemInputType;
 
 /**
  * 
- * @author Néstor Ávalos, Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Néstor Ávalos, Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  * 2019-01-17, Sergio Flores: Cambio de ubicación del catálogo de agrupadores de reporte, del módulo configuración al módulo materias primas.
  */
 public class SModuleSomRm extends SGuiModule implements ActionListener {
@@ -107,6 +108,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenu mjRep;   // Reports
     private JMenuItem mjRepSeedReceived;
     private JMenuItem mjRepSeedReceivedFruit;
+    private JMenuItem mjRepSeedReceivedFruitHist;
     private JMenuItem mjRepSeedReceivedByIodVal;
     private JMenuItem mjRepSeedReceivedByPerOle;
     private JMenuItem mjRepSeedReceivedByPerLin;
@@ -254,6 +256,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjRep = new JMenu("Reportes");
         mjRepSeedReceived = new JMenuItem("Materia prima recibida...");
         mjRepSeedReceivedFruit = new JMenuItem("Fruta recibida...");
+        mjRepSeedReceivedFruitHist = new JMenuItem("Comparativo histórico de fruta recibida...");
         mjRepSeedReceivedByIodVal = new JMenuItem("Materia prima recibida por valor de yodo...");
         mjRepSeedReceivedByPerOle = new JMenuItem("Materia prima recibida por porcentaje de ácido oleico...");
         mjRepSeedReceivedByPerLin = new JMenuItem("Materia prima recibida por porcentaje de ácido linoleico...");
@@ -265,6 +268,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
         mjRep.add(mjRepSeedReceived);
         mjRep.add(mjRepSeedReceivedFruit);
+        mjRep.add(mjRepSeedReceivedFruitHist);
         mjRep.add(mjRepSeedReceivedByIodVal);
         mjRep.add(mjRepSeedReceivedByPerOle);
         mjRep.add(mjRepSeedReceivedByPerLin);
@@ -279,6 +283,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
         mjRepSeedReceived.addActionListener(this);
         mjRepSeedReceivedFruit.addActionListener(this);
+        mjRepSeedReceivedFruitHist.addActionListener(this);
         mjRepSeedReceivedByIodVal.addActionListener(this);
         mjRepSeedReceivedByPerOle.addActionListener(this);
         mjRepSeedReceivedByPerLin.addActionListener(this);
@@ -627,7 +632,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 }
                 break;
             case SModConsts.SR_ITEM_FRUIT:
-                    guiReport = new SGuiReport("reps/s_item_rec_fruit.jasper", "Reporte de fruta recibida");
+                guiReport = new SGuiReport("reps/s_item_rec_fruit.jasper", "Reporte de fruta recibida");
+                break;
+            case SModConsts.SR_ITEM_FRUIT_HIST:
+                guiReport = new SGuiReport("reps/s_item_rec_fruit_hist.jasper", "Reporte comparativo histórico de fruta recibida");
                 break;
             case SModConsts.SR_ITEM_REC_IOD_VAL:
                 switch (subtype) {
@@ -744,6 +752,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjRepSeedReceivedFruit) {
                 new SDialogRepReceivedFruit(miClient, SModConsts.SR_ITEM_FRUIT, "Reporte de fruta recibida").setVisible(true);
+            }
+            else if (menuItem == mjRepSeedReceivedFruitHist) {
+                new SDialogRepReceivedFruitHist(miClient, SModConsts.SR_ITEM_FRUIT_HIST, "Reporte comparativo histórico de fruta recibida").setVisible(true);
             }
             else if (menuItem == mjRepSeedReceivedByIodVal) {
                 new SDialogRepIodineRank(miClient, SModConsts.SR_ITEM_REC_IOD_VAL, SModSysConsts.REP_LAB_TEST_IOD, "Reporte materia prima recibida por valor de yodo").setVisible(true);

@@ -33,7 +33,7 @@ import som.mod.som.db.SLabUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
@@ -337,7 +337,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         jPanel31.add(moDecFruitPulpDryMatterPercentage);
 
         jbComputeFruitPulpParams.setText("Calcular");
-        jbComputeFruitPulpParams.setToolTipText("Calcular % humedad y % aceite en pulpa");
+        jbComputeFruitPulpParams.setToolTipText("Calcular % humedad y % aceite en fruta");
         jbComputeFruitPulpParams.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel31.add(jbComputeFruitPulpParams);
 
@@ -354,7 +354,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
 
         jPanel29.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlFruitPulpOilPercentage.setText("Pulpa: aceite(%):");
+        jlFruitPulpOilPercentage.setText("Fruta: aceite (%):");
         jlFruitPulpOilPercentage.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel29.add(jlFruitPulpOilPercentage);
         jPanel29.add(moDecFruitPulpOilPercentage);

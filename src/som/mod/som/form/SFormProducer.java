@@ -21,7 +21,7 @@ import som.mod.som.db.SDbProducer;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
 public class SFormProducer extends SBeanForm implements ItemListener {
 
@@ -69,12 +69,14 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         jlReportingGroup = new javax.swing.JLabel();
         moKeyReportingGroup = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel3 = new javax.swing.JPanel();
+        jlKeyInputSource = new javax.swing.JLabel();
+        moKeyInputSource = new sa.lib.gui.bean.SBeanFieldKey();
         moBoolFreight = new sa.lib.gui.bean.SBeanFieldBoolean();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(9, 1, 0, 5));
 
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -161,11 +163,18 @@ public class SFormProducer extends SBeanForm implements ItemListener {
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolFreight.setText("Se paga flete al proveedor");
-        moBoolFreight.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel3.add(moBoolFreight);
+        jlKeyInputSource.setText("Origen insumo:");
+        jlKeyInputSource.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel3.add(jlKeyInputSource);
+
+        moKeyInputSource.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel3.add(moKeyInputSource);
 
         jPanel2.add(jPanel3);
+
+        moBoolFreight.setText("Se paga flete al proveedor");
+        moBoolFreight.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel2.add(moBoolFreight);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -186,12 +195,14 @@ public class SFormProducer extends SBeanForm implements ItemListener {
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlExternalProducer;
     private javax.swing.JLabel jlFiscalId;
+    private javax.swing.JLabel jlKeyInputSource;
     private javax.swing.JLabel jlName;
     private javax.swing.JLabel jlNameTrade;
     private javax.swing.JLabel jlReportingGroup;
     private javax.swing.JLabel jlRevueltaProducerId;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolFreight;
     private sa.lib.gui.bean.SBeanFieldKey moKeyExternalProducer;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyInputSource;
     private sa.lib.gui.bean.SBeanFieldKey moKeyReportingGroup;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
     private sa.lib.gui.bean.SBeanFieldText moTextFiscalId;
@@ -201,15 +212,16 @@ public class SFormProducer extends SBeanForm implements ItemListener {
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 480, 300);
+        SGuiUtils.setWindowBounds(this, 560, 350);
 
-        moKeyExternalProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlExternalProducer.getText()), true);
+        moKeyExternalProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlExternalProducer), true);
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode.getText()), 25);
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName.getText()), 150);
         moTextNameTrade.setTextSettings(SGuiUtils.getLabelName(jlNameTrade.getText()), 15);
         moTextFiscalId.setTextSettings(SGuiUtils.getLabelName(jlFiscalId.getText()), 20);
-        moTextRevueltaProducerId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaProducerId.getText()), 10, 0);
-        moKeyReportingGroup.setKeySettings(miClient, SGuiUtils.getLabelName(jlReportingGroup.getText()), true);
+        moTextRevueltaProducerId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaProducerId), 10, 0);
+        moKeyReportingGroup.setKeySettings(miClient, SGuiUtils.getLabelName(jlReportingGroup), true);
+        moKeyInputSource.setKeySettings(miClient, SGuiUtils.getLabelName(jlKeyInputSource), true);
         moBoolFreight.setBooleanSettings(SGuiUtils.getLabelName(moBoolFreight.getText()), false);
 
         moFields.addField(moKeyExternalProducer);
@@ -219,6 +231,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         moFields.addField(moTextFiscalId);
         moFields.addField(moTextRevueltaProducerId);
         moFields.addField(moKeyReportingGroup);
+        moFields.addField(moKeyInputSource);
         moFields.addField(moBoolFreight);
 
         moFields.setFormButton(jbSave);
@@ -258,6 +271,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
     public void reloadCatalogues() {
         SExtUtils.populateCataloguesProducers(miClient, moKeyExternalProducer);
         miClient.getSession().populateCatalogue(moKeyReportingGroup, SModConsts.CU_REP_GRP, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyInputSource, SModConsts.SU_INP_SRC, SLibConsts.UNDEFINED, null);
     }
 
     @Override
@@ -285,6 +299,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         moTextRevueltaProducerId.setValue(moRegistry.getRevueltaProducerId());
         moBoolFreight.setValue(moRegistry.isFreightPayment());
         moKeyReportingGroup.setValue(new int[] { moRegistry.getFkReportingGroupId() });
+        moKeyInputSource.setValue(new int [] { moRegistry.getFkInputSourceId() });
         moKeyExternalProducer.setValue(new int[] { moRegistry.getFkExternalProducerId_n() });
 
         moTextCode.setEnabled(false);
@@ -316,6 +331,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         registry.setRevueltaProducerId(moTextRevueltaProducerId.getValue());
         registry.setFreightPayment(moBoolFreight.getValue());
         registry.setFkReportingGroupId(moKeyReportingGroup.getValue()[0]);
+        registry.setFkInputSourceId(moKeyInputSource.getValue()[0]);
         registry.setFkExternalProducerId_n(moKeyExternalProducer.getValue()[0]);
 
         return registry;

@@ -19,7 +19,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  */
 public class SDbProducer extends SDbRegistryUser {
 
@@ -43,6 +43,7 @@ public class SDbProducer extends SDbRegistryUser {
     protected boolean mbSystem;
     */
     protected int mnFkReportingGroupId;
+    protected int mnFkInputSourceId;
     protected int mnFkExternalProducerId_n;
     /*
     protected int mnFkUserInsertId;
@@ -95,6 +96,7 @@ public class SDbProducer extends SDbRegistryUser {
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkReportingGroupId(int n) { mnFkReportingGroupId = n; }
+    public void setFkInputSourceId(int n) { mnFkInputSourceId = n; }
     public void setFkExternalProducerId_n(int n) { mnFkExternalProducerId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
@@ -115,6 +117,7 @@ public class SDbProducer extends SDbRegistryUser {
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
     public int getFkReportingGroupId() { return mnFkReportingGroupId; }
+    public int getFkInputSourceId() { return mnFkInputSourceId; }
     public int getFkExternalProducerId_n() { return mnFkExternalProducerId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
@@ -149,6 +152,7 @@ public class SDbProducer extends SDbRegistryUser {
         mbDeleted = false;
         mbSystem = false;
         mnFkReportingGroupId = 0;
+        mnFkInputSourceId = 0;
         mnFkExternalProducerId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -212,6 +216,7 @@ public class SDbProducer extends SDbRegistryUser {
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkReportingGroupId = resultSet.getInt("fk_rep_grp");
+            mnFkInputSourceId = resultSet.getInt("fk_inp_src");
             mnFkExternalProducerId_n = resultSet.getInt("fk_ext_prod_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
@@ -257,6 +262,7 @@ public class SDbProducer extends SDbRegistryUser {
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
                     mnFkReportingGroupId + ", " +
+                    mnFkInputSourceId + ", " + 
                     (mnFkExternalProducerId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalProducerId_n) + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
@@ -282,6 +288,7 @@ public class SDbProducer extends SDbRegistryUser {
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_rep_grp = " + mnFkReportingGroupId + ", " +
+                    "fk_inp_src = " + mnFkInputSourceId + ", " +
                     "fk_ext_prod_n = " + (mnFkExternalProducerId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalProducerId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
@@ -316,6 +323,7 @@ public class SDbProducer extends SDbRegistryUser {
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
         registry.setFkReportingGroupId(this.getFkReportingGroupId());
+        registry.setFkInputSourceId(this.getFkInputSourceId());
         registry.setFkExternalProducerId_n(this.getFkExternalProducerId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());

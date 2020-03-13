@@ -1514,7 +1514,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public void computeWeight(SGuiSession session, boolean computePrice) throws Exception {
         double oldWeightDestinyNet = mdWeightDestinyNet_r;
-        SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int[] { mnFkItemId });
+        
+        //SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int[] { mnFkItemId }); // when this method is called from CLI, session does not have modules!
+        SDbItem item = new SDbItem();
+        item.read(session, new int[] { mnFkItemId });
 
         mdPackingWeightArrival = (mdPackingFullQuantityArrival + mdPackingEmptyQuantityArrival) * item.getPackingWeight();
         mdPackingWeightDeparture = (mdPackingFullQuantityDeparture + mdPackingEmptyQuantityDeparture) * item.getPackingWeight();

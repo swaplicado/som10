@@ -1,4 +1,15 @@
 ================================================================================
+2020-03-13, 1.0 067.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se cambió el texto de "pulpa % aceite" por "fruta % aceite" en la fruta recibida.
+2) Modificación del reporte de fruta recibida, se agregó el control de radio "Modalidad detallada".
+3) Creación del reporte comparativo histórico de fruta recibida.
+4) Insercion del campo origen en la importación automática de boletos de la bascula.
+5) Mejoras a la conexión a la BD de la báscula en la importación automática de boletos.
+6) Incorporación del origen insumo en el catálogo de proveedores.
+
+================================================================================
 2020-02-13, 1.0 066.0
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

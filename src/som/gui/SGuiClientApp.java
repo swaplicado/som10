@@ -62,7 +62,7 @@ import som.mod.cfg.db.SDbUserGui;
 
 /**
  *
- * @author Sergio Flores, Alfredo Pérez, Sergio Flores
+ * @author Sergio Flores, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
 public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener {
 
@@ -934,9 +934,13 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         params.put("sAppName", APP_NAME);
         params.put("sAppCopyright", APP_COPYRIGHT);
         params.put("sAppProvider", APP_PROVIDER);
+        params.put("sVendorCopyright", VENDOR_COPYRIGHT);
+        params.put("sVendorWebsite", VENDOR_WEBSITE);
+        params.put("sVendorMail", VENDOR_MAIL);
         params.put("sCompany", msCompany);
         params.put("sUser", moSession.getUser().getName());
         params.put("oFormatDate", SLibUtils.DateFormatDate);
+        params.put("oFormatDatetime", SLibUtils.DateFormatDatetime);
 
         return params;
     }

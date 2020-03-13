@@ -17,21 +17,23 @@ import som.mod.SModSysConsts;
 
 /**
  *
- * @author Alfredo Perez, Cesar Orozco, Isabel Servín 
+ * @author Isabel Servín 
  * 
  */
-public class SDialogRepReceivedFruit extends SBeanDialogReport {
+public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
+    
+    private final long YEAR_DAYS = 365;
 
     private SGuiFieldKeyGroup moFieldKeyGroup;
 
     /**
-     * Creates new form SDialogRepReceivedFruit
+     * Creates new form SDialogRepReceivedFruitHist
      * @param client
      * @param formSubtype
      * @param title
      */
-    public SDialogRepReceivedFruit(SGuiClient client, int formSubtype, String title) {
-        setFormSettings(client, SModConsts.SR_ITEM_FRUIT, formSubtype, title);
+    public SDialogRepReceivedFruitHist(SGuiClient client, int formSubtype, String title) {
+        setFormSettings(client, SModConsts.SR_ITEM_FRUIT_HIST, formSubtype, title);
         initComponents();
         initComponentsCustom();
     }
@@ -46,6 +48,7 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
     private void initComponents() {
 
         reportTypeGroup = new javax.swing.ButtonGroup();
+        orderByGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
@@ -60,13 +63,18 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
         jPanel7 = new javax.swing.JPanel();
         jlProducer = new javax.swing.JLabel();
         moKeyProducer = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel8 = new javax.swing.JPanel();
+        jlInputSource = new javax.swing.JLabel();
+        moKeySource = new sa.lib.gui.bean.SBeanFieldKey();
+        moRadProducer = new sa.lib.gui.bean.SBeanFieldRadio();
+        moRadSource = new sa.lib.gui.bean.SBeanFieldRadio();
         moRadSummary = new sa.lib.gui.bean.SBeanFieldRadio();
         moRadDetail = new sa.lib.gui.bean.SBeanFieldRadio();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros del reporte:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(11, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(11, 1, 0, 7));
 
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -97,7 +105,7 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
 
         jPanel2.add(jPanel15);
 
-        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 0));
 
         jlProducer.setText("Proveedor:");
         jlProducer.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -107,6 +115,25 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
         jPanel7.add(moKeyProducer);
 
         jPanel2.add(jPanel7);
+
+        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 0));
+
+        jlInputSource.setText("Origen insumo:");
+        jlInputSource.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel8.add(jlInputSource);
+
+        moKeySource.setPreferredSize(new java.awt.Dimension(500, 23));
+        jPanel8.add(moKeySource);
+
+        jPanel2.add(jPanel8);
+
+        orderByGroup.add(moRadProducer);
+        moRadProducer.setText("Ordenar por proveedor");
+        jPanel2.add(moRadProducer);
+
+        orderByGroup.add(moRadSource);
+        moRadSource.setText("Ordenar por origen");
+        jPanel2.add(moRadSource);
 
         reportTypeGroup.add(moRadSummary);
         moRadSummary.setText("Modalidad resumen");
@@ -129,16 +156,22 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JLabel jlDateEnd;
     private javax.swing.JLabel jlDateStart;
+    private javax.swing.JLabel jlInputSource;
     private javax.swing.JLabel jlItem;
     private javax.swing.JLabel jlProducer;
     private sa.lib.gui.bean.SBeanFieldDate moDateDateEnd;
     private sa.lib.gui.bean.SBeanFieldDate moDateDateStart;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProducer;
+    private sa.lib.gui.bean.SBeanFieldKey moKeySource;
     private sa.lib.gui.bean.SBeanFieldRadio moRadDetail;
+    private sa.lib.gui.bean.SBeanFieldRadio moRadProducer;
+    private sa.lib.gui.bean.SBeanFieldRadio moRadSource;
     private sa.lib.gui.bean.SBeanFieldRadio moRadSummary;
+    private javax.swing.ButtonGroup orderByGroup;
     private javax.swing.ButtonGroup reportTypeGroup;
     // End of variables declaration//GEN-END:variables
 
@@ -150,13 +183,19 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
         moDateDateEnd.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateEnd), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem), false);
         moKeyProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlProducer), false);
-        moRadSummary.setBooleanSettings(SGuiUtils.getLabelName(moRadSummary.getText()), false);
-        moRadDetail.setBooleanSettings(SGuiUtils.getLabelName(moRadDetail.getText()), false);
+        moKeySource.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputSource), false);
+        moRadProducer.setBooleanSettings(SGuiUtils.getLabelName(jlProducer), false);
+        moRadSource.setBooleanSettings(SGuiUtils.getLabelName(jlInputSource), false);
+        moRadSummary.setBooleanSettings(SGuiUtils.getLabelName(jlProducer), false);
+        moRadDetail.setBooleanSettings(SGuiUtils.getLabelName(jlProducer), false);
 
         moFields.addField(moDateDateStart);
         moFields.addField(moDateDateEnd);
         moFields.addField(moKeyItem);
         moFields.addField(moKeyProducer);
+        moFields.addField(moKeySource);
+        moFields.addField(moRadProducer);
+        moFields.addField(moRadSource);
         moFields.addField(moRadSummary);
         moFields.addField(moRadDetail);
 
@@ -164,21 +203,37 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
 
         moDateDateStart.setValue(SLibTimeUtils.getBeginOfYear(miClient.getSession().getWorkingDate()));
         moDateDateEnd.setValue(SLibTimeUtils.getEndOfYear(miClient.getSession().getWorkingDate()));
-
+        
         moFieldKeyGroup.initGroup();
         moFieldKeyGroup.populateCatalogues();
         moFieldKeyGroup.resetGroup();
-
-        miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
+        
         miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SModSysConsts.SX_ITEM_TP_FRUIT, null);
+        miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeySource, SModConsts.SU_INP_SRC, SLibConsts.UNDEFINED, null);
     }
 
     @Override
     public SGuiValidation validateForm() {
         SGuiValidation validation = moFields.validateFields();
-
+        
         if (validation.isValid()) {
-            validation = SGuiUtils.validateDateRange(moDateDateStart, moDateDateEnd);
+            validation = SGuiUtils.validateDateRangeIgnoreYears(moDateDateStart, moDateDateEnd);
+        }
+        if (validation.isValid()) {
+            long days = SLibTimeUtils.getDaysDiff(moDateDateEnd.getValue(), moDateDateStart.getValue());
+            if (SLibTimeUtils.isLeapYear(moDateDateEnd.getValue()) || SLibTimeUtils.isLeapYear(moDateDateStart.getValue())){ 
+                if (days > YEAR_DAYS + 1){
+                    validation.setValid(false); 
+                    validation.setMessage("El período del reporte no debe ser mayor a un año.");
+                }
+            }
+            else {
+                if (days > YEAR_DAYS){
+                    validation.setValid(false); 
+                    validation.setMessage("El período del reporte no debe ser mayor a un año.");
+                }
+            }
         }
         return validation;
     }
@@ -188,17 +243,38 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
         String sqlWhere = "";
         moParamsMap = SPrtUtils.createReportParamsMap(miClient.getSession());
 
-        sqlWhere += (moKeyItem.getSelectedIndex() <= 0 ? "" : " AND it.id_item = " + moKeyItem.getValue()[0] + " ");
-        sqlWhere += (moKeyProducer.getSelectedIndex() <= 0 ? "" : " AND t.fk_prod = " + moKeyProducer.getValue()[0] + " ");
-
-        moParamsMap.put("tDateStart", moDateDateStart.getValue());
-        moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
+        moParamsMap.put("tActualDateStart", moDateDateStart.getValue());
+        moParamsMap.put("tActualDateEnd", moDateDateEnd.getValue());
+        moParamsMap.put("tLastDateStart", SLibTimeUtils.addDate(moDateDateStart.getValue(), -1, 0, 0));
+        moParamsMap.put("tLastDateEnd", SLibTimeUtils.addDate(moDateDateEnd.getValue(), -1, 0, 0));
+        moParamsMap.put("tAncestorDateStart", SLibTimeUtils.addDate(moDateDateStart.getValue(), -2, 0, 0));
+        moParamsMap.put("tAncestorDateEnd", SLibTimeUtils.addDate(moDateDateStart.getValue(), -2, 0, 0));
+        moParamsMap.put("tThreeYearsDateStart", SLibTimeUtils.addDate(moDateDateStart.getValue(), -3, 0, 0));
+        moParamsMap.put("tThreeYearsDateEnd", SLibTimeUtils.addDate(moDateDateStart.getValue(), -3, 0, 0));
+        moParamsMap.put("sSqlOrderBy", moRadProducer.getValue() ? "p.name, p.code " : "s.name, s.code ");
+        moParamsMap.put("bShowByProd", moRadProducer.getValue());
         moParamsMap.put("bShowDetails", !moRadSummary.getValue());
-        moParamsMap.put("sInputCategory", "");
-        moParamsMap.put("sInputClass", "");
-        moParamsMap.put("sInputType", "");
-        moParamsMap.put("sReportType", "");
-        moParamsMap.put("sSqlWhere", sqlWhere + " AND it.b_fruit ");
-        moParamsMap.put("sSqlOrderBy", "");
+        
+        if (moKeyItem.getSelectedIndex() > 0) {
+            sqlWhere += (" AND i.id_item = " + moKeyItem.getValue()[0] + " ");
+        }
+        
+        if (moKeyProducer.getSelectedIndex() > 0) {
+            moParamsMap.put("bProducerSearch", true);
+            sqlWhere += (" AND p.id_prod = " + moKeyProducer.getValue()[0] + " ");
+        }
+        else { 
+            moParamsMap.put("bProducerSearch", false);
+        }
+        
+        if (moKeySource.getSelectedIndex() > 0) {
+            moParamsMap.put("bSourceSearch", true);
+            sqlWhere += (" AND s.id_inp_src = " + moKeySource.getValue()[0] + " ");
+        }
+        else {
+            moParamsMap.put("bSourceSearch", false);
+        }
+        
+        moParamsMap.put("sSqlWhere", sqlWhere);
     }
 }

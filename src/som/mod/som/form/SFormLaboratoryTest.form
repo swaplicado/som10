@@ -513,7 +513,7 @@
                     <Component class="javax.swing.JButton" name="jbComputeFruitPulpParams">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Calcular"/>
-                        <Property name="toolTipText" type="java.lang.String" value="Calcular % humedad y % aceite en pulpa"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Calcular % humedad y % aceite en fruta"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[75, 23]"/>
                         </Property>
@@ -549,7 +549,7 @@
                   <SubComponents>
                     <Component class="javax.swing.JLabel" name="jlFruitPulpOilPercentage">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Pulpa: aceite(%):"/>
+                        <Property name="text" type="java.lang.String" value="Fruta: aceite (%):"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[125, 23]"/>
                         </Property>

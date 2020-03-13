@@ -2,7 +2,6 @@ package som.mod.som.db.data;
  
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,7 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 /**
  * Based on SimpleExcelWriterExample
  * 
- * @author Edwin Carmona
+ * @author Edwin Carmona, Isabel Servin
  */
 public class SDailyStockReportWriter {
  

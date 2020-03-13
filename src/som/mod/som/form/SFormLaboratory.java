@@ -39,7 +39,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
@@ -437,7 +437,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Peso cáscara + hueso (g)");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Pulpa: materia seca");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Pulpa: humedad");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Pulpa: aceite");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Fruta: aceite");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ajuste rendimiento");
 
                 for (col = 0; col < columns.length; col++) {

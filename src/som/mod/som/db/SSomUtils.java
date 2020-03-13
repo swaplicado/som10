@@ -12,7 +12,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Properties;
+import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
@@ -763,14 +765,15 @@ public abstract class SSomUtils {
 
         try {
             Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-            SDbCompany company = ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany();
+            SDbCompany company = new SDbCompany();
+            company.read(session, new int[] { SUtilConsts.BPR_CO_ID });
             String url = "jdbc:sybase:Tds:" + company.getRevueltaHost() + ":" + company.getRevueltaPort() + "/Revuelta"; // XXX 2020-01-14, Sergio Flores: Improve this. This paramater is fixed!
             Properties prop = new Properties();
             prop.put("user", "usuario"); // XXX 2020-01-14, Sergio Flores: Improve this. This paramater is fixed!
             prop.put("password", "revuelta"); // XXX 2020-01-14, Sergio Flores: Improve this. This paramater is fixed!
             connection = DriverManager.getConnection(url, prop);
         }
-        catch (ClassNotFoundException | SQLException e) {
+        catch (Exception e) {
             SLibUtils.printException(SSomUtils.class.getName(), e);
         }
 
@@ -1300,5 +1303,22 @@ public abstract class SSomUtils {
                 iog.delete(session);
             }
         }
+    }
+    
+    
+    public static HashMap getOrigin(SGuiSession session, int idItem) throws SQLException {
+        HashMap <Integer, String> origins = new HashMap<>();
+        
+        String sql = "SELECT sis.id_inp_src, sis.name "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) +" AS sis "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS si ON sis.fk_inp_ct = si.fk_inp_ct "
+                + "WHERE id_item = " + idItem;  
+        
+        try (ResultSet resultSet = session.getStatement().executeQuery(sql)) {
+            while (resultSet.next()){
+                origins.put(resultSet.getInt(1), resultSet.getString(2));
+            }
+        }
+        return origins;
     }
 }

@@ -10,7 +10,7 @@ import sa.lib.gui.SGuiModuleUtils;
 
 /**
  *
- * @author Néstor Ávalos, Sergio Flores
+ * @author Néstor Ávalos, Sergio Flores, Isabel Servín
  */
 public class SModUtils implements SGuiModuleUtils {
 
@@ -60,7 +60,8 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SR_ITEM_REC_PAY,
             SModConsts.SR_ITEM_REC_IOD_VAL,
             SModConsts.SR_FRE_TIME,
-            SModConsts.SR_ITEM_FRUIT
+            SModConsts.SR_ITEM_FRUIT,
+            SModConsts.SR_ITEM_FRUIT_HIST
         });
     }
 

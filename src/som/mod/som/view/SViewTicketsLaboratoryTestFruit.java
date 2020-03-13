@@ -124,7 +124,7 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_dry_per", "Pulpa: materia seca %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_hum_per", "Pulpa: humedad %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_sol_per", "Pulpa: sólidos % *");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_oil_per", "Pulpa: aceite %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_pulp_oil_per", "Fruta: aceite %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_hum_wei", "Fruta: humedad (" + SSomConsts.G + ") *");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_sol_wei", "Fruta: sólidos (" + SSomConsts.G + ") *");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_fruit_oil_wei", "Fruta: aceite (" + SSomConsts.G + ") *");
