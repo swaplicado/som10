@@ -267,8 +267,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjRepCompTic = new JMenuItem("Comparativo boletos SOM vs. Revuelta...");
 
         mjRep.add(mjRepSeedReceived);
+        mjRep.addSeparator();
         mjRep.add(mjRepSeedReceivedFruit);
         mjRep.add(mjRepSeedReceivedFruitHist);
+        mjRep.addSeparator();
         mjRep.add(mjRepSeedReceivedByIodVal);
         mjRep.add(mjRepSeedReceivedByPerOle);
         mjRep.add(mjRepSeedReceivedByPerLin);
