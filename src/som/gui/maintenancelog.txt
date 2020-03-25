@@ -1,4 +1,14 @@
 ================================================================================
+2020-03-25, 1.0 068.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se cambió el orden con el que se muestran el código y el nombre de los almacenes.
+2) Inhabilitación de los campos de "división" en los formularios de documentos de inventarios y mezclas.
+3) Se insertaron dos nuevos campos en la clase SDbProducer para el envio de correos individuales.
+4) Adaptación de la clase SDbTicket para enviar un correo con la información de un solo proveedor.
+5) Se agregó la opción N/A en el control de captura de orígenes de insumos en el formulario de los proveedores.
+
+================================================================================
 2020-03-13, 1.0 067.0
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

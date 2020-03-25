@@ -6,11 +6,14 @@ package som.mod.som.db;
 
 /**
  *
- * @author Néstor Ávalos, Sergio Flores
+ * @author Néstor Ávalos, Sergio Flores, Isabel Servín
  */
 public abstract class SSomConsts {
     
     public static final int DIV_DEF = 1;
+    
+    public static final int OPC_ACTIVE = 1;
+    public static final int OPC_ALL = 2;
 
     public static final String G = "g";
     public static final String KG = "kg";

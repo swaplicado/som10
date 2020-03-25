@@ -693,6 +693,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        jlAutoMailNotificationBoxes.setForeground(new java.awt.Color(0, 102, 102));
         jlAutoMailNotificationBoxes.setText("Destinatario(s) mail:");
         jlAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel34.add(jlAutoMailNotificationBoxes);
@@ -717,6 +718,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel47.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        jlUserMailNotificationBoxes.setForeground(new java.awt.Color(0, 102, 102));
         jlUserMailNotificationBoxes.setText("Destinatario(s) mail:");
         jlUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel47.add(jlUserMailNotificationBoxes);

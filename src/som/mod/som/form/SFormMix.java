@@ -22,13 +22,13 @@ import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiFieldKeyGroup;
-import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import som.gui.SGuiClientSessionCustom;
 import som.gui.SGuiClientUtils;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
+import som.mod.cfg.db.SDbCompany;
 import som.mod.som.db.SDbMix;
 import som.mod.som.db.SSomStock;
 import som.mod.som.db.SSomUtils;
@@ -36,19 +36,16 @@ import som.mod.som.db.SSomWarehouseItem;
 
 /**
  *
- * @author Néstor Ávalos
+ * @author Néstor Ávalos, Isabel Servín
  */
 public class SFormMix extends sa.lib.gui.bean.SBeanForm implements ActionListener, ItemListener, FocusListener {
 
-    private int mnParamType;
-    private int mnParamSubtype;
-    private String msParamDate;
     private int mnParamFkMixTypeId;
 
     private SDbMix moRegistry;
+    private SDbCompany moCompany;
     private SGuiFieldKeyGroup moFieldKeyGroupWarehouseSource;
     private SGuiFieldKeyGroup moFieldKeyGroupWarehouseDestiny;
-
     private SDialogStockCardex moDialogStockCardex;
 
     /**
@@ -539,7 +536,9 @@ public class SFormMix extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jlXtaStockUnit.setText("");
         jlQuantityUnit.setText("");
-        jlXtaStockUnitDestiny.setText("");
+        jlXtaStockUnitDestiny.setText(""); 
+        
+        moCompany = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany();
     }
 
     private void resetComboBoxes() {
@@ -586,6 +585,8 @@ public class SFormMix extends sa.lib.gui.bean.SBeanForm implements ActionListene
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
             jtfRegistryKey.setText("");
+            moRegistry.setFkDivisionSourceId_n(moCompany.getFkDivisionDefaultId());
+            moRegistry.setFkDivisionDestinyId_n(moCompany.getFkDivisionDefaultId());
         }
         else {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
@@ -804,12 +805,12 @@ public class SFormMix extends sa.lib.gui.bean.SBeanForm implements ActionListene
     */
 
     private void obtainItem(final boolean bSource) {
-        ArrayList<SSomWarehouseItem> somWarehouseItem = new ArrayList<SSomWarehouseItem>();
+        ArrayList<SSomWarehouseItem> somWarehouseItems = new ArrayList<>();
 
         if ((bSource && moKeyWarehouseSourceWarehouse.getSelectedIndex() > 0) ||
                 (!bSource && moKeyWarehouseDestinyWarehouse.getSelectedIndex() > 0)) {
 
-            somWarehouseItem = SSomUtils.stockWarehouseByItem(
+            somWarehouseItems = SSomUtils.stockWarehouseByItem(
                     miClient.getSession(),
                     SLibTimeUtils.digestYear(moDateDate.getValue() != null ? moDateDate.getValue() : miClient.getSession().getWorkingDate())[0],
                     bSource ? moKeyWarehouseSourceWarehouse.getValue() : moKeyWarehouseDestinyWarehouse.getValue(),
@@ -821,13 +822,13 @@ public class SFormMix extends sa.lib.gui.bean.SBeanForm implements ActionListene
                     SLibConsts.UNDEFINED);
         }
 
-        if (somWarehouseItem.size() > 0) {
+        if (somWarehouseItems.size() > 0) {
 
             if (bSource) {
-                moKeyItemSource.setValue(new int[] { somWarehouseItem.get(0).getPkItemId() });
+                moKeyItemSource.setValue(new int[] { somWarehouseItems.get(0).getPkItemId() });
             }
             else {
-                moKeyItemDestiny.setValue(new int[] { somWarehouseItem.get(0).getPkItemId() });
+                moKeyItemDestiny.setValue(new int[] { somWarehouseItems.get(0).getPkItemId() });
             }
         }
         else {
@@ -842,7 +843,7 @@ public class SFormMix extends sa.lib.gui.bean.SBeanForm implements ActionListene
     }
 
     private void obtainStock(final boolean origin) {
-        SSomStock stock = null;
+        SSomStock stock;
 
         if (moDateDate.getValue() != null &&
                 ((origin && moKeyWarehouseSourceWarehouse.getSelectedIndex() > 0 && moKeyItemSource.getSelectedIndex() > 0) ||
@@ -898,8 +899,9 @@ public class SFormMix extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private void disabledFields(final boolean b) {
         moKeyWarehouseSourceBranch.setEnabled(b);
         moKeyWarehouseDestinyBranch.setEnabled(b);
-        moKeyDivisionDestiny.setEnabled(b);
-
+        moKeyDivisionSource.setEnabled(false);
+        moKeyDivisionDestiny.setEnabled(false);
+        
         moTextMixType.setEditable(b);
         moTextNumber.setEditable(b);
 
@@ -933,136 +935,6 @@ public class SFormMix extends sa.lib.gui.bean.SBeanForm implements ActionListene
             default:
         }
     }
-
-    private void reloadCatalogueItem() {
-        SGuiParams params = new SGuiParams();
-
-        /* XXX
-        if (!moRegistry.getXtaDpsBizPartner().isEmpty() &&
-            (SLibUtils.compareKeys(mnParamFkMixTypeId, SModSysConsts.SS_IOG_TP_IN_PUR_PUR) ||
-             SLibUtils.compareKeys(mnParamFkMixTypeId, SModSysConsts.SS_IOG_TP_IN_SAL_SAL) ||
-             SLibUtils.compareKeys(mnParamFkMixTypeId, SModSysConsts.SS_IOG_TP_OUT_PUR_PUR) ||
-             SLibUtils.compareKeys(mnParamFkMixTypeId, SModSysConsts.SS_IOG_TP_OUT_SAL_SAL))) {
-            params.getParamsMap().put(SModConsts.SX_EXT_ITEM, moRegistry.getXtaExternalItemId());
-            miClient.getSession().populateCatalogue(moKeyItemSource, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, params);
-        }
-        else {
-        */
-            miClient.getSession().populateCatalogue(moKeyItemSource, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
-            miClient.getSession().populateCatalogue(moKeyItemDestiny, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
-        //}
-    }
-
-    /* XXX
-    private void renderTransferMoves() {
-
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, mnParamFkMixTypeId) ) {
-
-            moIogRegistryB = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_IN_INT_TRA);
-        }
-
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, mnParamFkMixTypeId) ) {
-
-            moIogRegistryB = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_IN_INT_CNV);
-        }
-
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS, mnParamFkMixTypeId) ) {
-
-            moIogRegistryB = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_IN_INT_MIX_PAS);
-        }
-
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, mnParamFkMixTypeId) ) {
-
-            moIogRegistryB = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_IN_INT_MIX_ACT);
-            moIogRegistryC = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT);
-            moIogRegistryD = assignTransferTypeMove(SModSysConsts.SS_IOG_TP_IN_INT_MIX_ACT);
-        }
-
-        if (moIogRegistryB != null) {
-            moIogRegistryB.setFkWarehouseCompanyId(((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getPrimaryKey()[0]);
-            moIogRegistryB.setFkWarehouseBranchId(((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getChildBranches().get(0).getPrimaryKey()[0]);
-        }
-    }
-    */
-
-    /* XXX
-    private SDbIog assignTransferTypeMove(final int[] typeIog) {
-        SDbIog iog = new SDbIog();
-
-        iog.setFkIogCategoryId(typeIog[0]);
-        iog.setFkIogClassId(typeIog[1]);
-        iog.setFkIogTypeId(typeIog[2]);
-        iog.setSystem(true);
-
-        return iog;
-    }
-    */
-
-    /* XXX
-    private void getRegistryDestiny(final SDbIog registry) {
-
-         if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, mnParamFkMixTypeId) ||
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, mnParamFkMixTypeId) ||
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS, mnParamFkMixTypeId) ||
-            SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, mnParamFkMixTypeId) ) {
-
-            moIogRegistryB = assignIogDestinyData(moIogRegistryB);
-
-            if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, mnParamFkMixTypeId) ||
-                    SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, mnParamFkMixTypeId)) {
-
-                moIogRegistryB.setFkItemId(moKeyItemSource.getValue()[0]);
-                moIogRegistryB.setFkUnitId(moKeyItemSource.getSelectedItem().getForeignKey()[0]);
-            }
-            else {
-                moIogRegistryB.setFkItemId(moKeyItemDestiny.getValue()[0]);
-                moIogRegistryB.setFkUnitId(moKeyItemDestiny.getSelectedItem().getForeignKey()[0]);
-            }
-
-            registry.setIogRegistryB(moIogRegistryB);
-        }
-
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_ACT, mnParamFkMixTypeId) ) {
-
-            moIogRegistryC = assignIogDestinyData(moIogRegistryC);
-            moIogRegistryC.setFkItemId(moKeyItemDestiny.getValue()[0]);
-            moIogRegistryC.setFkUnitId(moKeyItemDestiny.getSelectedItem().getForeignKey()[0]);
-            registry.setIogRegistryC(moIogRegistryC);
-
-            moIogRegistryD = assignIogDestinyData(moIogRegistryD);
-            moIogRegistryD.setFkItemId(moKeyItemSource.getValue()[0]);
-            moIogRegistryD.setFkUnitId(moKeyItemSource.getSelectedItem().getForeignKey()[0]);
-            registry.setIogRegistryD(moIogRegistryD);
-        }
-    }
-    */
-
-    /*
-    private SDbIog assignIogDestinyData(final SDbIog iogRegistry) {
-        SDbIog iog = iogRegistry;
-
-        if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_CNV, mnParamFkMixTypeId)) {
-            iog.setFkWarehouseCompanyId(moKeyWarehouseSourceWarehouse.getValue()[0]);
-            iog.setFkWarehouseBranchId(moKeyWarehouseSourceWarehouse.getValue()[1]);
-            iog.setFkWarehouseWarehouseId(moKeyWarehouseSourceWarehouse.getValue()[2]);
-            iog.setFkDivisionId(moKeyDivisionSource.getValue()[0]);
-        }
-        else {
-            iog.setFkWarehouseCompanyId(moKeyWarehouseDestinyWarehouse.getValue()[0]);
-            iog.setFkWarehouseBranchId(moKeyWarehouseDestinyWarehouse.getValue()[1]);
-            iog.setFkWarehouseWarehouseId(moKeyWarehouseDestinyWarehouse.getValue()[2]);
-            iog.setFkDivisionId(moKeyDivisionDestiny.getValue()[0]);
-        }
-
-        iog.setFkIogAdjustmentTypeId(moKeyIogAdjustmentType.getValue()[0]);
-        iog.setDate(moDateDate.getValue());
-        //iog.setQuantity(moDecQuantity.getValue());
-        iog.setAuxNote(moTextNote.getValue());
-        iog.setDeleted(moBoolDeleted.getValue());
-
-        return iog;
-    }
-    */
 
     /*
     * Public methods
@@ -1110,7 +982,8 @@ public class SFormMix extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         miClient.getSession().populateCatalogue(moKeyDivisionSource, SModConsts.CU_DIV, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyDivisionDestiny, SModConsts.CU_DIV, SLibConsts.UNDEFINED, null);
-        reloadCatalogueItem();
+        miClient.getSession().populateCatalogue(moKeyItemSource, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyItemDestiny, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
     }
 
     @Override

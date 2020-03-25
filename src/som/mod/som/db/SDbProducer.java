@@ -33,6 +33,8 @@ public class SDbProducer extends SDbRegistryUser {
     protected String msNameTrade;
     protected String msFiscalId;
     protected String msRevueltaProducerId;
+    protected String msAutoMailNotificationBoxes;
+    protected boolean mbAutoMailNotification;
     protected boolean mbFreightPayment;
     /*
     protected boolean mbUpdatable;
@@ -88,6 +90,8 @@ public class SDbProducer extends SDbRegistryUser {
     public void setNameTrade(String s) { msNameTrade = s; }
     public void setFiscalId(String s) { msFiscalId = s; }
     public void setRevueltaProducerId(String s) { msRevueltaProducerId = s; }
+    public void setAutoMailNotificationBoxes(String s) { msAutoMailNotificationBoxes = s; }
+    public void setAutoMailNotification(boolean b) { mbAutoMailNotification = b; }
     public void setFreightPayment(boolean b) { mbFreightPayment = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
@@ -109,6 +113,8 @@ public class SDbProducer extends SDbRegistryUser {
     public String getNameTrade() { return msNameTrade; }
     public String getFiscalId() { return msFiscalId; }
     public String getRevueltaProducerId() { return msRevueltaProducerId; }
+    public String getAutoMailNotificationBoxes() { return msAutoMailNotificationBoxes; }
+    public boolean isAutoMailNotification() { return mbAutoMailNotification; }
     public boolean isFreightPayment() { return mbFreightPayment; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
@@ -144,6 +150,8 @@ public class SDbProducer extends SDbRegistryUser {
         msNameTrade = "";
         msFiscalId = "";
         msRevueltaProducerId = "";
+        msAutoMailNotificationBoxes = "";
+        mbAutoMailNotification = false;
         mbFreightPayment = false;
         mbUpdatable = false;
         mbDisableable = false;
@@ -208,6 +216,8 @@ public class SDbProducer extends SDbRegistryUser {
             msNameTrade = resultSet.getString("name_trd");
             msFiscalId = resultSet.getString("fis_id");
             msRevueltaProducerId = resultSet.getString("rev_prod_id");
+            msAutoMailNotificationBoxes = resultSet.getString("amn_box");
+            mbAutoMailNotification = resultSet.getBoolean("b_amn");
             mbFreightPayment = resultSet.getBoolean("b_fre_pay");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
@@ -254,6 +264,8 @@ public class SDbProducer extends SDbRegistryUser {
                     "'" + msNameTrade + "', " +
                     "'" + msFiscalId + "', " +
                     "'" + msRevueltaProducerId + "', " +
+                    "'" + msAutoMailNotificationBoxes + "', " + 
+                    (mbAutoMailNotification ? 1 : 0) + ", " + 
                     (mbFreightPayment ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
@@ -280,6 +292,8 @@ public class SDbProducer extends SDbRegistryUser {
                     "name_trd = '" + msNameTrade + "', " +
                     "fis_id = '" + msFiscalId + "', " +
                     "rev_prod_id = '" + msRevueltaProducerId + "', " +
+                    "amn_box = '" + msAutoMailNotificationBoxes + "', " +
+                    "b_amn = " + (mbAutoMailNotification ? 1 : 0) + ", " +
                     "b_fre_pay = " + (mbFreightPayment ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
@@ -315,6 +329,8 @@ public class SDbProducer extends SDbRegistryUser {
         registry.setNameTrade(this.getNameTrade());
         registry.setFiscalId(this.getFiscalId());
         registry.setRevueltaProducerId(this.getRevueltaProducerId());
+        registry.setAutoMailNotificationBoxes(this.getAutoMailNotificationBoxes());
+        registry.setAutoMailNotification(this.isAutoMailNotification());
         registry.setFreightPayment(this.isFreightPayment());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());

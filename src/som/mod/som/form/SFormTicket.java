@@ -1247,9 +1247,16 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         
         registry.setAuxRequirePriceComputation(!mbIsLaboratory && mnFormSubtype == SModConsts.SX_TIC_TARE_PEND);
 
-        if (mnFormSubtype == SModConsts.SX_TIC_TARE_PEND && moItem.isAutoMailNotification()) {
-            registry.setAuxSendMail(true);
-            registry.setAuxRecipientsTo(moItem.getAutoMailNotificationBoxes());
+        if (mnFormSubtype == SModConsts.SX_TIC_TARE_PEND) {
+            if (moItem.isAutoMailNotification()) {
+                registry.setAuxItemSendMail(true);
+                registry.setAuxItemRecipientsTo(moItem.getAutoMailNotificationBoxes());
+            }
+            
+            if (moProducer.isAutoMailNotification()) {
+                registry.setAuxProducerSendMail(true);
+                registry.setAuxProducerRecipientsTo(moProducer.getAutoMailNotificationBoxes());
+            }
         }
 
         registry.setAuxMoveNextOnSend(mbIsSaveSend);

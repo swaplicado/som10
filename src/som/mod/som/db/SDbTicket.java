@@ -145,8 +145,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     protected boolean mbAuxMoveNextOnSave;
     protected boolean mbAuxRequirePriceComputation;
-    protected boolean mbAuxSendMail;
-    protected String msAuxRecipientsTo;
+    protected boolean mbAuxItemSendMail;
+    protected String msAuxItemRecipientsTo;
+    protected boolean mbAuxProducerSendMail;
+    protected String msAuxProducerRecipientsTo;
 
     protected Vector<SDbTicketNote> mvChildTicketNotes;
     protected Vector<SDbLaboratory> mvChildLaboratories;
@@ -189,13 +191,18 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 + "</table><br>";
     }
 
-    private void sendMail(final SGuiSession session) {
-        String subject = "";
-        String body = "";
-        String section = "";
+    /**
+     * Send mail when ticket tared.
+     * @param session Current user session.
+     * @param producerId ID of producer. Can be zero. When zero all producers are included, otherwise the requested one only.
+     */
+    private void sendMail(final SGuiSession session, final int producerId) {
+        String subject;
+        String body;
+        String section;
 
         try {
-            if (!msAuxRecipientsTo.isEmpty()) {
+            if ((producerId == 0 && !msAuxItemRecipientsTo.isEmpty()) || (producerId != 0 && !msAuxProducerRecipientsTo.isEmpty())) {
                 int[] curDate = SLibTimeUtils.digestDate(mtDate);
                 int curYear = curDate[0];
                 int curMonth = curDate[1];
@@ -254,7 +261,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 
                 dateStart = mtDate;
                 dateEnd = mtDate;
-                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0);
+                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0, producerId);
                 section = "día '" + SLibUtils.DateFormatDate.format(mtDate) + "'";
                 
                 // SECTION 1.1. Current day summary by reporting group:
@@ -264,7 +271,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 // compute reporting groups:
                 
                 while (repGroupResultSet.next()) { // first reading, cursor before first row
-                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"));
+                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), producerId);
                     if (weight != 0) {
                         body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
                     }
@@ -301,7 +308,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 
                 dateStart = SLibTimeUtils.getBeginOfMonth(mtDate);
                 dateEnd = SLibTimeUtils.getEndOfMonth(mtDate);
-                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0);
+                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0, producerId);
                 section = "mes '" + months[curMonth - 1] + ". " + curYear + "'";
                 
                 // SECTION 2.1. Current month summary by reporting group:
@@ -315,7 +322,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 }
 
                 while (repGroupResultSet.next()) {
-                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"));
+                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), producerId);
                     if (weight != 0) {
                         body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
                     }
@@ -356,8 +363,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 
                 // Create season date range depending on item configuration:
                 
-                Date dateSeasonStart = null;
-                Date dateSeasonEnd = null;
+                Date dateSeasonStart;
+                Date dateSeasonEnd;
                 
                 if (curMonth >= item.getStartingSeasonMonth()) {
                     dateSeasonStart = SLibTimeUtils.createDate(curYear, item.getStartingSeasonMonth(), 1);
@@ -372,7 +379,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 
                 dateStart = dateSeasonStart;
                 dateEnd = dateSeasonEnd;
-                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0);
+                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0, producerId);
                 section = "temporada";
                 
                 // SECTION 3.1 Current season summary by reporting group:
@@ -386,7 +393,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 }
 
                 while (repGroupResultSet.next()) {
-                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"));
+                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), producerId);
                     if (weight != 0) {
                         body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
                     }
@@ -427,7 +434,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 
                 dateStart = dateSeasonStart;
                 dateEnd = dateSeasonEnd;
-                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0);
+                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0, producerId);
                 section = "temporada";
                 
                 body += composeHtmlTableKgPctHeader(section, itemName, "Período");
@@ -446,7 +453,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     dateStart = SLibTimeUtils.createDate(year, month);
                     dateEnd = SLibTimeUtils.getEndOfMonth(dateStart);
                     
-                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0);
+                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0, producerId);
                     body += composeHtmlTableKgPctRow("" + year + " " + months[month - 1] + ".", weight, weightTotal);
                     month++;
                 }
@@ -465,7 +472,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                         + "SUM(t.wei_des_net_r) AS _weight "
                         + "FROM S_TIC AS t "
                         + "INNER JOIN SU_ITEM AS i ON t.fk_item = i.id_item "
-                        + "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + mnFkItemId + " "
+                        + "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + mnFkItemId + " " 
+                        + (producerId == 0 ? "" : "AND t.fk_prod = " + producerId + " ") 
                         + "GROUP BY _season "
                         + "ORDER BY _season; ";
                 
@@ -495,7 +503,15 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigUser(),
                     ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigPassword(),
                     ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigUser());
-                ArrayList<String> recipients = new ArrayList<String>(Arrays.asList(SLibUtilities.textExplode(msAuxRecipientsTo, ";")));
+                
+                ArrayList<String> recipients;
+                if (producerId == 0) {
+                    recipients = new ArrayList<String>(Arrays.asList(SLibUtilities.textExplode(msAuxItemRecipientsTo, ";")));
+                }
+                else {
+                    recipients = new ArrayList<String>(Arrays.asList(SLibUtilities.textExplode(msAuxProducerRecipientsTo, ";")));
+                }
+                
                 SMail mail = new SMail(sender, subject, body, recipients);
                 
                 mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
@@ -665,8 +681,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public void setAuxMoveNextOnSend(boolean b) { mbAuxMoveNextOnSave = b; }
     public void setAuxRequirePriceComputation(boolean b) { mbAuxRequirePriceComputation = b; }
-    public void setAuxSendMail(boolean b) { mbAuxSendMail = b; }
-    public void setAuxRecipientsTo(String s) { msAuxRecipientsTo = s; }
+    public void setAuxItemSendMail(boolean b) { mbAuxItemSendMail = b; }
+    public void setAuxItemRecipientsTo(String s) { msAuxItemRecipientsTo = s; }
+    public void setAuxProducerSendMail(boolean b) { mbAuxProducerSendMail = b; }
+    public void setAuxProducerRecipientsTo(String s) { msAuxProducerRecipientsTo = s; }
 
     public String getXtaScaleName() { return msXtaScaleName; }
     public String getXtaScaleCode() { return msXtaScaleCode; }
@@ -680,8 +698,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public boolean isAuxMoveNextOnSend() { return mbAuxMoveNextOnSave; }
     public boolean isAuxRequirePriceComputation() { return mbAuxRequirePriceComputation; }
-    public boolean isAuxSendMail() { return mbAuxSendMail; }
-    public String getAuxRecipientsTo() { return msAuxRecipientsTo; }
+    public boolean isAuxItemSendMail() { return mbAuxItemSendMail; }
+    public String getAuxItemRecipientsTo() { return msAuxItemRecipientsTo; }
+    public boolean isAuxProducerSendMail() { return mbAuxProducerSendMail; }
+    public String getAuxProducerRecipientsTo() { return msAuxProducerRecipientsTo; }
 
     public Vector<SDbTicketNote> getChildTicketNotes() { return mvChildTicketNotes; }
     public Vector<SDbLaboratory> getChildLaboratories() { return mvChildLaboratories; }
@@ -790,8 +810,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
         mbAuxMoveNextOnSave = false;
         mbAuxRequirePriceComputation = false;
-        mbAuxSendMail = false;
-        msAuxRecipientsTo = "";
+        mbAuxItemSendMail = false;
+        msAuxItemRecipientsTo = "";
+        mbAuxProducerSendMail = false;
+        msAuxProducerRecipientsTo = "";
 
         mvChildTicketNotes.clear();
         mvChildLaboratories.clear();
@@ -1192,8 +1214,12 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             }
         }
 
-        if (mbAuxSendMail) {
-            sendMail(session);
+        if (mbAuxItemSendMail) {
+            sendMail(session, 0);
+        }
+        
+        if (mbAuxProducerSendMail) {
+            sendMail(session, mnFkProducerId);
         }
 
         // Finish registry updating:
@@ -1291,8 +1317,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
         registry.setAuxMoveNextOnSend(this.isAuxMoveNextOnSend());
         registry.setAuxRequirePriceComputation(this.isAuxRequirePriceComputation());
-        registry.setAuxSendMail(this.isAuxSendMail());
-        registry.setAuxRecipientsTo(this.getAuxRecipientsTo());
+        registry.setAuxItemSendMail(this.isAuxItemSendMail());
+        registry.setAuxItemRecipientsTo(this.getAuxItemRecipientsTo());
+        registry.setAuxProducerSendMail(this.isAuxProducerSendMail());
+        registry.setAuxProducerRecipientsTo(this.getAuxProducerRecipientsTo());
 
         for (SDbTicketNote child : mvChildTicketNotes) {
             registry.getChildTicketNotes().add(child.clone());
@@ -1498,15 +1526,14 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     }
 
     public boolean isLinkIog(final SGuiSession session) throws SQLException {
-        ResultSet resultSet = null;
         boolean isLink = false;
 
         msSql = "SELECT COUNT(*) FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " WHERE b_del = 0 AND fk_tic_n = " + mnPkTicketId + " ";
 
-        resultSet = session.getStatement().executeQuery(msSql);
-
-        if (resultSet.next()) {
-            isLink = resultSet.getInt(1) > 0;
+        try (ResultSet resultSet = session.getStatement().executeQuery(msSql)) {
+            if (resultSet.next()) {
+                isLink = resultSet.getInt(1) > 0;
+            }
         }
 
         return isLink;

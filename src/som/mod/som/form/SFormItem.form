@@ -1061,6 +1061,9 @@
                       <SubComponents>
                         <Component class="javax.swing.JLabel" name="jlAutoMailNotificationBoxes">
                           <Properties>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="66" green="66" red="0" type="rgb"/>
+                            </Property>
                             <Property name="text" type="java.lang.String" value="Destinatario(s) mail:"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 23]"/>
@@ -1113,6 +1116,9 @@
                       <SubComponents>
                         <Component class="javax.swing.JLabel" name="jlUserMailNotificationBoxes">
                           <Properties>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="66" green="66" red="0" type="rgb"/>
+                            </Property>
                             <Property name="text" type="java.lang.String" value="Destinatario(s) mail:"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[100, 23]"/>

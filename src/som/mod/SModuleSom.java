@@ -29,6 +29,7 @@ import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbProducer;
 import som.mod.som.db.SDbScale;
 import som.mod.som.db.SDbUnit;
+import som.mod.som.db.SSomConsts;
 import som.mod.som.form.SFormExternalWarehouse;
 import som.mod.som.form.SFormInputCategory;
 import som.mod.som.form.SFormInputClass;
@@ -50,7 +51,7 @@ import som.mod.som.view.SViewScale;
 
 /**
  * 
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
 public class SModuleSom extends SGuiModule {
 
@@ -159,8 +160,10 @@ public class SModuleSom extends SGuiModule {
             case SModConsts.SU_INP_SRC:
                 settings = new SGuiCatalogueSettings("Origen insumo", 1);
                 sql = "SELECT id_inp_src AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 AND "
-                        + "id_inp_src <> " + SModSysConsts.SU_INP_SRC_NA + " " + (params == null ? "" : "AND fk_inp_ct = " + params.getType() + " ") + "ORDER BY name, id_inp_src ";
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 "
+                        + (subtype == SSomConsts.OPC_ALL ? "" : "AND id_inp_src <> " + SModSysConsts.SU_INP_SRC_NA + " ")
+                        + (params == null ? "" : "AND fk_inp_ct = " + params.getType() + " ")
+                        + "ORDER BY name, id_inp_src ";
                 break;
             case SModConsts.SU_UNIT:
                 settings = new SGuiCatalogueSettings("Unidad", 1);

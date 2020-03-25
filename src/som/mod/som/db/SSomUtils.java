@@ -27,7 +27,7 @@ import som.mod.cfg.db.SDbCompany;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
 public abstract class SSomUtils {
     
@@ -893,13 +893,14 @@ public abstract class SSomUtils {
     /**
      * Obtain weight on destiny from tickes on provided period.
      * @param session Current GUI session.
-     * @param idItem int,
-     * @param dateStart Date,
-     * @param dateEnd Date,
-     * @param idReportingGroup int
+     * @param idItem ID of item.
+     * @param dateStart Start date.
+     * @param dateEnd End date.
+     * @param idReportingGroup ID of reporting group, can be zero.
+     * @param idProducer ID of producer, can be zero.
      * @return double
      */
-    public static double obtainWeightDestinyByPeriod(final SGuiSession session, final int idItem,final Date dateStart, final Date dateEnd, final int idReportingGroup) throws SQLException {
+    public static double obtainWeightDestinyByPeriod(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, final int idReportingGroup, final int idProducer) throws SQLException {
         double weight = 0;
 
         String sql = "SELECT SUM(t.wei_des_net_r) " +
@@ -907,7 +908,8 @@ public abstract class SSomUtils {
             "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS p ON t.fk_prod = p.id_prod " +
             "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " AND " +
             "t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
-            (idReportingGroup == SLibConsts.UNDEFINED ? "" : "AND p.fk_rep_grp = " + idReportingGroup + " ") + ";";
+            (idProducer == 0 ? "" : "AND p.id_prod = " + idProducer + " ") +
+            (idReportingGroup == 0 ? "" : "AND p.fk_rep_grp = " + idReportingGroup + " ") + ";";
         ResultSet resultSet = session.getStatement().executeQuery(sql);
 
         if (resultSet.next()) {

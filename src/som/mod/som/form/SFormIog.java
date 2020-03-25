@@ -29,6 +29,7 @@ import som.gui.SGuiClientSessionCustom;
 import som.gui.SGuiClientUtils;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
+import som.mod.cfg.db.SDbCompany;
 import som.mod.som.db.SDbIog;
 import som.mod.som.db.SDbTicket;
 import som.mod.som.db.SSomStock;
@@ -37,7 +38,7 @@ import som.mod.som.db.SSomWarehouseItem;
 
 /**
  *
- * @author Néstor Ávalos, Sergio Flores
+ * @author Néstor Ávalos, Sergio Flores, Isabel Servín
  * 2018-11-21, Sergio Flores:
  * 1) Adición de columna referencia en tabla de movimientos de almacén.
  */
@@ -48,8 +49,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
     private SDbIog moRegistry;
     private SDbIog moIogRegistryB;
-    private SDbIog moIogRegistryC;
-    private SDbIog moIogRegistryD;
+    private SDbCompany moCompany;
     private SGuiFieldKeyGroup moFieldKeyGroupWarehouse;
     private SGuiFieldKeyGroup moFieldKeyGroupWarehouseDestiny;
 
@@ -787,8 +787,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         SGuiUtils.setWindowBounds(this, 1024, 640);
         mbTicketRegistry = false;
         moIogRegistryB = null;
-        moIogRegistryC = null;
-        moIogRegistryD = null;
+        moCompany = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany();
 
         moFieldKeyGroupWarehouse = new SGuiFieldKeyGroup(miClient);
         moFieldKeyGroupWarehouseDestiny = new SGuiFieldKeyGroup(miClient);
@@ -924,13 +923,12 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
+            moRegistry.setFkDivisionId(moCompany.getFkDivisionDefaultId());
             jtfRegistryKey.setText("");
         }
         else {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
             moIogRegistryB = moRegistry.getIogRegistryB();
-            moIogRegistryC = moRegistry.getIogRegistryC();
-            moIogRegistryD = moRegistry.getIogRegistryD();
         }
 
         moFkIogTypeId = new int[] { moRegistry.getFkIogCategoryId(), moRegistry.getFkIogClassId(), moRegistry.getFkIogTypeId() };
@@ -967,6 +965,10 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
             moDateDate.setValue(miClient.getSession().getWorkingDate());
             moBoolDeleted.setEnabled(false);
             moBoolSystem.setEnabled(false);
+            
+            if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId)) {
+                moKeyDivisionDestiny.setValue(new int[] { moCompany.getFkDivisionDefaultId() });
+            }
         }
         else {
             moKeyWarehouseSource.setEnabled(false);
@@ -1080,7 +1082,6 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     }
 
     private void loadIogDestiny() {
-
         if (SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId)) {
             moKeyBranchDestiny.setValue(new int[] { moIogRegistryB.getFkWarehouseCompanyId(), moIogRegistryB.getFkWarehouseBranchId() });
             moKeyWarehouseDestiny.setValue(new int[] { moIogRegistryB.getFkWarehouseCompanyId(), moIogRegistryB.getFkWarehouseBranchId(), moIogRegistryB.getFkWarehouseWarehouseId() });
@@ -1090,7 +1091,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         else {
             moKeyBranchDestiny.setSelectedIndex(0);
             moKeyWarehouseDestiny.setSelectedIndex(0);
-            moKeyDivisionDestiny.setSelectedIndex(0);
+            moKeyDivisionDestiny.setValue(new int[] { moRegistry.getFkDivisionId() });
             moKeyItemDestiny.setSelectedIndex(0);
         }
     }
@@ -1305,10 +1306,12 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         moTextXtaStockPeriod.setEditable(b);
         moTextXtaStockPeriodDestiny.setEditable(b);
-        moKeyItem.setEnabled(!moRegistry.isRegistryNew() || mbTicketRegistry ? false : true);
+        moKeyDivisionSource.setEnabled(false);
+        moKeyDivisionDestiny.setEnabled(false);
+        moKeyItem.setEnabled((moRegistry.isRegistryNew() && !mbTicketRegistry));
         moDecXtaStock.setEditable(false);
         moDecXtaStockDestiny.setEditable(false);
-        moDecQuantity.setEditable(mbTicketRegistry ? false : true);
+        moDecQuantity.setEditable(!mbTicketRegistry);
         moDecQuantityDestiny.setEditable(false);
 
         jlBranchDestiny.setEnabled(false);
@@ -1316,7 +1319,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         if (!SLibUtils.compareKeys(SModSysConsts.SS_IOG_TP_OUT_INT_TRA, moFkIogTypeId)) {
             moKeyWarehouseDestiny.setEnabled(b);
-            moKeyDivisionDestiny.setEnabled(b);
+            moKeyDivisionDestiny.setEnabled(false);
             moKeyItemDestiny.setEnabled(!moRegistry.isRegistryNew() ? false : b);
 
             jbCardexDestiny.setEnabled(b);

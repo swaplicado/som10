@@ -191,48 +191,48 @@ public class SImportTicketsRevuelta {
                     registry.setFkRegionId_n(getProperRegionId(moSession, seasonId, registry.getFkItemId(), registry.getFkProducerId()));
                     registry.setFkUnitId(dbItem.getFkUnitId());
                     
-                    HashMap conjuntoOrígenes = SSomUtils.getOrigin(moSession, idItem); // hashmap
-                    registry.setFkInputSourceId((conjuntoOrígenes.containsKey(dbProducer.getFkInputSourceId()) ? dbProducer.getFkInputSourceId() : SModSysConsts.SU_INP_SRC_NA));
+                    HashMap originsMap = SSomUtils.getOrigin(moSession, idItem);
+                    registry.setFkInputSourceId((originsMap.containsKey(dbProducer.getFkInputSourceId()) ? dbProducer.getFkInputSourceId() : SModSysConsts.SU_INP_SRC_NA));
                     registry.setFkLaboratoryId_n(0);
-                    //registry.setFkExternalDpsYearId_n(FkExternalDpsYearId_n());
-                    //registry.setFkExternalDpsDocId_n(FkExternalDpsDocId_n());
-                    //registry.setFkExternalDpsEntryId_n(FkExternalDpsEntryId_n());
-                    //registry.setFkUserInsertId(FkUserInsertId());
-                    //registry.setFkUserUpdateId(FkUserUpdateId());
-                    //registry.setFkUserTaredId(FkUserTaredId());
-                    //registry.setFkUserPayedId(FkUserPayedId());
-                    //registry.setFkUserAssortedId(FkUserAssortedId());
-                    //registry.setTsUserInsert(TsUserInsert());
-                    //registry.setTsUserUpdate(TsUserUpdate());
-                    //registry.setTsUserTared(TsUserTared());
-                    //registry.setTsUserPayed(TsUserPayed());
-                    //registry.setTsUserAssorted(TsUserAssorted());
-                    //registry.setXtaScaleName(XtaScaleName());
-                    //registry.setXtaScaleCode(XtaScaleCode());
-                    //registry.setXtaSeason(XtaSeason());
-                    //registry.setXtaRegion(XtaRegion());
-                    //registry.setXtaItem(XtaItem());
-                    //registry.setXtaProducer(XtaProducer());
-                    //registry.setXtaProviderFiscalId(XtaProducerFiscalId());
-                    //registry.setAuxFormerTared(this.isAuxFormerTared());
-                    //registry.setAuxFormerPayed(this.isAuxFormerPayed());
-                    //registry.setAuxFormerAssorted(this.isAuxFormerAssorted());
-                    //registry.setAuxMoveNextOnSend(this.isAuxMoveNextOnSend());
-                    //registry.setAuxRequiredCalculation(this.isAuxRequiredCalculation());
-                    //registry.setAuxSendMail(this.isAuxSendMail());
-                    //registry.setAuxRecipientsTo(AuxRecipientsTo());
+                    //registry.setFkExternalDpsYearId_n(...);
+                    //registry.setFkExternalDpsDocId_n(...);
+                    //registry.setFkExternalDpsEntryId_n(..);
+                    //registry.setFkUserInsertId(...);
+                    //registry.setFkUserUpdateId(...);
+                    //registry.setFkUserTaredId(...);
+                    //registry.setFkUserPayedId(...);
+                    //registry.setFkUserAssortedId(...);
+                    //registry.setTsUserInsert(...);
+                    //registry.setTsUserUpdate(...);
+                    //registry.setTsUserTared(...);
+                    //registry.setTsUserPayed(...);
+                    //registry.setTsUserAssorted(...);
+                    //registry.setXtaScaleName(...);
+                    //registry.setXtaScaleCode(...);
+                    //registry.setXtaSeason(...);
+                    //registry.setXtaRegion(...);
+                    //registry.setXtaItem(...);
+                    //registry.setXtaProducer(...);
+                    //registry.setXtaProviderFiscalId(...);
+                    //registry.setAuxFormerTared(...);
+                    //registry.setAuxFormerPayed(...);
+                    //registry.setAuxFormerAssorted(...);
+                    //registry.setAuxMoveNextOnSend(...);
+                    //registry.setAuxRequiredCalculation(...);
+                    //registry.setAuxItemSendMail(...);
+                    //registry.setAuxItemRecipientsTo(...);
+                    //registry.setAuxProducerSendMail(...);
+                    //registry.setAuxProducerRecipientsTo(...);
                     SDbTicketNote note = new SDbTicketNote();
                     note.setNote(rstRev.getString("Pes_ObsPri"));
                     registry.getChildTicketNotes().add(note);
                     registry.save(moSession);
                     
                     String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " importado!";
-                    System.out.println(entry);             // ONLY FOR DEBUG
                     writeLog(entry);
                 }
                 else {
                     String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " NO fue importado! Producto: " + rstRev.getString("Pro_ID") + ".";
-                    System.out.println(entry);
                     writeLog(entry);
                 }
             }
