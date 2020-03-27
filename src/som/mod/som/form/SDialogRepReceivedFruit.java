@@ -192,10 +192,6 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
         sqlWhere += (moKeyItem.getSelectedIndex() <= 0 ? "" : " AND it.id_item = " + moKeyItem.getValue()[0] + " ");
         sqlWhere += (moKeyProducer.getSelectedIndex() <= 0 ? "" : " AND t.fk_prod = " + moKeyProducer.getValue()[0] + " ");
         
-        System.out.println(moDateDateStart.getValue());
-        System.out.println(moDateDateEnd.getValue());
-        System.out.println(!moRadSummary.getValue());
-        
         moParamsMap.put("tDateStart", moDateDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
         moParamsMap.put("bShowDetails", !moRadSummary.getValue());
