@@ -60,8 +60,8 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
         jPanel7 = new javax.swing.JPanel();
         jlProducer = new javax.swing.JLabel();
         moKeyProducer = new sa.lib.gui.bean.SBeanFieldKey();
-        moRadSummary = new sa.lib.gui.bean.SBeanFieldRadio();
         moRadDetail = new sa.lib.gui.bean.SBeanFieldRadio();
+        moRadSummary = new sa.lib.gui.bean.SBeanFieldRadio();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros del reporte:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -108,13 +108,13 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
 
         jPanel2.add(jPanel7);
 
-        reportTypeGroup.add(moRadSummary);
-        moRadSummary.setText("Modalidad resumen");
-        jPanel2.add(moRadSummary);
-
         reportTypeGroup.add(moRadDetail);
         moRadDetail.setText("Modalidad detallada");
         jPanel2.add(moRadDetail);
+
+        reportTypeGroup.add(moRadSummary);
+        moRadSummary.setText("Modalidad resumen");
+        jPanel2.add(moRadSummary);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.CENTER);
 
@@ -150,15 +150,15 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
         moDateDateEnd.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateEnd), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem), false);
         moKeyProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlProducer), false);
-        moRadSummary.setBooleanSettings(SGuiUtils.getLabelName(moRadSummary.getText()), false);
         moRadDetail.setBooleanSettings(SGuiUtils.getLabelName(moRadDetail.getText()), false);
+        moRadSummary.setBooleanSettings(SGuiUtils.getLabelName(moRadSummary.getText()), false);
 
         moFields.addField(moDateDateStart);
         moFields.addField(moDateDateEnd);
         moFields.addField(moKeyItem);
         moFields.addField(moKeyProducer);
-        moFields.addField(moRadSummary);
         moFields.addField(moRadDetail);
+        moFields.addField(moRadSummary);
 
         moFields.setFormButton(jbPrint);
 
@@ -171,6 +171,7 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
 
         miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SModSysConsts.SX_ITEM_TP_FRUIT, null);
+        moRadDetail.setSelected(true);
     }
 
     @Override
@@ -190,15 +191,15 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
 
         sqlWhere += (moKeyItem.getSelectedIndex() <= 0 ? "" : " AND it.id_item = " + moKeyItem.getValue()[0] + " ");
         sqlWhere += (moKeyProducer.getSelectedIndex() <= 0 ? "" : " AND t.fk_prod = " + moKeyProducer.getValue()[0] + " ");
-
+        
+        System.out.println(moDateDateStart.getValue());
+        System.out.println(moDateDateEnd.getValue());
+        System.out.println(!moRadSummary.getValue());
+        
         moParamsMap.put("tDateStart", moDateDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
         moParamsMap.put("bShowDetails", !moRadSummary.getValue());
-        moParamsMap.put("sInputCategory", "");
-        moParamsMap.put("sInputClass", "");
-        moParamsMap.put("sInputType", "");
-        moParamsMap.put("sReportType", "");
         moParamsMap.put("sSqlWhere", sqlWhere + " AND it.b_fruit ");
-        moParamsMap.put("sSqlOrderBy", "");
+        moParamsMap.put("sSqlOrderBy", "it.name, t.fk_item, ");
     }
 }

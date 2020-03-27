@@ -68,8 +68,8 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         moKeySource = new sa.lib.gui.bean.SBeanFieldKey();
         moRadProducer = new sa.lib.gui.bean.SBeanFieldRadio();
         moRadSource = new sa.lib.gui.bean.SBeanFieldRadio();
-        moRadSummary = new sa.lib.gui.bean.SBeanFieldRadio();
         moRadDetail = new sa.lib.gui.bean.SBeanFieldRadio();
+        moRadSummary = new sa.lib.gui.bean.SBeanFieldRadio();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros del reporte:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -135,13 +135,13 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         moRadSource.setText("Ordenar por origen");
         jPanel2.add(moRadSource);
 
-        reportTypeGroup.add(moRadSummary);
-        moRadSummary.setText("Modalidad resumen");
-        jPanel2.add(moRadSummary);
-
         reportTypeGroup.add(moRadDetail);
         moRadDetail.setText("Modalidad detallada");
         jPanel2.add(moRadDetail);
+
+        reportTypeGroup.add(moRadSummary);
+        moRadSummary.setText("Modalidad resumen");
+        jPanel2.add(moRadSummary);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.CENTER);
 
@@ -186,8 +186,8 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         moKeySource.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputSource), false);
         moRadProducer.setBooleanSettings(SGuiUtils.getLabelName(jlProducer), false);
         moRadSource.setBooleanSettings(SGuiUtils.getLabelName(jlInputSource), false);
-        moRadSummary.setBooleanSettings(SGuiUtils.getLabelName(jlProducer), false);
         moRadDetail.setBooleanSettings(SGuiUtils.getLabelName(jlProducer), false);
+        moRadSummary.setBooleanSettings(SGuiUtils.getLabelName(jlProducer), false);
 
         moFields.addField(moDateDateStart);
         moFields.addField(moDateDateEnd);
@@ -196,8 +196,8 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         moFields.addField(moKeySource);
         moFields.addField(moRadProducer);
         moFields.addField(moRadSource);
-        moFields.addField(moRadSummary);
         moFields.addField(moRadDetail);
+        moFields.addField(moRadSummary);
 
         moFields.setFormButton(jbPrint);
 
@@ -211,6 +211,9 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SModSysConsts.SX_ITEM_TP_FRUIT, null);
         miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeySource, SModConsts.SU_INP_SRC, SLibConsts.UNDEFINED, null);
+        
+        moRadProducer.setSelected(true);
+        moRadDetail.setSelected(true);
     }
 
     @Override

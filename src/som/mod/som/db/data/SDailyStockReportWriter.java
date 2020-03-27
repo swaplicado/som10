@@ -160,7 +160,7 @@ public class SDailyStockReportWriter {
     private static void createHeaderRow(Sheet sheet, ArrayList<String> columns, final int startRow) {
         CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
         Font font = sheet.getWorkbook().createFont();
-        font.setBold(true);
+//        font.setBold(true);
         font.setFontHeightInPoints((short) 10);
         cellStyle.setFont(font);
 
