@@ -18,6 +18,7 @@ import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiSession;
 import som.mod.som.db.SDbInputCategory;
 import som.mod.som.db.SDbItem;
+import som.mod.som.db.SDbUnit;
 import som.mod.som.db.SSomMailUtils;
 
 /**
@@ -34,44 +35,13 @@ public class SReportHtmlTicketSeasonMonth {
     
     /**
      * Generates report in HTML 5 format.
-     * @param itemId Item ID.
-     * @param yearRef Year reference. Can be two types of values: i.e., if >= 2001, then is the year to start from; otherwise is a number of history years besides current year.
+     * @param itemIds List of ID of items.
+     * @param yearRef Year reference. Can be one out of two elegible types of values: 1) if it is a 4-digit year and greater or equal than 2001, it is the year to start from; otherwise 2) it is the number of history years besides current year.
+     * @param intvlDays Interval days for invocation of this report mailer.
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final int itemId, final int yearRef) throws Exception {
-        // read requested item for report:
-        SDbItem item = new SDbItem();
-        item.read(moSession, new int[] { itemId });
-        SDbInputCategory inputCategory = new SDbInputCategory();
-        inputCategory.read(moSession, new int[] { item.getFkInputCategoryId() });
-        
-        // define start and end date for report:
-        Date today = new Date();
-        int[] todayDigestion = SLibTimeUtils.digestDate(today);
-        int todayYear = todayDigestion[0];
-        int todayMonth = todayDigestion[1];
-        int years;
-        int yearStart;
-        int yearEnd;
-        
-        yearStart = todayMonth < item.getStartingSeasonMonth() ? todayYear - 1 : todayYear;
-        
-        if (yearRef >= SLibTimeConsts.YEAR_MIN) {
-            // year reference contains the year to start from:
-            yearEnd = yearRef;
-            years = yearStart - yearEnd;
-        }
-        else {
-            // year reference contains a number of history years:
-            years = yearRef;
-            yearEnd = yearStart - years;
-        }
-        
-        if (yearEnd > yearStart) {
-            throw new Exception("El año final no puede ser mayor al año inicial.");
-        }
-        
+    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -84,11 +54,19 @@ public class SReportHtmlTicketSeasonMonth {
                 + " font-size: 100%;"
                 + "} "
                 + "h1 {"
-                + " font-size: 2.5em;"
+                + " font-size: 2.00em;"
                 + " font-family: sans-serif;"
                 + "} "
                 + "h2 {"
-                + " font-size: 1.5em;"
+                + " font-size: 1.75em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h3 {"
+                + " font-size: 1.50em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h4 {"
+                + " font-size: 1.25em;"
                 + " font-family: sans-serif;"
                 + "} "
                 + "p {"
@@ -141,116 +119,187 @@ public class SReportHtmlTicketSeasonMonth {
         // HTML body:
         
         html += "<body>\n";
-        html += "<h2>" + SLibUtils.textToHtml("Comparativo histórico mensual recepción " + inputCategory.getName().toLowerCase()) + "</h2>\n";
-        html += "<p><b>" + SLibUtils.textToHtml(item.getName()) + "</b> al " + SLibUtils.textToHtml(SLibUtils.DateFormatDateLong.format(today)) + " (" + SLibUtils.DateFormatTime.format(today) + ")</p>\n";
         
-        // obtain report data:
+        // define start and end date for report:
         
-        double[] tableTotals = new double[years + 1]; // total weight per year
-        double[][] tableValues = new double[years + 1][SLibTimeConsts.MONTHS]; // total weight per year
-        HashMap<Integer, Integer> maxValues = new HashMap<>(); // key: year index, value: row index
+        Date today = new Date();
+        int[] todayDigestion = SLibTimeUtils.digestDate(today);
+        int todayYear = todayDigestion[0];
+        int todayMonth = todayDigestion[1];
         
-        String sql = "SELECT SUM(wei_des_net_r) "
-                + "FROM s_tic "
-                + "WHERE NOT b_del AND b_tar AND fk_item = " + itemId + " AND dt BETWEEN ? AND ?";
-        PreparedStatement preparedStatement = moSession.getStatement().getConnection().prepareStatement(sql);
+        // HTML heading 1 (main title):
         
-        // monthly weights, begining from first year or season backwards:
+        html += "<h2>" + SLibUtils.textToHtml("Histórico mensual recepción báscula") + "</h2>\n";
+        html += "<p>Fecha-hora corte: " + SLibUtils.textToHtml(SLibUtils.DateFormatDatetime.format(today)) + "</p>\n";
         
-        int year;
-        int month = item.getStartingSeasonMonth();
+        // process list of items for report:
+
+        int lastInputCategoryId = 0; // to control when a new input category stages, to stand it out as a new title
         
-        for (int row = 0; row < SLibTimeConsts.MONTHS; row++) {
-            year = yearStart;
+        for (int itemId : itemIds) {
+            // read requested item for report:
+            SDbItem item = new SDbItem();
+            item.read(moSession, new int[] { itemId });
+            SDbUnit unit = new SDbUnit();
+            unit.read(moSession, new int[] { item.getFkUnitId() });
+            SDbInputCategory inputCategory = new SDbInputCategory();
+            inputCategory.read(moSession, new int[] { item.getFkInputCategoryId() });
+
+            int yearStart;
+            int yearEnd;
+            int years;
             
-            if (item.getStartingSeasonMonth() + row > SLibTimeConsts.MONTHS) {
-                year++;
-            }
-            
-            for (int col = 0; col < tableTotals.length; col++) {
-                Date start = SLibTimeUtils.createDate(year - col, month, 1);
-                Date end = SLibTimeUtils.getEndOfMonth(start);
-                
-                preparedStatement.setDate(1, new java.sql.Date(start.getTime()));
-                preparedStatement.setDate(2, new java.sql.Date(end.getTime()));
-                ResultSet resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()) {
-                    double value = resultSet.getDouble(1);
-                    tableTotals[col] += value;
-                    tableValues[col][row] = value;
-                    
-                    Integer rowOfMaxValue = maxValues.get(col);
-                    if (rowOfMaxValue == null || value > tableValues[col][rowOfMaxValue]) {
-                        maxValues.put(col, row);
-                    }
-                }
-            }
-            
-            if (++month > SLibTimeConsts.MONTHS) {
-                month = 1;
-            }
-        }
-        
-        // HTML table:
-        
-        html += "<table>\n";
-        
-        // table header:
-        
-        ArrayList<String> headerCols = new ArrayList<>();
-        headerCols.add("Mes");
-        for (int col = yearStart; col >= yearEnd; col--) {
-            if (item.getStartingSeasonMonth() == 1) {
-                headerCols.add("" + col);
+            yearStart = todayMonth < item.getStartingSeasonMonth() ? todayYear - 1 : todayYear;
+
+            if (yearRef >= SLibTimeConsts.YEAR_MIN) {
+                // year reference contains the year to start from:
+                yearEnd = yearRef;
+                years = yearStart - yearEnd;
             }
             else {
-                headerCols.add("" + col + "-" + (col + 1));
+                // year reference contains a number of history years:
+                years = yearRef;
+                yearEnd = yearStart - years;
             }
-        }
-        
-        html += "<tr>";
-        for (int col = 0; col < headerCols.size(); col++) {
-            html += "<th" + (col == 0 ? "" : " colspan='2'") + ">" + headerCols.get(col) + "</th>";
-        }
-        html += "</tr>\n";
-        
-        
-        // table body:
-        
-        String[] months = SLibTimeUtils.createMonthsOfYearStd(Calendar.SHORT); // month names for first column
-        DecimalFormat decimalFormatPct = new DecimalFormat("#0.0%");
-        
-        month = item.getStartingSeasonMonth();
-        
-        for (int row = 0; row < SLibTimeConsts.MONTHS; row++) {
+
+            if (yearEnd > yearStart) {
+                throw new Exception("El año final no puede ser mayor al año inicial.");
+            }
+
+            // HTML heading 2 (input category subtitle, if necesary):
+
+            if (lastInputCategoryId != inputCategory.getPkInputCategoryId()) {
+                html += "<h3>" + SLibUtils.textToHtml("Categoría " + SLibUtils.textProperCase(inputCategory.getName())) + "</h3>\n";
+                
+                lastInputCategoryId = inputCategory.getPkInputCategoryId();
+            }
             
+            // HTML heading 3 (item subtitle):
+            
+            String name = SCliReportMailer.ItemDescriptions.get(itemId);
+            html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (acumulado en " + unit.getCode() + ")") + "</h4>\n";
+
+            // obtain report data:
+
+            String sql = "SELECT SUM(wei_des_net_r) "
+                    + "FROM s_tic "
+                    + "WHERE NOT b_del AND b_tar AND fk_item = " + itemId + " AND dt BETWEEN ? AND ?";
+            PreparedStatement preparedStatement = moSession.getStatement().getConnection().prepareStatement(sql);
+            
+            // reception during last interval days:
+            
+            preparedStatement.setDate(1, new java.sql.Date(SLibTimeUtils.addDate(today, 0, 0, -intvlDays).getTime()));
+            preparedStatement.setDate(2, new java.sql.Date(today.getTime()));
+            
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                html += "<p>" + SLibUtils.textToHtml("Recepción " + (intvlDays == 1 ? "último día" : "últimos " + intvlDays + " días") + ": " + 
+                        SLibUtils.getDecimalFormatAmount().format(resultSet.getDouble(1)) + " " + unit.getCode()) + "</p>\n";
+            }
+
+            // monthly weights, begining from first year or season backwards:
+
+            int year;
+            int month = item.getStartingSeasonMonth();
+            double[] tableTotals = new double[years + 1]; // total weight per year
+            double[][] tableValues = new double[years + 1][SLibTimeConsts.MONTHS]; // total weight per year
+            HashMap<Integer, Integer> maxValues = new HashMap<>(); // key: year index, value: row index
+
+            for (int row = 0; row < SLibTimeConsts.MONTHS; row++) {
+                year = yearStart;
+
+                if (item.getStartingSeasonMonth() + row > SLibTimeConsts.MONTHS) {
+                    year++;
+                }
+
+                for (int col = 0; col < tableTotals.length; col++) {
+                    Date start = SLibTimeUtils.createDate(year - col, month, 1);
+                    Date end = SLibTimeUtils.getEndOfMonth(start);
+
+                    preparedStatement.setDate(1, new java.sql.Date(start.getTime()));
+                    preparedStatement.setDate(2, new java.sql.Date(end.getTime()));
+                    
+                    resultSet = preparedStatement.executeQuery();
+                    if (resultSet.next()) {
+                        double value = resultSet.getDouble(1);
+                        tableTotals[col] += value;
+                        tableValues[col][row] = value;
+
+                        Integer rowOfMaxValue = maxValues.get(col);
+                        if (rowOfMaxValue == null || value > tableValues[col][rowOfMaxValue]) {
+                            maxValues.put(col, row);
+                        }
+                    }
+                }
+
+                if (++month > SLibTimeConsts.MONTHS) {
+                    month = 1;
+                }
+            }
+
+            // HTML table:
+
+            html += "<table>\n";
+
+            // table header:
+
+            ArrayList<String> headerCols = new ArrayList<>();
+            headerCols.add("Mes");
+            for (int col = yearStart; col >= yearEnd; col--) {
+                if (item.getStartingSeasonMonth() == 1) {
+                    headerCols.add("" + col);
+                }
+                else {
+                    headerCols.add("" + col + "-" + (col + 1));
+                }
+            }
+
             html += "<tr>";
-            html += "<td class='colmonth'>" + months[month - 1] + "</td>";
-            
-            for (int col = 0; col < tableTotals.length; col++) {
-                boolean isMax = maxValues.get(col) == row;
-                html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + SLibUtils.getDecimalFormatAmount().format(tableValues[col][row]) + "</td>";
-                html += "<td class='coldatapct" + (isMax ? "max" : "") + "'>" + decimalFormatPct.format(tableTotals[col] == 0 ? 0 : tableValues[col][row] / tableTotals[col]) + "</td>";
+            for (int col = 0; col < headerCols.size(); col++) {
+                html += "<th" + (col == 0 ? "" : " colspan='2'") + ">" + headerCols.get(col) + "</th>";
             }
-            
-            if (++month > SLibTimeConsts.MONTHS) {
-                month = 1;
-            }
-            
             html += "</tr>\n";
+
+
+            // table body:
+
+            String[] months = SLibTimeUtils.createMonthsOfYearStd(Calendar.SHORT); // month names for first column
+            DecimalFormat decimalFormatPct = new DecimalFormat("#0.0%");
+
+            month = item.getStartingSeasonMonth();
+
+            for (int row = 0; row < SLibTimeConsts.MONTHS; row++) {
+
+                html += "<tr>";
+                html += "<td class='colmonth'>" + months[month - 1] + "</td>";
+
+                for (int col = 0; col < tableTotals.length; col++) {
+                    boolean isMax = maxValues.get(col) == row;
+                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + SLibUtils.getDecimalFormatAmount().format(tableValues[col][row]) + "</td>";
+                    html += "<td class='coldatapct" + (isMax ? "max" : "") + "'>" + decimalFormatPct.format(tableTotals[col] == 0 ? 0 : tableValues[col][row] / tableTotals[col]) + "</td>";
+                }
+
+                if (++month > SLibTimeConsts.MONTHS) {
+                    month = 1;
+                }
+
+                html += "</tr>\n";
+            }
+
+            // table footer:
+
+            html += "<tr>";
+            html += "<td class='colmonth'><b>Total</b></td>";
+            for (int col = 0; col < tableTotals.length; col++) {
+                html += "<td class='coldata'><b>" + SLibUtils.getDecimalFormatAmount().format(tableTotals[col]) + "</b></td>";
+                html += "<td class='coldatapct'><b>" + decimalFormatPct.format(1) + "</b></td>";
+            }
+            html += "</tr>\n";
+
+            html += "</table>\n";
+            html += "<br>\n";
         }
         
-        // table footer:
-        
-        html += "<tr>";
-        html += "<td class='colmonth'><b>Total</b></td>";
-        for (int col = 0; col < tableTotals.length; col++) {
-            html += "<td class='coldata'><b>" + SLibUtils.getDecimalFormatAmount().format(tableTotals[col]) + "</b></td>";
-            html += "<td class='coldatapct'><b>" + decimalFormatPct.format(1) + "</b></td>";
-        }
-        html += "</tr>\n";
-        
-        html += "</table>\n";
         
         html += SSomMailUtils.composeMailWarning();
         

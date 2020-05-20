@@ -1,4 +1,12 @@
 ================================================================================
+2020-05-20, 1.0 068.2
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Cambios al programa de CLI cartero del informe del histórico mensual recepción báscula:
+- Incorporación de bagazo y hueso y cáscara.
+- Incorporación de kg recibidos desde la última ejecución (por lo pronto, esta funcionalidad queda fija a 6 7 días hacia atrás.)
+
+================================================================================
 2020-03-27, 1.0 068.1
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

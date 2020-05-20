@@ -9,6 +9,7 @@ import erp.lib.SLibUtilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.TimeZone;
 import sa.gui.util.SUtilConfigXml;
 import sa.gui.util.SUtilConsts;
@@ -21,8 +22,6 @@ import sa.lib.mail.SMailConsts;
 import sa.lib.mail.SMailSender;
 import sa.lib.mail.SMailUtils;
 import sa.lib.xml.SXmlUtils;
-import som.mod.som.db.SDbInputCategory;
-import som.mod.som.db.SDbItem;
 
 /**
  *
@@ -30,45 +29,71 @@ import som.mod.som.db.SDbItem;
  */
 public class SCliReportMailer {
     
-    private static final int ARG_ITEM_ID = 0;
-    private static final int ARG_YEAR = 1;
-    private static final int ARG_MAIL_TO = 2;
-    private static final int ARG_MAIL_BCC = 3;
+    public static final int ID_AVO_FRUIT = 6;
+    public static final int ID_AVO_FRUIT_ORG = 64;
+    public static final int ID_AVO_MARC = 23;
+    public static final int ID_AVO_KERNEL = 100;
+    
+    public static final HashMap<Integer, String> ItemDescriptions = new HashMap<>();
+    
+    static {
+        ItemDescriptions.put(ID_AVO_FRUIT, "Fruta");
+        ItemDescriptions.put(ID_AVO_FRUIT_ORG, "Fruta Orgánica");
+        ItemDescriptions.put(ID_AVO_MARC, "Bagazo");
+        ItemDescriptions.put(ID_AVO_KERNEL, "Hueso y Cáscara");
+    }
+    
+    /** Argument index for list of ID of items. */
+    private static final int ARG_IDX_ITEM_ID = 0;
+    /** Argument index for year reference. */
+    private static final int ARG_IDX_YEAR_REF = 1;
+    /** Argument index for interval days for invocation of this report mailer. */
+    private static final int ARG_IDX_INTVL_DAYS = 2;
+    /** Argument index for list of mail-To recipients. */
+    private static final int ARG_IDX_MAIL_TO = 3;
+    /** Argument index for list of mail-Bcc recipients. */
+    private static final int ARG_IDX_MAIL_BCC = 4;
 
-    private static final int DEF_ITEM_ID = 6; // aguacate maduro
-    //private static final int DEF_ITEM_ID = 64;  // aguacate maduro orgánico
-    //private static final int DEF_YEAR_REF = 5;  // comparativa de 5 hacia atrás, además del año/temporada actual
+    private static final int[] DEF_ITEM_IDS = new int[] { ID_AVO_FRUIT, /*ID_AVO_FRUIT_ORG,*/ ID_AVO_MARC, ID_AVO_KERNEL };
     private static final int DEF_YEAR_REF = 2010; // año/temporada tope hacia atrás
-    private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
+    //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
+    private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
+    //private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
+    private static final String DEF_MAIL_TO = "gortiz@aeth.mx;sflores@swaplicado.com.mx";
 
     /**
      * @param args the command line arguments
      * Three arguments expected:
-     * 1: Item ID.
-     * 2: Year reference. Can be two types of values: i.e., if >= 2001, then is the year to start from; otherwise is a number of history years besides current year.
-     * 3: Mail To recipients (separated with semicolon, without blanks between them, obviously).
-     * 4: Mail Bcc recipients (separated with semicolon, without blanks between them, obviously).
+     * 1: List of ID of items (separated with semicolon, without blanks between them, obviously).
+     * 2: Year reference. Can be one out of two elegible types of values: 1) if it is a 4-digit year and greater or equal than 2001, it is the year to start from; otherwise 2) it is the number of history years besides current year.
+     * 3: Interval days for invocation of this report mailer.
+     * 4: List of mail-To recipients (separated with semicolon, without blanks between them, obviously).
+     * 5: List of mail-Bcc recipients (separated with semicolon, without blanks between them, obviously).
      */
     public static void main(String[] args) {
         try {
             // define arguments of program:
             
-            int itemId = DEF_ITEM_ID;
+            int[] itemIds = DEF_ITEM_IDS;
             int yearRef = DEF_YEAR_REF;
+            int intvlDays = DEF_INTVL_DAYS;
             String mailTo = DEF_MAIL_TO;
             String mailBcc = DEF_MAIL_TO;
             
             if (args.length >= 1) {
-                itemId = SLibUtils.parseInt(args[ARG_ITEM_ID]);
+                itemIds = SLibUtils.textExplodeAsIntArray(args[ARG_IDX_ITEM_ID], ";");
             }
             if (args.length >= 2) {
-                yearRef = SLibUtils.parseInt(args[ARG_YEAR]);
+                yearRef = SLibUtils.parseInt(args[ARG_IDX_YEAR_REF]);
             }
             if (args.length >= 3) {
-                mailTo = args[ARG_MAIL_TO];
+                intvlDays = SLibUtils.parseInt(args[ARG_IDX_INTVL_DAYS]);
             }
             if (args.length >= 4) {
-                mailBcc = args[ARG_MAIL_BCC];
+                mailTo = args[ARG_IDX_MAIL_TO];
+            }
+            if (args.length >= 5) {
+                mailBcc = args[ARG_IDX_MAIL_BCC];
             }
             
             // connect database:
@@ -101,17 +126,11 @@ public class SCliReportMailer {
             // generate mail body:
 
             SReportHtmlTicketSeasonMonth reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonth(session);
-            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(itemId, yearRef);
+            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(itemIds, yearRef, intvlDays);
             
             // generate mail subject:
             
-            SDbItem item = new SDbItem();
-            item.read(session, new int[] { itemId });
-            
-            SDbInputCategory inputCategory = new SDbInputCategory();
-            inputCategory.read(session, new int[] { item.getFkInputCategoryId() });
-            
-            String mailSubject = "[SOM] Historico mensual " + inputCategory.getName().toLowerCase() + " " + SLibUtils.DateFormatDate.format(new Date());
+            String mailSubject = "[SOM] Historico mensual bascula " + SLibUtils.DateFormatDate.format(new Date());
             
             // prepare mail recepients:
             
