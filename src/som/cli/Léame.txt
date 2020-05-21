@@ -2,14 +2,25 @@
 Ejecución automática de funcionalides CLI
 ================================================================================
 
-1) Generación y envío vía mail de reporte comparativo histórico mensual de recepción de materia prima (e.g., aguacate).
+1.1) Generación y envío vía mail (días lunes) de reporte comparativo histórico mensual de recepción en báscula de materia prima (e.g., aguacate).
     En Windows Task Scheduler:
     Desencadenador:
-        Cada semana, lunes, 12:00 hr, indefinidamente.
+        Cada semana, lunes, 10:00 hr, indefinidamente.
     Acción: iniciar un programa:
         "C:\Program Files\Java\jre1.8.0_45\bin\javaw.exe"
     Argumentos:
-        -classpath dist/som10.jar som.cli.SCliReportMailer 6 2010 ggomezs@aeth.mx;gortiz@aeth.mx sflores@swaplicado.com.mx
+        -classpath dist/som10.jar som.cli.SCliReportMailer 6;23;100 2010 7 ggomezs@aeth.mx;gortiz@aeth.mx;ebarron@aeth.mx sflores@swaplicado.com.mx
+    Iniciar en:
+        F:\swap\som
+
+1.2) Generación y envío vía mail (días viernes) de reporte comparativo histórico mensual de recepción en báscula de materia prima (e.g., aguacate).
+    En Windows Task Scheduler:
+    Desencadenador:
+        Cada semana, viernes, 08:00 hr, indefinidamente.
+    Acción: iniciar un programa:
+        "C:\Program Files\Java\jre1.8.0_45\bin\javaw.exe"
+    Argumentos:
+        -classpath dist/som10.jar som.cli.SCliReportMailer 6;23;100 2010 4 ggomezs@aeth.mx;gortiz@aeth.mx;ebarron@aeth.mx sflores@swaplicado.com.mx
     Iniciar en:
         F:\swap\som
 
