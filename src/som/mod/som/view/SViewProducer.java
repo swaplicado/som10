@@ -51,6 +51,8 @@ public class SViewProducer extends SGridPaneView {
                 + "v.name_trd, "
                 + "v.fis_id, "
                 + "v.rev_prod_id, "
+                + "v.amn_box, "
+                + "v.b_amn, "
                 + "v.b_fre_pay, "
                 + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
                 + "v.b_can_dis AS " + SDbConsts.FIELD_CAN_DIS + ", "
@@ -83,13 +85,15 @@ public class SViewProducer extends SGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[15];
+        SGridColumnView[] columns = new SGridColumnView[17];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_L, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "v.name_trd", "Nombre comercial");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.fis_id", "RFC");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.rev_prod_id", "Clave Revuelta");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.amn_box", "Correo electrónico para notificaciones automáticas");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_amn", "Notificación automática");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "r.name", "Agrupador reporte");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "s.name", "Origen insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_fre_pay", "Se paga flete");
