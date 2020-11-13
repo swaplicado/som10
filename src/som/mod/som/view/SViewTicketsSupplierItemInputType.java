@@ -23,29 +23,35 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
 public class SViewTicketsSupplierItemInputType extends SGridPaneView {
     
     private Date[] matPeriod;
-    private final SGridFilterDateRange moFilterDateRange;
+    private SGridFilterDateRange moFilterDateRange;
+    private SPaneUserInputCategory moPaneFilterUserInputCategory;
     
     public SViewTicketsSupplierItemInputType(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_TIC_MAN_SUP_INP_TP, SLibConsts.UNDEFINED, title);
         setRowButtonsEnabled(false, true, false, false, false);
         jtbFilterDeleted.setEnabled(false);
-        
+        initComponetsCustom();
+    }
+    
+    private void initComponetsCustom() {
+        moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "i");
         matPeriod = null;
         moFilterDateRange = new SGridFilterDateRange(miClient, this);
         moFilterDateRange.initFilter(new Date[] { SLibTimeUtils.getBeginOfYear(miClient.getSession().getWorkingDate()), SLibTimeUtils.getEndOfYear(miClient.getSession().getWorkingDate()) });
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDateRange);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
     }
     
     @Override
     public void prepareSqlQuery() {
         String sql = "";
         String sqlAux = "";
-        Object filter = null;
+        Object filter;
 
         moPaneSettings = new SGridPaneSettings(5);
 
@@ -56,6 +62,11 @@ public class SViewTicketsSupplierItemInputType extends SGridPaneView {
 
         matPeriod = (Date[]) moFiltersMap.get(SGridConsts.FILTER_DATE_RANGE);
         sqlAux += (!sqlAux.isEmpty() ? "" : " AND ") + SGridUtils.getSqlFilterDateRange("t.dt", matPeriod);
+        
+        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
+        if(!sqlFilter.isEmpty()) {
+            sqlAux += (sqlAux.isEmpty() ? "" : "AND ") + sqlFilter;
+        }
         
         msSql = "SELECT "
                 + "i.fk_inp_ct AS " + SDbConsts.FIELD_ID + "1, "
@@ -83,7 +94,7 @@ public class SViewTicketsSupplierItemInputType extends SGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = null;
+        SGridColumnView[] columns;
         
         columns = new SGridColumnView[6];
 
@@ -115,7 +126,7 @@ public class SViewTicketsSupplierItemInputType extends SGridPaneView {
             }
             else {
                 SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
-                SGuiParams guiParams = null;
+                SGuiParams guiParams;
                 
                 guiParams = new SGuiParams();
                 guiParams.getParamsMap().put(SGuiConsts.PARAM_DATE, matPeriod);

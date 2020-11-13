@@ -23,18 +23,20 @@ import sa.lib.gui.bean.SBeanFieldInteger;
 import sa.lib.gui.bean.SBeanFormDialog;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
+import som.mod.cfg.db.SDbUser;
 import som.mod.som.db.SDbTicket;
 import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
 public final class SDialogTicketsSearch extends SBeanFormDialog implements ActionListener {
 
     private int mnCurrentTicketIndex;
     private ArrayList<SDbTicket> maTickets;
     private HashMap<Integer, String> moTicketStatuses;
+    boolean mbIsUserScaleSupervisor;
     
     /**
      * Creates new form SDialogTicketsSearch.
@@ -70,6 +72,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jtfNumber = new javax.swing.JTextField();
         jlTicketStatus = new javax.swing.JLabel();
         jtfTicketStatus = new javax.swing.JTextField();
+        jlAccessWarning = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jlScale = new javax.swing.JLabel();
         jtfScale = new javax.swing.JTextField();
@@ -182,6 +185,11 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jtfTicketStatus.setFocusable(false);
         jtfTicketStatus.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel18.add(jtfTicketStatus);
+
+        jlAccessWarning.setForeground(java.awt.Color.red);
+        jlAccessWarning.setText("¡La información del boleto está restringida!");
+        jlAccessWarning.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel18.add(jlAccessWarning);
 
         jPanel1.add(jPanel18);
 
@@ -562,6 +570,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
     private javax.swing.JButton jbSearch;
     private javax.swing.JCheckBox jchkDeleted;
     private javax.swing.JCheckBox jchkWeightSourceAvailable;
+    private javax.swing.JLabel jlAccessWarning;
     private javax.swing.JLabel jlCurrentTicket;
     private javax.swing.JLabel jlDatetimeArrival;
     private javax.swing.JLabel jlDatetimeDeparture;
@@ -640,6 +649,9 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jtfPackingWeightDepartureUnit.setText(SSomConsts.KG);
         jtfWeightDestinyGrossUnit.setText(SSomConsts.KG);
         jtfWeightDestinyNetUnit.setText(SSomConsts.KG);
+        jlAccessWarning.setVisible(false);
+        
+        mbIsUserScaleSupervisor = ((SDbUser) miClient.getSession().getUser()).hasPrivilege(SModSysConsts.CS_RIG_SUP_SCA);
     }
     
     private void showCurrentTicket() {
@@ -677,24 +689,49 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
             jtfScale.setText(ticket.getXtaScaleName());
             jtfProducer.setText(ticket.getXtaProducer());
             jtfItem.setText(ticket.getXtaItem());
-            jtfInputSource.setText(ticket.getXtaInputSource());
-            jtfPlate.setText(ticket.getPlate());
-            jtfPlateCage.setText(ticket.getPlateCage());
-            jtfDriver.setText(ticket.getDriver());
-            jtfWeightSource.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getWeightSource()));
-            jchkWeightSourceAvailable.setSelected(false);
-            jtfWeightDestinyArrival.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getWeightDestinyArrival()));
-            jtfPackingWeightArrival.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getPackingWeightArrival()));
-            jtfWeightDestinyDeparture.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getWeightDestinyDeparture()));
-            jtfPackingWeightDeparture.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getPackingWeightDeparture()));
-            jtfWeightDestinyGross.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getWeightDestinyGross_r()));
-            jtfWeightDestinyNet.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getWeightDestinyNet_r()));
-            jtfDatetimeArrival.setText(SLibUtils.DateFormatDatetime.format(ticket.getDatetimeArrival()));
-            jtfDatetimeDeparture.setText(SLibUtils.DateFormatDatetime.format(ticket.getDatetimeDeparture()));
-            jtfNote.setText(ticket.getChildTicketNotes().isEmpty() ? "" : ticket.getChildTicketNotes().get(0).getNote());
-            jtfDbInsert.setText(SLibUtils.DateFormatDatetime.format(ticket.getTsUserInsert()));
-            jtfDbUpdate.setText(SLibUtils.DateFormatDatetime.format(ticket.getTsUserUpdate()));
-            jchkDeleted.setSelected(ticket.isDeleted());
+            if (mbIsUserScaleSupervisor || ((SDbUser) miClient.getSession().getUser()).hasInputCategoryAccess(SModConsts.S_TIC, ticket.getXtaInputCategoryId())) {
+                jlAccessWarning.setVisible(false);
+                jtfInputSource.setText(ticket.getXtaInputSource());
+                jtfPlate.setText(ticket.getPlate());
+                jtfPlateCage.setText(ticket.getPlateCage());
+                jtfDriver.setText(ticket.getDriver());
+                jtfWeightSource.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getWeightSource()));
+                jchkWeightSourceAvailable.setSelected(false);
+                jtfWeightDestinyArrival.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getWeightDestinyArrival()));
+                jtfPackingWeightArrival.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getPackingWeightArrival()));
+                jtfWeightDestinyDeparture.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getWeightDestinyDeparture()));
+                jtfPackingWeightDeparture.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getPackingWeightDeparture()));
+                jtfWeightDestinyGross.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getWeightDestinyGross_r()));
+                jtfWeightDestinyNet.setText(SLibUtils.getDecimalFormatQuantity().format(ticket.getWeightDestinyNet_r()));
+                jtfDatetimeArrival.setText(SLibUtils.DateFormatDatetime.format(ticket.getDatetimeArrival()));
+                jtfDatetimeDeparture.setText(SLibUtils.DateFormatDatetime.format(ticket.getDatetimeDeparture()));
+                jtfNote.setText(ticket.getChildTicketNotes().isEmpty() ? "" : ticket.getChildTicketNotes().get(0).getNote());
+                jtfDbInsert.setText(SLibUtils.DateFormatDatetime.format(ticket.getTsUserInsert()));
+                jtfDbUpdate.setText(SLibUtils.DateFormatDatetime.format(ticket.getTsUserUpdate()));
+                jchkDeleted.setSelected(ticket.isDeleted());
+            }
+            else {
+                jlAccessWarning.setVisible(true);
+                jtfInputSource.setText("");
+                jtfPlate.setText("");
+                jtfPlateCage.setText("");
+                jtfDriver.setText("");
+                jtfWeightSource.setText("");
+                jchkWeightSourceAvailable.setSelected(false);
+                jtfWeightDestinyArrival.setText("");
+                jtfPackingWeightArrival.setText("");
+                jtfWeightDestinyDeparture.setText("");
+                jtfPackingWeightDeparture.setText("");
+                jtfWeightDestinyGross.setText("");
+                jtfWeightDestinyNet.setText("");
+                jtfDatetimeArrival.setText("");
+                jtfDatetimeDeparture.setText("");
+                jtfNote.setText("");
+                jtfDbInsert.setText("");
+                jtfDbUpdate.setText("");
+                jchkDeleted.setSelected(false);
+            }
+            
             jlCurrentTicket.setText((mnCurrentTicketIndex + 1) + "/" + maTickets.size());
             
             jtfNumber.setCaretPosition(0);

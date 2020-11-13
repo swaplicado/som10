@@ -22,10 +22,11 @@ import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.ext.db.SDbTicketRevuelta;
 import som.mod.som.db.SSomUtils;
+import som.mod.som.view.SPaneUserInputCategory;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
 public class SDialogRepComparativeTicket extends SBeanDialogReport {
 
@@ -33,6 +34,9 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
 
     /**
      * Creates new form SDialogRepComparativeTicket
+     * @param client
+     * @param subType
+     * @param title
      */
     public SDialogRepComparativeTicket(SGuiClient client, int subType, String title) {
         setFormSettings(client, SModConsts.SR_TIC_COMP, subType, title);
@@ -316,10 +320,17 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
     public void createParamsMap() {
         String sqlWhere = "";
         moParamsMap = SPrtUtils.createReportParamsMap(miClient.getSession());
+        
+        SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "it");
+        String sqlInputCategories = inputCategory.getSqlFilter();
+        if (!sqlInputCategories.isEmpty()) {
+            sqlWhere += "AND " + sqlInputCategories;
+        }
 
         moParamsMap.put("tDateStart", moDateDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
         moParamsMap.put("sSqlWhere", sqlWhere);
+        moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
     }
 
     @Override

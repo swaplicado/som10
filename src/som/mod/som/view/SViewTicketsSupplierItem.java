@@ -24,27 +24,33 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  */
 public class SViewTicketsSupplierItem extends SGridPaneView {
     
-    private final SGridFilterDateRange moFilterDateRange;
+    private SGridFilterDateRange moFilterDateRange;
+    private SPaneUserInputCategory moPaneFilterUserInputCategory;
     
     public SViewTicketsSupplierItem(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_TIC_MAN_SUP, SLibConsts.UNDEFINED, title);
         setRowButtonsEnabled(false, true, false, false, false);
         jtbFilterDeleted.setEnabled(false);
-        
+        initComponetsCustom();
+    }
+    
+    private void initComponetsCustom() {
         moFilterDateRange = new SGridFilterDateRange(miClient, this);
         moFilterDateRange.initFilter(new Date[] { SLibTimeUtils.getBeginOfYear(miClient.getSession().getWorkingDate()), SLibTimeUtils.getEndOfYear(miClient.getSession().getWorkingDate()) });
+        moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "i");
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDateRange);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
     }
     
     @Override
     public void prepareSqlQuery() {
+        Object filter;
         String sql = "";
         String sqlAux = "";
-        Object filter = null;
 
         moPaneSettings = new SGridPaneSettings(4);
 
@@ -55,6 +61,11 @@ public class SViewTicketsSupplierItem extends SGridPaneView {
 
         filter = (Date[]) moFiltersMap.get(SGridConsts.FILTER_DATE_RANGE);
         sqlAux += (!sqlAux.isEmpty() ? "" : " AND ") + SGridUtils.getSqlFilterDateRange("t.dt", (Date[]) filter);
+        
+        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
+        if(!sqlFilter.isEmpty()) {
+            sqlAux += (sqlAux.isEmpty() ? "" : "AND ") + sqlFilter;
+        }
         
         msSql = "SELECT "
                 + "t.fk_seas_n AS " + SDbConsts.FIELD_ID + "1, "
@@ -80,7 +91,7 @@ public class SViewTicketsSupplierItem extends SGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = null;
+        SGridColumnView[] columns;
         
         columns = new SGridColumnView[7];
 

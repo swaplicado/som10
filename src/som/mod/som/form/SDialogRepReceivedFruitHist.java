@@ -14,10 +14,11 @@ import sa.lib.gui.bean.SBeanDialogReport;
 import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
+import som.mod.som.view.SPaneUserInputCategory;
 
 /**
  *
- * @author Isabel Servín 
+ * @author Isabel Servín
  * 
  */
 public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
@@ -246,18 +247,6 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         String sqlWhere = "";
         moParamsMap = SPrtUtils.createReportParamsMap(miClient.getSession());
 
-        moParamsMap.put("tActualDateStart", moDateDateStart.getValue());
-        moParamsMap.put("tActualDateEnd", moDateDateEnd.getValue());
-        moParamsMap.put("tLastDateStart", SLibTimeUtils.addDate(moDateDateStart.getValue(), -1, 0, 0));
-        moParamsMap.put("tLastDateEnd", SLibTimeUtils.addDate(moDateDateEnd.getValue(), -1, 0, 0));
-        moParamsMap.put("tAncestorDateStart", SLibTimeUtils.addDate(moDateDateStart.getValue(), -2, 0, 0));
-        moParamsMap.put("tAncestorDateEnd", SLibTimeUtils.addDate(moDateDateStart.getValue(), -2, 0, 0));
-        moParamsMap.put("tThreeYearsDateStart", SLibTimeUtils.addDate(moDateDateStart.getValue(), -3, 0, 0));
-        moParamsMap.put("tThreeYearsDateEnd", SLibTimeUtils.addDate(moDateDateStart.getValue(), -3, 0, 0));
-        moParamsMap.put("sSqlOrderBy", moRadProducer.getValue() ? "p.name, p.code " : "s.name, s.code ");
-        moParamsMap.put("bShowByProd", moRadProducer.getValue());
-        moParamsMap.put("bShowDetails", !moRadSummary.getValue());
-        
         if (moKeyItem.getSelectedIndex() > 0) {
             sqlWhere += (" AND i.id_item = " + moKeyItem.getValue()[0] + " ");
         }
@@ -278,6 +267,24 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
             moParamsMap.put("bSourceSearch", false);
         }
         
+        SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "i");
+        String sqlInputCategories = inputCategory.getSqlFilter();
+        if (!sqlInputCategories.isEmpty()) {
+            sqlWhere += "AND " + sqlInputCategories;
+        }
+        
+        moParamsMap.put("tActualDateStart", moDateDateStart.getValue());
+        moParamsMap.put("tActualDateEnd", moDateDateEnd.getValue());
+        moParamsMap.put("tLastDateStart", SLibTimeUtils.addDate(moDateDateStart.getValue(), -1, 0, 0));
+        moParamsMap.put("tLastDateEnd", SLibTimeUtils.addDate(moDateDateEnd.getValue(), -1, 0, 0));
+        moParamsMap.put("tAncestorDateStart", SLibTimeUtils.addDate(moDateDateStart.getValue(), -2, 0, 0));
+        moParamsMap.put("tAncestorDateEnd", SLibTimeUtils.addDate(moDateDateStart.getValue(), -2, 0, 0));
+        moParamsMap.put("tThreeYearsDateStart", SLibTimeUtils.addDate(moDateDateStart.getValue(), -3, 0, 0));
+        moParamsMap.put("tThreeYearsDateEnd", SLibTimeUtils.addDate(moDateDateStart.getValue(), -3, 0, 0));
+        moParamsMap.put("sSqlOrderBy", moRadProducer.getValue() ? "p.name, p.code " : "s.name, s.code ");
+        moParamsMap.put("bShowByProd", moRadProducer.getValue());
+        moParamsMap.put("bShowDetails", !moRadSummary.getValue());
         moParamsMap.put("sSqlWhere", sqlWhere);
+        moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
     }
 }

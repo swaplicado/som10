@@ -1,8 +1,16 @@
 ================================================================================
+2020-11-13, 1.0 069.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregaron dos nuevos permisos (supervisor báscula y supervisor laboratorio).
+2) Se agregaron nuevos filtros en las vistas de boletos y laboratorio así como en reportes para que el usuario solo pueda ver las categorías de insumo
+    a las cuales tiene acceso.
+
+================================================================================
 2020-08-24, 1.0 068.3
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
-1) Se agregó a la vista de proveedores el correo electronico de notificaciones automáticas.
+1) Se agregó a la vista de proveedores el correo electrónico de notificaciones automáticas.
 
 ================================================================================
 2020-05-20, 1.0 068.2

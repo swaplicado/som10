@@ -14,6 +14,7 @@ import sa.lib.gui.bean.SBeanDialogReport;
 import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
+import som.mod.som.view.SPaneUserInputCategory;
 
 /**
  *
@@ -192,10 +193,17 @@ public class SDialogRepReceivedFruit extends SBeanDialogReport {
         sqlWhere += (moKeyItem.getSelectedIndex() <= 0 ? "" : " AND it.id_item = " + moKeyItem.getValue()[0] + " ");
         sqlWhere += (moKeyProducer.getSelectedIndex() <= 0 ? "" : " AND t.fk_prod = " + moKeyProducer.getValue()[0] + " ");
         
+        SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "it");
+        String sqlInputCategories = inputCategory.getSqlFilter();
+        if (!sqlInputCategories.isEmpty()) {
+            sqlWhere += "AND " + sqlInputCategories;
+        }
+        
         moParamsMap.put("tDateStart", moDateDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
         moParamsMap.put("bShowDetails", !moRadSummary.getValue());
         moParamsMap.put("sSqlWhere", sqlWhere + " AND it.b_fruit ");
         moParamsMap.put("sSqlOrderBy", "it.name, t.fk_item, ");
+        moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
     }
 }

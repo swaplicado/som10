@@ -21,38 +21,45 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
  */
 public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
 
     private SGridFilterDateRange moFilterDateRange;
+    private SPaneUserInputCategory moPaneFilterUserInputCategory;
 
     public SViewTicketsLaboratoryTestFruit(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_TIC_LAB_TEST_FRUIT, 0, title);
         setRowButtonsEnabled(false);
         jtbFilterDeleted.setEnabled(false);
-
         initComponetsCustom();
     }
 
     private void initComponetsCustom() {
         moFilterDateRange = new SGridFilterDateRange(miClient, this);
+        moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_LAB, "itm");
         moFilterDateRange.initFilter(new Date[] { SLibTimeUtils.getBeginOfMonth(miClient.getSession().getWorkingDate()), SLibTimeUtils.getEndOfMonth(miClient.getSession().getWorkingDate()) });
 
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDateRange);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
     }
 
     @Override
     public void prepareSqlQuery() {
+        Object filter;
         String sql = "";
-        Object filter = null;
 
         moPaneSettings = new SGridPaneSettings(1);
 
         filter = (Date[]) moFiltersMap.get(SGridConsts.FILTER_DATE_RANGE);
         sql += (sql.isEmpty() ? "" : "AND ") + SGridUtils.getSqlFilterDateRange("t.dt", (Date[]) filter);
+        
+        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
+        if(!sqlFilter.isEmpty()) {
+            sql += (sql.isEmpty() ? "" : "AND ") + sqlFilter;
+        }
 
         msSql = "SELECT "
                 + "t.id_tic AS " + SDbConsts.FIELD_ID + "1, "

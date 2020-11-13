@@ -32,11 +32,12 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  */
 public class SViewLaboratory extends SGridPaneView implements ActionListener {
 
     private SGridFilterDatePeriod moFilterDatePeriod;
+    private SPaneUserInputCategory moPaneFilterUserInputCategory;
     private JButton mjbPrint;
 
     public SViewLaboratory(SGuiClient client, int gridSubtype, String title) {
@@ -49,11 +50,13 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
     private void initComponetsCustom() {
         moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
         moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
+        moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_LAB, "it");
 
         mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
 
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
     }
 
     private boolean isSummary() {
@@ -87,11 +90,11 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
             }
         }
     }
-
+    
     @Override
     public void prepareSqlQuery() {
         String sql = "";
-        Object filter = null;
+        Object filter;
 
         moPaneSettings = new SGridPaneSettings(isSummary() ? 1 : 2);
         moPaneSettings.setUserInsertApplying(true);
@@ -101,7 +104,12 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
 
         filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
         sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt", (SGuiDate) filter);
-
+        
+        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
+        if(!sqlFilter.isEmpty()) {
+            sql += (sql.isEmpty() ? "" : "AND ") + sqlFilter;
+        }
+        
         msSql = "SELECT ";
 
         if (isSummary()) {

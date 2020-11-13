@@ -34,7 +34,7 @@ import som.mod.SModSysConsts;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  * 2019-01-07, Sergio Flores: Mostrar solo proveedores con movimientos en sección período actual, en notificación automática de recepción de boletos.
  * 2019-01-17, Sergio Flores: Mejoras reporte automático vía mail al tarar boletos:
  *   a) remoción de proveedores sin movimientos en todas las secciones. Antes aparecían todos.
@@ -138,6 +138,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected String msXtaSeason;
     protected String msXtaRegion;
     protected String msXtaItem;
+    protected int mnXtaInputCategoryId;
+    protected int mnXtaInputClassId;
     protected String msXtaInputType;
     protected String msXtaInputSource;
     protected String msXtaProducer;
@@ -675,6 +677,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setXtaSeason(String s) { msXtaSeason = s;  }
     public void setXtaRegion(String s) { msXtaRegion = s;  }
     public void setXtaItem(String s) { msXtaItem = s;  }
+    public void setXtaInputCategoryId(int n) { mnXtaInputCategoryId = n; }
+    public void setXtaInputClassId(int n) { mnXtaInputClassId = n; }
     public void setXtaInputType(String s) { msXtaInputType = s;  }
     public void setXtaInputSource(String s) { msXtaInputSource = s;  }
     public void setXtaProducer(String s) { msXtaProducer = s;  }
@@ -692,6 +696,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public String getXtaSeason() { return msXtaSeason; }
     public String getXtaRegion() { return msXtaRegion; }
     public String getXtaItem() { return msXtaItem; }
+    public int getXtaInputCategoryId() { return mnXtaInputCategoryId; }
+    public int getXtaInputClassId() { return mnXtaInputClassId; }
     public String getXtaInputType() { return msXtaInputType;  }
     public String getXtaInputSource() { return msXtaInputSource;  }
     public String getXtaProducer() { return msXtaProducer; }
@@ -804,6 +810,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         msXtaSeason = "";
         msXtaRegion = "";
         msXtaItem = "";
+        mnXtaInputCategoryId = 0;
+        mnXtaInputClassId = 0;
         msXtaInputType = "";
         msXtaInputSource = "";
         msXtaProducer = "";
@@ -857,7 +865,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         initQueryMembers();
         mnQueryResultId = SDbConsts.READ_ERROR;
 
-        msSql = "SELECT t.*, sc.name, sc.code, p.name, p.fis_id, i.name, i.fk_unit, it.name, src.name, s.name, r.name " +
+        msSql = "SELECT t.*, sc.name, sc.code, p.name, p.fis_id, i.name, i.fk_unit, it.id_inp_ct, it.id_inp_cl, it.name, src.name, s.name, r.name " +
                 "FROM " + getSqlTable() + " AS t "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sc ON "
                 + "t.fk_sca = sc.id_sca "
@@ -963,6 +971,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 msXtaRegion = SUtilConsts.NON_APPLYING;
             }
             msXtaItem = resultSet.getString("i.name");
+            mnXtaInputCategoryId = resultSet.getInt("it.id_inp_ct");
+            mnXtaInputClassId = resultSet.getInt("it.id_inp_cl");
             msXtaInputType = resultSet.getString("it.name");
             msXtaInputSource = resultSet.getString("src.name");
             msXtaProducer = resultSet.getString("p.name");
@@ -1311,6 +1321,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setXtaSeason(this.getXtaSeason());
         registry.setXtaRegion(this.getXtaRegion());
         registry.setXtaItem(this.getXtaItem());
+        registry.setXtaInputCategoryId(this.getXtaInputCategoryId());
+        registry.setXtaInputClassId(this.getXtaInputClassId());
         registry.setXtaInputType(this.getXtaInputType());
         registry.setXtaInputSource(this.getXtaInputSource());
         registry.setXtaProducer(this.getXtaProducer());

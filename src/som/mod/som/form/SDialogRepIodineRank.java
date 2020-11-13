@@ -21,10 +21,11 @@ import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.som.db.SDbIodineValueRank;
+import som.mod.som.view.SPaneUserInputCategory;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Isabel Servín
  */
 public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListener {
 
@@ -34,6 +35,10 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
 
     /**
      * Creates new form SDialogRepIodineRank
+     * @param client
+     * @param type
+     * @param subtype
+     * @param title
      */
     public SDialogRepIodineRank(SGuiClient client, int type, int subtype, String title) {
         setFormSettings(client, type, subtype, title);
@@ -302,8 +307,15 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
 
     @Override
     public void createParamsMap() {
+        String sqlWhere = "";
         moParamsMap = SPrtUtils.createReportParamsMap(miClient.getSession());
-
+        
+        SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "it");
+        String sqlInputCategories = inputCategory.getSqlFilter();
+        if (!sqlInputCategories.isEmpty()) {
+            sqlWhere += "AND " + sqlInputCategories;
+        }
+        
         moParamsMap.put("tDateStart", moDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateEnd.getValue());
         moParamsMap.put("nItemId", moKeyItem.getValue()[0]);
@@ -312,10 +324,11 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
                 (!mbRepIodine ? SLibUtils.DecimalFormatPercentage4D.format(moDecLimitLow.getValue()) : SLibUtils.DecimalFormatValue4D.format(moDecLimitLow.getValue())) + " - " +
                 (!mbRepIodine ? SLibUtils.DecimalFormatPercentage4D.format(moDecLimitTop.getValue()) : SLibUtils.DecimalFormatValue4D.format(moDecLimitTop.getValue())))) :
                 moKeyIodineValueRank.getSelectedItem());
+        moParamsMap.put("sSqlWhere", sqlWhere);
         moParamsMap.put("sSqlHaving", getSqlHaving());
+        moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
 
         if (mnFormSubtype != SLibConsts.UNDEFINED) {
-
             moParamsMap.put("bRepIodine", mnFormSubtype == SModSysConsts.REP_LAB_TEST_IOD);
             moParamsMap.put("nTicketStatusId", SModSysConsts.SS_TIC_ST_ADM);
             moParamsMap.put("sSqlTest",
