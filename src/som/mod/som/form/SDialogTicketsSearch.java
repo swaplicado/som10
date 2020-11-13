@@ -822,7 +822,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
 
     private void actionPerformedGoPrev() {
         if (maTickets != null && !maTickets.isEmpty()) {
-            if (mnCurrentTicketIndex - 1 > 0) {
+            if (mnCurrentTicketIndex - 1 >= 0) {
                 mnCurrentTicketIndex--;
                 showCurrentTicket();
             }
