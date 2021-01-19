@@ -1,4 +1,10 @@
 ================================================================================
+2021-01-19, 1.0 069.1
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Emplementación de informe vía correo invocable por día para el resumen de recepciones de materias primas.
+
+================================================================================
 2020-11-13, 1.0 069.0
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
@@ -24,7 +30,7 @@ Sergio Abraham FLORES GUTIÉRREZ
 2020-03-27, 1.0 068.1
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
-1) Se eliminaron variables innesesarias en el reporte de fruta recibida.
+1) Se eliminaron variables innecesarias en el reporte de fruta recibida.
 
 ================================================================================
 2020-03-25, 1.0 068.0

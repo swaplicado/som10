@@ -139,11 +139,11 @@ public class SReportHtmlTicketSeasonMonth {
         for (int itemId : itemIds) {
             // read requested item for report:
             SDbItem item = new SDbItem();
-            item.read(moSession, new int[] { itemId });
+            item.read(moSession, new int[] { itemId }); // read this way due to session is moduleless
             SDbUnit unit = new SDbUnit();
-            unit.read(moSession, new int[] { item.getFkUnitId() });
+            unit.read(moSession, new int[] { item.getFkUnitId() }); // read this way due to session is moduleless
             SDbInputCategory inputCategory = new SDbInputCategory();
-            inputCategory.read(moSession, new int[] { item.getFkInputCategoryId() });
+            inputCategory.read(moSession, new int[] { item.getFkInputCategoryId() }); // read this way due to session is moduleless
 
             int yearStart;
             int yearEnd;
