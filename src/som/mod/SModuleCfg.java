@@ -30,6 +30,7 @@ import som.mod.cfg.db.SDbDivision;
 import som.mod.cfg.db.SDbProductionLine;
 import som.mod.cfg.db.SDbReportingGroup;
 import som.mod.cfg.db.SDbUser;
+import som.mod.cfg.db.SDbUserInputCategory;
 import som.mod.cfg.db.SDbUserRight;
 import som.mod.cfg.db.SDbUserScale;
 import som.mod.cfg.db.SDbYear;
@@ -49,6 +50,7 @@ import som.mod.cfg.view.SViewCompanyBranch;
 import som.mod.cfg.view.SViewProductionLine;
 import som.mod.cfg.view.SViewReportingGroup;
 import som.mod.cfg.view.SViewUser;
+import som.mod.cfg.view.SViewUserInputCategories;
 import som.mod.cfg.view.SViewUserRight;
 import som.mod.cfg.view.SViewUserScale;
 import som.mod.cfg.view.SViewYear;
@@ -71,6 +73,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
     private JMenuItem mjUsrUser;
     private JMenuItem mjUsrUserRights;
     private JMenuItem mjUsrUserScales;
+    private JMenuItem mjUsrUserInputCategories;
     private JMenu mjCtr;
     private JMenuItem mjCtrYear;
 
@@ -119,15 +122,18 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjUsrUser = new JMenuItem("Usuarios");
         mjUsrUserRights = new JMenuItem("Usuarios vs. derechos (Q)");
         mjUsrUserScales = new JMenuItem("Usuarios vs. básculas (Q)");
+        mjUsrUserInputCategories = new JMenuItem("Usuarios vs. categorías de insumo (Q)");
 
         mjUsr.add(mjUsrUser);
         mjUsr.addSeparator();
         mjUsr.add(mjUsrUserRights);
         mjUsr.add(mjUsrUserScales);
+        mjUsr.add(mjUsrUserInputCategories);
 
         mjUsrUser.addActionListener(this);
         mjUsrUserRights.addActionListener(this);
         mjUsrUserScales.addActionListener(this);
+        mjUsrUserInputCategories.addActionListener(this);
 
         mjUsr.setEnabled(miClient.getSession().getUser().isSupervisor());
 
@@ -203,6 +209,9 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.CU_USR_SCA:
                 registry = new SDbUserScale();
+                break;
+            case SModConsts.CU_USR_INP_CT:
+                registry = new SDbUserInputCategory();
                 break;
             case SModConsts.CU_DIV:
                 registry = new SDbDivision();
@@ -398,6 +407,9 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.CU_USR_SCA:
                 view = new SViewUserScale(miClient, "Usuarios vs. básculas Q");
                 break;
+            case SModConsts.CU_USR_INP_CT:
+                view = new SViewUserInputCategories(miClient, "Usuarios vs. categorías de insumo Q");
+                break;
             case SModConsts.CU_DIV:
                 view = null;
                 break;
@@ -496,6 +508,9 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjUsrUserScales) {
                 showView(SModConsts.CU_USR_SCA, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjUsrUserInputCategories) {
+                showView(SModConsts.CU_USR_INP_CT, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCtrYear) {
                 showView(SModConsts.CU_YEAR, SLibConsts.UNDEFINED, null);

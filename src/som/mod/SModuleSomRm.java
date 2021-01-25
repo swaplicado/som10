@@ -301,19 +301,19 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
         mjCfg.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
 
-        mjTic.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_REP_RM }));
-        mjTicTicketSca.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA }));
-        mjTicTicketLab.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_LAB }));
+        mjTic.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SUP_SCA, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_REP_RM }));
+        mjTicTicketSca.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SUP_SCA }));
+        mjTicTicketLab.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB }));
         mjTicTicketAdm.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
         mjTicTicketAll.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
-        mjTicTarePend.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA }));
-        mjTicTare.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA }));
+        mjTicTarePend.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SUP_SCA }));
+        mjTicTare.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SUP_SCA }));
         mjTicManSupplierItem.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
         mjTicManSupplierInputType.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
         mjTicRank.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
-        mjTicSearch.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_REP_RM }));
+        mjTicSearch.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_SCA, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_REP_RM }));
 
-        mjQa.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB }));
+        mjQa.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB }));
 
         mjRep.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
     }

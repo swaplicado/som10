@@ -147,7 +147,7 @@ public class SFormUser extends SBeanForm implements ActionListener {
 
         jPanel6.add(jpUserScales);
 
-        jpUserInputCategories.setBorder(javax.swing.BorderFactory.createTitledBorder("Acceso a básculas:"));
+        jpUserInputCategories.setBorder(javax.swing.BorderFactory.createTitledBorder("Acceso a categorías de insumo:"));
         jpUserInputCategories.setLayout(new java.awt.BorderLayout());
         jpUserInputCategories.add(jPanel8, java.awt.BorderLayout.CENTER);
 
@@ -263,7 +263,7 @@ public class SFormUser extends SBeanForm implements ActionListener {
                 int col = 0;
                 SGridColumnForm[] columns = new SGridColumnForm[2];
 
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "Cat. de insumo");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "Categorías de insumo");
                 columns[col] = new SGridColumnForm(SGridConsts.COL_TYPE_BOOL_S, "Seleccionado");
                 columns[col++].setEditable(true);
 
