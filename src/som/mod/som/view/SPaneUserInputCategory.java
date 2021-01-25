@@ -14,7 +14,6 @@ package som.mod.som.view;
 import java.util.Vector;
 import javax.swing.JPanel;
 import sa.lib.gui.SGuiClient;
-import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.cfg.db.SDbUser;
 import som.mod.cfg.db.SDbUserInputCategory;
@@ -92,8 +91,8 @@ public class SPaneUserInputCategory extends JPanel {
         msCodes = "";
         msNames = "";
         msMessageNames = "";
-        boolean mbUserHasPrivilege = ((SDbUser) miClient.getSession().getUser()).hasPrivilege
-            (mnType == SModConsts.S_TIC ? SModSysConsts.CS_RIG_SUP_SCA : SModSysConsts.CS_RIG_SUP_LAB);
+        boolean mbUserHasPrivilege = ((SDbUser) miClient.getSession().getUser()).hasPrivilege(SModSysConsts.CS_RIG_SUP_SCA) ||
+                ((SDbUser) miClient.getSession().getUser()).hasPrivilege(SModSysConsts.CS_RIG_SUP_LAB);
         if (mbUserHasPrivilege){
             msCodes = ALL; 
             msNames = ALL; 
