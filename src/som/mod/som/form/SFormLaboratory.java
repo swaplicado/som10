@@ -62,6 +62,8 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
     /**
      * Creates new form SFormLaboratory
+     * @param client
+     * @param title
      */
     public SFormLaboratory(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SX_TIC_LAB, SLibConsts.UNDEFINED, title);
@@ -416,7 +418,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
             @Override
             public void createGridColumns() {
                 int col = 0;
-                SGridColumnForm[] columns = new SGridColumnForm[21];
+                SGridColumnForm[] columns = new SGridColumnForm[22];
 
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_1B, "Prueba lab");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_2D, "Impurezas");
@@ -431,6 +433,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Proteína");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Aceite");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Acidez");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Acidez promedio proceso");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Clase fruta");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Grado madurez");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Peso fruta (g)");

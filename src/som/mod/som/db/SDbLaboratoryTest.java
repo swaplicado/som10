@@ -15,7 +15,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta, y cálculo de valores '% humedad' y '% contenido aceite'.
  * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
@@ -38,6 +38,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     protected double mdLinolenicAcidPercentage;
     protected double mdErucicAcidPercentage;
     protected double mdAcidityPercentage;
+    protected double mdAcidityAveragePercentage;
     protected String msFruitClass;
     protected String msFruitRipenessDegree;
     protected double mdFruitWeightTotal;
@@ -66,6 +67,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     public void setLinolenicAcidPercentage(double d) { mdLinolenicAcidPercentage = d; }
     public void setErucicAcidPercentage(double d) { mdErucicAcidPercentage = d; }
     public void setAcidityPercentage(double d) { mdAcidityPercentage = d; }
+    public void setAcidityAveragePercentage(double d) { mdAcidityAveragePercentage = d; }
     public void setFruitClass(String s) { msFruitClass = s; }
     public void setFruitRipenessDegree(String s) { msFruitRipenessDegree = s; }
     public void setFruitWeightTotal(double d) { mdFruitWeightTotal = d; }
@@ -89,6 +91,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     public double getLinolenicAcidPercentage() { return mdLinolenicAcidPercentage; }
     public double getErucicAcidPercentage() { return mdErucicAcidPercentage; }
     public double getAcidityPercentage() { return mdAcidityPercentage; }
+    public double getAcidityAveragePercentage() { return mdAcidityAveragePercentage; }
     public String getFruitClass() { return msFruitClass; }
     public String getFruitRipenessDegree() { return msFruitRipenessDegree; }
     public double getFruitWeightTotal() { return mdFruitWeightTotal; }
@@ -151,6 +154,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
         mdLinolenicAcidPercentage = 0;
         mdErucicAcidPercentage = 0;
         mdAcidityPercentage = 0;
+        mdAcidityAveragePercentage = 0;
         msFruitClass = "";
         msFruitRipenessDegree = "";
         mdFruitWeightTotal = 0;
@@ -220,6 +224,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
             mdLinolenicAcidPercentage = resultSet.getDouble("llc_per");
             mdErucicAcidPercentage = resultSet.getDouble("eru_per");
             mdAcidityPercentage = resultSet.getDouble("aci_per");
+            mdAcidityAveragePercentage = resultSet.getDouble("aci_avg_per");
             msFruitClass = resultSet.getString("fruit_class");
             msFruitRipenessDegree = resultSet.getString("fruit_ripe");
             mdFruitWeightTotal = resultSet.getDouble("fruit_wei_total");
@@ -262,6 +267,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                     mdLinolenicAcidPercentage + ", " +
                     mdErucicAcidPercentage + ", " +
                     mdAcidityPercentage + ", " +
+                    mdAcidityAveragePercentage + ", " + 
                     "'" + msFruitClass + "', " + 
                     "'" + msFruitRipenessDegree + "', " + 
                     mdFruitWeightTotal + ", " + 
@@ -288,6 +294,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                     "llc_per = " + mdLinolenicAcidPercentage + ", " +
                     "eru_per = " + mdErucicAcidPercentage + ", " +
                     "aci_per = " + mdAcidityPercentage + ", " +
+                    "aci_avg_per = " + mdAcidityAveragePercentage + ", " +
                     "fruit_class = '" + msFruitClass + "', " +
                     "fruit_ripe = '" + msFruitRipenessDegree + "', " +
                     "fruit_wei_total = " + mdFruitWeightTotal + ", " +
@@ -325,6 +332,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
         registry.setLinolenicAcidPercentage(this.getLinolenicAcidPercentage());
         registry.setErucicAcidPercentage(this.getErucicAcidPercentage());
         registry.setAcidityPercentage(this.getAcidityPercentage());
+        registry.setAcidityAveragePercentage(this.getAcidityAveragePercentage());
         registry.setFruitClass(this.getFruitClass());
         registry.setFruitRipenessDegree(this.getFruitRipenessDegree());
         registry.setFruitWeightTotal(this.getFruitWeightTotal());
@@ -423,27 +431,30 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                 value = mdAcidityPercentage;
                 break;
             case 13:
-                value = msFruitClass;
+                value = mdAcidityAveragePercentage;
                 break;
             case 14:
-                value = msFruitRipenessDegree;
+                value = msFruitClass;
                 break;
             case 15:
-                value = mdFruitWeightTotal;
+                value = msFruitRipenessDegree;
                 break;
             case 16:
-                value = mdFruitWeightPeelPit;
+                value = mdFruitWeightTotal;
                 break;
             case 17:
-                value = mdFruitPulpDryMatterPercentage;
+                value = mdFruitWeightPeelPit;
                 break;
             case 18:
-                value = mdFruitPulpHumidityPercentage;
+                value = mdFruitPulpDryMatterPercentage;
                 break;
             case 19:
-                value = mdFruitPulpOilPercentage;
+                value = mdFruitPulpHumidityPercentage;
                 break;
             case 20:
+                value = mdFruitPulpOilPercentage;
+                break;
+            case 21:
                 value = mdFruitYieldAdjustmentPercentage;
                 break;
             default:
