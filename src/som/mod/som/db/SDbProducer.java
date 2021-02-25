@@ -26,6 +26,7 @@ public class SDbProducer extends SDbRegistryUser {
     public static final int FIELD_FISCAL_ID = SDbRegistry.FIELD_BASE + 1;
     public static final int FIELD_NAME_TRADE = SDbRegistry.FIELD_BASE + 2;
     public static final int LEN_FISCAL_ID = 20;
+    public static final int LEN_NAME_TRADE = 15;
     
     protected int mnPkProducerId;
     protected String msCode;
