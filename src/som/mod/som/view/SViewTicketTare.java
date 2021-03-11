@@ -33,12 +33,13 @@ import som.mod.som.form.SDialogMailReceptions;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
 public class SViewTicketTare extends SGridPaneView implements ActionListener {
 
     private SGridFilterDatePeriod moFilterDatePeriod;
     private SGridFilterDateCutOff moFilterDateCutOff;
+    private SPaneUserInputCategory moPaneFilterUserInputCategory;
 
     private JButton jbTicketTare;
     private JButton jbMailReceptions;
@@ -54,7 +55,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
     private void initComponentsCustom() {
         jbTicketTare = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tar_not.gif")), "Destarar boleto", this);
         jbMailReceptions = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mail.gif")), "Enviar mail de recepciones del día o período", this);
-
+        moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "itm");
         moDialogDailyMail = new SDialogMailReceptions(miClient, SModConsts.SX_DAY_MAIL, "Recepciones del día");
 
         switch (mnGridSubtype) {
@@ -75,11 +76,12 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         }
 
         jbTicketTare.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
     }
 
     private void actionTicketTare() {
-        SDbTicket ticket = null;
-        SGridRowView gridRow = null;
+        SDbTicket ticket;
+        SGridRowView gridRow;
 
         if (jbTicketTare.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
@@ -135,11 +137,11 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
             }
         }
     }
-
+    
     @Override
     public void prepareSqlQuery() {
+        Object filter;
         String sql = "";
-        Object filter = null;
 
         moPaneSettings = new SGridPaneSettings(1);
         moPaneSettings.setUpdatableApplying(false);
@@ -180,7 +182,12 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 break;
             default:
         }
-
+        
+        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
+        if(!sqlFilter.isEmpty()) {
+            sql += (sql.isEmpty() ? "" : "AND ") + sqlFilter;
+        }
+        
         msSql = "SELECT "
                 + "v.id_tic AS " + SDbConsts.FIELD_ID + "1, "
                 + "v.num AS " + SDbConsts.FIELD_CODE + ", "

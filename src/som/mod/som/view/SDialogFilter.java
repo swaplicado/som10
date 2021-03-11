@@ -4,9 +4,8 @@
  */
 
 /*
- * DDialogSelectBranchEntity.java
+ * SDialogFilter.java
  *
- * Created on 30/12/2011, 11:58:52 AM
  */
 
 package som.mod.som.view;

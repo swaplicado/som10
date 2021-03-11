@@ -6,7 +6,7 @@ package som.mod;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
 public abstract class SModSysConsts {
 
@@ -21,14 +21,17 @@ public abstract class SModSysConsts {
     public static final int CS_USR_TP_ADM = 2;
     public static final int CS_USR_TP_SUP = 3;
 
-    public static final int CS_RIG_MAN_RM = 1;
-    public static final int CS_RIG_MAN_OS = 2;
-    public static final int CS_RIG_STK_RM = 3;
-    public static final int CS_RIG_STK_OS = 4;
-    public static final int CS_RIG_REV_RM = 5;
-    public static final int CS_RIG_REV_OS = 6;
-    public static final int CS_RIG_LAB = 7;
-    public static final int CS_RIG_SCA = 8;
+    public static final int CS_RIG_MAN_RM = 1;  // manager raw materials
+    public static final int CS_RIG_MAN_OM = 2;  // manager oil and meals
+    public static final int CS_RIG_WHS_RM = 3;  // warehouser raw materials
+    public static final int CS_RIG_WHS_OM = 4;  // warehouser oil and meals
+    public static final int CS_RIG_REP_RM = 5;  // reports raw materials
+    public static final int CS_RIG_REP_OM = 6;  // reports oil and meals
+    public static final int CS_RIG_SUP_LAB = 7; // laboratorist supervisor
+    public static final int CS_RIG_LAB = 8;     // laboratorist
+    public static final int CS_RIG_SUP_SCA = 9 ;// scale supervisor
+    public static final int CS_RIG_SCA = 10;    // scale operator
+    public static final int CS_RIG_PER_OC = 11; // periods opening and closing
 
     public static final int CU_LAN_SPA = 1;
     public static final int CU_LAN_ENG = 2;

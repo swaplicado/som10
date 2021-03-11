@@ -18,17 +18,20 @@ import sa.lib.gui.bean.SBeanForm;
 import som.mod.SModConsts;
 import som.mod.ext.db.SExtUtils;
 import som.mod.som.db.SDbProducer;
+import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
 public class SFormProducer extends SBeanForm implements ItemListener {
-
+    
     private SDbProducer moRegistry;
 
     /**
      * Creates new form SFormProducer
+     * @param client
+     * @param title
      */
     public SFormProducer(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_PROD, SLibConsts.UNDEFINED, title);
@@ -59,6 +62,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         jPanel8 = new javax.swing.JPanel();
         jlNameTrade = new javax.swing.JLabel();
         moTextNameTrade = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel7 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jlFiscalId = new javax.swing.JLabel();
         moTextFiscalId = new sa.lib.gui.bean.SBeanFieldText();
@@ -69,12 +73,21 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         jlReportingGroup = new javax.swing.JLabel();
         moKeyReportingGroup = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel3 = new javax.swing.JPanel();
+        jlKeyInputSource = new javax.swing.JLabel();
+        moKeyInputSource = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel11 = new javax.swing.JPanel();
         moBoolFreight = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel33 = new javax.swing.JPanel();
+        moBoolAutoMailNotification = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel34 = new javax.swing.JPanel();
+        jlAutoMailNotificationBoxes = new javax.swing.JLabel();
+        moTextAutoMailNotificationBoxes = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel1 = new javax.swing.JLabel();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(11, 1, 0, 5));
 
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -123,6 +136,11 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         moTextNameTrade.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel8.add(moTextNameTrade);
 
+        jLabel7.setForeground(java.awt.Color.gray);
+        jLabel7.setText("para notificaciones mail");
+        jLabel7.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel8.add(jLabel7);
+
         jPanel2.add(jPanel8);
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -161,11 +179,47 @@ public class SFormProducer extends SBeanForm implements ItemListener {
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolFreight.setText("Se paga flete al proveedor");
-        moBoolFreight.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel3.add(moBoolFreight);
+        jlKeyInputSource.setText("Origen insumo:");
+        jlKeyInputSource.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel3.add(jlKeyInputSource);
+
+        moKeyInputSource.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel3.add(moKeyInputSource);
 
         jPanel2.add(jPanel3);
+
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        moBoolFreight.setText("Se paga flete al proveedor");
+        moBoolFreight.setPreferredSize(new java.awt.Dimension(400, 23));
+        jPanel11.add(moBoolFreight);
+
+        jPanel2.add(jPanel11);
+
+        jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        moBoolAutoMailNotification.setText("Aplica envío automático de mail (al tararse boleto en báscula)");
+        moBoolAutoMailNotification.setPreferredSize(new java.awt.Dimension(400, 23));
+        jPanel33.add(moBoolAutoMailNotification);
+
+        jPanel2.add(jPanel33);
+
+        jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlAutoMailNotificationBoxes.setForeground(new java.awt.Color(0, 102, 102));
+        jlAutoMailNotificationBoxes.setText("Destinatario(s) mail:");
+        jlAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel34.add(jlAutoMailNotificationBoxes);
+
+        moTextAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(350, 23));
+        jPanel34.add(moTextAutoMailNotificationBoxes);
+
+        jLabel1.setForeground(java.awt.Color.gray);
+        jLabel1.setText("separar con ';'");
+        jLabel1.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel34.add(jLabel1);
+
+        jPanel2.add(jPanel34);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -173,26 +227,36 @@ public class SFormProducer extends SBeanForm implements ItemListener {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel33;
+    private javax.swing.JPanel jPanel34;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JLabel jlAutoMailNotificationBoxes;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlExternalProducer;
     private javax.swing.JLabel jlFiscalId;
+    private javax.swing.JLabel jlKeyInputSource;
     private javax.swing.JLabel jlName;
     private javax.swing.JLabel jlNameTrade;
     private javax.swing.JLabel jlReportingGroup;
     private javax.swing.JLabel jlRevueltaProducerId;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolAutoMailNotification;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolFreight;
     private sa.lib.gui.bean.SBeanFieldKey moKeyExternalProducer;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyInputSource;
     private sa.lib.gui.bean.SBeanFieldKey moKeyReportingGroup;
+    private sa.lib.gui.bean.SBeanFieldText moTextAutoMailNotificationBoxes;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
     private sa.lib.gui.bean.SBeanFieldText moTextFiscalId;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
@@ -201,16 +265,21 @@ public class SFormProducer extends SBeanForm implements ItemListener {
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 480, 300);
+        SGuiUtils.setWindowBounds(this, 640, 400);
 
-        moKeyExternalProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlExternalProducer.getText()), true);
+        moKeyExternalProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlExternalProducer), true);
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode.getText()), 25);
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName.getText()), 150);
         moTextNameTrade.setTextSettings(SGuiUtils.getLabelName(jlNameTrade.getText()), 15);
         moTextFiscalId.setTextSettings(SGuiUtils.getLabelName(jlFiscalId.getText()), 20);
-        moTextRevueltaProducerId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaProducerId.getText()), 10, 0);
-        moKeyReportingGroup.setKeySettings(miClient, SGuiUtils.getLabelName(jlReportingGroup.getText()), true);
+        moTextRevueltaProducerId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaProducerId), 10, 0);
+        moKeyReportingGroup.setKeySettings(miClient, SGuiUtils.getLabelName(jlReportingGroup), true);
+        moKeyInputSource.setKeySettings(miClient, SGuiUtils.getLabelName(jlKeyInputSource), true);
         moBoolFreight.setBooleanSettings(SGuiUtils.getLabelName(moBoolFreight.getText()), false);
+        moBoolAutoMailNotification.setBooleanSettings(SGuiUtils.getLabelName(moBoolAutoMailNotification.getText()), false);
+        moTextAutoMailNotificationBoxes.setTextSettings(SGuiUtils.getLabelName(jlAutoMailNotificationBoxes), 255);
+        moTextAutoMailNotificationBoxes.setTextCaseType(SGuiConsts.TEXT_CASE_LOWER);
+        moTextAutoMailNotificationBoxes.setMinLength(0);
 
         moFields.addField(moKeyExternalProducer);
         moFields.addField(moTextCode);
@@ -219,14 +288,15 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         moFields.addField(moTextFiscalId);
         moFields.addField(moTextRevueltaProducerId);
         moFields.addField(moKeyReportingGroup);
+        moFields.addField(moKeyInputSource);
         moFields.addField(moBoolFreight);
+        moFields.addField(moBoolAutoMailNotification);
+        moFields.addField(moTextAutoMailNotificationBoxes); 
 
         moFields.setFormButton(jbSave);
     }
 
     private void itemStateKeyExternalProducer() {
-        int lenMax = 0;
-        
         if (moKeyExternalProducer.getSelectedIndex() <= 0) {
             moTextCode.setValue("");
             moTextName.setValue("");
@@ -234,18 +304,18 @@ public class SFormProducer extends SBeanForm implements ItemListener {
             moTextFiscalId.setValue("");
         }
         else {
-            lenMax = moKeyExternalProducer.getSelectedItem().getItem().length() > 49 ? 49 : moKeyExternalProducer.getSelectedItem().getItem().length();
+//            int lenMax = moKeyExternalProducer.getSelectedItem().getItem().length() > 49 ? 49 : moKeyExternalProducer.getSelectedItem().getItem().length();
             
             moTextCode.setValue(moKeyExternalProducer.getSelectedItem().getCode());
             moTextName.setValue(moKeyExternalProducer.getSelectedItem().getItem());
-            moTextNameTrade.setValue(moKeyExternalProducer.getSelectedItem().getItem().substring(0, lenMax));
+            moTextNameTrade.setValue(moKeyExternalProducer.getSelectedItem().getItem().substring(0, SDbProducer.LEN_NAME_TRADE));
             moTextFiscalId.setValue(moKeyExternalProducer.getSelectedItem().getComplement());
         }
     }
 
     @Override
     public void addAllListeners() {
-        moKeyExternalProducer.addItemListener(this);
+        moKeyExternalProducer.addItemListener(this);                                                                                                                                          
     }
 
     @Override
@@ -258,6 +328,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
     public void reloadCatalogues() {
         SExtUtils.populateCataloguesProducers(miClient, moKeyExternalProducer);
         miClient.getSession().populateCatalogue(moKeyReportingGroup, SModConsts.CU_REP_GRP, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyInputSource, SModConsts.SU_INP_SRC, SSomConsts.OPC_ALL, null);
     }
 
     @Override
@@ -285,7 +356,10 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         moTextRevueltaProducerId.setValue(moRegistry.getRevueltaProducerId());
         moBoolFreight.setValue(moRegistry.isFreightPayment());
         moKeyReportingGroup.setValue(new int[] { moRegistry.getFkReportingGroupId() });
+        moKeyInputSource.setValue(new int [] { moRegistry.getFkInputSourceId() });
         moKeyExternalProducer.setValue(new int[] { moRegistry.getFkExternalProducerId_n() });
+        moBoolAutoMailNotification.setValue(moRegistry.isAutoMailNotification());
+        moTextAutoMailNotificationBoxes.setValue(moRegistry.getAutoMailNotificationBoxes());
 
         moTextCode.setEnabled(false);
         moTextName.setEnabled(false);
@@ -314,8 +388,11 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         registry.setNameTrade(moTextNameTrade.getValue());
         registry.setFiscalId(moTextFiscalId.getValue());
         registry.setRevueltaProducerId(moTextRevueltaProducerId.getValue());
+        registry.setAutoMailNotificationBoxes(moTextAutoMailNotificationBoxes.getValue());
+        registry.setAutoMailNotification(moBoolAutoMailNotification.getValue());
         registry.setFreightPayment(moBoolFreight.getValue());
         registry.setFkReportingGroupId(moKeyReportingGroup.getValue()[0]);
+        registry.setFkInputSourceId(moKeyInputSource.getValue()[0]);
         registry.setFkExternalProducerId_n(moKeyExternalProducer.getValue()[0]);
 
         return registry;
@@ -324,14 +401,25 @@ public class SFormProducer extends SBeanForm implements ItemListener {
     @Override
     public SGuiValidation validateForm() {
         SGuiValidation validation = moFields.validateFields();
-
+        
+        if (validation.isValid()) {
+            if (moBoolAutoMailNotification.isSelected() && moTextAutoMailNotificationBoxes.getValue().isEmpty()) {
+                validation.setMessage(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + moTextAutoMailNotificationBoxes.getFieldName() + "'.");
+                validation.setComponent(moTextAutoMailNotificationBoxes);
+            }
+            else if (!moBoolAutoMailNotification.isSelected() && !moTextAutoMailNotificationBoxes.getValue().isEmpty()) {
+                validation.setMessage(SGuiConsts.ERR_MSG_FIELD_REQ_NOT + "'" + moTextAutoMailNotificationBoxes.getFieldName() + "'.");
+                validation.setComponent(moTextAutoMailNotificationBoxes);
+            }
+        }
+        
         return validation;
     }
 
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() instanceof JComboBox && e.getStateChange() == ItemEvent.SELECTED) {
-            JComboBox comboBox = (JComboBox)  e.getSource();
+            JComboBox comboBox = (JComboBox) e.getSource();
 
             if (comboBox == moKeyExternalProducer) {
                 itemStateKeyExternalProducer();

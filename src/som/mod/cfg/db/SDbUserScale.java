@@ -113,9 +113,7 @@ public class SDbUserScale extends SDbRegistry implements SGridRow {
         initQueryMembers();
         mnQueryResultId = SDbConsts.SAVE_ERROR;
 
-        if (mbRegistryNew) {
-            verifyRegistryNew(session);
-        }
+        verifyRegistryNew(session);
 
         if (mbRegistryNew) {
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +

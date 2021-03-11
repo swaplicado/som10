@@ -27,7 +27,7 @@ import som.mod.SModSysConsts;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
 public class SDbUser extends SDbRegistryUser implements SGuiUser {
 
@@ -54,11 +54,13 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
 
     protected Vector<SDbUserRight> mvChildUserRights;
     protected Vector<SDbUserScale> mvChildUserScales;
+    protected Vector<SDbUserInputCategory> mvChildUserInputCategories;
 
     public SDbUser() {
         super(SModConsts.CU_USR);
         mvChildUserRights = new Vector<>();
         mvChildUserScales = new Vector<>();
+        mvChildUserInputCategories = new Vector<>();
         initRegistry();
     }
 
@@ -94,6 +96,30 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
 
     public Vector<SDbUserRight> getChildUserRights() { return mvChildUserRights; }
     public Vector<SDbUserScale> getChildUserScales() { return mvChildUserScales; }
+    public Vector<SDbUserInputCategory> getChildUserInputCategories() { return mvChildUserInputCategories; }
+    
+    /**
+     * Check if user has access to input category according to registry type.
+     * @param registryType Registry type, either SModConsts.S_TIC or SModConsts.S_LAB.
+     * @param inputCategoryId ID of input category.
+     * @return 
+     */
+    public boolean hasInputCategoryAccess(final int registryType, final int inputCategoryId) {
+        if (isAdministrator() || 
+                (registryType == SModConsts.S_TIC && hasPrivilege(SModSysConsts.CS_RIG_SUP_SCA)) ||
+                (registryType == SModConsts.S_LAB && hasPrivilege(SModSysConsts.CS_RIG_SUP_LAB))) {
+            return true;
+        }
+        else {
+            for (SDbUserInputCategory userInputCategory : mvChildUserInputCategories) {
+                if (inputCategoryId == userInputCategory.getPkInputCategoryId()) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
 
     @Override
     public boolean isAdministrator() {
@@ -111,21 +137,23 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
 
         switch (module) {
             case SModConsts.MOD_CFG:
-                access = isAdministrator();
+                access = isAdministrator() ||
+                        hasPrivilege(SModSysConsts.CS_RIG_PER_OC);
                 break;
             case SModConsts.MOD_SOM:
                 access = isAdministrator() ||
-                        hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) || hasPrivilege(SModSysConsts.CS_RIG_STK_RM) ||
-                        hasPrivilege(SModSysConsts.CS_RIG_MAN_OS) || hasPrivilege(SModSysConsts.CS_RIG_STK_OS);
+                        hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_RM) ||
+                        hasPrivilege(SModSysConsts.CS_RIG_MAN_OM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_OM);
                 break;
             case SModConsts.MOD_SOM_RM:
                 access = isAdministrator() ||
-                        hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) || hasPrivilege(SModSysConsts.CS_RIG_STK_RM) || hasPrivilege(SModSysConsts.CS_RIG_REV_RM) ||
-                        hasPrivilege(SModSysConsts.CS_RIG_LAB) || hasPrivilege(SModSysConsts.CS_RIG_SCA);
+                        hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_RM) || hasPrivilege(SModSysConsts.CS_RIG_REP_RM) ||
+                        hasPrivilege(SModSysConsts.CS_RIG_SUP_SCA) || hasPrivilege(SModSysConsts.CS_RIG_SCA) ||
+                        hasPrivilege(SModSysConsts.CS_RIG_SUP_LAB) || hasPrivilege(SModSysConsts.CS_RIG_LAB);
                 break;
             case SModConsts.MOD_SOM_OS:
                 access = isAdministrator() ||
-                        hasPrivilege(SModSysConsts.CS_RIG_MAN_OS) || hasPrivilege(SModSysConsts.CS_RIG_STK_OS)  ||hasPrivilege(SModSysConsts.CS_RIG_REV_OS);
+                        hasPrivilege(SModSysConsts.CS_RIG_MAN_OM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_OM) || hasPrivilege(SModSysConsts.CS_RIG_REP_OM);
                 break;
             default:
         }
@@ -233,7 +261,9 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
 
+        mvChildUserRights.clear();
         mvChildUserScales.clear();
+        mvChildUserInputCategories.clear();
     }
 
     @Override
@@ -312,6 +342,14 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
                 SDbUserScale child = new SDbUserScale();
                 child.read(session, new int[] { mnPkUserId, resultSet.getInt(1) });
                 mvChildUserScales.add(child);
+            }
+            
+            msSql = "SELECT id_inp_ct FROM " + SModConsts.TablesMap.get(SModConsts.CU_USR_INP_CT) + " " + getSqlWhere();
+            resultSet = statement.executeQuery(msSql);
+            while (resultSet.next()) {
+                SDbUserInputCategory child = new SDbUserInputCategory();
+                child.read(session, new int[] { mnPkUserId, resultSet.getInt(1) });
+                mvChildUserInputCategories.add(child);
             }
 
             // Finish registry reading:
@@ -397,6 +435,15 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
             child.setRegistryNew(true);
             child.save(session);
         }
+        
+        msSql = "DELETE FROM " + SModConsts.TablesMap.get(SModConsts.CU_USR_INP_CT) + " " + getSqlWhere();
+        session.getStatement().execute(msSql);
+        
+        for (SDbUserInputCategory child : mvChildUserInputCategories) {
+            child.setPkUserId(mnPkUserId);
+            child.setRegistryNew(true);
+            child.save(session); 
+        }
 
         // Finish registry updating:
 
@@ -429,6 +476,10 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
 
         for (SDbUserScale child : mvChildUserScales) {
             registry.getChildUserScales().add(child.clone());
+        }
+        
+        for (SDbUserInputCategory child : mvChildUserInputCategories) {
+            registry.getChildUserInputCategories().add(child.clone());
         }
 
         registry.setRegistryNew(this.isRegistryNew());

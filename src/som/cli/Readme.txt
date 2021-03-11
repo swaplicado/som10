@@ -5,11 +5,11 @@ Fecha: 2019-09-20
 ================================================================================
 
 Programa/script:
-	"C:\Program Files\Java\jre1.8.0_45\bin\javaw.exe"
+	"C:\Program Files\Java\jre1.8.0_202\bin\javaw.exe"
 Argumento:
 	-classpath dist/som10.jar som.cli.SImportTicketsRevuelta
 Iniciar en:
-	F:\swap\som
+	C:\swap\som
 Ejecución:
 	Cada hora, indefinidamente.
 	Al iniciar Windows.

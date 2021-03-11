@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
 public abstract class SModConsts {
 
@@ -35,6 +35,7 @@ public abstract class SModConsts {
     public static final int CU_USR = 220008;
     public static final int CU_USR_RIG = 220009;
     public static final int CU_USR_SCA = 220010;
+    public static final int CU_USR_INP_CT = 220021;
     public static final int CU_DIV = 220011;
     public static final int CU_PROD_LINES = 220012;
     public static final int CU_REP_GRP = 220016;
@@ -160,8 +161,9 @@ public abstract class SModConsts {
     public static final int SR_IOG_LIST = 350010;
     public static final int SR_FRE_TIME = 350011;
     public static final int SR_ITEM_FRUIT = 350012;
-    public static final int SR_CH_OIL_PERC = 350013;
-    public static final int SR_STK_DAILY = 350014;
+    public static final int SR_ITEM_FRUIT_HIST = 350013;
+    public static final int SR_CH_OIL_PERC = 350016;
+    public static final int SR_STK_DAILY = 350021;
 
     public static final int E_TIC_REV = 430001;
 
@@ -186,6 +188,7 @@ public abstract class SModConsts {
         TablesMap.put(CU_USR, "cu_usr");
         TablesMap.put(CU_USR_RIG, "cu_usr_rig");
         TablesMap.put(CU_USR_SCA, "cu_usr_sca");
+        TablesMap.put(CU_USR_INP_CT, "cu_usr_inp_ct");
         TablesMap.put(CU_DIV, "cu_div");
         TablesMap.put(CU_PROD_LINES, "cu_line");
         TablesMap.put(CU_REP_GRP, "cu_rep_grp");

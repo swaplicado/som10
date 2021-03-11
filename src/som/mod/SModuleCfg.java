@@ -27,11 +27,10 @@ import som.mod.cfg.db.SDbBranchWarehouse;
 import som.mod.cfg.db.SDbCompany;
 import som.mod.cfg.db.SDbCompanyBranch;
 import som.mod.cfg.db.SDbDivision;
-import som.mod.cfg.db.SDbGrindingParameter;
-import som.mod.cfg.db.SDbLinkItemParameter;
 import som.mod.cfg.db.SDbProductionLine;
 import som.mod.cfg.db.SDbReportingGroup;
 import som.mod.cfg.db.SDbUser;
+import som.mod.cfg.db.SDbUserInputCategory;
 import som.mod.cfg.db.SDbUserRight;
 import som.mod.cfg.db.SDbUserScale;
 import som.mod.cfg.db.SDbYear;
@@ -40,29 +39,25 @@ import som.mod.cfg.form.SFormBranchPlant;
 import som.mod.cfg.form.SFormBranchWarehouse;
 import som.mod.cfg.form.SFormCompany;
 import som.mod.cfg.form.SFormCompanyBranch;
-import som.mod.cfg.form.SFormGrindingParameters;
-import som.mod.cfg.form.SFormLinkItemParam;
 import som.mod.cfg.form.SFormProductionLine;
 import som.mod.cfg.form.SFormReportingGroup;
 import som.mod.cfg.form.SFormUser;
 import som.mod.cfg.form.SFormYear;
 import som.mod.cfg.view.SViewBranchPlant;
 import som.mod.cfg.view.SViewBranchWarehouse;
-import som.mod.cfg.view.SViewProductionLine;
 import som.mod.cfg.view.SViewCompany;
 import som.mod.cfg.view.SViewCompanyBranch;
-import som.mod.cfg.view.SViewLinkItmParam;
-import som.mod.cfg.view.SViewParameters;
+import som.mod.cfg.view.SViewProductionLine;
 import som.mod.cfg.view.SViewReportingGroup;
 import som.mod.cfg.view.SViewUser;
+import som.mod.cfg.view.SViewUserInputCategories;
 import som.mod.cfg.view.SViewUserRight;
 import som.mod.cfg.view.SViewUserScale;
 import som.mod.cfg.view.SViewYear;
-import som.mod.som.db.SDbItem;
 
 /**
  * 
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  * 2019-01-17, Sergio Flores: Cambio de ubicación del catálogo de agrupadores de reporte, del módulo configuración al módulo materias primas.
  */
 public class SModuleCfg extends SGuiModule implements ActionListener {
@@ -73,13 +68,12 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
     private JMenuItem mjCatProductionLine;
     private JMenuItem mjCatWarehouse;
     private JMenuItem mjCatPlant;
-    private JMenuItem mjCatParameters;
-    private JMenuItem mjCatLinkItmParams;
     private JMenuItem mjCatScale;
     private JMenu mjUsr;
     private JMenuItem mjUsrUser;
     private JMenuItem mjUsrUserRights;
     private JMenuItem mjUsrUserScales;
+    private JMenuItem mjUsrUserInputCategories;
     private JMenu mjCtr;
     private JMenuItem mjCtrYear;
 
@@ -88,8 +82,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
     private SFormProductionLine moFormProductionLine;
     private SFormBranchWarehouse moFormWarehouse;
     private SFormBranchPlant moFormPlant;
-    private SFormGrindingParameters moFormGrindingParameters;
-    private SFormLinkItemParam moFormLinkItemParam;
     private SFormReportingGroup moFormReportingGroup;
     private SFormUser moFormUser;
     private SFormYear moFormYear;
@@ -106,8 +98,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjCatProductionLine = new JMenuItem("Líneas de producción");
         mjCatWarehouse = new JMenuItem("Almacenes");
         mjCatPlant = new JMenuItem("Plantas");
-        mjCatParameters = new JMenuItem("Parámetros de molienda");
-        mjCatLinkItmParams = new JMenuItem("Parámetros vs ítems");
         mjCatScale = new JMenuItem("Básculas");
 
         mjCat.add(mjCatCompany);
@@ -115,8 +105,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjCat.add(mjCatProductionLine);
         mjCat.add(mjCatWarehouse);
         mjCat.add(mjCatPlant);
-        mjCat.add(mjCatParameters);
-        mjCat.add(mjCatLinkItmParams);
         mjCat.addSeparator();
         mjCat.add(mjCatScale);
 
@@ -125,25 +113,27 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjCatProductionLine.addActionListener(this);
         mjCatWarehouse.addActionListener(this);
         mjCatPlant.addActionListener(this);
-        mjCatParameters.addActionListener(this);
-        mjCatLinkItmParams.addActionListener(this);
         mjCatScale.addActionListener(this);
 
+        mjCat.setEnabled(miClient.getSession().getUser().isAdministrator());
         mjCatCompany.setEnabled(miClient.getSession().getUser().isSupervisor());
 
         mjUsr = new JMenu("Usuarios");
         mjUsrUser = new JMenuItem("Usuarios");
         mjUsrUserRights = new JMenuItem("Usuarios vs. derechos (Q)");
         mjUsrUserScales = new JMenuItem("Usuarios vs. básculas (Q)");
+        mjUsrUserInputCategories = new JMenuItem("Usuarios vs. categorías de insumo (Q)");
 
         mjUsr.add(mjUsrUser);
         mjUsr.addSeparator();
         mjUsr.add(mjUsrUserRights);
         mjUsr.add(mjUsrUserScales);
+        mjUsr.add(mjUsrUserInputCategories);
 
         mjUsrUser.addActionListener(this);
         mjUsrUserRights.addActionListener(this);
         mjUsrUserScales.addActionListener(this);
+        mjUsrUserInputCategories.addActionListener(this);
 
         mjUsr.setEnabled(miClient.getSession().getUser().isSupervisor());
 
@@ -153,6 +143,8 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjCtr.add(mjCtrYear);
 
         mjCtrYear.addActionListener(this);
+        
+        mjCtr.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_PER_OC));
     }
 
     @Override
@@ -200,15 +192,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.CU_PLA:
                 registry = new SDbBranchPlant();
                 break;
-            case SModConsts.CU_PARAMS:
-                registry = new SDbGrindingParameter();
-                break;
-            case SModConsts.CU_LINK_ITEM_PARAM:
-                registry = new SDbLinkItemParameter();
-                break;
-            case SModConsts.CU_LINK_ITEMS:
-                registry = new SDbItem();
-                break;
             case SModConsts.CU_YEAR:
                 registry = new SDbYear();
                 break;
@@ -227,6 +210,9 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.CU_USR_SCA:
                 registry = new SDbUserScale();
                 break;
+            case SModConsts.CU_USR_INP_CT:
+                registry = new SDbUserInputCategory();
+                break;
             case SModConsts.CU_DIV:
                 registry = new SDbDivision();
                 break;
@@ -244,7 +230,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
     public SGuiCatalogueSettings getCatalogueSettings(int type, int subtype, SGuiParams params) {
         String sql = "";
         String aux = "";
-        Object value = null;
+        Object value;
         SGuiCatalogueSettings settings = null;
 
         switch (type) {
@@ -301,20 +287,18 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                         aux += ") ";
 
                         settings = new SGuiCatalogueSettings("Tanque" + (subtype == SModSysConsts.CS_WAH_TP_TAN_MFG ? " producción" : ""), 3, 2, SLibConsts.DATA_TYPE_DEC);
-                        settings.setCodeApplying(true);
-                        sql = "SELECT id_co AS " + SDbConsts.FIELD_ID + "1, id_cob AS " + SDbConsts.FIELD_ID + "2, id_wah AS " + SDbConsts.FIELD_ID + "3, name AS " + SDbConsts.FIELD_ITEM + ", "
+                        sql = "SELECT id_co AS " + SDbConsts.FIELD_ID + "1, id_cob AS " + SDbConsts.FIELD_ID + "2, id_wah AS " + SDbConsts.FIELD_ID + "3, CONCAT(code, ' - ', name) AS " + SDbConsts.FIELD_ITEM + ", "
                                 + "code AS " + SDbConsts.FIELD_CODE + ", id_co AS " + SDbConsts.FIELD_FK + "1, id_cob AS " + SDbConsts.FIELD_FK + "2, "
                                 + "dim_heig AS " + SDbConsts.FIELD_COMP + " "
                                 + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 " + aux + " "
-                                + "ORDER BY name, id_co, id_cob, id_wah ";
+                                + "ORDER BY code, name, id_co, id_cob, id_wah ";
                         break;
                     default:
                         settings = new SGuiCatalogueSettings("Almacén", 3, 2);
-                        settings.setCodeApplying(true);
-                        sql = "SELECT id_co AS " + SDbConsts.FIELD_ID + "1, id_cob AS " + SDbConsts.FIELD_ID + "2, id_wah AS " + SDbConsts.FIELD_ID + "3, name AS " + SDbConsts.FIELD_ITEM + ", "
+                        sql = "SELECT id_co AS " + SDbConsts.FIELD_ID + "1, id_cob AS " + SDbConsts.FIELD_ID + "2, id_wah AS " + SDbConsts.FIELD_ID + "3, CONCAT(code, ' - ', name) AS " + SDbConsts.FIELD_ITEM + ", "
                                 + "code AS " + SDbConsts.FIELD_CODE + ", id_co AS " + SDbConsts.FIELD_FK + "1, id_cob AS " + SDbConsts.FIELD_FK + "2 "
                                 + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 "
-                                + "ORDER BY name, id_co, id_cob, id_wah ";
+                                + "ORDER BY code, name, id_co, id_cob, id_wah ";
                 }
                 break;
             case SModConsts.CU_PLA:
@@ -373,20 +357,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 sql = "SELECT id_rep_grp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_rep_grp ";
                 break;
-            case SModConsts.CU_PARAMS:
-                settings = new SGuiCatalogueSettings("Parámetros", 1);
-                settings.setCodeApplying(true);
-                sql = "SELECT id_parameter AS " + SDbConsts.FIELD_ID + "1, parameter AS " + SDbConsts.FIELD_ITEM + ", param_code AS " + SDbConsts.FIELD_CODE + " "
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY parameter, id_parameter ";
-                break;
-            case SModConsts.CU_LINK_ITEMS:
-                settings = new SGuiCatalogueSettings("Ítems configurados", 1);
-                settings.setCodeApplying(true);
-                sql = "SELECT id_item AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND id_item IN "
-                        + "(SELECT DISTINCT fk_item_id FROM cu_link_itm_params WHERE b_del = 0) "
-                        + "ORDER BY name, id_item ";
-                break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -422,12 +392,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.CU_PLA:
                 view = new SViewBranchPlant(miClient, "Plantas");
                 break;
-            case SModConsts.CU_PARAMS:
-                view = new SViewParameters(miClient, "Parámetros de molienda");
-                break;
-            case SModConsts.CU_LINK_ITEM_PARAM:
-                view = new SViewLinkItmParam(miClient, "Parámetros vs ítems");
-                break;
             case SModConsts.CU_YEAR:
                 view = new SViewYear(miClient, "Ejercicios y períodos");
                 break;
@@ -442,6 +406,9 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.CU_USR_SCA:
                 view = new SViewUserScale(miClient, "Usuarios vs. básculas Q");
+                break;
+            case SModConsts.CU_USR_INP_CT:
+                view = new SViewUserInputCategories(miClient, "Usuarios vs. categorías de insumo Q");
                 break;
             case SModConsts.CU_DIV:
                 view = null;
@@ -485,14 +452,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.CU_PLA:
                 if (moFormPlant == null) moFormPlant = new SFormBranchPlant(miClient, "Planta");
                 form = moFormPlant;
-                break;
-            case SModConsts.CU_PARAMS:
-                if (moFormGrindingParameters == null) moFormGrindingParameters = new SFormGrindingParameters(miClient, "Parámetro de molienda");
-                form = moFormGrindingParameters;
-                break;
-            case SModConsts.CU_LINK_ITEM_PARAM:
-                if (moFormLinkItemParam == null) moFormLinkItemParam = new SFormLinkItemParam(miClient, "Parámetro vs ítem");
-                form = moFormLinkItemParam;
                 break;
             case SModConsts.CU_REP_GRP:
                 if (moFormReportingGroup == null) moFormReportingGroup = new SFormReportingGroup(miClient, "Agrupador de reporte");
@@ -538,12 +497,6 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             else if (menuItem == mjCatPlant) {
                 showView(SModConsts.CU_PLA, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == mjCatParameters) {
-                showView(SModConsts.CU_PARAMS, SLibConsts.UNDEFINED, null);
-            }
-            else if (menuItem == mjCatLinkItmParams) {
-                showView(SModConsts.CU_LINK_ITEM_PARAM, SLibConsts.UNDEFINED, null);
-            }
             else if (menuItem == mjCatScale) {
                 miClient.getSession().showView(SModConsts.SU_SCA, SLibConsts.UNDEFINED, null);
             }
@@ -555,6 +508,9 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjUsrUserScales) {
                 showView(SModConsts.CU_USR_SCA, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjUsrUserInputCategories) {
+                showView(SModConsts.CU_USR_INP_CT, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCtrYear) {
                 showView(SModConsts.CU_YEAR, SLibConsts.UNDEFINED, null);

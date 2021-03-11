@@ -38,7 +38,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
@@ -52,6 +52,8 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
     /**
      * Creates new form SFormItem
+     * @param client
+     * @param title
      */
     public SFormItem(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, title);
@@ -183,34 +185,41 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         jLabel4 = new javax.swing.JLabel();
         moBoolAcidityPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel45 = new javax.swing.JPanel();
-        moBoolPacking = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jLabel9 = new javax.swing.JLabel();
+        moBoolAcidityAvgPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel21 = new javax.swing.JPanel();
+        moBoolPacking = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel22 = new javax.swing.JPanel();
         jlPackingName = new javax.swing.JLabel();
         moTextPackingName = new sa.lib.gui.bean.SBeanFieldText();
-        jPanel22 = new javax.swing.JPanel();
+        jPanel33 = new javax.swing.JPanel();
         jlPackingWeight = new javax.swing.JLabel();
         moDecPackingWeight = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlPackingWeightUnit = new javax.swing.JLabel();
-        jPanel33 = new javax.swing.JPanel();
-        moBoolAutoMailNotification = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel34 = new javax.swing.JPanel();
+        moBoolAutoMailNotification = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel46 = new javax.swing.JPanel();
         jlAutoMailNotificationBoxes = new javax.swing.JLabel();
         moTextAutoMailNotificationBoxes = new sa.lib.gui.bean.SBeanFieldText();
         jLabel1 = new javax.swing.JLabel();
-        jPanel46 = new javax.swing.JPanel();
-        moBoolUserMailNotification = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel47 = new javax.swing.JPanel();
+        moBoolUserMailNotification = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel38 = new javax.swing.JPanel();
         jlUserMailNotificationBoxes = new javax.swing.JLabel();
         moTextUserMailNotificationBoxes = new sa.lib.gui.bean.SBeanFieldText();
         jLabel2 = new javax.swing.JLabel();
-        jPanel38 = new javax.swing.JPanel();
-        moBoolUserMailNotificationOnlyWhenMoves = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel23 = new javax.swing.JPanel();
+        moBoolUserMailNotificationOnlyWhenMoves = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel42 = new javax.swing.JPanel();
+        jPanel52 = new javax.swing.JPanel();
         jlRevueltaItemId = new javax.swing.JLabel();
         moTextRevueltaItemId = new sa.lib.gui.bean.SBeanFieldText();
         jLabel8 = new javax.swing.JLabel();
-        jPanel42 = new javax.swing.JPanel();
+        jPanel53 = new javax.swing.JPanel();
         moBoolPrintInputType = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel54 = new javax.swing.JPanel();
+
+        setPreferredSize(new java.awt.Dimension(1040, 650));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -510,7 +519,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel8.setLayout(new java.awt.BorderLayout());
 
-        jPanel18.setLayout(new java.awt.GridLayout(21, 1, 0, 5));
+        jPanel18.setLayout(new java.awt.GridLayout(22, 1, 0, 5));
 
         jPanel50.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -653,113 +662,132 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel45.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolPacking.setText("Aplica empaque");
-        moBoolPacking.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel45.add(moBoolPacking);
+        jLabel9.setPreferredSize(new java.awt.Dimension(175, 23));
+        jPanel45.add(jLabel9);
+
+        moBoolAcidityAvgPercentage.setText("Aplica acidez promedio proceso (%)\n");
+        moBoolAcidityAvgPercentage.setPreferredSize(new java.awt.Dimension(235, 23));
+        jPanel45.add(moBoolAcidityAvgPercentage);
 
         jPanel18.add(jPanel45);
 
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlPackingName.setText("Nombre empaque:*");
-        jlPackingName.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel21.add(jlPackingName);
-
-        moTextPackingName.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel21.add(moTextPackingName);
+        moBoolPacking.setText("Aplica empaque");
+        moBoolPacking.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel21.add(moBoolPacking);
 
         jPanel18.add(jPanel21);
 
         jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlPackingWeight.setText("Peso empaque:*");
-        jlPackingWeight.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel22.add(jlPackingWeight);
-        jPanel22.add(moDecPackingWeight);
+        jlPackingName.setText("Nombre empaque:*");
+        jlPackingName.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel22.add(jlPackingName);
 
-        jlPackingWeightUnit.setText("UNIT");
-        jlPackingWeightUnit.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel22.add(jlPackingWeightUnit);
+        moTextPackingName.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel22.add(moTextPackingName);
 
         jPanel18.add(jPanel22);
 
         jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolAutoMailNotification.setText("Aplica envío automático de mail (al tararse boleto en báscula)");
-        moBoolAutoMailNotification.setPreferredSize(new java.awt.Dimension(400, 23));
-        jPanel33.add(moBoolAutoMailNotification);
+        jlPackingWeight.setText("Peso empaque:*");
+        jlPackingWeight.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel33.add(jlPackingWeight);
+        jPanel33.add(moDecPackingWeight);
+
+        jlPackingWeightUnit.setText("UNIT");
+        jlPackingWeightUnit.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel33.add(jlPackingWeightUnit);
 
         jPanel18.add(jPanel33);
 
         jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlAutoMailNotificationBoxes.setText("Destinatario(s) mail:");
-        jlAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel34.add(jlAutoMailNotificationBoxes);
-
-        moTextAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(350, 23));
-        jPanel34.add(moTextAutoMailNotificationBoxes);
-
-        jLabel1.setForeground(java.awt.Color.gray);
-        jLabel1.setText("separar con ';'");
-        jLabel1.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel34.add(jLabel1);
+        moBoolAutoMailNotification.setText("Aplica envío automático de mail (al tararse boleto en báscula)");
+        moBoolAutoMailNotification.setPreferredSize(new java.awt.Dimension(400, 23));
+        jPanel34.add(moBoolAutoMailNotification);
 
         jPanel18.add(jPanel34);
 
         jPanel46.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolUserMailNotification.setText("Aplica envío manual de mail (en recepciones del día o período)");
-        moBoolUserMailNotification.setPreferredSize(new java.awt.Dimension(400, 23));
-        jPanel46.add(moBoolUserMailNotification);
+        jlAutoMailNotificationBoxes.setForeground(new java.awt.Color(0, 102, 102));
+        jlAutoMailNotificationBoxes.setText("Destinatario(s) mail:");
+        jlAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel46.add(jlAutoMailNotificationBoxes);
+
+        moTextAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(350, 23));
+        jPanel46.add(moTextAutoMailNotificationBoxes);
+
+        jLabel1.setForeground(java.awt.Color.gray);
+        jLabel1.setText("separar con ';'");
+        jLabel1.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel46.add(jLabel1);
 
         jPanel18.add(jPanel46);
 
         jPanel47.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlUserMailNotificationBoxes.setText("Destinatario(s) mail:");
-        jlUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel47.add(jlUserMailNotificationBoxes);
-
-        moTextUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(350, 23));
-        jPanel47.add(moTextUserMailNotificationBoxes);
-
-        jLabel2.setForeground(java.awt.Color.gray);
-        jLabel2.setText("separar con ';'");
-        jLabel2.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel47.add(jLabel2);
+        moBoolUserMailNotification.setText("Aplica envío manual de mail (en recepciones del día o período)");
+        moBoolUserMailNotification.setPreferredSize(new java.awt.Dimension(400, 23));
+        jPanel47.add(moBoolUserMailNotification);
 
         jPanel18.add(jPanel47);
 
         jPanel38.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolUserMailNotificationOnlyWhenMoves.setText("Aplica envío de mail sólo si hay movimientos en el período");
-        moBoolUserMailNotificationOnlyWhenMoves.setPreferredSize(new java.awt.Dimension(350, 23));
-        jPanel38.add(moBoolUserMailNotificationOnlyWhenMoves);
+        jlUserMailNotificationBoxes.setForeground(new java.awt.Color(0, 102, 102));
+        jlUserMailNotificationBoxes.setText("Destinatario(s) mail:");
+        jlUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel38.add(jlUserMailNotificationBoxes);
+
+        moTextUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(350, 23));
+        jPanel38.add(moTextUserMailNotificationBoxes);
+
+        jLabel2.setForeground(java.awt.Color.gray);
+        jLabel2.setText("separar con ';'");
+        jLabel2.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel38.add(jLabel2);
 
         jPanel18.add(jPanel38);
 
         jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlRevueltaItemId.setText("Clave Revuelta:");
-        jlRevueltaItemId.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel23.add(jlRevueltaItemId);
-        jPanel23.add(moTextRevueltaItemId);
-
-        jLabel8.setForeground(java.awt.Color.gray);
-        jLabel8.setText("clave ítem en BD Revuelta");
-        jLabel8.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel23.add(jLabel8);
+        moBoolUserMailNotificationOnlyWhenMoves.setText("Aplica envío de mail sólo si hay movimientos en el período");
+        moBoolUserMailNotificationOnlyWhenMoves.setPreferredSize(new java.awt.Dimension(350, 23));
+        jPanel23.add(moBoolUserMailNotificationOnlyWhenMoves);
 
         jPanel18.add(jPanel23);
 
         jPanel42.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolPrintInputType.setText("Mostrar tipo insumo en impresión boleto");
-        moBoolPrintInputType.setPreferredSize(new java.awt.Dimension(250, 23));
-        jPanel42.add(moBoolPrintInputType);
+        jPanel52.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel42.add(jPanel52);
+
+        jlRevueltaItemId.setText("Clave Revuelta:");
+        jlRevueltaItemId.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel42.add(jlRevueltaItemId);
+        jPanel42.add(moTextRevueltaItemId);
+
+        jLabel8.setForeground(java.awt.Color.gray);
+        jLabel8.setText("clave ítem en BD Revuelta");
+        jLabel8.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel42.add(jLabel8);
 
         jPanel18.add(jPanel42);
+
+        jPanel53.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        moBoolPrintInputType.setText("Mostrar tipo insumo en impresión boleto");
+        moBoolPrintInputType.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel53.add(moBoolPrintInputType);
+
+        jPanel54.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel53.add(jPanel54);
+
+        jPanel18.add(jPanel53);
 
         jPanel8.add(jPanel18, java.awt.BorderLayout.NORTH);
 
@@ -795,6 +823,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -839,6 +868,9 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel50;
     private javax.swing.JPanel jPanel51;
+    private javax.swing.JPanel jPanel52;
+    private javax.swing.JPanel jPanel53;
+    private javax.swing.JPanel jPanel54;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
@@ -879,6 +911,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JLabel jlUnitaryWeightUnit;
     private javax.swing.JLabel jlUserMailNotificationBoxes;
     private javax.swing.JLabel jlWarehouse;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolAcidityAvgPercentage;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolAcidityPercentage;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolAutoMailNotification;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolDensity;
@@ -933,10 +966,10 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 1024, 680);
+        SGuiUtils.setWindowBounds(this, 1120, 700);
 
-        msAutoMailNotificationBoxes = new ArrayList<String>();
-        msUserMailNotificationBoxes = new ArrayList<String>();
+        msAutoMailNotificationBoxes = new ArrayList<>();
+        msUserMailNotificationBoxes = new ArrayList<>();
 
         moFieldKeyGroup = new SGuiFieldKeyGroup(miClient);
 
@@ -981,6 +1014,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moBoolProteinPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolProteinPercentage.getText()), false);
         moBoolOilContentPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolOilContentPercentage.getText()), false);
         moBoolAcidityPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolAcidityPercentage.getText()), false);
+        moBoolAcidityAvgPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolAcidityAvgPercentage.getText()), false);
         moBoolFruit.setBooleanSettings(SGuiUtils.getLabelName(moBoolFruit.getText()), false);
         moDecFruitYieldAdjustmentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlFruitYieldAdjustmentPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moBoolPacking.setBooleanSettings(SGuiUtils.getLabelName(moBoolPacking.getText()), false);
@@ -995,7 +1029,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moTextUserMailNotificationBoxes.setTextCaseType(SGuiConsts.TEXT_CASE_LOWER);
         moTextUserMailNotificationBoxes.setMinLength(0);
         moBoolUserMailNotificationOnlyWhenMoves.setBooleanSettings(SGuiUtils.getLabelName(moBoolAutoMailNotification.getText()), false);
-        moTextRevueltaItemId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaItemId), 4, 0);
+        moTextRevueltaItemId.setTextSettings(SGuiUtils.getLabelName(jlRevueltaItemId), 10, 0);
         moBoolPrintInputType.setBooleanSettings(SGuiUtils.getLabelName(moBoolPrintInputType.getText()), false);
 
         moFields.addField(moKeyExternalItem);
@@ -1037,6 +1071,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moFields.addField(moBoolProteinPercentage);
         moFields.addField(moBoolOilContentPercentage);
         moFields.addField(moBoolAcidityPercentage);
+        moFields.addField(moBoolAcidityAvgPercentage);
         moFields.addField(moBoolFruit);
         moFields.addField(moDecFruitYieldAdjustmentPercentage);
         moFields.addField(moBoolPacking);
@@ -1148,6 +1183,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moBoolProteinPercentage.setEnabled(moBoolLaboratory.getValue());
         moBoolOilContentPercentage.setEnabled(moBoolLaboratory.getValue());
         moBoolAcidityPercentage.setEnabled(moBoolLaboratory.getValue());
+        moBoolAcidityAvgPercentage.setEnabled(moBoolLaboratory.getValue());
         moBoolFruit.setEnabled(moBoolLaboratory.getValue());
         itemStateBoolFruit();
     }
@@ -1290,6 +1326,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moBoolProteinPercentage.setValue(moRegistry.isProteinPercentage());
         moBoolOilContentPercentage.setValue(moRegistry.isOilContentPercentage());
         moBoolAcidityPercentage.setValue(moRegistry.isAcidityPercentage());
+        moBoolAcidityAvgPercentage.setValue(moRegistry.isAcidityAveragePercentage());
         moBoolFruit.setValue(moRegistry.isFruit());
         moDecFruitYieldAdjustmentPercentage.setValue(moRegistry.getFruitYieldAdjustmentPercentage());
         moBoolPacking.setValue(moRegistry.isPacking());
@@ -1397,6 +1434,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
             registry.setLinolenicAcidPercentage(moBoolLinolenicAcidPercentage.getValue());
             registry.setErucicAcidPercentage(moBoolErucicAcidPercentage.getValue());
             registry.setAcidityPercentage(moBoolAcidityPercentage.getValue());
+            registry.setAcidityAveragePercentage(moBoolAcidityAvgPercentage.getValue());
             registry.setFruit(moBoolFruit.getValue());
             registry.setFruitYieldAdjustmentPercentage(!registry.isFruit() ? 0 : moDecFruitYieldAdjustmentPercentage.getValue());
         }
@@ -1468,7 +1506,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     @Override
     public SGuiValidation validateForm() {
         SGuiValidation validation = moFields.validateFields();
-        String error = "";
+        String error;
 
         if (validation.isValid()) {
             if (!moRegistry.isRegistryNew() && moKeyExternalItem.getSelectedIndex() <= 0) {

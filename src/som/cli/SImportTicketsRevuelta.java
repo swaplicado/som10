@@ -11,18 +11,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import sa.gui.util.SUtilConfigXml;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbDatabase;
 import sa.lib.gui.SGuiSession;
+import sa.lib.xml.SXmlUtils;
 import som.mod.SModSysConsts;
 import som.mod.cfg.db.SDbCompany;
 import som.mod.cfg.db.SDbUser;
 import som.mod.som.db.SDbItem;
+import som.mod.som.db.SDbProducer;
 import som.mod.som.db.SDbTicket;
 import som.mod.som.db.SDbTicketNote;
 import som.mod.som.db.SSomUtils;
@@ -31,13 +37,12 @@ import static som.mod.som.db.SSomUtils.getProperSeasonId;
 
 /**
  *
- * @author Alfredo Pérez
+ * @author Alfredo Pérez, Isabel Servín
  * TODO 2019-09-20 Sergio Flores: ¡Refactorizar esta clase y convertirla al paradigma OO!
  */
 public class SImportTicketsRevuelta {
 
     private static Connection moConnectionRev;
-    private static Connection moConnectionSom;
     private static int mnLastImportedTicket;
     private static SGuiSession moSession;
     private static String msPlateCageLabels;
@@ -46,31 +51,49 @@ public class SImportTicketsRevuelta {
     public static void setLastImportedTicket(int lastId) { mnLastImportedTicket = lastId; }
 
     public static void main(String[] args) {
-        moSession = new SGuiSession(null);
-        moConnectionRev = openConnectionRevuelta();
-        moConnectionSom = openConnectionSom();
-
-        SDbDatabase database = new SDbDatabase(SDbConsts.DBMS_MYSQL);
-        database.connect("192.168.1.233", "3306", "som_com", "root", "msroot");
-        moSession.setDatabase(database);
-        
         try {
-            SDbCompany company = new SDbCompany();
-            company.read(moSession, new int[] { SUtilConsts.BPR_CO_ID });
-            msPlateCageLabels = company.getPlateCageLabels();
+            moSession = new SGuiSession(null);
+            moConnectionRev = openConnectionRevuelta();
+            
+            String xml;
+            xml = SXmlUtils.readXml(SUtilConsts.FILE_NAME_CFG);
+            SUtilConfigXml configXml = new SUtilConfigXml();
+            configXml.processXml(xml);
+            
+            SDbDatabase database = new SDbDatabase(SDbConsts.DBMS_MYSQL);
+            int result = database.connect(
+                (String) configXml.getAttribute(SUtilConfigXml.ATT_DB_HOST).getValue(),
+                (String) configXml.getAttribute(SUtilConfigXml.ATT_DB_PORT).getValue(),
+                "som_com", 
+                (String) configXml.getAttribute(SUtilConfigXml.ATT_USR_NAME).getValue(),
+                (String) configXml.getAttribute(SUtilConfigXml.ATT_USR_PSWD).getValue());
 
-            run(moSession);
-            database.disconnect();
-            moConnectionRev.close();
-            moConnectionSom.close();
+            if (result != SDbConsts.CONNECTION_OK) {
+                throw new Exception(SDbConsts.ERR_MSG_DB_CONNECTION);
+            }
+            
+            moSession.setDatabase(database);
+            
+            try {
+                SDbCompany company = new SDbCompany();
+                company.read(moSession, new int[] { SUtilConsts.BPR_CO_ID });
+                msPlateCageLabels = company.getPlateCageLabels();
+                
+                run();
+                database.disconnect();
+                moConnectionRev.close();
+            }
+            catch (Exception e) {
+                SLibUtils.printException(SImportTicketsRevuelta.class.getName(), e);
+            }
         }
-        catch (Exception e) {
-            SLibUtils.printException(SImportTicketsRevuelta.class.getName(), e);
-        }
+        catch (Exception ex) {
+            Logger.getLogger(SImportTicketsRevuelta.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }
 
-    private static void run(SGuiSession session) throws Exception {
-        Statement stmSoom = moConnectionSom.createStatement();
+    private static void run() throws Exception {
+        Statement stmSoom = moSession.getStatement().getConnection().createStatement();
         Statement stmRev = moConnectionRev.createStatement();
         ResultSet rstSoom = null;
 
@@ -82,29 +105,35 @@ public class SImportTicketsRevuelta {
                 + "Pes_FecHorSeg, Pes_UnidadPri, Pes_PesoSeg, Pes_Tara, Pes_Neto, Pes_Placas, Pes_Chofer, "
                 + "Pro_ID, Emp_ID "
                 + "FROM dba.Pesadas "
-                + "WHERE Pes_ID >= " + getLastImportedTicket() + " AND Usb_ID = 'ACTH' ORDER BY Pes_ID";
+                + "WHERE Pes_ID >= 136870 "
+                + "AND Usb_ID = 'ACTH' ORDER BY Pes_ID";
+                //+ "where pes_id = 136870";
 
         ResultSet rstRev = stmRev.executeQuery(sql);
 
         int id;
         int seasonId;
         int idItem;
-        int idProd;
+        int idProducer;
 
         SDbUser user = new SDbUser();
-        user.read(session, new int[] { SUtilConsts.USR_NA_ID });
-        session.setUser(user);
+        user.read(moSession, new int[] { SUtilConsts.USR_NA_ID });
+        moSession.setUser(user);
 
         while (rstRev.next()) {
             id = rstRev.getInt("Pes_ID");
             rstSoom = stmSoom.executeQuery("SELECT num FROM som_com.s_tic s WHERE num = " + id);
             if (!rstSoom.next()) {
-                idItem = SSomUtils.mapItemSomRevuelta(session, rstRev.getString("Pro_ID"));
-                idProd = SSomUtils.mapProducerSomRevuelta(session, rstRev.getString("Emp_ID"));
+                idItem = SSomUtils.mapItemSomRevuelta(moSession, rstRev.getString("Pro_ID"));
+                idProducer = SSomUtils.mapProducerSomRevuelta(moSession, rstRev.getString("Emp_ID"));
                 
-                if (idItem != 0 && idProd != 0) {
+                if (idItem != 0 && idProducer != 0) {
                     SDbItem dbItem = new SDbItem();
-                    dbItem.read(session, new int[] { idItem });
+                    dbItem.read(moSession, new int[] { idItem });
+                    
+                    SDbProducer dbProducer = new SDbProducer();
+                    dbProducer.read(moSession, new int[] { idProducer });
+                    
                     SDbTicket registry = new SDbTicket();
                     //registry.setPkTicketId(rstSoom.getInt("newId"));
                     registry.setNumber(rstRev.getInt("Pes_ID"));
@@ -126,6 +155,7 @@ public class SImportTicketsRevuelta {
                     registry.setWeightDestinyArrival(rstRev.getDouble("Pes_PesoPri"));
                     registry.setWeightDestinyDeparture(rstRev.getString("Pes_PesoSeg") == null ? 0 : rstRev.getDouble("Pes_PesoSeg"));
                     registry.setWeightDestinyGross_r(rstRev.getInt("Pes_PesoPri"));
+                    registry.setQuantity(id);
                     //registry.setWeightDestinyNet_r(WeightDestinyNet_r());
                     //registry.setSystemPenaltyPercentage(SystemPenaltyPercentage());
                     //registry.setSystemWeightPayment(SystemWeightPayment());
@@ -154,53 +184,55 @@ public class SImportTicketsRevuelta {
                     //registry.setSystem(this.isSystem());
                     registry.setFkScaleId(1); // Revuelta XXX
                     registry.setFkTicketStatusId(SModSysConsts.SS_TIC_ST_SCA);
-                    registry.setFkProducerId(idProd);
+                    registry.setFkProducerId(idProducer);
                     registry.setFkItemId(idItem);
-                    seasonId = getProperSeasonId(session, registry.getDate(), registry.getFkItemId(), registry.getFkProducerId());
+                    seasonId = getProperSeasonId(moSession, registry.getDate(), registry.getFkItemId(), registry.getFkProducerId());
                     registry.setFkSeasonId_n(seasonId);
-                    registry.setFkRegionId_n(getProperRegionId(session, seasonId, registry.getFkItemId(), registry.getFkProducerId()));
+                    registry.setFkRegionId_n(getProperRegionId(moSession, seasonId, registry.getFkItemId(), registry.getFkProducerId()));
                     registry.setFkUnitId(dbItem.getFkUnitId());
-                    registry.setFkInputSourceId(1); // XXX
+                    
+                    HashMap originsMap = SSomUtils.getOrigin(moSession, idItem);
+                    registry.setFkInputSourceId((originsMap.containsKey(dbProducer.getFkInputSourceId()) ? dbProducer.getFkInputSourceId() : SModSysConsts.SU_INP_SRC_NA));
                     registry.setFkLaboratoryId_n(0);
-                    //registry.setFkExternalDpsYearId_n(FkExternalDpsYearId_n());
-                    //registry.setFkExternalDpsDocId_n(FkExternalDpsDocId_n());
-                    //registry.setFkExternalDpsEntryId_n(FkExternalDpsEntryId_n());
-                    //registry.setFkUserInsertId(FkUserInsertId());
-                    //registry.setFkUserUpdateId(FkUserUpdateId());
-                    //registry.setFkUserTaredId(FkUserTaredId());
-                    //registry.setFkUserPayedId(FkUserPayedId());
-                    //registry.setFkUserAssortedId(FkUserAssortedId());
-                    //registry.setTsUserInsert(TsUserInsert());
-                    //registry.setTsUserUpdate(TsUserUpdate());
-                    //registry.setTsUserTared(TsUserTared());
-                    //registry.setTsUserPayed(TsUserPayed());
-                    //registry.setTsUserAssorted(TsUserAssorted());
-                    //registry.setXtaScaleName(XtaScaleName());
-                    //registry.setXtaScaleCode(XtaScaleCode());
-                    //registry.setXtaSeason(XtaSeason());
-                    //registry.setXtaRegion(XtaRegion());
-                    //registry.setXtaItem(XtaItem());
-                    //registry.setXtaProducer(XtaProducer());
-                    //registry.setXtaProviderFiscalId(XtaProducerFiscalId());
-                    //registry.setAuxFormerTared(this.isAuxFormerTared());
-                    //registry.setAuxFormerPayed(this.isAuxFormerPayed());
-                    //registry.setAuxFormerAssorted(this.isAuxFormerAssorted());
-                    //registry.setAuxMoveNextOnSend(this.isAuxMoveNextOnSend());
-                    //registry.setAuxRequiredCalculation(this.isAuxRequiredCalculation());
-                    //registry.setAuxSendMail(this.isAuxSendMail());
-                    //registry.setAuxRecipientsTo(AuxRecipientsTo());
+                    //registry.setFkExternalDpsYearId_n(...);
+                    //registry.setFkExternalDpsDocId_n(...);
+                    //registry.setFkExternalDpsEntryId_n(..);
+                    //registry.setFkUserInsertId(...);
+                    //registry.setFkUserUpdateId(...);
+                    //registry.setFkUserTaredId(...);
+                    //registry.setFkUserPayedId(...);
+                    //registry.setFkUserAssortedId(...);
+                    //registry.setTsUserInsert(...);
+                    //registry.setTsUserUpdate(...);
+                    //registry.setTsUserTared(...);
+                    //registry.setTsUserPayed(...);
+                    //registry.setTsUserAssorted(...);
+                    //registry.setXtaScaleName(...);
+                    //registry.setXtaScaleCode(...);
+                    //registry.setXtaSeason(...);
+                    //registry.setXtaRegion(...);
+                    //registry.setXtaItem(...);
+                    //registry.setXtaProducer(...);
+                    //registry.setXtaProviderFiscalId(...);
+                    //registry.setAuxFormerTared(...);
+                    //registry.setAuxFormerPayed(...);
+                    //registry.setAuxFormerAssorted(...);
+                    //registry.setAuxMoveNextOnSend(...);
+                    //registry.setAuxRequiredCalculation(...);
+                    //registry.setAuxItemSendMail(...);
+                    //registry.setAuxItemRecipientsTo(...);
+                    //registry.setAuxProducerSendMail(...);
+                    //registry.setAuxProducerRecipientsTo(...);
                     SDbTicketNote note = new SDbTicketNote();
                     note.setNote(rstRev.getString("Pes_ObsPri"));
                     registry.getChildTicketNotes().add(note);
-                    registry.save(session);
+                    registry.save(moSession);
                     
                     String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " importado!";
-                    System.out.println(entry);             // ONLY FOR DEBUG
                     writeLog(entry);
                 }
                 else {
                     String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " NO fue importado! Producto: " + rstRev.getString("Pro_ID") + ".";
-                    System.out.println(entry);
                     writeLog(entry);
                 }
             }
@@ -247,27 +279,7 @@ public class SImportTicketsRevuelta {
         
         return connection;
     }
-
-    /**
-     * Esteablece conexion con la base de datos (MySQL) de SOM.
-     * @return 
-     */
-    private static Connection openConnectionSom() {
-        Connection connection = null;
-        String url = "jdbc:mysql://192.168.1.233:3306/som_com"; // XXX WTF!
-        String username = "root"; // XXX WTF!
-        String password = "msroot"; // XXX WTF!
-        
-        try {
-            connection = DriverManager.getConnection(url, username, password);
-        }
-        catch (Exception e) {
-            throw new IllegalStateException("Cannot connect to database SOM!", e);
-        }
-        
-        return connection;
-    }
-
+    
     /**
      * Obtiene el texto que contiene el número de placas del contenedor.
      * 

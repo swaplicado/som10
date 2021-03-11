@@ -26,21 +26,25 @@ import sa.lib.gui.bean.SBeanForm;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.cfg.db.SDbUser;
+import som.mod.cfg.db.SDbUserInputCategory;
 import som.mod.cfg.db.SDbUserRight;
 import som.mod.cfg.db.SDbUserScale;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín 
  */
 public class SFormUser extends SBeanForm implements ActionListener {
 
     private SDbUser moRegistry;
     private SGridPaneForm moGridUserRights;
     private SGridPaneForm moGridUserScales;
+    private SGridPaneForm moGridUserInputCategories;
 
     /**
      * Creates new form SFormUser
+     * @param client
+     * @param title
      */
     public SFormUser(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.CU_USR, SLibConsts.UNDEFINED, title);
@@ -73,6 +77,9 @@ public class SFormUser extends SBeanForm implements ActionListener {
         jPanel6 = new javax.swing.JPanel();
         jpUserRights = new javax.swing.JPanel();
         jpUserScales = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        jpUserInputCategories = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -128,7 +135,7 @@ public class SFormUser extends SBeanForm implements ActionListener {
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
-        jPanel6.setLayout(new java.awt.GridLayout(1, 2));
+        jPanel6.setLayout(new java.awt.GridLayout(1, 3));
 
         jpUserRights.setBorder(javax.swing.BorderFactory.createTitledBorder("Derechos de usuario:"));
         jpUserRights.setLayout(new java.awt.BorderLayout());
@@ -136,7 +143,15 @@ public class SFormUser extends SBeanForm implements ActionListener {
 
         jpUserScales.setBorder(javax.swing.BorderFactory.createTitledBorder("Acceso a básculas:"));
         jpUserScales.setLayout(new java.awt.BorderLayout());
+        jpUserScales.add(jPanel7, java.awt.BorderLayout.CENTER);
+
         jPanel6.add(jpUserScales);
+
+        jpUserInputCategories.setBorder(javax.swing.BorderFactory.createTitledBorder("Acceso a categorías de insumo:"));
+        jpUserInputCategories.setLayout(new java.awt.BorderLayout());
+        jpUserInputCategories.add(jPanel8, java.awt.BorderLayout.CENTER);
+
+        jPanel6.add(jpUserInputCategories);
 
         jPanel1.add(jPanel6, java.awt.BorderLayout.CENTER);
 
@@ -150,11 +165,14 @@ public class SFormUser extends SBeanForm implements ActionListener {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JButton jbPassword;
     private javax.swing.JButton jbUserType;
     private javax.swing.JLabel jlName;
     private javax.swing.JLabel jlPassword;
     private javax.swing.JLabel jlUserType;
+    private javax.swing.JPanel jpUserInputCategories;
     private javax.swing.JPanel jpUserRights;
     private javax.swing.JPanel jpUserScales;
     private sa.lib.gui.bean.SBeanFieldKey moKeyUserType;
@@ -163,7 +181,7 @@ public class SFormUser extends SBeanForm implements ActionListener {
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 640, 400);
+        SGuiUtils.setWindowBounds(this, 880, 550);
 
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName.getText()), 16);
         moTextName.setTextCaseType(SGuiConsts.TEXT_CASE_LOWER);
@@ -233,6 +251,32 @@ public class SFormUser extends SBeanForm implements ActionListener {
         mvFormGrids.add(moGridUserRights);
         mvFormGrids.add(moGridUserScales);
         */
+        
+        moGridUserInputCategories = new SGridPaneForm(miClient, SModConsts.CU_USR_SCA, SLibConsts.UNDEFINED, "Usuarios vs. categorias de insumos") {
+            @Override
+            public void initGrid() {
+                setRowButtonsEnabled(false);
+            }
+
+            @Override
+            public void createGridColumns() {
+                int col = 0;
+                SGridColumnForm[] columns = new SGridColumnForm[2];
+
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "Categorías de insumo");
+                columns[col] = new SGridColumnForm(SGridConsts.COL_TYPE_BOOL_S, "Seleccionado");
+                columns[col++].setEditable(true);
+
+                for (col = 0; col < columns.length; col++) {
+                    moModel.getGridColumns().add(columns[col]);
+                }
+            }
+        };
+
+        moGridUserInputCategories.setForm(null);
+        moGridUserInputCategories.setPaneFormOwner(null);
+        jpUserInputCategories.add(moGridUserInputCategories, BorderLayout.CENTER);
+        
     }
 
     private void actionPassword() {
@@ -250,13 +294,14 @@ public class SFormUser extends SBeanForm implements ActionListener {
     private void populateUserRights() throws SQLException {
         Vector<SGridRow> rows = new Vector<>();
         String sql = "SELECT id_rig, name FROM " + SModConsts.TablesMap.get(SModConsts.CS_RIG) + " WHERE b_del = 0 ORDER BY sort ";
-        ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
-
-        while (resultSet.next()) {
-            SDbUserRight row = new SDbUserRight();
-            row.setPkRightId(resultSet.getInt(1));
-            row.setXtaRight(resultSet.getString(2));
-            rows.add(row);
+        
+        try (ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql)) {
+            while (resultSet.next()) {
+                SDbUserRight row = new SDbUserRight();
+                row.setPkRightId(resultSet.getInt(1));
+                row.setXtaRight(resultSet.getString(2));
+                rows.add(row);
+            }
         }
 
         moGridUserRights.populateGrid(rows);
@@ -265,16 +310,33 @@ public class SFormUser extends SBeanForm implements ActionListener {
     private void populateUserScales() throws SQLException {
         Vector<SGridRow> rows = new Vector<>();
         String sql = "SELECT id_sca, name FROM " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " WHERE b_del = 0 ORDER BY name, id_sca ";
-        ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
-
-        while (resultSet.next()) {
-            SDbUserScale row = new SDbUserScale();
-            row.setPkScaleId(resultSet.getInt(1));
-            row.setXtaScale(resultSet.getString(2));
-            rows.add(row);
+        
+        try (ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql)) {
+            while (resultSet.next()) {
+                SDbUserScale row = new SDbUserScale();
+                row.setPkScaleId(resultSet.getInt(1));
+                row.setXtaScale(resultSet.getString(2));
+                rows.add(row);
+            }
         }
 
         moGridUserScales.populateGrid(rows);
+    }
+    
+    private void populateUserInputCategories() throws SQLException {
+        Vector<SGridRow> rows = new Vector<>();
+        String sql = "SELECT id_inp_ct, name FROM " + SModConsts.TablesMap.get(SModConsts.SU_INP_CT) + " WHERE b_del = 0 ORDER BY name, id_inp_ct ";
+        
+        try (ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql)) {
+            while (resultSet.next()) {
+                SDbUserInputCategory row = new SDbUserInputCategory();
+                row.setPkInputCategoryId(resultSet.getInt(1));
+                row.setXtaInputCategoryName(resultSet.getString(2));
+                rows.add(row);
+            }
+        }
+
+        moGridUserInputCategories.populateGrid(rows);
     }
 
     @Override
@@ -294,6 +356,7 @@ public class SFormUser extends SBeanForm implements ActionListener {
         try {
             populateUserRights();
             populateUserScales();
+            populateUserInputCategories();
         }
         catch (SQLException e) {
             SLibUtils.showException(this, e);
@@ -335,6 +398,14 @@ public class SFormUser extends SBeanForm implements ActionListener {
             for (SGridRow row : moGridUserScales.getModel().getGridRows()) {
                 if (scale.getPkScaleId() == ((SDbUserScale) row).getPkScaleId()) {
                     ((SDbUserScale) row).setXtaSelected(true);
+                }
+            }
+        }
+        
+        for (SDbUserInputCategory inputCategory : moRegistry.getChildUserInputCategories()) {
+            for (SGridRow row : moGridUserInputCategories.getModel().getGridRows()) {
+                if (inputCategory.getPkInputCategoryId() == ((SDbUserInputCategory) row).getPkInputCategoryId()) {
+                    ((SDbUserInputCategory) row).setXtaSelected(true);
                 }
             }
         }
@@ -381,6 +452,13 @@ public class SFormUser extends SBeanForm implements ActionListener {
                 registry.getChildUserScales().add((SDbUserScale) row);
             }
         }
+        
+        registry.getChildUserInputCategories().clear();
+        for (SGridRow row : moGridUserInputCategories.getModel().getGridRows()) {
+            if (((SDbUserInputCategory) row).isXtaSelected()) {
+                registry.getChildUserInputCategories().add((SDbUserInputCategory) row);
+            }
+        } 
 
         return registry;
     }

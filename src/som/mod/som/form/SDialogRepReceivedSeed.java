@@ -14,12 +14,14 @@ import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanDialogReport;
+import som.gui.SGuiClientSessionCustom;
 import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
+import som.mod.som.view.SPaneUserInputCategory;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  * 
  * Maintenance log:
  * 2018-01-17 (Sergio Flores): development of new report: RM received by category, class or type of input.
@@ -30,6 +32,9 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
 
     /**
      * Creates new form SDialogRepReceivedSeed
+     * @param client
+     * @param formSubtype
+     * @param title
      */
     public SDialogRepReceivedSeed(SGuiClient client, int formSubtype, String title) {
         setFormSettings(client, SModConsts.SR_ITEM_REC, formSubtype, title);
@@ -455,8 +460,15 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         sqlWhere += (moKeyRegion.getSelectedIndex() <= 0 ? "" : " AND t.fk_reg_n = " + moKeyRegion.getValue()[0] + " ");
         sqlWhere += (moKeyProducer.getSelectedIndex() <= 0 ? "" : " AND t.fk_prod = " + moKeyProducer.getValue()[0] + " ");
         
+        SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "it");
+        String sqlInputCategories = inputCategory.getSqlFilter();
+        if (!sqlInputCategories.isEmpty()) {
+            sqlWhere += "AND " + sqlInputCategories;
+        }
+        
         if (moRadByItem.isSelected()) {
             reportType = "ITEM";
+            sqlOrderBy += "it.name, t.fk_item, "; //allways sort by item
         }
         else if (moRadByInputType.isSelected()) {
             reportType = "INP_TP";
@@ -471,10 +483,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
             sqlOrderBy = "ict.name, it.fk_inp_ct, ";
         }
         
-        if (moRadByItem.isSelected()) {
-            sqlOrderBy += "it.name, t.fk_item, "; //allways sort by item
-        }
-
+        String db_ext = ((SGuiClientSessionCustom)miClient.getSession().getSessionCustom()).getCompany().getExternalDatabaseCo();
         moParamsMap.put("tDateStart", moDateDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
         moParamsMap.put("bShowDetails", !moBoolSummary.getValue());
@@ -484,5 +493,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         moParamsMap.put("sReportType", reportType);
         moParamsMap.put("sSqlWhere", sqlWhere);
         moParamsMap.put("sSqlOrderBy", sqlOrderBy);
+        moParamsMap.put("sDatabaseCoExtName", db_ext);
+        moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
     }
 }

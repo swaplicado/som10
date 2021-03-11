@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 import sa.lib.SLibTimeUtils;
@@ -22,10 +21,11 @@ import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.ext.db.SDbTicketRevuelta;
 import som.mod.som.db.SSomUtils;
+import som.mod.som.view.SPaneUserInputCategory;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
 public class SDialogRepComparativeTicket extends SBeanDialogReport {
 
@@ -33,6 +33,9 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
 
     /**
      * Creates new form SDialogRepComparativeTicket
+     * @param client
+     * @param subType
+     * @param title
      */
     public SDialogRepComparativeTicket(SGuiClient client, int subType, String title) {
         setFormSettings(client, SModConsts.SR_TIC_COMP, subType, title);
@@ -139,20 +142,17 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
         }
     }
 
-    private Vector<SDbTicketRevuelta> readTicketsRevuelta(Date start, Date end) {
-        String sql = "";
-        String sqlMapItems = "";
-        String revueltaId = "";
-        Statement statement = null;
-        ResultSet resulset = null;
-        Vector<SDbTicketRevuelta> vTicRev = new Vector<>();
-        SimpleDateFormat datetimeParser = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
-        //SimpleDateFormat DateFormatDateShort = new SimpleDateFormat("MM/dd/yyyy");    // XXX used when ODBC was supported by JVM (Sergio Flores 2015-06-24)
+    private Vector<SDbTicketRevuelta> readTicketsRevuelta() {
+        Vector<SDbTicketRevuelta> ticketRevueltas = new Vector<>();
+        //SimpleDateFormat DateFormatDateShort = new SimpleDateFormat("MM/dd/yyyy");        // used when ODBC was supported by JVM (Sergio Flores 2015-06-24)
+        //SimpleDateFormat datetimeParser = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");  // formerly used with MS Access Java Driver
 
-        sqlMapItems = SSomUtils.mapItemSomRevuelta(miClient.getSession());
-        revueltaId = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getRevueltaId();
         try {
-            statement = moConnectionRevuelta.createStatement();
+            Date start = moDateDateStart.getValue();
+            Date end = moDateDateEnd.getValue();
+            Statement statement = moConnectionRevuelta.createStatement();
+            String sqlMappedItemsList = SSomUtils.mapItemSomRevuelta(miClient.getSession());
+            String revueltaId = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getRevueltaId();
 
             /* XXX used when ODBC was supported by JVM (Sergio Flores 2015-06-24)
             sql = "SELECT be.clave_e, DateValue(be.fecha_e) + TimeValue(be.hora_e), DateValue(bs.fecha_s) + TimeValue(bs.hora_s), be.placas, be.observa_e, be.conductor, be.peso_e, bs.peso_s, bs.peso_n, " + // 9
@@ -178,11 +178,11 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
                     (sqlMapItems.isEmpty() ? "" : ("AND p.clave_p IN (" + sqlMapItems + ") "));
             */
 
-            sql = "SELECT Usu_Clave, Pes_ID, Pro_ID, Emp_ID, Pes_Placas, Pes_Chofer, Pes_Completo, Pes_FecHorPri, Pes_FecHorSeg, Usb_Nombre, Emp_Nombre, Pro_Nombre, Pes_BasPri, Pes_OpeNomPri, Pes_ObsPri, Pes_PesoPri, Pes_PesoSeg, Pes_FecHorSeg, Pes_BasSeg, Pes_Bruto, Pes_Tara, Pes_Neto, Pes_OpeNomSeg, Pes_ObsSeg, Pes_Neto " + 
-                    "FROM dba.Pesadas  as P INNER JOIN dba.Usuarios as U ON U.Usu_Nombre = P.Pes_OpeNomPri " + 
+            String sql = "SELECT Usu_Clave, Pes_ID, Pro_ID, Emp_ID, Pes_Placas, Pes_Chofer, Pes_Completo, Pes_FecHorPri, Pes_FecHorSeg, Usb_Nombre, Emp_Nombre, Pro_Nombre, Pes_BasPri, Pes_OpeNomPri, Pes_ObsPri, Pes_PesoPri, Pes_PesoSeg, Pes_FecHorSeg, Pes_BasSeg, Pes_Bruto, Pes_Tara, Pes_Neto, Pes_OpeNomSeg, Pes_ObsSeg, Pes_Neto " + 
+                    "FROM dba.Pesadas as P INNER JOIN dba.Usuarios as U ON U.Usu_Nombre = P.Pes_OpeNomPri " + 
                     "WHERE Pes_FecHorPri BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(start) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(end) +  "' AND Usb_ID = '" +  revueltaId + "' " +
-                    (sqlMapItems.isEmpty() ? "" : ("AND Pro_ID IN (" + sqlMapItems + ") "));
-            resulset = statement.executeQuery(sql);
+                    (sqlMappedItemsList.isEmpty() ? "" : ("AND Pro_ID IN (" + sqlMappedItemsList + ") "));
+            ResultSet resulset = statement.executeQuery(sql);
             while (resulset.next()) {
                 SDbTicketRevuelta ticketRevuelta = new SDbTicketRevuelta();
 
@@ -231,7 +231,7 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
                 ticketRevuelta.setDateStart(start);
                 ticketRevuelta.setDateEnd(SLibTimeUtils.createDate(SLibTimeUtils.digestDate(end)[0], SLibTimeUtils.digestDate(end)[1], SLibTimeUtils.digestDate(end)[2] + 1));
 
-                vTicRev.add(ticketRevuelta);
+                ticketRevueltas.add(ticketRevuelta);
             }
 
             /* XXX used when ODBC was supported by JVM (Sergio Flores 2015-06-24)
@@ -256,9 +256,9 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
             */
             
             sql = "SELECT Usu_Clave, Pes_ID, Pro_ID, Emp_ID, Pes_Placas, Pes_Chofer, Pes_Completo, Pes_FecHorPri, Pes_FecHorSeg, Usb_Nombre, Emp_Nombre, Pro_Nombre, Pes_BasPri, Pes_OpeNomPri, Pes_ObsPri, Pes_PesoPri, Pes_PesoSeg, Pes_FecHorSeg, Pes_BasSeg, Pes_Bruto, Pes_Tara, Pes_Neto, Pes_OpeNomSeg, Pes_ObsSeg, Pes_Neto " + 
-                    "FROM dba.Pesadas  as P INNER JOIN dba.Usuarios as U ON U.Usu_Nombre = P.Pes_OpeNomPri " + 
+                    "FROM dba.Pesadas as P INNER JOIN dba.Usuarios as U ON U.Usu_Nombre = P.Pes_OpeNomPri " + 
                     "WHERE Pes_FecHorPri BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(start) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(end) +  "' " +
-                    (sqlMapItems.isEmpty() ? "" : ("AND Pro_ID IN (" + sqlMapItems + ") "));
+                    (sqlMappedItemsList.isEmpty() ? "" : ("AND Pro_ID IN (" + sqlMappedItemsList + ") "));
             
             resulset = statement.executeQuery(sql);
             while (resulset.next()) {
@@ -287,14 +287,14 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
                 ticketRevuelta.setDateStart(start);
                 ticketRevuelta.setDateEnd(SLibTimeUtils.createDate(SLibTimeUtils.digestDate(end)[0], SLibTimeUtils.digestDate(end)[1], SLibTimeUtils.digestDate(end)[2] + 1));
 
-                vTicRev.add(ticketRevuelta);
+                ticketRevueltas.add(ticketRevuelta);
             }
         }
         catch (SQLException e) {
             SLibUtils.showException(this, e);
         }
 
-        return vTicRev;
+        return ticketRevueltas;
     }
 
     public void reloadCatalogues() {
@@ -316,10 +316,17 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
     public void createParamsMap() {
         String sqlWhere = "";
         moParamsMap = SPrtUtils.createReportParamsMap(miClient.getSession());
+        
+        SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "it");
+        String sqlInputCategories = inputCategory.getSqlFilter();
+        if (!sqlInputCategories.isEmpty()) {
+            sqlWhere += "AND " + sqlInputCategories;
+        }
 
         moParamsMap.put("tDateStart", moDateDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
         moParamsMap.put("sSqlWhere", sqlWhere);
+        moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
     }
 
     @Override
@@ -327,7 +334,7 @@ public class SDialogRepComparativeTicket extends SBeanDialogReport {
         Vector<SDbTicketRevuelta> revuelta = null;
         SGuiValidation validation = validateForm();
         if (SGuiUtils.computeValidation(miClient, validation)) {
-            revuelta = readTicketsRevuelta(moDateDateStart.getValue(), moDateDateEnd.getValue());
+            revuelta = readTicketsRevuelta();
 
             try {
                 if (!revuelta.isEmpty()) {

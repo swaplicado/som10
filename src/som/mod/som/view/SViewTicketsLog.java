@@ -34,20 +34,24 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  */
 public class SViewTicketsLog extends SGridPaneView implements ActionListener {
 
-    private final SGridFilterDateRange moFilterDateRange;
-    private final SPaneFilter moPaneFilterInputCategory;
-    private final SPaneFilter moPaneFilter;
-    private final JButton mjbPrint;
+    private SGridFilterDateRange moFilterDateRange;
+    private SPaneFilter moPaneFilterInputCategory;
+    private SPaneFilter moPaneFilter;
+    private SPaneUserInputCategory moPaneFilterUserInputCategory;
+    private JButton mjbPrint;
 
     public SViewTicketsLog(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_TIC_LOG, SLibConsts.UNDEFINED, title);
         setRowButtonsEnabled(false, false, false, false, false);
         jtbFilterDeleted.setEnabled(false);
-
+        initComponentsCustom();
+    }
+    
+    private void initComponentsCustom() {
         moFilterDateRange = new SGridFilterDateRange(miClient, this);
         moFilterDateRange.initFilter(new Date[] { SLibTimeUtils.getBeginOfMonth(miClient.getSession().getWorkingDate()), SLibTimeUtils.getEndOfMonth(miClient.getSession().getWorkingDate()) });
 
@@ -56,10 +60,13 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
 
         moPaneFilter = new SPaneFilter(this, SModConsts.SU_ITEM);
         moPaneFilter.initFilter(null);
+        
+        moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "vi");
 
         mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
         
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDateRange);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterInputCategory);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilter);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
@@ -117,6 +124,11 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
         if (filter != null) {
             sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_item" }, (int[]) filter);
         }
+        
+        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
+        if(!sqlFilter.isEmpty()) {
+            sql += (sql.isEmpty() ? "" : "AND ") + sqlFilter;
+        }
 
         msSql = "SELECT v.id_tic AS " + SDbConsts.FIELD_ID + "1, "
                 + "v.num AS " + SDbConsts.FIELD_CODE + ", "
@@ -127,9 +139,9 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
                 + "(v.pac_qty_arr - v.pac_qty_dep) AS f_pac_qty, "
                 + "v.wei_des_net_r, "
                 + "v.b_tar, "
-                + "vp.code "
+                + "vp.code, "
                 + "vp.name, "
-                + "vp.name_trd, "
+                + "vp.name_trd "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS vi ON v.fk_item = vi.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS vp ON v.fk_prod = vp.id_prod "

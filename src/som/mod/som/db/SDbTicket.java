@@ -11,13 +11,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Vector;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
-import sa.lib.SLibTimeConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
@@ -34,7 +31,7 @@ import som.mod.SModSysConsts;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  * 2019-01-07, Sergio Flores: Mostrar solo proveedores con movimientos en sección período actual, en notificación automática de recepción de boletos.
  * 2019-01-17, Sergio Flores: Mejoras reporte automático vía mail al tarar boletos:
  *   a) remoción de proveedores sin movimientos en todas las secciones. Antes aparecían todos.
@@ -138,6 +135,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected String msXtaSeason;
     protected String msXtaRegion;
     protected String msXtaItem;
+    protected int mnXtaInputCategoryId;
+    protected int mnXtaInputClassId;
     protected String msXtaInputType;
     protected String msXtaInputSource;
     protected String msXtaProducer;
@@ -145,8 +144,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     protected boolean mbAuxMoveNextOnSave;
     protected boolean mbAuxRequirePriceComputation;
-    protected boolean mbAuxSendMail;
-    protected String msAuxRecipientsTo;
+    protected boolean mbAuxItemSendMail;
+    protected String msAuxItemRecipientsTo;
+    protected boolean mbAuxProducerSendMail;
+    protected String msAuxProducerRecipientsTo;
 
     protected Vector<SDbTicketNote> mvChildTicketNotes;
     protected Vector<SDbLaboratory> mvChildLaboratories;
@@ -162,40 +163,18 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
      * Private methods
      */
 
-    private String composeHtmlTableKgPctHeader(String table, String itemName, String conceptName) {
-        return "<b>Resumen " + SLibUtils.textToHtml(table) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
-                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
-                + "<tr>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>"
-                + "</tr>";
-    }
-
-    private String composeHtmlTableKgPctRow(String concept, double weight, double weightTotal) {
-        return "<tr>"
-                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>"
-                + "</tr>";
-    }
-
-    private String composeHtmlTableKgPctFooter(String table, double weightTotal) {
-        return "<tr>"
-                + "<td><b>Total " + SLibUtils.textToHtml(table) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
-                + "</tr>"
-                + "</table><br>";
-    }
-
-    private void sendMail(final SGuiSession session) {
-        String subject = "";
-        String body = "";
-        String section = "";
+    /**
+     * Send mail when ticket tared.
+     * @param session Current user session.
+     * @param producerId Zero or ID of producer. When zero, a summary of all receptions is included. Otherwise, when non-zero, only the ticket info is rendered.
+     */
+    private void sendMail(final SGuiSession session, final int producerId) {
+        String subject;
+        String body;
+        String section;
 
         try {
-            if (!msAuxRecipientsTo.isEmpty()) {
+            if ((producerId == 0 && !msAuxItemRecipientsTo.isEmpty()) || (producerId != 0 && !msAuxProducerRecipientsTo.isEmpty())) {
                 int[] curDate = SLibTimeUtils.digestDate(mtDate);
                 int curYear = curDate[0];
                 int curMonth = curDate[1];
@@ -224,266 +203,15 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     + "<tr><td>2da. pesada</td><td align='left'>" + (mbRevueltaImport2 ? SLibUtils.textToHtml("Automática") : "Manual") + "</td></tr>"
                     + "</table><br>";
 
-                // REPORT PREP.
-
-                double weight;
-                double weightTotal;
-                Date dateStart;
-                Date dateEnd;
-                String[] months = SLibTimeUtils.createMonthsOfYear(Locale.getDefault(), Calendar.SHORT);
-
-                // list of all reporting groups:
-
-                msSql = "SELECT id_rep_grp, name, sort "
-                        + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_REP_GRP) + " AS r "
-                        + "ORDER BY sort, name, id_rep_grp ";
-
-                Statement repGroupStatement = session.getDatabase().getConnection().createStatement(); // prevent other result sets from being closed
-                ResultSet repGroupResultSet = repGroupStatement.executeQuery(msSql);
-
-                // list of all scales:
-
-                msSql = "SELECT id_sca, name, b_def "
-                        + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " "
-                        + "ORDER BY name, id_sca ";
-                
-                Statement scaleStatement = session.getDatabase().getConnection().createStatement(); // prevent other result sets from being closed
-                ResultSet scaleResultSet = scaleStatement.executeQuery(msSql);
-                
-                // SECTION 1. Current day:
-                
-                dateStart = mtDate;
-                dateEnd = mtDate;
-                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0);
-                section = "día '" + SLibUtils.DateFormatDate.format(mtDate) + "'";
-                
-                // SECTION 1.1. Current day summary by reporting group:
-                
-                body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
-
-                // compute reporting groups:
-                
-                while (repGroupResultSet.next()) { // first reading, cursor before first row
-                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"));
-                    if (weight != 0) {
-                        body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
-                    }
+                if (producerId == 0) {
+                    // A summary of all receptions is about to be included:
+                    body += SSomUtils.composeHtmlSummaryItem(session, mnFkItemId, mtDate);
                 }
-
-                body += composeHtmlTableKgPctFooter(section, weightTotal);
-                
-                // SECTION 1.2. Current day summary by scale:
-                
-                int scaleRows = 0;
-                boolean scaleForce = false;
-                String scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
-
-                // compute scales:
-                
-                while (scaleResultSet.next()) { // first reading, cursor before first row
-                    weight = SSomUtils.obtainWeightDestinyByScale(session, mnFkItemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"));
-                    if (weight != 0) {
-                        scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
-                        scaleRows++;
-                        if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
-                            scaleForce = true;
-                        }
-                    }
-                }
-
-                scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
-                
-                if (scaleForce || scaleRows > 1) {
-                    body += scaleHtml; // more than one scale present or receptions done in a non-default scale
-                }
-
-                // SECTION 2. Current month:
-                
-                dateStart = SLibTimeUtils.getBeginOfMonth(mtDate);
-                dateEnd = SLibTimeUtils.getEndOfMonth(mtDate);
-                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0);
-                section = "mes '" + months[curMonth - 1] + ". " + curYear + "'";
-                
-                // SECTION 2.1. Current month summary by reporting group:
-                
-                body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
-
-                // compute reporting groups:
-                
-                if (repGroupResultSet.isAfterLast()) {
-                    repGroupResultSet.beforeFirst();
-                }
-
-                while (repGroupResultSet.next()) {
-                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"));
-                    if (weight != 0) {
-                        body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
-                    }
-                }
-
-                body += composeHtmlTableKgPctFooter(section, weightTotal);
-                
-                // SECTION 2.2: Current month summary by scale: 
-                
-                scaleRows = 0;
-                scaleForce = false;
-                scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
-
-                // compute scales:
-                
-                if (scaleResultSet.isAfterLast()) {
-                    scaleResultSet.beforeFirst();
-                }
-
-                while (scaleResultSet.next()) {
-                    weight = SSomUtils.obtainWeightDestinyByScale(session, mnFkItemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"));
-                    if (weight != 0) {
-                        scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
-                        scaleRows++;
-                        if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
-                            scaleForce = true;
-                        }
-                    }
-                }
-
-                scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
-                
-                if (scaleForce || scaleRows > 1) {
-                    body += scaleHtml; // more than one scale present or receptions done in a non-default scale
-                }
-                
-                // SECTION 3. Current season:
-                
-                // Create season date range depending on item configuration:
-                
-                Date dateSeasonStart = null;
-                Date dateSeasonEnd = null;
-                
-                if (curMonth >= item.getStartingSeasonMonth()) {
-                    dateSeasonStart = SLibTimeUtils.createDate(curYear, item.getStartingSeasonMonth(), 1);
-                    dateSeasonEnd = SLibTimeUtils.createDate(curYear + 1, item.getStartingSeasonMonth() - 1,
-                            SLibTimeUtils.getMaxDayOfMonth(SLibTimeUtils.createDate(curYear + 1, item.getStartingSeasonMonth() - 1)));
-                }
-                else {
-                    dateSeasonStart = SLibTimeUtils.createDate(curYear - 1, item.getStartingSeasonMonth(), 1);
-                    dateSeasonEnd = SLibTimeUtils.createDate(curYear, item.getStartingSeasonMonth() - 1,
-                            SLibTimeUtils.getMaxDayOfMonth(SLibTimeUtils.createDate(curYear, item.getStartingSeasonMonth() - 1)));
-                }
-                
-                dateStart = dateSeasonStart;
-                dateEnd = dateSeasonEnd;
-                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0);
-                section = "temporada";
-                
-                // SECTION 3.1 Current season summary by reporting group:
-
-                body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
-
-                // compute reporting groups:
-
-                if (repGroupResultSet.isAfterLast()) {
-                    repGroupResultSet.beforeFirst();
-                }
-
-                while (repGroupResultSet.next()) {
-                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"));
-                    if (weight != 0) {
-                        body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
-                    }
-                }
-
-                body += composeHtmlTableKgPctFooter(section, weightTotal);
-
-                // SECTION 3.2 Current season summary by scale:
-                
-                scaleRows = 0;
-                scaleForce = false;
-                scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
-
-                // compute scales:
-                
-                if (scaleResultSet.isAfterLast()) {
-                    scaleResultSet.beforeFirst();
-                }
-
-                while (scaleResultSet.next()) {
-                    weight = SSomUtils.obtainWeightDestinyByScale(session, mnFkItemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"));
-                    if (weight != 0) {
-                        scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
-                        scaleRows++;
-                        if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
-                            scaleForce = true;
-                        }
-                    }
-                }
-
-                scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
-                
-                if (scaleForce || scaleRows > 1) {
-                    body += scaleHtml; // more than one scale present or receptions done in a non-default scale
-                }
-                          
-                // SECTION 4. Season summary by month:
-                
-                dateStart = dateSeasonStart;
-                dateEnd = dateSeasonEnd;
-                weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0);
-                section = "temporada";
-                
-                body += composeHtmlTableKgPctHeader(section, itemName, "Período");
-
-                // compute months:
-                
-                int year = SLibTimeUtils.digestYear(dateStart)[0];
-                int month = item.getStartingSeasonMonth();
-                
-                for (int i = 0; i < SLibTimeConsts.MONTHS; i++) {
-                    if (month > SLibTimeConsts.MONTHS) {
-                        month = 1;  // January
-                        year++;
-                    }
-                    
-                    dateStart = SLibTimeUtils.createDate(year, month);
-                    dateEnd = SLibTimeUtils.getEndOfMonth(dateStart);
-                    
-                    weight = SSomUtils.obtainWeightDestinyByPeriod(session, mnFkItemId, dateStart, dateEnd, 0);
-                    body += composeHtmlTableKgPctRow("" + year + " " + months[month - 1] + ".", weight, weightTotal);
-                    month++;
-                }
-
-                body += composeHtmlTableKgPctFooter(section, weightTotal);
-                
-                // SECTION 5: History of all past seasons:
-                
-                section = "temporadas";
-                
-                body += "<b>Resumen " + section + ": " + itemName + "</b><br>"
-                    + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
-                    + "<tr><td align='center'><b>" + SLibUtils.textToHtml("Temporada") + "</b></td><td align='center'><b>" + SSomConsts.KG + "</b></td></tr>";
-
-                msSql = "SELECT IF(i.sta_seas_mon = 1, YEAR(t.dt), IF(MONTH(t.dt) >= i.sta_seas_mon, CONCAT(YEAR(t.dt), '-', YEAR(t.dt) + 1), CONCAT(YEAR(t.dt) - 1, '-', YEAR(t.dt)))) AS _season, "
-                        + "SUM(t.wei_des_net_r) AS _weight "
-                        + "FROM S_TIC AS t "
-                        + "INNER JOIN SU_ITEM AS i ON t.fk_item = i.id_item "
-                        + "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + mnFkItemId + " "
-                        + "GROUP BY _season "
-                        + "ORDER BY _season; ";
-                
-                Statement historyStatement = session.getDatabase().getConnection().createStatement(); // prevent other result sets from being closed
-                ResultSet historyResultSet = historyStatement.executeQuery(msSql);
-                while (historyResultSet.next()) {
-                    body += "<tr>"
-                            + "<td>" + historyResultSet.getString("_season") + "</td>"
-                            + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(historyResultSet.getDouble("_weight")) + "</td>"
-                            + "</tr>";
-                }
-                
-                body += "</table><br>";
                 
                 // Add mail warning:
-                
+
                 body += SSomMailUtils.composeMailWarning();
-                
+
                 // Send mail to recipients:
 
                 SMailSender sender = new SMailSender(
@@ -495,7 +223,15 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigUser(),
                     ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigPassword(),
                     ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigUser());
-                ArrayList<String> recipients = new ArrayList<String>(Arrays.asList(SLibUtilities.textExplode(msAuxRecipientsTo, ";")));
+
+                ArrayList<String> recipients;
+                if (producerId == 0) {
+                    recipients = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(msAuxItemRecipientsTo, ";")));
+                }
+                else {
+                    recipients = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(msAuxProducerRecipientsTo, ";")));
+                }
+                
                 SMail mail = new SMail(sender, subject, body, recipients);
                 
                 mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
@@ -658,6 +394,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setXtaSeason(String s) { msXtaSeason = s;  }
     public void setXtaRegion(String s) { msXtaRegion = s;  }
     public void setXtaItem(String s) { msXtaItem = s;  }
+    public void setXtaInputCategoryId(int n) { mnXtaInputCategoryId = n; }
+    public void setXtaInputClassId(int n) { mnXtaInputClassId = n; }
     public void setXtaInputType(String s) { msXtaInputType = s;  }
     public void setXtaInputSource(String s) { msXtaInputSource = s;  }
     public void setXtaProducer(String s) { msXtaProducer = s;  }
@@ -665,14 +403,18 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public void setAuxMoveNextOnSend(boolean b) { mbAuxMoveNextOnSave = b; }
     public void setAuxRequirePriceComputation(boolean b) { mbAuxRequirePriceComputation = b; }
-    public void setAuxSendMail(boolean b) { mbAuxSendMail = b; }
-    public void setAuxRecipientsTo(String s) { msAuxRecipientsTo = s; }
+    public void setAuxItemSendMail(boolean b) { mbAuxItemSendMail = b; }
+    public void setAuxItemRecipientsTo(String s) { msAuxItemRecipientsTo = s; }
+    public void setAuxProducerSendMail(boolean b) { mbAuxProducerSendMail = b; }
+    public void setAuxProducerRecipientsTo(String s) { msAuxProducerRecipientsTo = s; }
 
     public String getXtaScaleName() { return msXtaScaleName; }
     public String getXtaScaleCode() { return msXtaScaleCode; }
     public String getXtaSeason() { return msXtaSeason; }
     public String getXtaRegion() { return msXtaRegion; }
     public String getXtaItem() { return msXtaItem; }
+    public int getXtaInputCategoryId() { return mnXtaInputCategoryId; }
+    public int getXtaInputClassId() { return mnXtaInputClassId; }
     public String getXtaInputType() { return msXtaInputType;  }
     public String getXtaInputSource() { return msXtaInputSource;  }
     public String getXtaProducer() { return msXtaProducer; }
@@ -680,8 +422,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public boolean isAuxMoveNextOnSend() { return mbAuxMoveNextOnSave; }
     public boolean isAuxRequirePriceComputation() { return mbAuxRequirePriceComputation; }
-    public boolean isAuxSendMail() { return mbAuxSendMail; }
-    public String getAuxRecipientsTo() { return msAuxRecipientsTo; }
+    public boolean isAuxItemSendMail() { return mbAuxItemSendMail; }
+    public String getAuxItemRecipientsTo() { return msAuxItemRecipientsTo; }
+    public boolean isAuxProducerSendMail() { return mbAuxProducerSendMail; }
+    public String getAuxProducerRecipientsTo() { return msAuxProducerRecipientsTo; }
 
     public Vector<SDbTicketNote> getChildTicketNotes() { return mvChildTicketNotes; }
     public Vector<SDbLaboratory> getChildLaboratories() { return mvChildLaboratories; }
@@ -783,6 +527,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         msXtaSeason = "";
         msXtaRegion = "";
         msXtaItem = "";
+        mnXtaInputCategoryId = 0;
+        mnXtaInputClassId = 0;
         msXtaInputType = "";
         msXtaInputSource = "";
         msXtaProducer = "";
@@ -790,8 +536,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
         mbAuxMoveNextOnSave = false;
         mbAuxRequirePriceComputation = false;
-        mbAuxSendMail = false;
-        msAuxRecipientsTo = "";
+        mbAuxItemSendMail = false;
+        msAuxItemRecipientsTo = "";
+        mbAuxProducerSendMail = false;
+        msAuxProducerRecipientsTo = "";
 
         mvChildTicketNotes.clear();
         mvChildLaboratories.clear();
@@ -834,7 +582,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         initQueryMembers();
         mnQueryResultId = SDbConsts.READ_ERROR;
 
-        msSql = "SELECT t.*, sc.name, sc.code, p.name, p.fis_id, i.name, i.fk_unit, it.name, src.name, s.name, r.name " +
+        msSql = "SELECT t.*, sc.name, sc.code, p.name, p.fis_id, i.name, i.fk_unit, it.id_inp_ct, it.id_inp_cl, it.name, src.name, s.name, r.name " +
                 "FROM " + getSqlTable() + " AS t "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sc ON "
                 + "t.fk_sca = sc.id_sca "
@@ -940,6 +688,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 msXtaRegion = SUtilConsts.NON_APPLYING;
             }
             msXtaItem = resultSet.getString("i.name");
+            mnXtaInputCategoryId = resultSet.getInt("it.id_inp_ct");
+            mnXtaInputClassId = resultSet.getInt("it.id_inp_cl");
             msXtaInputType = resultSet.getString("it.name");
             msXtaInputSource = resultSet.getString("src.name");
             msXtaProducer = resultSet.getString("p.name");
@@ -1192,8 +942,12 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             }
         }
 
-        if (mbAuxSendMail) {
-            sendMail(session);
+        if (mbAuxItemSendMail) {
+            sendMail(session, 0);
+        }
+        
+        if (mbAuxProducerSendMail) {
+            sendMail(session, mnFkProducerId);
         }
 
         // Finish registry updating:
@@ -1284,6 +1038,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setXtaSeason(this.getXtaSeason());
         registry.setXtaRegion(this.getXtaRegion());
         registry.setXtaItem(this.getXtaItem());
+        registry.setXtaInputCategoryId(this.getXtaInputCategoryId());
+        registry.setXtaInputClassId(this.getXtaInputClassId());
         registry.setXtaInputType(this.getXtaInputType());
         registry.setXtaInputSource(this.getXtaInputSource());
         registry.setXtaProducer(this.getXtaProducer());
@@ -1291,8 +1047,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
         registry.setAuxMoveNextOnSend(this.isAuxMoveNextOnSend());
         registry.setAuxRequirePriceComputation(this.isAuxRequirePriceComputation());
-        registry.setAuxSendMail(this.isAuxSendMail());
-        registry.setAuxRecipientsTo(this.getAuxRecipientsTo());
+        registry.setAuxItemSendMail(this.isAuxItemSendMail());
+        registry.setAuxItemRecipientsTo(this.getAuxItemRecipientsTo());
+        registry.setAuxProducerSendMail(this.isAuxProducerSendMail());
+        registry.setAuxProducerRecipientsTo(this.getAuxProducerRecipientsTo());
 
         for (SDbTicketNote child : mvChildTicketNotes) {
             registry.getChildTicketNotes().add(child.clone());
@@ -1498,15 +1256,14 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     }
 
     public boolean isLinkIog(final SGuiSession session) throws SQLException {
-        ResultSet resultSet = null;
         boolean isLink = false;
 
         msSql = "SELECT COUNT(*) FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " WHERE b_del = 0 AND fk_tic_n = " + mnPkTicketId + " ";
 
-        resultSet = session.getStatement().executeQuery(msSql);
-
-        if (resultSet.next()) {
-            isLink = resultSet.getInt(1) > 0;
+        try (ResultSet resultSet = session.getStatement().executeQuery(msSql)) {
+            if (resultSet.next()) {
+                isLink = resultSet.getInt(1) > 0;
+            }
         }
 
         return isLink;
@@ -1514,7 +1271,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public void computeWeight(SGuiSession session, boolean computePrice) throws Exception {
         double oldWeightDestinyNet = mdWeightDestinyNet_r;
-        SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int[] { mnFkItemId });
+        
+        //SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int[] { mnFkItemId }); // when this method is called from CLI, session does not have modules!
+        SDbItem item = new SDbItem();
+        item.read(session, new int[] { mnFkItemId });
 
         mdPackingWeightArrival = (mdPackingFullQuantityArrival + mdPackingEmptyQuantityArrival) * item.getPackingWeight();
         mdPackingWeightDeparture = (mdPackingFullQuantityDeparture + mdPackingEmptyQuantityDeparture) * item.getPackingWeight();

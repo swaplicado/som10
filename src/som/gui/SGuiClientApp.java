@@ -62,13 +62,13 @@ import som.mod.cfg.db.SDbUserGui;
 
 /**
  *
- * @author Sergio Flores, Alfredo Pérez, Sergio Flores
+ * @author Sergio Flores, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
 public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener {
 
     public static final String APP_NAME = "SOM 1.0";
-    public static final String APP_RELEASE = "SOM 1.0 064.1"; // release date: 2019-12-03
-    public static final String APP_COPYRIGHT = "2013-2020";
+    public static final String APP_RELEASE = "SOM 1.0 070.1"; // release date: 2021-02-25
+    public static final String APP_COPYRIGHT = "2013-2021";
     public static final String APP_PROVIDER = "Software Aplicado SA de CV";
 
     public static final String VENDOR = APP_PROVIDER;
@@ -934,9 +934,13 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         params.put("sAppName", APP_NAME);
         params.put("sAppCopyright", APP_COPYRIGHT);
         params.put("sAppProvider", APP_PROVIDER);
+        params.put("sVendorCopyright", VENDOR_COPYRIGHT);
+        params.put("sVendorWebsite", VENDOR_WEBSITE);
+        params.put("sVendorMail", VENDOR_MAIL);
         params.put("sCompany", msCompany);
         params.put("sUser", moSession.getUser().getName());
         params.put("oFormatDate", SLibUtils.DateFormatDate);
+        params.put("oFormatDatetime", SLibUtils.DateFormatDatetime);
 
         return params;
     }

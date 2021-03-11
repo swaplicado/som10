@@ -19,13 +19,14 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  */
 public class SDbProducer extends SDbRegistryUser {
 
     public static final int FIELD_FISCAL_ID = SDbRegistry.FIELD_BASE + 1;
     public static final int FIELD_NAME_TRADE = SDbRegistry.FIELD_BASE + 2;
     public static final int LEN_FISCAL_ID = 20;
+    public static final int LEN_NAME_TRADE = 15;
     
     protected int mnPkProducerId;
     protected String msCode;
@@ -33,6 +34,8 @@ public class SDbProducer extends SDbRegistryUser {
     protected String msNameTrade;
     protected String msFiscalId;
     protected String msRevueltaProducerId;
+    protected String msAutoMailNotificationBoxes;
+    protected boolean mbAutoMailNotification;
     protected boolean mbFreightPayment;
     /*
     protected boolean mbUpdatable;
@@ -43,6 +46,7 @@ public class SDbProducer extends SDbRegistryUser {
     protected boolean mbSystem;
     */
     protected int mnFkReportingGroupId;
+    protected int mnFkInputSourceId;
     protected int mnFkExternalProducerId_n;
     /*
     protected int mnFkUserInsertId;
@@ -87,6 +91,8 @@ public class SDbProducer extends SDbRegistryUser {
     public void setNameTrade(String s) { msNameTrade = s; }
     public void setFiscalId(String s) { msFiscalId = s; }
     public void setRevueltaProducerId(String s) { msRevueltaProducerId = s; }
+    public void setAutoMailNotificationBoxes(String s) { msAutoMailNotificationBoxes = s; }
+    public void setAutoMailNotification(boolean b) { mbAutoMailNotification = b; }
     public void setFreightPayment(boolean b) { mbFreightPayment = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
@@ -95,6 +101,7 @@ public class SDbProducer extends SDbRegistryUser {
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkReportingGroupId(int n) { mnFkReportingGroupId = n; }
+    public void setFkInputSourceId(int n) { mnFkInputSourceId = n; }
     public void setFkExternalProducerId_n(int n) { mnFkExternalProducerId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
@@ -107,6 +114,8 @@ public class SDbProducer extends SDbRegistryUser {
     public String getNameTrade() { return msNameTrade; }
     public String getFiscalId() { return msFiscalId; }
     public String getRevueltaProducerId() { return msRevueltaProducerId; }
+    public String getAutoMailNotificationBoxes() { return msAutoMailNotificationBoxes; }
+    public boolean isAutoMailNotification() { return mbAutoMailNotification; }
     public boolean isFreightPayment() { return mbFreightPayment; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
@@ -115,6 +124,7 @@ public class SDbProducer extends SDbRegistryUser {
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
     public int getFkReportingGroupId() { return mnFkReportingGroupId; }
+    public int getFkInputSourceId() { return mnFkInputSourceId; }
     public int getFkExternalProducerId_n() { return mnFkExternalProducerId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
@@ -141,6 +151,8 @@ public class SDbProducer extends SDbRegistryUser {
         msNameTrade = "";
         msFiscalId = "";
         msRevueltaProducerId = "";
+        msAutoMailNotificationBoxes = "";
+        mbAutoMailNotification = false;
         mbFreightPayment = false;
         mbUpdatable = false;
         mbDisableable = false;
@@ -149,6 +161,7 @@ public class SDbProducer extends SDbRegistryUser {
         mbDeleted = false;
         mbSystem = false;
         mnFkReportingGroupId = 0;
+        mnFkInputSourceId = 0;
         mnFkExternalProducerId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -204,6 +217,8 @@ public class SDbProducer extends SDbRegistryUser {
             msNameTrade = resultSet.getString("name_trd");
             msFiscalId = resultSet.getString("fis_id");
             msRevueltaProducerId = resultSet.getString("rev_prod_id");
+            msAutoMailNotificationBoxes = resultSet.getString("amn_box");
+            mbAutoMailNotification = resultSet.getBoolean("b_amn");
             mbFreightPayment = resultSet.getBoolean("b_fre_pay");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
@@ -212,6 +227,7 @@ public class SDbProducer extends SDbRegistryUser {
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkReportingGroupId = resultSet.getInt("fk_rep_grp");
+            mnFkInputSourceId = resultSet.getInt("fk_inp_src");
             mnFkExternalProducerId_n = resultSet.getInt("fk_ext_prod_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
@@ -249,6 +265,8 @@ public class SDbProducer extends SDbRegistryUser {
                     "'" + msNameTrade + "', " +
                     "'" + msFiscalId + "', " +
                     "'" + msRevueltaProducerId + "', " +
+                    "'" + msAutoMailNotificationBoxes + "', " + 
+                    (mbAutoMailNotification ? 1 : 0) + ", " + 
                     (mbFreightPayment ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
@@ -257,6 +275,7 @@ public class SDbProducer extends SDbRegistryUser {
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
                     mnFkReportingGroupId + ", " +
+                    mnFkInputSourceId + ", " + 
                     (mnFkExternalProducerId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalProducerId_n) + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
@@ -274,6 +293,8 @@ public class SDbProducer extends SDbRegistryUser {
                     "name_trd = '" + msNameTrade + "', " +
                     "fis_id = '" + msFiscalId + "', " +
                     "rev_prod_id = '" + msRevueltaProducerId + "', " +
+                    "amn_box = '" + msAutoMailNotificationBoxes + "', " +
+                    "b_amn = " + (mbAutoMailNotification ? 1 : 0) + ", " +
                     "b_fre_pay = " + (mbFreightPayment ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
@@ -282,6 +303,7 @@ public class SDbProducer extends SDbRegistryUser {
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_rep_grp = " + mnFkReportingGroupId + ", " +
+                    "fk_inp_src = " + mnFkInputSourceId + ", " +
                     "fk_ext_prod_n = " + (mnFkExternalProducerId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalProducerId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
@@ -308,6 +330,8 @@ public class SDbProducer extends SDbRegistryUser {
         registry.setNameTrade(this.getNameTrade());
         registry.setFiscalId(this.getFiscalId());
         registry.setRevueltaProducerId(this.getRevueltaProducerId());
+        registry.setAutoMailNotificationBoxes(this.getAutoMailNotificationBoxes());
+        registry.setAutoMailNotification(this.isAutoMailNotification());
         registry.setFreightPayment(this.isFreightPayment());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
@@ -316,6 +340,7 @@ public class SDbProducer extends SDbRegistryUser {
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
         registry.setFkReportingGroupId(this.getFkReportingGroupId());
+        registry.setFkInputSourceId(this.getFkInputSourceId());
         registry.setFkExternalProducerId_n(this.getFkExternalProducerId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());

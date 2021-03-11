@@ -24,7 +24,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Sergio Flores, Alfredo Pérez
+ * @author Sergio Flores, Alfredo Pérez, Isabel Servín
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  */
 public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
@@ -86,9 +86,6 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
 
     public SDbCompany() {
         super(SModConsts.CU_CO);
-        mvChildBranches = new Vector<>();
-        moFruitClassesMap = new HashMap<>();
-        moFruitRipenessDegreesMap = new HashMap<>();
         initRegistry();
     }
     
@@ -341,9 +338,9 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
 
-        mvChildBranches.clear();
-        moFruitClassesMap.clear();
-        moFruitRipenessDegreesMap.clear();
+        mvChildBranches = new Vector<>();
+        moFruitClassesMap = new HashMap<>();
+        moFruitRipenessDegreesMap = new HashMap<>();
     }
 
     @Override

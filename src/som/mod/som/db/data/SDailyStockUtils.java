@@ -27,7 +27,7 @@ import som.mod.SModSysConsts;
 
 /**
  *
- * @author Edwin Carmona
+ * @author Edwin Carmona, Isabel Servín
  *
  */
 public class SDailyStockUtils {
@@ -280,6 +280,7 @@ public class SDailyStockUtils {
      * @return
      * @throws SQLException 
      */
+    @SuppressWarnings("unchecked")
     private static ArrayList<ArrayList> getStockResume(SGuiSession session, final Date stockDate, final int stkMode) throws SQLException {
         ResultSet stockResult = SDailyStockUtils.getStkResult(session, stockDate, stkMode);
         HashMap<Integer, ArrayList> mRows = new HashMap<>();

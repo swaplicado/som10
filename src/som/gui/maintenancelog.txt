@@ -1,4 +1,93 @@
 ================================================================================
+2021-02-25, 1.0 070.1
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó una nueva función para truncar el nombre comercial de la vista de asociados de negocios.
+
+================================================================================
+2021-02-24, 1.0 070.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Adición de campo "Acidez promedio porcentaje" en los analisis de laboratorio.
+2) Adición de campo "Aplica acidez promedio porcentaje" en la configuración de ítems.
+3) Acición de columna "Acidez promedio porcentaje" en las vistas de laboratorio.
+4) Correción de errores en el reporte "Materia prima pagada".
+
+================================================================================
+2021-01-25, 1.0 069.2
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Creación de la vista de "Usuarios vs. categorías de insumo".
+2) Asignación de permisos para "Supervisor báscula" y "Supervisor laboratorio".
+
+================================================================================
+2021-01-19, 1.0 069.1
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Emplementación de informe vía correo invocable por día para el resumen de recepciones de materias primas.
+
+================================================================================
+2020-11-13, 1.0 069.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregaron dos nuevos permisos (supervisor báscula y supervisor laboratorio).
+2) Se agregaron nuevos filtros en las vistas de boletos y laboratorio así como en reportes para que el usuario solo pueda ver las categorías de insumo
+    a las cuales tiene acceso.
+
+================================================================================
+2020-08-24, 1.0 068.3
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó a la vista de proveedores el correo electrónico de notificaciones automáticas.
+
+================================================================================
+2020-05-20, 1.0 068.2
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Cambios al programa de CLI cartero del informe del histórico mensual recepción báscula:
+- Incorporación de bagazo y hueso y cáscara.
+- Incorporación de kg recibidos desde la última ejecución (por lo pronto, esta funcionalidad queda fija a 6 7 días hacia atrás.)
+
+================================================================================
+2020-03-27, 1.0 068.1
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se eliminaron variables innecesarias en el reporte de fruta recibida.
+
+================================================================================
+2020-03-25, 1.0 068.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se cambió el orden con el que se muestran el código y el nombre de los almacenes.
+2) Inhabilitación de los campos de "división" en los formularios de documentos de inventarios y mezclas.
+3) Se insertaron dos nuevos campos en la clase SDbProducer para el envio de correos individuales.
+4) Adaptación de la clase SDbTicket para enviar un correo con la información de un solo proveedor.
+5) Se agregó la opción N/A en el control de captura de orígenes de insumos en el formulario de los proveedores.
+
+================================================================================
+2020-03-13, 1.0 067.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se cambió el texto de "pulpa % aceite" por "fruta % aceite" en la fruta recibida.
+2) Modificación del reporte de fruta recibida, se agregó el control de radio "Modalidad detallada".
+3) Creación del reporte comparativo histórico de fruta recibida.
+4) Insercion del campo origen en la importación automática de boletos de la bascula.
+5) Mejoras a la conexión a la BD de la báscula en la importación automática de boletos.
+6) Incorporación del origen insumo en el catálogo de proveedores.
+
+================================================================================
+2020-02-13, 1.0 066.0
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición del permiso apertura y cierre de períodos.
+
+================================================================================
+2020-01-14, 1.0 065.0
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Ampliación de la longitud del campo Clave Revuelta a 10 caracteres en el catálogo de Ítems.
+
+================================================================================
 2019-12-03, 1.0 064.1
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
@@ -10,6 +99,12 @@ Sergio Abraham FLORES GUTIÉRREZ
 Edwin Omar CARMONA FIGUEROA
 --------------------------------------------------------------------------------
 1) Modificación de la actualización del porcentaje de aceite en materia prima en la bitácora de estimaciones.
+
+================================================================================
+2019-11-12, 1.0 064.0
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición de la columna acidez en el catálogo de Almacenes.
 
 ================================================================================
 2019-10-15, 1.0 063.6
