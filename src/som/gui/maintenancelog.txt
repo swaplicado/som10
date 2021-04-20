@@ -1,4 +1,19 @@
 ================================================================================
+2021-02-25, 1.0 070.1
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó una nueva función para truncar el nombre comercial de la vista de asociados de negocios.
+
+================================================================================
+2021-02-24, 1.0 070.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Adición de campo "Acidez promedio porcentaje" en los analisis de laboratorio.
+2) Adición de campo "Aplica acidez promedio porcentaje" en la configuración de ítems.
+3) Acición de columna "Acidez promedio porcentaje" en las vistas de laboratorio.
+4) Correción de errores en el reporte "Materia prima pagada".
+
+================================================================================
 2021-01-25, 1.0 069.2
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

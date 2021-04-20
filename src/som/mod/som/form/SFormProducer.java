@@ -25,11 +25,13 @@ import som.mod.som.db.SSomConsts;
  * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
 public class SFormProducer extends SBeanForm implements ItemListener {
-
+    
     private SDbProducer moRegistry;
 
     /**
      * Creates new form SFormProducer
+     * @param client
+     * @param title
      */
     public SFormProducer(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_PROD, SLibConsts.UNDEFINED, title);
@@ -60,6 +62,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         jPanel8 = new javax.swing.JPanel();
         jlNameTrade = new javax.swing.JLabel();
         moTextNameTrade = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel7 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jlFiscalId = new javax.swing.JLabel();
         moTextFiscalId = new sa.lib.gui.bean.SBeanFieldText();
@@ -132,6 +135,11 @@ public class SFormProducer extends SBeanForm implements ItemListener {
         moTextNameTrade.setText("sBeanFieldText1");
         moTextNameTrade.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel8.add(moTextNameTrade);
+
+        jLabel7.setForeground(java.awt.Color.gray);
+        jLabel7.setText("para notificaciones mail");
+        jLabel7.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel8.add(jLabel7);
 
         jPanel2.add(jPanel8);
 
@@ -220,6 +228,7 @@ public class SFormProducer extends SBeanForm implements ItemListener {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -288,8 +297,6 @@ public class SFormProducer extends SBeanForm implements ItemListener {
     }
 
     private void itemStateKeyExternalProducer() {
-        int lenMax = 0;
-        
         if (moKeyExternalProducer.getSelectedIndex() <= 0) {
             moTextCode.setValue("");
             moTextName.setValue("");
@@ -297,18 +304,18 @@ public class SFormProducer extends SBeanForm implements ItemListener {
             moTextFiscalId.setValue("");
         }
         else {
-            lenMax = moKeyExternalProducer.getSelectedItem().getItem().length() > 49 ? 49 : moKeyExternalProducer.getSelectedItem().getItem().length();
+//            int lenMax = moKeyExternalProducer.getSelectedItem().getItem().length() > 49 ? 49 : moKeyExternalProducer.getSelectedItem().getItem().length();
             
             moTextCode.setValue(moKeyExternalProducer.getSelectedItem().getCode());
             moTextName.setValue(moKeyExternalProducer.getSelectedItem().getItem());
-            moTextNameTrade.setValue(moKeyExternalProducer.getSelectedItem().getItem().substring(0, lenMax));
+            moTextNameTrade.setValue(moKeyExternalProducer.getSelectedItem().getItem().substring(0, SDbProducer.LEN_NAME_TRADE));
             moTextFiscalId.setValue(moKeyExternalProducer.getSelectedItem().getComplement());
         }
     }
 
     @Override
     public void addAllListeners() {
-        moKeyExternalProducer.addItemListener(this);
+        moKeyExternalProducer.addItemListener(this);                                                                                                                                          
     }
 
     @Override

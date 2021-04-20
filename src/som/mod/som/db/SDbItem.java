@@ -20,7 +20,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
@@ -64,6 +64,7 @@ public class SDbItem extends SDbRegistryUser {
     protected boolean mbLinolenicAcidPercentage;
     protected boolean mbErucicAcidPercentage;
     protected boolean mbAcidityPercentage;
+    protected boolean mbAcidityAveragePercentage;
     protected boolean mbFruit;
     protected boolean mbPrintInputType;
     /*
@@ -181,6 +182,7 @@ public class SDbItem extends SDbRegistryUser {
     public void setLinolenicAcidPercentage(boolean b) { mbLinolenicAcidPercentage = b; }
     public void setErucicAcidPercentage(boolean b) { mbErucicAcidPercentage = b; }
     public void setAcidityPercentage(boolean b) { mbAcidityPercentage = b; }
+    public void setAcidityAveragePercentage(boolean b) { mbAcidityAveragePercentage = b; }
     public void setFruit(boolean b) { mbFruit = b; }
     public void setPrintInputType(boolean b) { mbPrintInputType = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -244,6 +246,7 @@ public class SDbItem extends SDbRegistryUser {
     public boolean isLinolenicAcidPercentage() { return mbLinolenicAcidPercentage; }
     public boolean isErucicAcidPercentage() { return mbErucicAcidPercentage; }
     public boolean isAcidityPercentage() { return mbAcidityPercentage; }
+    public boolean isAcidityAveragePercentage() { return mbAcidityAveragePercentage; }
     public boolean isFruit() { return mbFruit; }
     public boolean isPrintInputType() { return mbPrintInputType; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -325,6 +328,7 @@ public class SDbItem extends SDbRegistryUser {
         mbLinolenicAcidPercentage = false;
         mbErucicAcidPercentage = false;
         mbAcidityPercentage = false;
+        mbAcidityAveragePercentage = false;
         mbFruit = false;
         mbPrintInputType = false;
         mbUpdatable = false;
@@ -433,6 +437,7 @@ public class SDbItem extends SDbRegistryUser {
             mbLinolenicAcidPercentage = resultSet.getBoolean("b_llc_per");
             mbErucicAcidPercentage = resultSet.getBoolean("b_eru_per");
             mbAcidityPercentage = resultSet.getBoolean("b_aci_per");
+            mbAcidityAveragePercentage = resultSet.getBoolean("b_aci_avg_per");
             mbFruit = resultSet.getBoolean("b_fruit");
             mbPrintInputType = resultSet.getBoolean("b_prt_inp_tp");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -521,6 +526,7 @@ public class SDbItem extends SDbRegistryUser {
                     (mbLinolenicAcidPercentage ? 1 : 0) + ", " +
                     (mbErucicAcidPercentage ? 1 : 0) + ", " +
                     (mbAcidityPercentage ? 1 : 0) + ", " +
+                    (mbAcidityAveragePercentage ? 1 : 0) + ", " + 
                     (mbFruit ? 1 : 0) + ", " + 
                     (mbPrintInputType ? 1 : 0) + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -589,6 +595,7 @@ public class SDbItem extends SDbRegistryUser {
                     "b_llc_per = " + (mbLinolenicAcidPercentage ? 1 : 0) + ", " +
                     "b_eru_per = " + (mbErucicAcidPercentage ? 1 : 0) + ", " +
                     "b_aci_per = " + (mbAcidityPercentage ? 1 : 0) + ", " +
+                    "b_aci_avg_per = " + (mbAcidityAveragePercentage ? 1 : 0) + ", " +
                     "b_fruit = " + (mbFruit ? 1 : 0) + ", " +
                     "b_prt_inp_tp = " + (mbPrintInputType ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -665,6 +672,7 @@ public class SDbItem extends SDbRegistryUser {
         registry.setLinolenicAcidPercentage(this.isLinolenicAcidPercentage());
         registry.setErucicAcidPercentage(this.isErucicAcidPercentage());
         registry.setAcidityPercentage(this.isAcidityPercentage());
+        registry.setAcidityAveragePercentage(this.isAcidityAveragePercentage());
         registry.setFruit(this.isFruit());
         registry.setPrintInputType(this.isPrintInputType());
         registry.setUpdatable(this.isUpdatable());

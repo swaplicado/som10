@@ -14,6 +14,7 @@ import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanDialogReport;
+import som.gui.SGuiClientSessionCustom;
 import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.som.view.SPaneUserInputCategory;
@@ -482,6 +483,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
             sqlOrderBy = "ict.name, it.fk_inp_ct, ";
         }
         
+        String db_ext = ((SGuiClientSessionCustom)miClient.getSession().getSessionCustom()).getCompany().getExternalDatabaseCo();
         moParamsMap.put("tDateStart", moDateDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
         moParamsMap.put("bShowDetails", !moBoolSummary.getValue());
@@ -491,6 +493,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         moParamsMap.put("sReportType", reportType);
         moParamsMap.put("sSqlWhere", sqlWhere);
         moParamsMap.put("sSqlOrderBy", sqlOrderBy);
+        moParamsMap.put("sDatabaseCoExtName", db_ext);
         moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
     }
 }
