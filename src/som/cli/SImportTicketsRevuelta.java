@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Properties;
@@ -53,7 +54,6 @@ public class SImportTicketsRevuelta {
     public static void main(String[] args) {
         try {
             moSession = new SGuiSession(null);
-            moConnectionRev = openConnectionRevuelta();
             
             String xml;
             xml = SXmlUtils.readXml(SUtilConsts.FILE_NAME_CFG);
@@ -74,6 +74,7 @@ public class SImportTicketsRevuelta {
             
             moSession.setDatabase(database);
             
+            moConnectionRev = openConnectionRevuelta();
             try {
                 SDbCompany company = new SDbCompany();
                 company.read(moSession, new int[] { SUtilConsts.BPR_CO_ID });
@@ -257,15 +258,23 @@ public class SImportTicketsRevuelta {
      * @return 
      */
     private static Connection openConnectionRevuelta() {
+        ResultSet resultSet;
+        String revHost = "";
+        String revPort = "";
         try {
             Class.forName("com.sybase.jdbc3.jdbc.SybDriver").newInstance();
+            resultSet = moSession.getStatement().executeQuery("SELECT rev_host, rev_port FROM cu_co;");
+            if (resultSet.next()) {
+                revHost = resultSet.getString(1);
+                revPort = resultSet.getString(2);
+            }
         }
-        catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
             SLibUtils.printException(SImportTicketsRevuelta.class.getName(), e);
         }
         
         Connection connection = null;
-        String url = "jdbc:sybase:Tds:192.168.1.33:2638/Revuelta"; // XXX WTF!
+        String url = "jdbc:sybase:Tds:" + revHost + ":" + revPort + "/Revuelta"; // XXX WTF!
         Properties properties = new Properties();
         properties.put("user", "usuario"); // XXX WTF!
         properties.put("password", "revuelta"); // XXX WTF!

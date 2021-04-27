@@ -35,7 +35,7 @@ public class SSomMailUtils {
     private static final int FONT_SIZE_TBL = 2;
     private static final String COLOR_INPUT_HDR = "#4169E1";
     private static final String COLOR_INPUT_FTR = "#FFD700";
-
+    
     /*
      * Private methods:
      */
@@ -335,6 +335,50 @@ public class SSomMailUtils {
         mail.send();
     }
     
+    private static int noInformationFound(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isByDate, 
+            final String subject, String message, final int year, final DecimalFormat formatPercentage, int count) throws Exception {
+        // If no information found:
+        String html;
+        String sql;
+        //================================================================================
+        // START OF SNIPPET HTML CODE #2 (Note: when modified, update aswell all snippets in this class!)
+
+        // Body header:
+        html =
+                "<font size='" + FONT_SIZE_TITLE + "'><b>" +
+                SLibUtils.textToHtml(((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getName()) + "<br>" +
+                SSomConsts.SOM_MAIL_MAN + SLibUtils.DateFormatDate.format(dateStart) + (isByDate ? "" : " al " + SLibUtils.DateFormatDate.format(dateEnd)) +
+                "</b></font>" +
+                "<br>" +
+                "<br>";
+
+        // END OF SNIPPET HTML CODE #2 (Note: when modified, update aswell all snippets in this class!)
+        //================================================================================
+
+        html +=
+                "<hr>" +
+                "<font size='" + (FONT_SIZE_TITLE - 1) + "'><b>" +
+                SLibUtils.textToHtml(message) +
+                "</b></font>" +
+                "<br>" +
+                "<br>";
+
+        sql = "SELECT DISTINCT i.umn_box " +
+                "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i " +
+                "WHERE i.b_umn = 1 AND i.b_del = 0 " +
+                "ORDER BY i.umn_box ";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+        while (resultSet.next()) {
+            sendMailReceptions(session, subject, html, resultSet.getString("i.umn_box"), false,
+                    isByDate, dateStart, dateEnd, year, formatPercentage,
+                    "", "", "", 0, "", null, "",
+                    0, 0, 0, 0,
+                    0, 0, 0, 0);
+            count++;
+        }
+        return count;
+    }
+    
     /*
      * Public methods:
      */
@@ -344,11 +388,14 @@ public class SSomMailUtils {
      * @param session SGuiSession.
      * @param dateStart Start date.
      * @param dateEnd End date.
+     * @param isMailer
+     * @param daysToSendMail
      * @return int Mails sent.
      */
-    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd) {
+    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isMailer, final int daysToSendMail) {
         int count = 0;
         boolean isByDate = false;
+        boolean sent = false;
         String sql = "";
         String umn_box = "";
         String subject = "";
@@ -381,7 +428,7 @@ public class SSomMailUtils {
 
         try {
             Statement statement = session.getDatabase().getConnection().createStatement();
-            ResultSet resultSet = null;
+            ResultSet resultSet;
 
             isByDate = SLibTimeUtils.isSameDate(dateStart, dateEnd);
 
@@ -869,45 +916,37 @@ public class SSomMailUtils {
                         "<td align='right'>" + formatPercentage.format(totItemYear == 0 ? 0 : resultSet.getDouble("f_qty_year") / totItemYear) + "</td>" +
                         "</tr>";
             }
-
+            
+            int maxId = 0;
             if (html.isEmpty()) {
-                // If no information found:
-                
-                //================================================================================
-                // START OF SNIPPET HTML CODE #2 (Note: when modified, update aswell all snippets in this class!)
-                
-                // Body header:
-                html =
-                        "<font size='" + FONT_SIZE_TITLE + "'><b>" +
-                        SLibUtils.textToHtml(((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getName()) + "<br>" +
-                        SSomConsts.SOM_MAIL_MAN + SLibUtils.DateFormatDate.format(dateStart) + (isByDate ? "" : " al " + SLibUtils.DateFormatDate.format(dateEnd)) +
-                        "</b></font>" +
-                        "<br>" +
-                        "<br>";
-                
-                // END OF SNIPPET HTML CODE #2 (Note: when modified, update aswell all snippets in this class!)
-                //================================================================================
-                
-                html +=
-                        "<hr>" +
-                        "<font size='" + (FONT_SIZE_TITLE - 1) + "'><b>" +
-                        SLibUtils.textToHtml("(No se encontró información para el " + (isByDate ? "día" : "período") + " solicitado.)") +
-                        "</b></font>" +
-                        "<br>" +
-                        "<br>";
-
-                sql = "SELECT DISTINCT i.umn_box " +
-                        "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i " +
-                        "WHERE i.b_umn = 1 AND i.b_del = 0 " +
-                        "ORDER BY i.umn_box ";
-                resultSet = statement.executeQuery(sql);
-                while (resultSet.next()) {
-                    sendMailReceptions(session, subject, html, resultSet.getString("i.umn_box"), false,
-                            isByDate, dateStart, dateEnd, year, formatPercentage,
-                            "", "", "", 0, "", null, "",
-                            0, 0, 0, 0,
-                            0, 0, 0, 0);
-                    count++;
+                String message = "(No se encontró información para el " + (isByDate ? "día" : "período") + " solicitado.)";
+                if (!isMailer) {
+                    count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count);
+                }
+                else {
+                    sql = "SELECT * FROM s_cli_umn_log WHERE b_sent ORDER BY id DESC LIMIT 1;";
+                    resultSet = statement.executeQuery(sql);
+                    if (resultSet.next()) {
+                        long days = SLibTimeUtils.getDaysDiff(dateStart, resultSet.getDate("ts_exe"));
+                        if (days >= daysToSendMail) {
+                            message = "(No hay recibos de semillas desde hace al menos " + daysToSendMail + " días.)";
+                            count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count);
+                            sent = true;
+                        }
+                        sql = "SELECT max(id) FROM s_cli_umn_log";
+                        try (ResultSet id = statement.executeQuery(sql)) {
+                            if (id.next()) {
+                                maxId = id.getInt(1);
+                            }
+                        }
+                    }
+                    else {
+                        count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count);
+                        sent = true;
+                    }
+                    
+                    sql = "INSERT INTO s_cli_umn_log (id, b_data, b_sent, ts_exe) VALUES (" + (maxId + 1) + ", false, " + sent + ", NOW());";
+                    statement.execute(sql);
                 }
             }
             else if (!umn_box.isEmpty()) {
@@ -916,7 +955,18 @@ public class SSomMailUtils {
                         txtSregion, txtItem, txtItemUnit, itemUnitId, txtInput, inputKey, txtInputUnit,
                         totRegionCurr, totRegionYear, totSregionCurr, totSregionYear,
                         totItemCurr, totItemYear, totInputCurr, totInputYear);
+                sent = true;
                 count++;
+                if (isMailer) {
+                    sql = "SELECT max(id) FROM s_cli_umn_log";
+                    try (ResultSet id = statement.executeQuery(sql)) {
+                        if (id.next()) {
+                            maxId = id.getInt(1);
+                        }
+                    }
+                    sql = "INSERT INTO s_cli_umn_log (id, b_data ,b_sent, ts_exe) VALUES (" + (maxId + 1) + ", true, " + sent + ", NOW());";
+                    statement.execute(sql);
+                }
             }
         }
         catch(Exception e) {

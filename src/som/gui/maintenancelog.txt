@@ -1,4 +1,11 @@
 ================================================================================
+2021-02-25, 1.0 071.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó la clase som.cli.SCliReportMailerSeedReception con el fin de automatizar el envio del reporte de semillas recibidas.
+2) Se agregó el reporte de rendimiento de fruta por origen.
+
+================================================================================
 2021-02-25, 1.0 070.1
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
