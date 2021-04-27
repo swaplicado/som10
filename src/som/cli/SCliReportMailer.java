@@ -33,6 +33,7 @@ public class SCliReportMailer {
     public static final int ID_AVO_FRUIT_ORG = 64; // fruta orgánica
     public static final int ID_AVO_MARC = 23; // bagazo
     public static final int ID_AVO_KERNEL = 100; // hueso y cáscara
+    public static final int ID_AVO_PULP = 103; // pulpa
     
     public static final HashMap<Integer, String> ItemDescriptions = new HashMap<>();
     
@@ -54,7 +55,7 @@ public class SCliReportMailer {
     /** Argument index for list of mail-Bcc recipients. */
     private static final int ARG_IDX_MAIL_BCC = 4;
 
-    private static final int[] DEF_ITEM_IDS = new int[] { ID_AVO_FRUIT, /*ID_AVO_FRUIT_ORG,*/ ID_AVO_MARC, ID_AVO_KERNEL };
+    private static final int[] DEF_ITEM_IDS = new int[] { ID_AVO_FRUIT, /*ID_AVO_FRUIT_ORG,*/ ID_AVO_MARC, ID_AVO_KERNEL, ID_AVO_PULP };
     private static final int DEF_YEAR_REF = 2010; // año/temporada tope hacia atrás
     //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
