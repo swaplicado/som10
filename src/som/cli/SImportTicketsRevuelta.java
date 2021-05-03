@@ -106,7 +106,7 @@ public class SImportTicketsRevuelta {
                 + "Pes_FecHorSeg, Pes_UnidadPri, Pes_PesoSeg, Pes_Tara, Pes_Neto, Pes_Placas, Pes_Chofer, "
                 + "Pro_ID, Emp_ID "
                 + "FROM dba.Pesadas "
-                + "WHERE Pes_ID >= 136870 "
+                + "WHERE Pes_ID >= 149000 "
                 + "AND Usb_ID = 'ACTH' ORDER BY Pes_ID";
                 //+ "where pes_id = 136870";
 

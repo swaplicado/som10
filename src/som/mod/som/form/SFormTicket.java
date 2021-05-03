@@ -109,6 +109,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jPanel21 = new javax.swing.JPanel();
         jlInputSource = new javax.swing.JLabel();
         moKeyInputSource = new sa.lib.gui.bean.SBeanFieldKey();
+        jbInputSource = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jlPlates = new javax.swing.JLabel();
         moTextPlates = new sa.lib.gui.bean.SBeanFieldText();
@@ -251,6 +252,11 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
         moKeyInputSource.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel21.add(moKeyInputSource);
+
+        jbInputSource.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_std_wizard.gif"))); // NOI18N
+        jbInputSource.setToolTipText("Seleccionar origen insumo del proveedor");
+        jbInputSource.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel21.add(jbInputSource);
 
         jPanel2.add(jPanel21);
 
@@ -484,6 +490,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JButton jbCleanTicket;
     private javax.swing.JButton jbImportTareTicket;
     private javax.swing.JButton jbImportTicket;
+    private javax.swing.JButton jbInputSource;
     private javax.swing.JButton jbPackingEmptyQuantityArrival;
     private javax.swing.JButton jbPackingFullQuantityArrival;
     private javax.swing.JLabel jlDatetimeArrival;
@@ -631,6 +638,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moKeyProducer.setEnabled(false);
             moKeyItem.setEnabled(false);
             moKeyInputSource.setEnabled(false);
+            jbInputSource.setEnabled(false);
             moTextPlates.setEditable(false);
             moTextPlatesCage.setEditable(false);
             moTextDriver.setEditable(false);
@@ -659,6 +667,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 moKeyProducer.setEnabled(enableFields);
                 moKeyItem.setEnabled(enableFields);
                 moKeyInputSource.setEnabled(enableFields && moKeyInputSource.getItemCount() > 1);
+                jbInputSource.setEnabled(enableFields && moKeyInputSource.getItemCount() > 1); 
                 moTextPlates.setEditable(enableFields);
                 moTextPlatesCage.setEditable(true);
                 moTextDriver.setEditable(enableFields);
@@ -688,6 +697,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 moKeyProducer.setEnabled(enable);
                 moKeyItem.setEnabled(enable);
                 moKeyInputSource.setEnabled(!moRegistry.isTared() && moKeyInputSource.getItemCount() > 1);
+                jbInputSource.setEnabled(!moRegistry.isTared() && moKeyInputSource.getItemCount() > 1);
                 moTextPlates.setEditable(enable);
                 moTextPlatesCage.setEditable(!moRegistry.isTared());
                 moTextDriver.setEditable(enable);
@@ -760,6 +770,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 
                 miClient.getSession().populateCatalogue(moKeyInputSource, SModConsts.SU_INP_SRC, SLibConsts.UNDEFINED, new SGuiParams(moItem.getFkInputCategoryId()));
                 moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+                jbInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
                 if (moProducer != null) {
                     moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
                 }
@@ -1006,6 +1017,17 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             setEnabledFields(true);
         }
     }
+    
+    private void actionInputSource() {
+        if (jbInputSource.isEnabled()) {
+            try {
+                moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
+            }
+            catch (Exception e){
+                miClient.showMsgBoxError(e.getMessage());
+            }
+        }
+    }
 
     private void actionSaveSend() {
         mbIsSaveSend = true;
@@ -1029,8 +1051,9 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moKeyProducer.addItemListener(this);
         moKeyItem.addItemListener(this);
         jbImportTicket.addActionListener(this);
-        jbImportTareTicket.addActionListener(this);
         jbCleanTicket.addActionListener(this);
+        jbInputSource.addActionListener(this);
+        jbImportTareTicket.addActionListener(this);
         jbCleanTare.addActionListener(this);
         jbSaveSend.addActionListener(this);
         jbPackingFullQuantityArrival.addActionListener(this);
@@ -1049,8 +1072,9 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moKeyProducer.removeItemListener(this);
         moKeyItem.removeItemListener(this);
         jbImportTicket.removeActionListener(this);
-        jbImportTareTicket.removeActionListener(this);
         jbCleanTicket.removeActionListener(this);
+        jbInputSource.removeActionListener(this);
+        jbImportTareTicket.removeActionListener(this);
         jbCleanTare.removeActionListener(this);
         jbSaveSend.removeActionListener(this);
         jbPackingFullQuantityArrival.removeActionListener(this);
@@ -1373,11 +1397,14 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             if (button == jbImportTicket) {
                 actionImportTicket();
             }
-            else if (button == jbImportTareTicket) {
-                actionImportTareTicket();
-            }
             else if (button == jbCleanTicket) {
                 actionCleanTicket();
+            }
+            else if (button == jbInputSource) {
+                actionInputSource();
+            }
+            else if (button == jbImportTareTicket) {
+                actionImportTareTicket();
             }
             else if (button == jbCleanTare) {
                 actionCleanTare();

@@ -1,5 +1,12 @@
 ================================================================================
-2021-02-25, 1.0 071.0
+2021-05-03, 1.0 071.1
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó el botón para asignar automaticamente el origen del proveedor en el campo "origen insumo" en la forma de captura de boletos.
+2) Se agregó la clase som.cli.SRevueltaQuery para realizar consultas a la base de datos de Revuelta.
+
+================================================================================
+2021-04-27, 1.0 071.0
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
 1) Se agregó la clase som.cli.SCliReportMailerSeedReception con el fin de automatizar el envio del reporte de semillas recibidas.
