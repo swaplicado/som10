@@ -1,4 +1,11 @@
 ================================================================================
+2021-05-07, 1.0 071.2
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó el permitir cambiar ítem de boletos incluso con resultados de laboratorio con la condición de que sean el mismo 
+    tipo de insumo y que tengan los mismos parametros para evaluar en el laboratorio.
+
+================================================================================
 2021-05-03, 1.0 071.1
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

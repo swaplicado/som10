@@ -495,8 +495,81 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private void itemStateKeyItem() {
         if (moKeyItem.getSelectedIndex() <= 0) {
         }
+        else if (moGridLaboratoryTest.getModel().getRowCount() > 0) {
+            readItemLaboratoryParams();
+        }
         else {
             readItem();
+        }
+    }
+    
+    private void readItemLaboratoryParams() {
+        try {
+            SDbItem itemNew = new SDbItem();
+            itemNew.read(miClient.getSession(), moKeyItem.getValue());
+            String message = "No se puede asignar el ítem " + itemNew.getName() + "\nya que no tiene los mismos parámetros de laboratorio que el ítem actual.";
+            
+            boolean isSameLabParams = true;
+            if (moItem.getFkInputCategoryId() != itemNew.getFkInputCategoryId()) {
+                isSameLabParams = false;
+                message = "No se puede asignar el ítem " + itemNew.getName() + "\nya que no tiene el mismo tipo de insumo que ítem actual.";
+            }
+            else if (moItem.isLaboratory() != itemNew.isLaboratory()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isDensity() != itemNew.isDensity()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isIodineValue() != itemNew.isIodineValue()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isRefractionIndex() != itemNew.isRefractionIndex()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isImpuritiesPercentage() != itemNew.isImpuritiesPercentage()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isMoisturePercentage() != itemNew.isMoisturePercentage()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isProteinPercentage() != itemNew.isProteinPercentage()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isOilContentPercentage() != itemNew.isOilContentPercentage()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isOleicAcidPercentage() != itemNew.isOleicAcidPercentage()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isLinoleicAcidPercentage()!= itemNew.isLinoleicAcidPercentage()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isLinolenicAcidPercentage() != itemNew.isLinolenicAcidPercentage()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isErucicAcidPercentage() != itemNew.isErucicAcidPercentage()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isAcidityPercentage() != itemNew.isAcidityPercentage()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isAcidityAveragePercentage() != itemNew.isAcidityAveragePercentage()) {
+                isSameLabParams = false;
+            }
+            else if (moItem.isFruit() != itemNew.isFruit()) {
+                isSameLabParams = false;
+            }
+            
+            if (isSameLabParams) {
+                moItem = itemNew;
+            }
+            else {
+                moKeyItem.setValue(moItem.getPrimaryKey());
+                miClient.showMsgBoxWarning(message);
+            }
+        }
+        catch (Exception e) {
+            SLibUtils.showException(this, e);
         }
     }
 
@@ -543,11 +616,12 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
         try {
             isLink = moRegistry.isLinkIog(miClient.getSession());
-
-           if (moGridLaboratoryTest.getModel().getRowCount() > 0) {
-               miClient.showMsgBoxWarning("Es necesario eliminar las pruebas de laboratorio.");
-           }
-           else if (isLink) {
+//          Se comentó para poder cambiar el ítem aun existiendo pruebas de laboratorio
+//            if (moGridLaboratoryTest.getModel().getRowCount() > 0) {
+//               miClient.showMsgBoxWarning("Es necesario eliminar las pruebas de laboratorio.");
+//               
+//            }
+            if (isLink) {
                 miClient.showMsgBoxWarning("El boleto está vinculado con un documento de inventarios.");
             }
             else {
