@@ -336,7 +336,7 @@ public class SSomMailUtils {
     }
     
     private static int noInformationFound(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isByDate, 
-            final String subject, String message, final int year, final DecimalFormat formatPercentage, int count) throws Exception {
+            final String subject, String message, final int year, final DecimalFormat formatPercentage, int count, String mailTo) throws Exception {
         // If no information found:
         String html;
         String sql;
@@ -363,13 +363,23 @@ public class SSomMailUtils {
                 "<br>" +
                 "<br>";
 
-        sql = "SELECT DISTINCT i.umn_box " +
-                "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i " +
-                "WHERE i.b_umn = 1 AND i.b_del = 0 " +
-                "ORDER BY i.umn_box ";
-        ResultSet resultSet = session.getStatement().executeQuery(sql);
-        while (resultSet.next()) {
-            sendMailReceptions(session, subject, html, resultSet.getString("i.umn_box"), false,
+        if (mailTo.isEmpty()) {
+            sql = "SELECT DISTINCT i.umn_box " +
+                    "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i " +
+                    "WHERE i.b_umn = 1 AND i.b_del = 0 " +
+                    "ORDER BY i.umn_box ";
+            ResultSet resultSet = session.getStatement().executeQuery(sql);
+            while (resultSet.next()) {
+                sendMailReceptions(session, subject, html, resultSet.getString("i.umn_box"), false,
+                        isByDate, dateStart, dateEnd, year, formatPercentage,
+                        "", "", "", 0, "", null, "",
+                        0, 0, 0, 0,
+                        0, 0, 0, 0);
+                count++;
+            }
+        }
+        else {
+            sendMailReceptions(session, subject, html, mailTo, false,
                     isByDate, dateStart, dateEnd, year, formatPercentage,
                     "", "", "", 0, "", null, "",
                     0, 0, 0, 0,
@@ -390,24 +400,25 @@ public class SSomMailUtils {
      * @param dateEnd End date.
      * @param isMailer
      * @param daysToSendMail
+     * @param mailTo
      * @return int Mails sent.
      */
-    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isMailer, final int daysToSendMail) {
+    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isMailer, final int daysToSendMail, final String mailTo) {
         int count = 0;
-        boolean isByDate = false;
+        boolean isByDate;
         boolean sent = false;
-        String sql = "";
+        String sql;
         String umn_box = "";
-        String subject = "";
+        String subject;
         String html = "";
         String txtInput = "";
         String txtInputUnit = "";
         String txtItem = "";
         String txtItemUnit = "";
         String txtSregion = "";
-        String txtRegion = "";
-        int year = 0;
-        int[] key = null;
+        String txtRegion;
+        int year;
+        int[] key;
         int[] inputKey = null;
         int inputUnitId = SLibConsts.UNDEFINED;
         int itemId = SLibConsts.UNDEFINED;
@@ -526,10 +537,11 @@ public class SSomMailUtils {
                     "ORDER BY i.umn_box, it.name, it.id_inp_ct, it.id_inp_cl, it.id_inp_tp, " +
                     "i.name, i.id_item, u.code, u.id_unit, " +
                     "sr.name, sr.id_sup_reg, r.name, r.id_reg, p.name_trd, p.id_prod; ";
-
+            
+            umn_box = mailTo.isEmpty() ? umn_box : mailTo;
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-
+                
                 if (resultSet.getString("i.umn_box").compareTo(umn_box) != 0) {
                     // Change of User Mail Notification Boxes (recipients), i.e., a new mail is composed:
                     
@@ -917,11 +929,12 @@ public class SSomMailUtils {
                         "</tr>";
             }
             
+            umn_box = mailTo.isEmpty() ? umn_box : mailTo;
             int maxId = 0;
             if (html.isEmpty()) {
                 String message = "(No se encontró información para el " + (isByDate ? "día" : "período") + " solicitado.)";
                 if (!isMailer) {
-                    count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count);
+                    count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo);
                 }
                 else {
                     sql = "SELECT * FROM s_cli_umn_log WHERE b_sent ORDER BY id DESC LIMIT 1;";
@@ -930,7 +943,7 @@ public class SSomMailUtils {
                         long days = SLibTimeUtils.getDaysDiff(dateStart, resultSet.getDate("ts_exe"));
                         if (days >= daysToSendMail) {
                             message = "(No hay recibos de semillas desde hace al menos " + daysToSendMail + " días.)";
-                            count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count);
+                            count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo);
                             sent = true;
                         }
                         sql = "SELECT max(id) FROM s_cli_umn_log";
@@ -941,7 +954,7 @@ public class SSomMailUtils {
                         }
                     }
                     else {
-                        count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count);
+                        count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo);
                         sent = true;
                     }
                     

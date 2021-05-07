@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.util.Date;
 import sa.gui.util.SUtilConfigXml;
 import sa.gui.util.SUtilConsts;
+import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbDatabase;
@@ -25,16 +26,21 @@ import som.mod.som.db.SSomMailUtils;
 public class SCliReportMailerSeedReceptions {
     
     private static SGuiSession moSession;
+    
     public static final int DAYS_TO_SEND_MAIL = 3;
+    
     private static final int ARG_DAYS_TO_SEND_MAIL = 0;
+    private static final int ARG_MAIL_TO = 1;
     
     public static void main(String[] args) {
         try {
             
             int daysToSendMail = DAYS_TO_SEND_MAIL;
+            String mailTo = "";
             
             if (args.length >= 1) {
                 daysToSendMail = Integer.parseInt(args[ARG_DAYS_TO_SEND_MAIL]);
+                mailTo = args[ARG_MAIL_TO];
             }
             
             moSession = new SGuiSession(null);
@@ -57,14 +63,14 @@ public class SCliReportMailerSeedReceptions {
             }
             
             moSession.setDatabase(database);
-            run(daysToSendMail);
+            run(daysToSendMail, mailTo);
         }
         catch (Exception e) {
             SLibUtils.printException(SCliReportMailerSeedReceptions.class.getName(), e);
         }
     }
     
-    public static void run(int daysToSendMail) throws Exception {
+    public static void run(int daysToSendMail, String mailTo) throws Exception {
         SGuiClientSessionCustom csc = new SGuiClientSessionCustom(moSession.getClient(), 1);
         SDbCompany company = new SDbCompany();
         company.read(moSession, new int[] {1});
@@ -77,6 +83,6 @@ public class SCliReportMailerSeedReceptions {
         if (resultSet.next()) {
             date = resultSet.getDate(1);
         }
-        SSomMailUtils.computeMailReceptions(moSession, date, date, true, daysToSendMail);
+        SSomMailUtils.computeMailReceptions(moSession, date, date, true, daysToSendMail, mailTo);
     }
 }

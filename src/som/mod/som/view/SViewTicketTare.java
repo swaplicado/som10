@@ -128,7 +128,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
             
             if (moDialogDailyMail.getFormResult() == SGuiConsts.FORM_RESULT_OK) {
                 try {
-                    int count = SSomMailUtils.computeMailReceptions(miClient.getSession(), moDialogDailyMail.getDateStart(), moDialogDailyMail.getDateEnd(), false, 0);
+                    int count = SSomMailUtils.computeMailReceptions(miClient.getSession(), moDialogDailyMail.getDateStart(), moDialogDailyMail.getDateEnd(), false, 0, "");
                     miClient.showMsgBoxInformation(SLibConsts.MSG_PROCESS_FINISHED + "\nMails enviados: " + SLibUtils.DecimalFormatInteger.format(count) + ".");
                 }
                 catch (Exception e) {
