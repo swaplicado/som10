@@ -1632,4 +1632,16 @@ public abstract class SSomUtils {
         
         return body;
     }
+
+    /**
+     * Actualiza los boletos con el origen insumo del proveedor.
+     * @param session GUI session.
+     * @param producerId Producer ID.
+     * @param inputSourceId Input source ID.
+     * @throws Exception 
+     */
+    public static void updateTicketsInputSource(final SGuiSession session, final int producerId, final int inputSourceId) throws Exception {
+        String sql = "UPDATE s_tic SET fk_inp_src = " + inputSourceId + " WHERE fk_prod = " + producerId + ";";
+        session.getStatement().execute(sql);
+    }
 }

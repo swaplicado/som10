@@ -23,7 +23,7 @@ import sa.lib.xml.SXmlUtils;
 
 /**
  *
- * @author Isabel
+ * @author Isabel Servín
  */
 public class SRevueltaQuery {
     

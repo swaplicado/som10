@@ -637,8 +637,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             jbCleanTicket.setEnabled(false);
             moKeyProducer.setEnabled(false);
             moKeyItem.setEnabled(false);
-            moKeyInputSource.setEnabled(false);
-            jbInputSource.setEnabled(false);
+            moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+            jbInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
             moTextPlates.setEditable(false);
             moTextPlatesCage.setEditable(false);
             moTextDriver.setEditable(false);
@@ -696,8 +696,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 jbCleanTicket.setEnabled(!enable && !moRegistry.isTared());
                 moKeyProducer.setEnabled(enable);
                 moKeyItem.setEnabled(enable);
-                moKeyInputSource.setEnabled(!moRegistry.isTared() && moKeyInputSource.getItemCount() > 1);
-                jbInputSource.setEnabled(!moRegistry.isTared() && moKeyInputSource.getItemCount() > 1);
+                moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+                jbInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
                 moTextPlates.setEditable(enable);
                 moTextPlatesCage.setEditable(!moRegistry.isTared());
                 moTextDriver.setEditable(enable);

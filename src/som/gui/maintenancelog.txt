@@ -1,4 +1,12 @@
 ================================================================================
+2021-05-12, 1.0 071.3
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó a la vista de proveedores el botón para actualizar todos los boletos del proveedor 
+    seleccionado con el origen de insumo predeterminado para ese proveedor.
+2) En la ventana para tarar boletos se habilitó el campo de "origen insumo" siempre cuando el ítem lo requiera.
+
+================================================================================
 2021-05-07, 1.0 071.2
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
