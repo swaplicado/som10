@@ -43,7 +43,7 @@ public class SRevueltaQuery {
             int result = database.connect(
                 (String) configXml.getAttribute(SUtilConfigXml.ATT_DB_HOST).getValue(),
                 (String) configXml.getAttribute(SUtilConfigXml.ATT_DB_PORT).getValue(),
-                "som_com", 
+                "som_com", //etla_com CARTRO
                 (String) configXml.getAttribute(SUtilConfigXml.ATT_USR_NAME).getValue(),
                 (String) configXml.getAttribute(SUtilConfigXml.ATT_USR_PSWD).getValue());
 
@@ -66,8 +66,9 @@ public class SRevueltaQuery {
     
     private static Connection openConnectionRevuelta() {
         ResultSet resultSet;
-        String revHost = "";
-        String revPort = "";
+        String revHost = ""; // 10.83.43.58 CARTRO
+        String revPort = ""; // 2638 CARTRO
+        
         try {
             Class.forName("com.sybase.jdbc3.jdbc.SybDriver").newInstance();
             resultSet = moSession.getStatement().executeQuery("SELECT rev_host, rev_port FROM cu_co;");

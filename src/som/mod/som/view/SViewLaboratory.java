@@ -38,6 +38,8 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
 
     private SGridFilterDatePeriod moFilterDatePeriod;
     private SPaneUserInputCategory moPaneFilterUserInputCategory;
+    private SPaneFilter moPaneFilterInputCategory;
+    private SPaneFilter moPaneFilterItem;
     private JButton mjbPrint;
 
     public SViewLaboratory(SGuiClient client, int gridSubtype, String title) {
@@ -51,12 +53,17 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
         moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
         moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
         moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_LAB, "it");
+        moPaneFilterInputCategory = new SPaneFilter(this, SModConsts.SU_INP_CT);
+        moPaneFilterItem = new SPaneFilter(this, SModConsts.SU_ITEM);
+        moPaneFilterItem.initFilter(null);
 
         mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
 
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterInputCategory);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterItem);
     }
 
     private boolean isSummary() {
@@ -93,21 +100,31 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
     
     @Override
     public void prepareSqlQuery() {
-        String sql = "";
+        String sqlWhere = "";
         Object filter;
 
         moPaneSettings = new SGridPaneSettings(isSummary() ? 1 : 2);
         moPaneSettings.setUserInsertApplying(true);
         moPaneSettings.setUserUpdateApplying(true);
 
-        sql += (sql.isEmpty() ? "" : "AND ") + "v.b_del = 0 ";
+        sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + "v.b_del = 0 ";
 
         filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
-        sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt", (SGuiDate) filter);
+        sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt", (SGuiDate) filter);
         
         String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
         if(!sqlFilter.isEmpty()) {
-            sql += (sql.isEmpty() ? "" : "AND ") + sqlFilter;
+            sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + sqlFilter;
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_INP_CT);
+        if (filter != null) {
+            sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "it.fk_inp_ct" }, (int[]) filter);
+        }
+
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_ITEM);
+        if (filter != null) {
+            sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_item" }, (int[]) filter);
         }
         
         msSql = "SELECT ";
@@ -197,7 +214,7 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
                 + "v.fk_usr_upd = uu.id_usr "
-                + (sql.isEmpty() ? "" : "WHERE " + sql);
+                + (sqlWhere.isEmpty() ? "" : "WHERE " + sqlWhere);
 
         if (isSummary()) {
             msSql += "GROUP BY v.num, vt.id_lab ";
