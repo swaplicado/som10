@@ -4,8 +4,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import javax.mail.MessagingException;
 import sa.lib.SLibConsts;
@@ -940,9 +942,21 @@ public class SSomMailUtils {
                     sql = "SELECT * FROM s_cli_umn_log WHERE b_sent ORDER BY id DESC LIMIT 1;";
                     resultSet = statement.executeQuery(sql);
                     if (resultSet.next()) {
-                        long days = SLibTimeUtils.getDaysDiff(dateStart, resultSet.getDate("ts_exe"));
-                        if (days >= daysToSendMail) {
-                            message = "(No hay recibos de semillas desde hace al menos " + daysToSendMail + " días.)";
+                        long daysLastMailSent = SLibTimeUtils.getDaysDiff(dateStart, resultSet.getDate("ts_exe"));
+                        if (daysLastMailSent >= daysToSendMail) {
+                            Statement statementAux = session.getDatabase().getConnection().createStatement();
+                            ResultSet resultSetAux;
+                            sql = "SELECT * FROM s_cli_umn_log WHERE b_data ORDER BY id DESC LIMIT 1;";
+                            resultSetAux = statementAux.executeQuery(sql);
+                            Date lastReception = null;
+                            if (resultSetAux.next()) {
+                                lastReception = resultSetAux.getDate("ts_exe");
+                            }
+                            Calendar c = Calendar.getInstance();
+                            c.setTime(lastReception);
+                            String dayOfWeek = getDayOfWeek(c.get(Calendar.DAY_OF_WEEK)); 
+                            long daysLastReception = SLibTimeUtils.getDaysDiff(dateStart, lastReception);
+                            message = "(Van " + daysLastReception + " días sin recepciones de semillas, desde el " + dayOfWeek + " " + SLibUtils.DateFormatDate.format(lastReception) + ".)";
                             count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo);
                             sent = true;
                         }
@@ -1004,5 +1018,19 @@ public class SSomMailUtils {
                 SGuiClientApp.APP_RELEASE +
                 "</font>" +
                 "</p>";
+    }
+    
+    private static String getDayOfWeek(int i) {
+        String day = "";
+        switch (i) {
+            case 1 : day = "domingo"; break;
+            case 2 : day = "lunes"; break;
+            case 3 : day = "martes"; break;
+            case 4 : day = "miercoles"; break;
+            case 5 : day = "jueves"; break;
+            case 6 : day = "viernes"; break;
+            case 7 : day = "sabado"; break;
+        }
+        return day;
     }
 }

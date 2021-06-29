@@ -36,7 +36,7 @@ public class SCliReportMailerSeedReceptions {
         try {
             
             int daysToSendMail = DAYS_TO_SEND_MAIL;
-            String mailTo = "";
+            String mailTo = "isabel.garcia@swaplicado.com.mx;sflores@swaplicado.com.mx";
             
             if (args.length >= 1) {
                 daysToSendMail = Integer.parseInt(args[ARG_DAYS_TO_SEND_MAIL]);
