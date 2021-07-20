@@ -32,6 +32,7 @@ public abstract class SModSysConsts {
     public static final int CS_RIG_SUP_SCA = 9 ;// scale supervisor
     public static final int CS_RIG_SCA = 10;    // scale operator
     public static final int CS_RIG_PER_OC = 11; // periods opening and closing
+    public static final int CS_RIG_DIS_RM = 12; // discharge raw materials
 
     public static final int CU_LAN_SPA = 1;
     public static final int CU_LAN_ENG = 2;
@@ -43,6 +44,9 @@ public abstract class SModSysConsts {
     public static final int SS_TIC_ST_SCA = 1;
     public static final int SS_TIC_ST_LAB = 2;
     public static final int SS_TIC_ST_ADM = 3;
+    
+    public static final int SS_TIC_WAH_UNLD_N_ASIGNED = 1;
+    public static final int SS_TIC_WAH_UNLD_ASIGNED = 2;
 
     public static final int SS_IOG_CT_IN = 1;
     public static final int SS_IOG_CT_OUT = 2;

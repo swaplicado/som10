@@ -35,6 +35,7 @@ import som.mod.som.db.SDbSeasonProducer;
 import som.mod.som.db.SDbSeasonRegion;
 import som.mod.som.db.SDbSupraRegion;
 import som.mod.som.db.SDbTicket;
+import som.mod.som.db.SDbWarehouseStart;
 import som.mod.som.form.SDialogRepFreightTime;
 import som.mod.som.form.SDialogRepFruitYieldByOrigin;
 import som.mod.som.form.SDialogRepIodineRank;
@@ -54,7 +55,10 @@ import som.mod.som.form.SFormSupraRegion;
 import som.mod.som.form.SFormTicket;
 import som.mod.som.form.SFormTicketMgmt;
 import som.mod.som.form.SFormTicketSeasonRegion;
+import som.mod.som.form.SFormTicketWahUnld;
+import som.mod.som.form.SFormWarehouseStart;
 import som.mod.som.view.SViewLaboratory;
+import som.mod.som.view.SViewOilMoiPond;
 import som.mod.som.view.SViewRegion;
 import som.mod.som.view.SViewSeason;
 import som.mod.som.view.SViewSeasonProducer;
@@ -62,10 +66,12 @@ import som.mod.som.view.SViewSeasonRegion;
 import som.mod.som.view.SViewSupraRegion;
 import som.mod.som.view.SViewTicket;
 import som.mod.som.view.SViewTicketTare;
+import som.mod.som.view.SViewTicketWahUnld;
 import som.mod.som.view.SViewTicketsLaboratoryTestFruit;
 import som.mod.som.view.SViewTicketsLog;
 import som.mod.som.view.SViewTicketsSupplierItem;
 import som.mod.som.view.SViewTicketsSupplierItemInputType;
+import som.mod.som.view.SViewWarehouseStart;
 
 /**
  * 
@@ -98,6 +104,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjTicTicketAll;
     private JMenuItem mjTicTarePend;
     private JMenuItem mjTicTare;
+    private JMenuItem mjTicWahNAsigned;
+    private JMenuItem mjTicWahAsigned;
     private JMenuItem mjTicManSupplierItem;
     private JMenuItem mjTicManSupplierInputType;
     private JMenuItem mjTicRank;
@@ -106,6 +114,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjQaLabTest;
     private JMenuItem mjQaLabTestDet;
     private JMenuItem mjQaTicketLabTestDetFruit;
+    private JMenuItem mjQaWahStart;
+    private JMenuItem mjQaOilMoiPond;
     private JMenu mjRep;   // Reports
     private JMenuItem mjRepSeedReceived;
     private JMenuItem mjRepSeedReceivedFruit;
@@ -126,6 +136,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private SFormLaboratory moFormLaboratory;
     private SFormTicket moFormTicket;
     private SFormTicket moFormTicketTare;
+    private SFormWarehouseStart moFormWarehouseStart;
+    private SFormTicketWahUnld moFormTicketWahUnld;
     private SFormTicketMgmt moFormTicketMgmt;
     private SFormTicketSeasonRegion moFormTicketSeasonRegion;
     private SFormSeasonRegion moFormSeasonRegion;
@@ -210,6 +222,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicTicketAll = new JMenuItem("Boletos (todos)");
         mjTicTarePend = new JMenuItem("Boletos por tarar");
         mjTicTare = new JMenuItem("Boletos tarados");
+        mjTicWahNAsigned = new JMenuItem("Boletos por descargar");
+        mjTicWahAsigned = new JMenuItem("Boletos descargados");
         mjTicManSupplierItem = new JMenuItem("Boletos por proveedor por ítem");
         mjTicManSupplierInputType = new JMenuItem("Boletos por proveedor por tipo de insumo");
         mjTicRank = new JMenuItem("Clasificar boletos sin temporada y/o región...");
@@ -222,6 +236,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTic.addSeparator();
         mjTic.add(mjTicTarePend);
         mjTic.add(mjTicTare);
+        mjTic.addSeparator();
+        mjTic.add(mjTicWahNAsigned);
+        mjTic.add(mjTicWahAsigned);
         mjTic.addSeparator();
         mjTic.add(mjTicManSupplierItem);
         mjTic.add(mjTicManSupplierInputType);
@@ -236,6 +253,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicTicketAll.addActionListener(this);
         mjTicTarePend.addActionListener(this);
         mjTicTare.addActionListener(this);
+        mjTicWahNAsigned.addActionListener(this);
+        mjTicWahAsigned.addActionListener(this);
         mjTicManSupplierItem.addActionListener(this);
         mjTicManSupplierInputType.addActionListener(this);
         mjTicRank.addActionListener(this);
@@ -245,15 +264,22 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjQaLabTest = new JMenuItem("Análisis de laboratorio");
         mjQaLabTestDet = new JMenuItem("Análisis de laboratorio a detalle");
         mjQaTicketLabTestDetFruit = new JMenuItem("Boletos fruta y análisis de laboratorio");
+        mjQaWahStart = new JMenuItem("Fechas de inicio de almacenes");
+        mjQaOilMoiPond = new JMenuItem("Cálculo ponderado aceite y humedad");
 
         mjQa.add(mjQaLabTest);
         mjQa.add(mjQaLabTestDet);
         mjQa.addSeparator();
         mjQa.add(mjQaTicketLabTestDetFruit);
+        mjQa.addSeparator();
+        mjQa.add(mjQaWahStart);
+        mjQa.add(mjQaOilMoiPond);
 
         mjQaLabTest.addActionListener(this);
         mjQaLabTestDet.addActionListener(this);
         mjQaTicketLabTestDetFruit.addActionListener(this);
+        mjQaWahStart.addActionListener(this);
+        mjQaOilMoiPond.addActionListener(this);
 
         mjRep = new JMenu("Reportes");
         mjRepSeedReceived = new JMenuItem("Materia prima recibida...");
@@ -313,12 +339,16 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicTicketAll.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
         mjTicTarePend.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SUP_SCA }));
         mjTicTare.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SUP_SCA }));
+        mjTicWahNAsigned.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
+        mjTicWahAsigned.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
         mjTicManSupplierItem.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
         mjTicManSupplierInputType.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
         mjTicRank.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
         mjTicSearch.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_SCA, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_REP_RM }));
 
-        mjQa.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB }));
+        mjQa.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
+        mjQaWahStart.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
+        mjQaOilMoiPond.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
 
         mjRep.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
     }
@@ -367,9 +397,13 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.S_LAB_TEST:
                 registry = new SDbLaboratoryTest();
                 break;
+            case SModConsts.S_WAH_START:
+                registry = new SDbWarehouseStart();
+                break;
             case SModConsts.S_TIC:
             case SModConsts.SX_TIC_LAB:
             case SModConsts.SX_TIC_TARE:
+            case SModConsts.SX_TIC_WAH_UNLD:
             case SModConsts.SX_TIC_MAN:
             case SModConsts.SX_TIC_SEAS_REG:
                 registry = new SDbTicket();
@@ -499,6 +533,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
                 }
                 break;
+            case SModConsts.S_WAH_START:
+                view = new SViewWarehouseStart(miClient, "Fechas inicio almacenes");
+                break;
             case SModConsts.SX_TIC_MAN_SUP:
                 view = new SViewTicketsSupplierItem(miClient, "Boletos x proveedor x ítem");
                 break;
@@ -534,6 +571,19 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                     default:
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
                 }
+                break;
+            case SModConsts.SX_TIC_WAH_UNLD:
+                switch (subtype) {
+                    case SModSysConsts.SS_TIC_WAH_UNLD_N_ASIGNED:
+                        view = new SViewTicketWahUnld(miClient, subtype, "Boletos por descargar");
+                        break;
+                    case SModSysConsts.SS_TIC_WAH_UNLD_ASIGNED:
+                        view = new SViewTicketWahUnld(miClient, subtype, "Boletos descargados");
+                        break;
+                }
+                break;
+            case SModConsts.SX_QA_OIL_MOI_POND:
+                view = new SViewOilMoiPond(miClient, "Aceite y humedad ponderado");
                 break;
             case SModConsts.SX_TIC_LOG:
                 view = new SViewTicketsLog(miClient, "Bitácora boletos");
@@ -586,6 +636,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 if (moFormTicket == null) moFormTicket = new SFormTicket(miClient, "Boleto", SLibConsts.UNDEFINED);
                 form = moFormTicket;
                 break;
+            case SModConsts.S_WAH_START:
+                if (moFormWarehouseStart == null) moFormWarehouseStart = new SFormWarehouseStart(miClient, "Inicio de almacén");
+                form = moFormWarehouseStart;
+                break;
             case SModConsts.SX_TIC_LAB:
                 if (moFormLaboratory == null) moFormLaboratory = new SFormLaboratory(miClient, "Análisis de laboratorio");
                 form = moFormLaboratory;
@@ -593,6 +647,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SX_TIC_TARE:
                 if (moFormTicketTare == null) moFormTicketTare = new SFormTicket(miClient, "Boleto", SModConsts.SX_TIC_TARE_PEND);
                 form = moFormTicketTare;
+                break;
+            case SModConsts.SX_TIC_WAH_UNLD:
+                if (moFormTicketWahUnld == null) moFormTicketWahUnld = new SFormTicketWahUnld(miClient, "Boleto almacén");
+                form = moFormTicketWahUnld;
                 break;
             case SModConsts.SX_TIC_MAN:
                 if (moFormTicketMgmt == null) moFormTicketMgmt = new SFormTicketMgmt(miClient, "Boleto");
@@ -736,6 +794,12 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             else if (menuItem == mjTicTare) {
                 showView(SModConsts.SX_TIC_TARE, SModConsts.SX_TIC_TARE, null);
             }
+            else if (menuItem == mjTicWahNAsigned) {
+                showView(SModConsts.SX_TIC_WAH_UNLD, SModSysConsts.SS_TIC_WAH_UNLD_N_ASIGNED, null);
+            }
+            else if (menuItem == mjTicWahAsigned) {
+                showView(SModConsts.SX_TIC_WAH_UNLD, SModSysConsts.SS_TIC_WAH_UNLD_ASIGNED, null);
+            }
             else if (menuItem == mjQaLabTest) {
                 showView(SModConsts.S_LAB, SModSysConsts.SX_LAB_TEST, null);
             }
@@ -744,6 +808,12 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjQaTicketLabTestDetFruit) {
                 showView(SModConsts.SX_TIC_LAB_TEST_FRUIT, 0, null);
+            }
+            else if (menuItem == mjQaWahStart) {
+                showView(SModConsts.S_WAH_START, 0, null);
+            }
+            else if (menuItem == mjQaOilMoiPond) {
+                showView(SModConsts.SX_QA_OIL_MOI_POND, 0, null);
             }
             else if (menuItem == mjTicManSupplierItem) {
                 showView(SModConsts.SX_TIC_MAN_SUP, SLibConsts.UNDEFINED, null);

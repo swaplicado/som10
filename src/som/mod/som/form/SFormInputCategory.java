@@ -16,7 +16,7 @@ import som.mod.som.db.SDbInputCategory;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
 public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
 
@@ -24,6 +24,8 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
 
     /**
      * Creates new form SFormInputClass
+     * @param client
+     * @param title
      */
     public SFormInputCategory(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_INP_CT, SLibConsts.UNDEFINED, title);
@@ -49,11 +51,13 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
         jPanel5 = new javax.swing.JPanel();
         jlName = new javax.swing.JLabel();
         moTextName = new sa.lib.gui.bean.SBeanFieldText();
+        jPanel6 = new javax.swing.JPanel();
+        jchWarehouseRequired = new javax.swing.JCheckBox();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -78,6 +82,14 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel5);
 
+        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jchWarehouseRequired.setText("Almacén de descarga requerido");
+        jchWarehouseRequired.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel6.add(jchWarehouseRequired);
+
+        jPanel2.add(jPanel6);
+
         jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -88,6 +100,8 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JCheckBox jchWarehouseRequired;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlName;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
@@ -141,6 +155,7 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
 
         moTextName.setValue(moRegistry.getName());
         moTextCode.setValue(moRegistry.getCode());
+        jchWarehouseRequired.setSelected(moRegistry.isWareouseUnloadRequired());
 
         setFormEditable(true);
 
@@ -155,6 +170,7 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
 
         registry.setName(moTextName.getValue());
         registry.setCode(moTextCode.getValue());
+        registry.setWareouseUnloadRequired(jchWarehouseRequired.isSelected());
 
         return registry;
     }

@@ -1,4 +1,12 @@
 ================================================================================
+2021-07-20, 1.0 072.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó la funcionalidad de poder asignar un almacén a los boletos cuya categoría de ítem este configurada para hacerlo.
+2) Se agregó la vista de "Fechas de inicio de almacenes" para indicar en que fecha se inicia el cálculo de aceite y humedad ponderados.
+3) Se agregó la vista de "Cálculo de aceite y humedad ponderado" que muestra los resultados ponderados de aceite y humedad de un almacén en fechas definidas.
+
+================================================================================
 2021-06-29, 1.0 071.5
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

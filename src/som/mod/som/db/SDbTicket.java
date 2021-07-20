@@ -94,6 +94,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected boolean mbAssorted;
     protected boolean mbPacking;
     protected boolean mbLaboratory;
+    protected boolean mbWarehouseUnloadRequired;
     protected boolean mbDpsSupply;
     /*
     protected boolean mbDeleted;
@@ -108,6 +109,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected int mnFkProducerId;
     protected int mnFkInputSourceId;
     protected int mnFkLaboratoryId_n;
+    protected int mnFkWarehouseUnloadCompanyId_n;
+    protected int mnFkWarehouseUnloadBranchId_n;
+    protected int mnFkWarehouseUnloadWarehouseId_n;
     protected int mnFkExternalDpsYearId_n;
     protected int mnFkExternalDpsDocId_n;
     protected int mnFkExternalDpsEntryId_n;
@@ -294,6 +298,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setAssorted(boolean b) { mbAssorted = b; }
     public void setPacking(boolean b) { mbPacking = b; }
     public void setLaboratory(boolean b) { mbLaboratory = b; }
+    public void setWarehouseUnloadRequired(boolean b) { mbWarehouseUnloadRequired = b; }
     public void setDpsSupply(boolean b) { mbDpsSupply = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
@@ -306,6 +311,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setFkProducerId(int n) { mnFkProducerId = n; }
     public void setFkInputSourceId(int n) { mnFkInputSourceId = n; }
     public void setFkLaboratoryId_n(int n) { mnFkLaboratoryId_n = n; }
+    public void setFkWarehouseUnloadCompanyId_n(int n) { mnFkWarehouseUnloadCompanyId_n = n; }
+    public void setFkWarehouseUnloadBranchId_n(int n) { mnFkWarehouseUnloadBranchId_n = n; }
+    public void setFkWarehouseUnloadWarehouseId_n(int n) { mnFkWarehouseUnloadWarehouseId_n = n; }
     public void setFkExternalDpsYearId_n(int n) { mnFkExternalDpsYearId_n = n; }
     public void setFkExternalDpsDocId_n(int n) { mnFkExternalDpsDocId_n = n; }
     public void setFkExternalDpsEntryId_n(int n) { mnFkExternalDpsEntryId_n = n; }
@@ -363,6 +371,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public boolean isAssorted() { return mbAssorted; }
     public boolean isPacking() { return mbPacking; }
     public boolean isLaboratory() { return mbLaboratory; }
+    public boolean isWarehouseUnloadRequired() { return mbWarehouseUnloadRequired; }
     public boolean isDpsSupply() { return mbDpsSupply; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
@@ -375,6 +384,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public int getFkProducerId() { return mnFkProducerId; }
     public int getFkInputSourceId() { return mnFkInputSourceId; }
     public int getFkLaboratoryId_n() { return mnFkLaboratoryId_n; }
+    public int getFkWarehouseUnloadCompanyId_n() { return mnFkWarehouseUnloadCompanyId_n; }
+    public int getFkWarehouseUnloadBranchId_n() { return mnFkWarehouseUnloadBranchId_n; }
+    public int getFkWarehouseUnloadWarehouseId_n() { return mnFkWarehouseUnloadWarehouseId_n; }
     public int getFkExternalDpsYearId_n() { return mnFkExternalDpsYearId_n; }
     public int getFkExternalDpsDocId_n() { return mnFkExternalDpsDocId_n; }
     public int getFkExternalDpsEntryId_n() { return mnFkExternalDpsEntryId_n; }
@@ -492,6 +504,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mbAssorted = false;
         mbPacking = false;
         mbLaboratory = false;
+        mbWarehouseUnloadRequired = false;
         mbDpsSupply = false;
         mbDeleted = false;
         mbSystem = false;
@@ -504,6 +517,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mnFkProducerId = 0;
         mnFkInputSourceId = 0;
         mnFkLaboratoryId_n = 0;
+        mnFkWarehouseUnloadCompanyId_n = 0;
+        mnFkWarehouseUnloadBranchId_n = 0;
+        mnFkWarehouseUnloadWarehouseId_n = 0;
         mnFkExternalDpsYearId_n = 0;
         mnFkExternalDpsDocId_n = 0;
         mnFkExternalDpsEntryId_n = 0;
@@ -647,6 +663,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mbAssorted = resultSet.getBoolean("t.b_ass");
             mbPacking = resultSet.getBoolean("t.b_paq");
             mbLaboratory = resultSet.getBoolean("t.b_lab");
+            mbWarehouseUnloadRequired = resultSet.getBoolean("b_wah_unld_req");
             mbDpsSupply = resultSet.getBoolean("b_dps");
             mbDeleted = resultSet.getBoolean("t.b_del");
             mbSystem = resultSet.getBoolean("t.b_sys");
@@ -659,6 +676,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mnFkProducerId = resultSet.getInt("t.fk_prod");
             mnFkInputSourceId = resultSet.getInt("t.fk_inp_src");
             mnFkLaboratoryId_n = resultSet.getInt("t.fk_lab_n");
+            mnFkWarehouseUnloadCompanyId_n = resultSet.getInt("fk_wah_unld_co_n");
+            mnFkWarehouseUnloadBranchId_n = resultSet.getInt("fk_wah_unld_cob_n");
+            mnFkWarehouseUnloadWarehouseId_n = resultSet.getInt("fk_wah_unld_wah_n");
             mnFkExternalDpsYearId_n = resultSet.getInt("t.fk_ext_dps_year_n");
             mnFkExternalDpsDocId_n = resultSet.getInt("t.fk_ext_dps_doc_n");
             mnFkExternalDpsEntryId_n = resultSet.getInt("t.fk_ext_dps_ety_n");
@@ -772,6 +792,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
+            
+            SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int [] { mnFkItemId }); 
+            SDbInputCategory inpCat = (SDbInputCategory) session.readRegistry(SModConsts.SU_INP_CT, new int[] { item.getFkInputCategoryId() });
+            mbWarehouseUnloadRequired = inpCat.isWareouseUnloadRequired();
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkTicketId + ", " +
@@ -817,6 +841,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     (mbAssorted ? 1 : 0) + ", " +
                     (mbPacking ? 1 : 0) + ", " +
                     (mbLaboratory ? 1 : 0) + ", " +
+                    (mbWarehouseUnloadRequired ? 1 : 0) + ", " + 
                     (mbDpsSupply ? 1 : 0) + ", " +
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
@@ -829,6 +854,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     mnFkProducerId + ", " +
                     mnFkInputSourceId + ", " + 
                     (mnFkLaboratoryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkLaboratoryId_n) + ", " +
+                    (mnFkWarehouseUnloadCompanyId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadBranchId_n) + ", " + 
+                    (mnFkWarehouseUnloadBranchId_n == SLibConsts.UNDEFINED  ? "NULL" : mnFkWarehouseUnloadCompanyId_n) + ", " + 
+                    (mnFkWarehouseUnloadWarehouseId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadWarehouseId_n) + ", " + 
                     (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
                     (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
@@ -893,6 +921,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "b_ass = " + (mbAssorted ? 1 : 0) + ", " +
                     "b_paq = " + (mbPacking ? 1 : 0) + ", " +
                     "b_lab = " + (mbLaboratory ? 1 : 0) + ", " +
+                    "b_wah_unld_req = " + (mbWarehouseUnloadRequired ? 1 : 0) + ", " +
                     "b_dps = " + (mbDpsSupply ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
@@ -905,6 +934,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "fk_prod = " + mnFkProducerId + ", " +
                     "fk_inp_src = " + mnFkInputSourceId + ", " +
                     "fk_lab_n = " + (mnFkLaboratoryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkLaboratoryId_n) + ", " +
+                    "fk_wah_unld_co_n = " + (mnFkWarehouseUnloadCompanyId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadBranchId_n) + ", " + 
+                    "fk_wah_unld_cob_n = " + (mnFkWarehouseUnloadBranchId_n == SLibConsts.UNDEFINED  ? "NULL" : mnFkWarehouseUnloadCompanyId_n) + ", " +
+                    "fk_wah_unld_wah_n = " + (mnFkWarehouseUnloadWarehouseId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadWarehouseId_n) + ", " +
                     "fk_ext_dps_year_n = " + (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     "fk_ext_dps_doc_n = " + (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
                     "fk_ext_dps_ety_n = " + (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
@@ -1003,6 +1035,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setAssorted(this.isAssorted());
         registry.setPacking(this.isPacking());
         registry.setLaboratory(this.isLaboratory());
+        registry.setWarehouseUnloadRequired(this.isWarehouseUnloadRequired());
         registry.setDpsSupply(this.isDpsSupply());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
@@ -1015,6 +1048,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setFkProducerId(this.getFkProducerId());
         registry.setFkInputSourceId(this.getFkInputSourceId());
         registry.setFkLaboratoryId_n(this.getFkLaboratoryId_n());
+        registry.setFkWarehouseUnloadCompanyId_n(this.getFkWarehouseUnloadCompanyId_n());
+        registry.setFkWarehouseUnloadBranchId_n(this.getFkWarehouseUnloadBranchId_n());
+        registry.setFkWarehouseUnloadWarehouseId_n(this.getFkWarehouseUnloadWarehouseId_n());
         registry.setFkExternalDpsYearId_n(this.getFkExternalDpsYearId_n());
         registry.setFkExternalDpsDocId_n(this.getFkExternalDpsDocId_n());
         registry.setFkExternalDpsEntryId_n(this.getFkExternalDpsEntryId_n());
