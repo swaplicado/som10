@@ -793,8 +793,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
-            SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int [] { mnFkItemId }); 
-            SDbInputCategory inpCat = (SDbInputCategory) session.readRegistry(SModConsts.SU_INP_CT, new int[] { item.getFkInputCategoryId() });
+            SDbItem item = new SDbItem();
+            item.read(session, new int [] { mnFkItemId });
+            SDbInputCategory inpCat = new SDbInputCategory(); 
+            inpCat.read(session, new int[] { item.getFkInputCategoryId() });
             mbWarehouseUnloadRequired = inpCat.isWareouseUnloadRequired();
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
