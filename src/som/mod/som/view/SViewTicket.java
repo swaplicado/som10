@@ -479,6 +479,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "reg.name, "
                 + "lab.num, "
                 + "lab.dt, "
+                + "w.code, "
+                + "w.name, "
                 + "if (lab.b_done, " + SGridConsts.ICON_OK + ", " + SGridConsts.ICON_NULL + ") AS _lab_done, "
                 + "COALESCE(seareg.prc_ton, 0.0) AS _prc_ton_reg, "
                 + "COALESCE(seaprd.prc_ton, 0.0) AS _prc_ton_prd, "
@@ -522,13 +524,15 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.fk_seas_n = seareg.id_seas AND v.fk_reg_n = seareg.id_reg AND v.fk_item = seareg.id_item "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_PROD) + " AS seaprd ON "
                 + "v.fk_seas_n = seaprd.id_seas AND v.fk_reg_n = seaprd.id_reg AND v.fk_item = seaprd.id_item AND v.fk_prod = seaprd.id_prod "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS w ON " 
+                + "v.fk_wah_unld_co_n = w.id_co AND v.fk_wah_unld_cob_n = w.id_cob AND v.fk_wah_unld_wah_n = w.id_wah "                
                 + (sqlWhere.isEmpty() ? "" : "WHERE " + sqlWhere)
                 + "ORDER BY sca.code, sca.id_sca, v.num, v.id_tic ";
     }
 
     @Override
     public void createGridColumns() {
-        int cols = 41;
+        int cols = 43;
 
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
@@ -608,6 +612,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         columns[col++].setSumApplying(true);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_1", "1a pesada Revuelta");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_2", "2a pesada Revuelta");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "w.name", "Almacén descarga");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "w.code", "Almacén descarga código");
 
         if (mnGridSubtype == SModSysConsts.SS_TIC_ST_ADM) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "_prc_ton_reg", "Precio ton reg $");

@@ -7,137 +7,46 @@ package som.mod.som.view;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import sa.lib.SLibConsts;
-import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
 import sa.lib.grid.SGridConsts;
-import sa.lib.grid.SGridFilterDateCutOff;
 import sa.lib.grid.SGridFilterDatePeriod;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
-import sa.lib.grid.SGridRowView;
 import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiDate;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
-import som.mod.som.db.SDbTicket;
 import som.mod.som.db.SSomConsts;
-import som.mod.som.db.SSomMailUtils;
-import som.mod.som.form.SDialogMailReceptions;
 
 /**
- *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
+ * Vista de boletos que tienen o no tienen almacén asignado.
+ * @author Isabel Servín
  */
-public class SViewTicketTare extends SGridPaneView implements ActionListener {
+public class SViewTicketWahUnld extends SGridPaneView implements ActionListener {
 
     private SGridFilterDatePeriod moFilterDatePeriod;
-    private SGridFilterDateCutOff moFilterDateCutOff;
-    private SPaneUserInputCategory moPaneFilterUserInputCategory;
-
-    private JButton jbTicketTare;
-    private JButton jbMailReceptions;
-
-    private SDialogMailReceptions moDialogDailyMail;
-
-    public SViewTicketTare(SGuiClient client, int gridSubtype, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_TIC_TARE, gridSubtype, title);
-        setRowButtonsEnabled(false, gridSubtype == SModConsts.SX_TIC_TARE_PEND, false, false, false);
-        initComponentsCustom();
+    
+    public SViewTicketWahUnld(SGuiClient client, int gridSubtype, String title) {
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_TIC_WAH_UNLD, gridSubtype, title);
+        setRowButtonsEnabled(false, true, false, false, false);
+        initComponetsCustom();
     }
 
-    private void initComponentsCustom() {
-        jbTicketTare = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tar_not.gif")), "Destarar boleto", this);
-        jbMailReceptions = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mail.gif")), "Enviar mail de recepciones del día o período", this);
-        moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "itm");
-        moDialogDailyMail = new SDialogMailReceptions(miClient, SModConsts.SX_DAY_MAIL, "Recepciones del día");
-
-        switch (mnGridSubtype) {
-            case SModConsts.SX_TIC_TARE:
+    private void initComponetsCustom() {
+       switch (mnGridSubtype) {
+            case SModSysConsts.SS_TIC_WAH_UNLD_ASIGNED:
                 moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
                 moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
-                getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbTicketTare);
-                getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbMailReceptions);
-                break;
-            case SModConsts.SX_TIC_TARE_PEND:
-                moFilterDateCutOff = new SGridFilterDateCutOff(miClient, this);
-                moFilterDateCutOff.initFilter(null);
-                getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDateCutOff);
                 break;
             default:
-                miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
-        }
-
-        jbTicketTare.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
-    }
-
-    private void actionTicketTare() {
-        SDbTicket ticket;
-        SGridRowView gridRow;
-
-        if (jbTicketTare.isEnabled()) {
-            if (jtTable.getSelectedRowCount() != 1) {
-                miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
-            }
-            else {
-                gridRow = (SGridRowView) getSelectedGridRow();
-
-                if (gridRow.getRowType() != SGridConsts.ROW_TYPE_DATA) {
-                    miClient.showMsgBoxWarning(SGridConsts.ERR_MSG_ROW_TYPE_DATA);
-                }
-                else if (gridRow.isRowSystem()) {
-                    miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_IS_SYSTEM);
-                }
-                else if (!gridRow.isUpdatable()) {
-                    miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_NON_UPDATABLE);
-                }
-                else {
-                    ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
-
-                    if (ticket.getFkTicketStatusId() < SModSysConsts.SS_TIC_ST_ADM) {
-                        if (miClient.showMsgBoxConfirm("¿Está seguro(a) que desea destarar el boleto?") == JOptionPane.YES_OPTION) {
-                            miClient.getSession().saveField(SModConsts.S_TIC, gridRow.getRowPrimaryKey(), SDbTicket.FIELD_TARED, false);
-
-                            miClient.getSession().notifySuscriptors(mnGridType);
-                            miClient.getSession().notifySuscriptors(mnGridSubtype);
-                            miClient.getSession().notifySuscriptors(SModConsts.S_TIC);
-                            miClient.getSession().notifySuscriptors(SModConsts.SX_TIC_MAN);
-                            miClient.getSession().notifySuscriptors(SModConsts.SX_TIC_MAN_SUP);
-                        }
-                    }
-                    else {
-                        miClient.showMsgBoxWarning("Es necesario que el boleto esté con estatus en báscula o en laboratorio.");
-                    }
-                }
-            }
         }
     }
 
-    private void actionMailReceptions() {
-        if (jbMailReceptions.isEnabled()) {
-            moDialogDailyMail.setFormReset();
-            moDialogDailyMail.setVisible(true);
-            
-            if (moDialogDailyMail.getFormResult() == SGuiConsts.FORM_RESULT_OK) {
-                try {
-                    int count = SSomMailUtils.computeMailReceptions(miClient.getSession(), moDialogDailyMail.getDateStart(), moDialogDailyMail.getDateEnd(), false, 0, "");
-                    miClient.showMsgBoxInformation(SLibConsts.MSG_PROCESS_FINISHED + "\nMails enviados: " + SLibUtils.DecimalFormatInteger.format(count) + ".");
-                }
-                catch (Exception e) {
-                    SLibUtils.printException(this, e);
-                }
-            }
-        }
-    }
-    
     @Override
     public void prepareSqlQuery() {
         Object filter;
@@ -157,36 +66,30 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         }
 
         switch (mnGridSubtype) {
-            case SModConsts.SX_TIC_TARE:
+            case SModSysConsts.SS_TIC_WAH_UNLD_N_ASIGNED:
+                break;
+                
+            case SModSysConsts.SS_TIC_WAH_UNLD_ASIGNED:
                 filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
-                sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt", (SGuiDate) filter);
-                break;
-                
-            case SModConsts.SX_TIC_TARE_PEND:
-                filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE);
                 if (filter != null) {
-                    sql += (sql.length() == 0 ? "" : "AND ") + " v.dt <= '" + SLibUtils.DbmsDateFormatDate.format((SGuiDate) filter) + "' ";
+                    sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt", (SGuiDate) filter);
                 }
-                break;
-                
+            break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
-
+        
         switch (mnGridSubtype) {
-            case SModConsts.SX_TIC_TARE:
-                sql += (sql.isEmpty() ? "" : "AND ") + "v.b_tar = 1 ";
+            case SModSysConsts.SS_TIC_WAH_UNLD_N_ASIGNED:
+                sql += (sql.isEmpty() ? "" : "AND ") + "v.b_wah_unld_req AND v.fk_wah_unld_co_n IS NULL AND v.fk_wah_unld_cob_n IS NULL AND v.fk_wah_unld_wah_n IS NULL ";
                 break;
-            case SModConsts.SX_TIC_TARE_PEND:
-                sql += (sql.isEmpty() ? "" : "AND ") + "v.b_tar = 0 ";
+            case SModSysConsts.SS_TIC_WAH_UNLD_ASIGNED:
+                sql += (sql.isEmpty() ? "" : "AND ") + "v.b_wah_unld_req AND v.fk_wah_unld_co_n IS NOT NULL AND v.fk_wah_unld_cob_n IS NOT NULL AND v.fk_wah_unld_wah_n IS NOT NULL ";
                 break;
             default:
         }
         
-        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
-        if(!sqlFilter.isEmpty()) {
-            sql += (sql.isEmpty() ? "" : "AND ") + sqlFilter;
-        }
+        
         
         msSql = "SELECT "
                 + "v.id_tic AS " + SDbConsts.FIELD_ID + "1, "
@@ -257,10 +160,10 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 + "sea.name, "
                 + "reg.id_reg, "
                 + "reg.name, "
-                + "w.code, "
-                + "w.name, "
                 + "lab.num, "
                 + "lab.dt, "
+                + "w.code, "
+                + "w.name, "
                 + "if (lab.b_done, " + SGridConsts.ICON_OK + ", " + SGridConsts.ICON_NULL + ") AS _lab_done, "
                 + "(v.pac_qty_arr * itm.paq_wei) AS _pac_wei_arr, "
                 + "(v.pac_emp_qty_arr * itm.paq_wei) AS _pac_emp_wei_arr, "
@@ -308,15 +211,6 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
     public void createGridColumns() {
         int cols = 43;
 
-        switch (mnGridSubtype) {
-            case SModConsts.SX_TIC_TARE:
-                cols += 3;
-                break;
-            case SModConsts.SX_TIC_TARE_PEND:
-                break;
-            default:
-        }
-
         int col = 0;
         SGridColumnView[] columns = new SGridColumnView[cols];
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca.code", "Báscula");
@@ -327,6 +221,8 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "prd.code", "Proveedor código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "itm.name", "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "itm.code", "Ítem código");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "w.name", "Almacén descarga");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "w.code", "Almacén descarga código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "tst.name", "Estatus boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "sea.name", "Temporada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "reg.name", "Región");
@@ -354,15 +250,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_net_r", "Carga destino neto (" + SSomConsts.KG + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_1", "1a pesada Revuelta");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_2", "2a pesada Revuelta");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "w.name", "Almacén descarga");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "w.code", "Almacén descarga código");
-        
-        if (mnGridSubtype == SModConsts.SX_TIC_TARE) {
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "lab.num", "Folio análisis lab");
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE,  "lab.dt", SGridConsts.COL_TITLE_DATE + " análisis lab");
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_ICON, "_lab_done", "Análisis lab terminado");
-        }
-        
+         
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
@@ -376,28 +264,25 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
     @Override
     public void defineSuscriptions() {
         moSuscriptionsSet.add(mnGridType);
-        moSuscriptionsSet.add(mnGridSubtype);
         moSuscriptionsSet.add(SModConsts.S_TIC);
         moSuscriptionsSet.add(SModConsts.SU_SCA);
-        moSuscriptionsSet.add(SModConsts.SU_SEAS);
-        moSuscriptionsSet.add(SModConsts.SU_REG);
         moSuscriptionsSet.add(SModConsts.SU_ITEM);
         moSuscriptionsSet.add(SModConsts.SU_PROD);
+        moSuscriptionsSet.add(SModConsts.SU_INP_SRC);
+        moSuscriptionsSet.add(SModConsts.SU_SEAS);
+        moSuscriptionsSet.add(SModConsts.SU_REG);
         moSuscriptionsSet.add(SModConsts.S_LAB);
+        moSuscriptionsSet.add(SModConsts.SX_TIC_TARE);
         moSuscriptionsSet.add(SModConsts.CU_USR);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() instanceof JButton) {
-            JButton button = (JButton) e.getSource();
+    public void actionMouseClicked() {
+        super.actionMouseClicked();
+    }
 
-            if (button == jbTicketTare) {
-                actionTicketTare();
-            }
-            else if (button == jbMailReceptions) {
-                actionMailReceptions();
-            }
-        }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        
     }
 }

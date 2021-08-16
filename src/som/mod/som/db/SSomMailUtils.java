@@ -4,8 +4,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import javax.mail.MessagingException;
 import sa.lib.SLibConsts;
@@ -35,7 +37,7 @@ public class SSomMailUtils {
     private static final int FONT_SIZE_TBL = 2;
     private static final String COLOR_INPUT_HDR = "#4169E1";
     private static final String COLOR_INPUT_FTR = "#FFD700";
-
+    
     /*
      * Private methods:
      */
@@ -335,6 +337,60 @@ public class SSomMailUtils {
         mail.send();
     }
     
+    private static int noInformationFound(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isByDate, 
+            final String subject, String message, final int year, final DecimalFormat formatPercentage, int count, String mailTo) throws Exception {
+        // If no information found:
+        String html;
+        String sql;
+        //================================================================================
+        // START OF SNIPPET HTML CODE #2 (Note: when modified, update aswell all snippets in this class!)
+
+        // Body header:
+        html =
+                "<font size='" + FONT_SIZE_TITLE + "'><b>" +
+                SLibUtils.textToHtml(((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getName()) + "<br>" +
+                SSomConsts.SOM_MAIL_MAN + SLibUtils.DateFormatDate.format(dateStart) + (isByDate ? "" : " al " + SLibUtils.DateFormatDate.format(dateEnd)) +
+                "</b></font>" +
+                "<br>" +
+                "<br>";
+
+        // END OF SNIPPET HTML CODE #2 (Note: when modified, update aswell all snippets in this class!)
+        //================================================================================
+
+        html +=
+                "<hr>" +
+                "<font size='" + (FONT_SIZE_TITLE - 1) + "'><b>" +
+                SLibUtils.textToHtml(message) +
+                "</b></font>" +
+                "<br>" +
+                "<br>";
+
+        if (mailTo.isEmpty()) {
+            sql = "SELECT DISTINCT i.umn_box " +
+                    "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i " +
+                    "WHERE i.b_umn = 1 AND i.b_del = 0 " +
+                    "ORDER BY i.umn_box ";
+            ResultSet resultSet = session.getStatement().executeQuery(sql);
+            while (resultSet.next()) {
+                sendMailReceptions(session, subject, html, resultSet.getString("i.umn_box"), false,
+                        isByDate, dateStart, dateEnd, year, formatPercentage,
+                        "", "", "", 0, "", null, "",
+                        0, 0, 0, 0,
+                        0, 0, 0, 0);
+                count++;
+            }
+        }
+        else {
+            sendMailReceptions(session, subject, html, mailTo, false,
+                    isByDate, dateStart, dateEnd, year, formatPercentage,
+                    "", "", "", 0, "", null, "",
+                    0, 0, 0, 0,
+                    0, 0, 0, 0);
+            count++;
+        }
+        return count;
+    }
+    
     /*
      * Public methods:
      */
@@ -344,23 +400,27 @@ public class SSomMailUtils {
      * @param session SGuiSession.
      * @param dateStart Start date.
      * @param dateEnd End date.
+     * @param isMailer
+     * @param daysToSendMail
+     * @param mailTo
      * @return int Mails sent.
      */
-    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd) {
+    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isMailer, final int daysToSendMail, final String mailTo) {
         int count = 0;
-        boolean isByDate = false;
-        String sql = "";
+        boolean isByDate;
+        boolean sent = false;
+        String sql;
         String umn_box = "";
-        String subject = "";
+        String subject;
         String html = "";
         String txtInput = "";
         String txtInputUnit = "";
         String txtItem = "";
         String txtItemUnit = "";
         String txtSregion = "";
-        String txtRegion = "";
-        int year = 0;
-        int[] key = null;
+        String txtRegion;
+        int year;
+        int[] key;
         int[] inputKey = null;
         int inputUnitId = SLibConsts.UNDEFINED;
         int itemId = SLibConsts.UNDEFINED;
@@ -381,7 +441,7 @@ public class SSomMailUtils {
 
         try {
             Statement statement = session.getDatabase().getConnection().createStatement();
-            ResultSet resultSet = null;
+            ResultSet resultSet;
 
             isByDate = SLibTimeUtils.isSameDate(dateStart, dateEnd);
 
@@ -479,10 +539,11 @@ public class SSomMailUtils {
                     "ORDER BY i.umn_box, it.name, it.id_inp_ct, it.id_inp_cl, it.id_inp_tp, " +
                     "i.name, i.id_item, u.code, u.id_unit, " +
                     "sr.name, sr.id_sup_reg, r.name, r.id_reg, p.name_trd, p.id_prod; ";
-
+            
+            umn_box = mailTo.isEmpty() ? umn_box : mailTo;
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-
+                
                 if (resultSet.getString("i.umn_box").compareTo(umn_box) != 0) {
                     // Change of User Mail Notification Boxes (recipients), i.e., a new mail is composed:
                     
@@ -869,45 +930,50 @@ public class SSomMailUtils {
                         "<td align='right'>" + formatPercentage.format(totItemYear == 0 ? 0 : resultSet.getDouble("f_qty_year") / totItemYear) + "</td>" +
                         "</tr>";
             }
-
+            
+            umn_box = mailTo.isEmpty() ? umn_box : mailTo;
+            int maxId = 0;
             if (html.isEmpty()) {
-                // If no information found:
-                
-                //================================================================================
-                // START OF SNIPPET HTML CODE #2 (Note: when modified, update aswell all snippets in this class!)
-                
-                // Body header:
-                html =
-                        "<font size='" + FONT_SIZE_TITLE + "'><b>" +
-                        SLibUtils.textToHtml(((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getName()) + "<br>" +
-                        SSomConsts.SOM_MAIL_MAN + SLibUtils.DateFormatDate.format(dateStart) + (isByDate ? "" : " al " + SLibUtils.DateFormatDate.format(dateEnd)) +
-                        "</b></font>" +
-                        "<br>" +
-                        "<br>";
-                
-                // END OF SNIPPET HTML CODE #2 (Note: when modified, update aswell all snippets in this class!)
-                //================================================================================
-                
-                html +=
-                        "<hr>" +
-                        "<font size='" + (FONT_SIZE_TITLE - 1) + "'><b>" +
-                        SLibUtils.textToHtml("(No se encontró información para el " + (isByDate ? "día" : "período") + " solicitado.)") +
-                        "</b></font>" +
-                        "<br>" +
-                        "<br>";
-
-                sql = "SELECT DISTINCT i.umn_box " +
-                        "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i " +
-                        "WHERE i.b_umn = 1 AND i.b_del = 0 " +
-                        "ORDER BY i.umn_box ";
-                resultSet = statement.executeQuery(sql);
-                while (resultSet.next()) {
-                    sendMailReceptions(session, subject, html, resultSet.getString("i.umn_box"), false,
-                            isByDate, dateStart, dateEnd, year, formatPercentage,
-                            "", "", "", 0, "", null, "",
-                            0, 0, 0, 0,
-                            0, 0, 0, 0);
-                    count++;
+                String message = "(No se encontró información para el " + (isByDate ? "día" : "período") + " solicitado.)";
+                if (!isMailer) {
+                    count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo);
+                }
+                else {
+                    sql = "SELECT * FROM s_cli_umn_log WHERE b_sent ORDER BY id DESC LIMIT 1;";
+                    resultSet = statement.executeQuery(sql);
+                    if (resultSet.next()) {
+                        long daysLastMailSent = SLibTimeUtils.getDaysDiff(dateStart, resultSet.getDate("ts_exe"));
+                        if (daysLastMailSent >= daysToSendMail) {
+                            Statement statementAux = session.getDatabase().getConnection().createStatement();
+                            ResultSet resultSetAux;
+                            sql = "SELECT * FROM s_cli_umn_log WHERE b_data ORDER BY id DESC LIMIT 1;";
+                            resultSetAux = statementAux.executeQuery(sql);
+                            Date lastReception = null;
+                            if (resultSetAux.next()) {
+                                lastReception = resultSetAux.getDate("ts_exe");
+                            }
+                            Calendar c = Calendar.getInstance();
+                            c.setTime(lastReception);
+                            String dayOfWeek = getDayOfWeek(c.get(Calendar.DAY_OF_WEEK)); 
+                            long daysLastReception = SLibTimeUtils.getDaysDiff(dateStart, lastReception);
+                            message = "(Van " + daysLastReception + " días sin recepciones de semillas, desde el " + dayOfWeek + " " + SLibUtils.DateFormatDate.format(lastReception) + ".)";
+                            count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo);
+                            sent = true;
+                        }
+                        sql = "SELECT max(id) FROM s_cli_umn_log";
+                        try (ResultSet id = statement.executeQuery(sql)) {
+                            if (id.next()) {
+                                maxId = id.getInt(1);
+                            }
+                        }
+                    }
+                    else {
+                        count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo);
+                        sent = true;
+                    }
+                    
+                    sql = "INSERT INTO s_cli_umn_log (id, b_data, b_sent, ts_exe) VALUES (" + (maxId + 1) + ", false, " + sent + ", NOW());";
+                    statement.execute(sql);
                 }
             }
             else if (!umn_box.isEmpty()) {
@@ -916,7 +982,18 @@ public class SSomMailUtils {
                         txtSregion, txtItem, txtItemUnit, itemUnitId, txtInput, inputKey, txtInputUnit,
                         totRegionCurr, totRegionYear, totSregionCurr, totSregionYear,
                         totItemCurr, totItemYear, totInputCurr, totInputYear);
+                sent = true;
                 count++;
+                if (isMailer) {
+                    sql = "SELECT max(id) FROM s_cli_umn_log";
+                    try (ResultSet id = statement.executeQuery(sql)) {
+                        if (id.next()) {
+                            maxId = id.getInt(1);
+                        }
+                    }
+                    sql = "INSERT INTO s_cli_umn_log (id, b_data ,b_sent, ts_exe) VALUES (" + (maxId + 1) + ", true, " + sent + ", NOW());";
+                    statement.execute(sql);
+                }
             }
         }
         catch(Exception e) {
@@ -941,5 +1018,19 @@ public class SSomMailUtils {
                 SGuiClientApp.APP_RELEASE +
                 "</font>" +
                 "</p>";
+    }
+    
+    private static String getDayOfWeek(int i) {
+        String day = "";
+        switch (i) {
+            case 1 : day = "domingo"; break;
+            case 2 : day = "lunes"; break;
+            case 3 : day = "martes"; break;
+            case 4 : day = "miercoles"; break;
+            case 5 : day = "jueves"; break;
+            case 6 : day = "viernes"; break;
+            case 7 : day = "sabado"; break;
+        }
+        return day;
     }
 }

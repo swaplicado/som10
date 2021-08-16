@@ -51,7 +51,9 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.S_LAB_TEST,
             SModConsts.S_TIC,
             SModConsts.S_TIC_NOTE,
+            SModConsts.S_WAH_START,
             SModConsts.SX_TIC_TARE,
+            SModConsts.SX_TIC_WAH_UNLD,
             SModConsts.SX_TIC_MAN_SUP,
             SModConsts.SX_TIC_MAN_SUP_INP_TP,
             SModConsts.SX_PROD_SEAS,
@@ -59,6 +61,7 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SX_PROD_ITEM,
             SModConsts.SX_TIC_SEAS,
             SModConsts.SX_TIC_REG,
+            SModConsts.SX_QA_OIL_MOI_POND,
             SModConsts.SR_TIC,
             SModConsts.SR_TIC_COMP,
             SModConsts.SR_ITEM_REC,
@@ -66,7 +69,8 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SR_ITEM_REC_IOD_VAL,
             SModConsts.SR_FRE_TIME,
             SModConsts.SR_ITEM_FRUIT,
-            SModConsts.SR_ITEM_FRUIT_HIST
+            SModConsts.SR_ITEM_FRUIT_HIST,
+            SModConsts.SR_FRUIT_YIELD_ORIG
         });
     }
 

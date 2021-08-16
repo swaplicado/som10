@@ -320,6 +320,14 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                                 + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 " + aux + " "
                                 + "ORDER BY code, name, id_co, id_cob, id_wah ";
                         break;
+                    case SModConsts.SX_TIC_WAH_UNLD:
+                        settings = new SGuiCatalogueSettings("Almacén", 3, 2);
+                        sql = "SELECT id_co AS " + SDbConsts.FIELD_ID + "1, id_cob AS " + SDbConsts.FIELD_ID + "2, id_wah AS " + SDbConsts.FIELD_ID + "3, CONCAT(code, ' - ', name) AS " + SDbConsts.FIELD_ITEM + ", "
+                                + "code AS " + SDbConsts.FIELD_CODE + ", id_co AS " + SDbConsts.FIELD_FK + "1, id_cob AS " + SDbConsts.FIELD_FK + "2 "
+                                + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 "
+                                + "AND fk_wah_tp IN (1, 2) "
+                                + "ORDER BY code, name, id_co, id_cob, id_wah ";
+                        break;
                     default:
                         settings = new SGuiCatalogueSettings("Almacén", 3, 2);
                         settings.setCodeApplying(true);

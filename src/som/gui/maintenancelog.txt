@@ -1,4 +1,53 @@
 ================================================================================
+2021-07-20, 1.0 072.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó la funcionalidad de poder asignar un almacén a los boletos cuya categoría de ítem este configurada para hacerlo.
+2) Se agregó la vista de "Fechas de inicio de almacenes" para indicar en que fecha se inicia el cálculo de aceite y humedad ponderados.
+3) Se agregó la vista de "Cálculo de aceite y humedad ponderado" que muestra los resultados ponderados de aceite y humedad de un almacén en fechas definidas.
+
+================================================================================
+2021-06-29, 1.0 071.5
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Modificación del mensaje en el reporte automático de recepciones de semillas cuando no ha habido recepciones después de los días programados.
+
+================================================================================
+2021-06-08, 1.0 071.4
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó a la vista de resultados de laboratorio el filtro para mostrar los registros por categoria de insumo o por ítem.
+
+================================================================================
+2021-05-12, 1.0 071.3
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó a la vista de proveedores el botón para actualizar todos los boletos del proveedor 
+    seleccionado con el origen de insumo predeterminado para ese proveedor.
+2) En la ventana para tarar boletos se habilitó el campo de "origen insumo" siempre cuando el ítem lo requiera.
+
+================================================================================
+2021-05-07, 1.0 071.2
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó el permitir cambiar ítem de boletos incluso con resultados de laboratorio con la condición de que sean el mismo 
+    tipo de insumo y que tengan los mismos parametros para evaluar en el laboratorio.
+
+================================================================================
+2021-05-03, 1.0 071.1
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó el botón para asignar automaticamente el origen del proveedor en el campo "origen insumo" en la forma de captura de boletos.
+2) Se agregó la clase som.cli.SRevueltaQuery para realizar consultas a la base de datos de Revuelta.
+
+================================================================================
+2021-04-27, 1.0 071.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se agregó la clase som.cli.SCliReportMailerSeedReception con el fin de automatizar el envio del reporte de semillas recibidas.
+2) Se agregó el reporte de rendimiento de fruta por origen.
+
+================================================================================
 2021-02-25, 1.0 070.1
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

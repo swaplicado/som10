@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Properties;
@@ -53,7 +54,6 @@ public class SImportTicketsRevuelta {
     public static void main(String[] args) {
         try {
             moSession = new SGuiSession(null);
-            moConnectionRev = openConnectionRevuelta();
             
             String xml;
             xml = SXmlUtils.readXml(SUtilConsts.FILE_NAME_CFG);
@@ -74,6 +74,7 @@ public class SImportTicketsRevuelta {
             
             moSession.setDatabase(database);
             
+            moConnectionRev = openConnectionRevuelta();
             try {
                 SDbCompany company = new SDbCompany();
                 company.read(moSession, new int[] { SUtilConsts.BPR_CO_ID });
@@ -95,7 +96,7 @@ public class SImportTicketsRevuelta {
     private static void run() throws Exception {
         Statement stmSoom = moSession.getStatement().getConnection().createStatement();
         Statement stmRev = moConnectionRev.createStatement();
-        ResultSet rstSoom = null;
+        ResultSet rstSoom;
 
         rstSoom = stmSoom.executeQuery("SELECT MAX(num) FROM som_com.s_tic s WHERE dt >= '2019-01-01'");
         rstSoom.next();
@@ -103,11 +104,11 @@ public class SImportTicketsRevuelta {
         String sql = "SELECT "
                 + "Pes_ID, Pes_FecHorPri, Pes_ObsPri, Pes_PesoPri, Pes_Bruto, "
                 + "Pes_FecHorSeg, Pes_UnidadPri, Pes_PesoSeg, Pes_Tara, Pes_Neto, Pes_Placas, Pes_Chofer, "
-                + "Pro_ID, Emp_ID "
+                + "Pro_ID, Emp_ID, NOW() AS now "
                 + "FROM dba.Pesadas "
-                + "WHERE Pes_ID >= 136870 "
+                + "WHERE Pes_ID >= 150000 "
                 + "AND Usb_ID = 'ACTH' ORDER BY Pes_ID";
-                //+ "where pes_id = 136870";
+                //+ "where pes_id = 149844";
 
         ResultSet rstRev = stmRev.executeQuery(sql);
 
@@ -115,6 +116,7 @@ public class SImportTicketsRevuelta {
         int seasonId;
         int idItem;
         int idProducer;
+        String now;
 
         SDbUser user = new SDbUser();
         user.read(moSession, new int[] { SUtilConsts.USR_NA_ID });
@@ -123,6 +125,7 @@ public class SImportTicketsRevuelta {
         while (rstRev.next()) {
             id = rstRev.getInt("Pes_ID");
             rstSoom = stmSoom.executeQuery("SELECT num FROM som_com.s_tic s WHERE num = " + id);
+            now = SLibUtils.DateFormatDatetime.format(rstRev.getDate("now"));
             if (!rstSoom.next()) {
                 idItem = SSomUtils.mapItemSomRevuelta(moSession, rstRev.getString("Pro_ID"));
                 idProducer = SSomUtils.mapProducerSomRevuelta(moSession, rstRev.getString("Emp_ID"));
@@ -232,7 +235,7 @@ public class SImportTicketsRevuelta {
                     writeLog(entry);
                 }
                 else {
-                    String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " NO fue importado! Producto: " + rstRev.getString("Pro_ID") + ".";
+                    String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " NO fue importado! Producto: " + rstRev.getString("Pro_ID") + " " + now + ".";
                     writeLog(entry);
                 }
             }
@@ -257,15 +260,23 @@ public class SImportTicketsRevuelta {
      * @return 
      */
     private static Connection openConnectionRevuelta() {
+        ResultSet resultSet;
+        String revHost = "";
+        String revPort = "";
         try {
             Class.forName("com.sybase.jdbc3.jdbc.SybDriver").newInstance();
+            resultSet = moSession.getStatement().executeQuery("SELECT rev_host, rev_port FROM cu_co;");
+            if (resultSet.next()) {
+                revHost = resultSet.getString(1);
+                revPort = resultSet.getString(2);
+            }
         }
-        catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e) {
             SLibUtils.printException(SImportTicketsRevuelta.class.getName(), e);
         }
         
         Connection connection = null;
-        String url = "jdbc:sybase:Tds:192.168.1.33:2638/Revuelta"; // XXX WTF!
+        String url = "jdbc:sybase:Tds:" + revHost + ":" + revPort + "/Revuelta"; // XXX WTF!
         Properties properties = new Properties();
         properties.put("user", "usuario"); // XXX WTF!
         properties.put("password", "revuelta"); // XXX WTF!

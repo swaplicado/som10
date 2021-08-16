@@ -93,6 +93,7 @@ public abstract class SModConsts {
     public static final int S_MFG_EST_PL = 330064;
     public static final int S_MIX = 330071;
     public static final int S_MIX_NOTE = 330072;
+    public static final int S_WAH_START = 330073;
 
     public static final int SX_SEAS_REG = 340001;
     public static final int SX_PROD_SEAS = 340002;
@@ -102,6 +103,7 @@ public abstract class SModConsts {
     public static final int SX_TIC_REG = 340013;
     public static final int SX_TIC_TARE = 340021;
     public static final int SX_TIC_TARE_PEND = 340022;
+    public static final int SX_TIC_WAH_UNLD = 340081;
     public static final int SX_TIC_LOG = 340023;
     public static final int SX_TIC_LAB_TEST_FRUIT = 340026;
     public static final int SX_STK_STK = 340031;
@@ -148,6 +150,7 @@ public abstract class SModConsts {
     public static final int SX_WIZ_DPS_ADJ = 340106;
     public static final int SX_TIC_DPS_PAY = 340107;
     public static final int SX_DAY_MAIL = 340108;
+    public static final int SX_QA_OIL_MOI_POND = 340082;
 
     public static final int SR_TIC = 350001;
     public static final int SR_TIC_COMP = 350002;
@@ -162,6 +165,7 @@ public abstract class SModConsts {
     public static final int SR_FRE_TIME = 350011;
     public static final int SR_ITEM_FRUIT = 350012;
     public static final int SR_ITEM_FRUIT_HIST = 350013;
+    public static final int SR_FRUIT_YIELD_ORIG = 350014;
     public static final int SR_CH_OIL_PERC = 350016;
     public static final int SR_STK_DAILY = 350021;
 
@@ -244,6 +248,7 @@ public abstract class SModConsts {
         TablesMap.put(S_MFG_EST_RM_CON, "s_mfg_est_rm_con");
         TablesMap.put(S_MIX, "s_mix");
         TablesMap.put(S_MIX_NOTE, "s_mix_note");
+        TablesMap.put(S_WAH_START, "s_wah_start");
 
         TablesMap.put(E_TIC_REV, "e_tic_rev");
     }

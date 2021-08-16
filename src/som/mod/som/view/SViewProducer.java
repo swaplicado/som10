@@ -4,15 +4,27 @@
  */
 package som.mod.som.view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import sa.lib.SLibConsts;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
 import sa.lib.grid.SGridConsts;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
+import sa.lib.grid.SGridRowView;
+import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
+import sa.lib.gui.SGuiConsts;
 import som.mod.SModConsts;
+import som.mod.som.db.SDbInputSource;
+import som.mod.som.db.SDbProducer;
+import som.mod.som.db.SSomUtils;
 
 /**
  *
@@ -20,10 +32,40 @@ import som.mod.SModConsts;
  * 2019-01-17, Sergio Flores: Cambio en vista productores en columna código por nombre para catálogo de agrupadores de reporte.
  * 2020-02-27, Isabel Servín: Se agrego la columna de origen insumo.
  */
-public class SViewProducer extends SGridPaneView {
+public class SViewProducer extends SGridPaneView implements ActionListener {
+    
+    private final JButton jbUpdateTicketsInputSourse;
 
     public SViewProducer(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SU_PROD, SLibConsts.UNDEFINED, title);
+        
+        jbUpdateTicketsInputSourse = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_wizard.gif")), "Actualizar origen de insumo de los boletos del proveedor", this);
+        
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbUpdateTicketsInputSourse);
+    }
+    
+    private void actionUpdateTicketsInputSource() {
+        SDbProducer producer;
+        SDbInputSource inputSource;
+        
+        if (jtTable.getSelectedRowCount() != 1) {
+            miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
+        }
+        else {
+            try {
+                SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
+                producer = (SDbProducer) miClient.getSession().readRegistry(SModConsts.SU_PROD, gridRow.getRowPrimaryKey());
+                inputSource = (SDbInputSource) miClient.getSession().readRegistry(SModConsts.SU_INP_SRC, new int[] { producer.getFkInputSourceId() });
+                
+                if (miClient.showMsgBoxConfirm("¿Está seguro(a) que desea actualizar el origen de insumo de todos los boletos de \"" + producer.getName() + "\"\n"
+                        + "a \"" + inputSource.getName() + "\" ?") == JOptionPane.YES_OPTION){
+                    SSomUtils.updateTicketsInputSource(miClient.getSession(), producer.getPkProducerId(), inputSource.getPkInputSourceId());                    
+                }
+            }
+            catch (Exception e) {
+                SLibUtils.showException(this, e);
+            }
+        }
     }
 
     @Override
@@ -112,5 +154,16 @@ public class SViewProducer extends SGridPaneView {
     public void defineSuscriptions() {
         moSuscriptionsSet.add(mnGridType);
         moSuscriptionsSet.add(SModConsts.CU_USR);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof JButton) {
+            JButton button = (JButton) e.getSource();
+
+            if (button == jbUpdateTicketsInputSourse) {
+                actionUpdateTicketsInputSource();
+            }
+        }
     }
 }
