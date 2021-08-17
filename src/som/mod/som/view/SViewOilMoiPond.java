@@ -7,9 +7,9 @@ package som.mod.som.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 import sa.lib.SLibConsts;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
