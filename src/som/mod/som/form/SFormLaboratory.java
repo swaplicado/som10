@@ -39,7 +39,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores, Isabel Servín
+ * @author Juan Barajas, Isabel Servín, Sergio Flores
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
@@ -418,22 +418,23 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
             @Override
             public void createGridColumns() {
                 int col = 0;
-                SGridColumnForm[] columns = new SGridColumnForm[22];
+                SGridColumnForm[] columns = new SGridColumnForm[23];
 
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_1B, "Prueba lab");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_2D, "Impurezas");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_2D, "Humedad");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_2D, "Impurezas %");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_2D, "Humedad %");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Densidad");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Índice refracción (IR)");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Valor yodo (VI)");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ácido oleico");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ácido linoleico");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ácido linolénico");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ácido erúcico");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Proteína");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Aceite");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Acidez");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Acidez promedio proceso");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ácido oleico %");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ácido linoleico %");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ácido linolénico %");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ácido erúcico %");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Proteína %");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Aceite %");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ajuste rendimiento aceite %");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Acidez %");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Acidez promedio proceso %");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Clase fruta");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Grado madurez");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Peso fruta (g)");
@@ -441,7 +442,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Pulpa: materia seca");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Pulpa: humedad");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Fruta: aceite");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ajuste rendimiento");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ajuste rendimiento fruta %");
 
                 for (col = 0; col < columns.length; col++) {
                     moModel.getGridColumns().add(columns[col]);

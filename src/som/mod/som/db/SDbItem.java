@@ -20,7 +20,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores, Isabel Servín
+ * @author Juan Barajas, Sergio Flores, Isabel Servín, Adrián Avilés
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
@@ -42,6 +42,7 @@ public class SDbItem extends SDbRegistryUser {
     protected String msPackingName;
     protected double mdPackingWeight;
     protected double mdUnitaryWeight;
+    protected double mdOilYieldAdjustmentPercentage;
     protected double mdFruitYieldAdjustmentPercentage;
     protected int mnStartingSeasonMonth;
     protected String msRevueltaItemId;
@@ -160,6 +161,7 @@ public class SDbItem extends SDbRegistryUser {
     public void setPackingName(String s) { msPackingName = s; }
     public void setPackingWeight(double d) { mdPackingWeight = d; }
     public void setUnitaryWeight(double d) { mdUnitaryWeight = d; }
+    public void setOilYieldAdjustmentPercentage(double d) { mdOilYieldAdjustmentPercentage = d; }
     public void setFruitYieldAdjustmentPercentage(double d) { mdFruitYieldAdjustmentPercentage = d; }
     public void setStartingSeasonMonth(int n) { mnStartingSeasonMonth = n; }
     public void setRevueltaItemId(String s) { msRevueltaItemId = s; }
@@ -224,6 +226,7 @@ public class SDbItem extends SDbRegistryUser {
     public String getPackingName() { return msPackingName; }
     public double getPackingWeight() { return mdPackingWeight; }
     public double getUnitaryWeight() { return mdUnitaryWeight; }
+    public double getOilYieldAdjustmentPercentage() { return mdOilYieldAdjustmentPercentage; }
     public double getFruitYieldAdjustmentPercentage() { return mdFruitYieldAdjustmentPercentage; }
     public int getStartingSeasonMonth() { return mnStartingSeasonMonth; }
     public String getRevueltaItemId() { return msRevueltaItemId; }
@@ -306,6 +309,7 @@ public class SDbItem extends SDbRegistryUser {
         msPackingName = "";
         mdPackingWeight = 0;
         mdUnitaryWeight = 0;
+        mdOilYieldAdjustmentPercentage = 0;
         mdFruitYieldAdjustmentPercentage = 0;
         mnStartingSeasonMonth = 0;
         msRevueltaItemId = "";
@@ -415,6 +419,7 @@ public class SDbItem extends SDbRegistryUser {
             msPackingName = resultSet.getString("paq_name");
             mdPackingWeight = resultSet.getDouble("paq_wei");
             mdUnitaryWeight = resultSet.getDouble("unit_wei");
+            mdOilYieldAdjustmentPercentage = resultSet.getDouble("oil_yield_adj_per");
             mdFruitYieldAdjustmentPercentage = resultSet.getDouble("fruit_yield_adj_per");
             mnStartingSeasonMonth = resultSet.getInt("sta_seas_mon");
             msRevueltaItemId = resultSet.getString("rev_item_id");
@@ -504,6 +509,7 @@ public class SDbItem extends SDbRegistryUser {
                     "'" + msPackingName + "', " +
                     mdPackingWeight + ", " +
                     mdUnitaryWeight + ", " +
+                    mdOilYieldAdjustmentPercentage + ", " + 
                     mdFruitYieldAdjustmentPercentage + ", " + 
                     mnStartingSeasonMonth + ", " +
                     "'" + msRevueltaItemId + "', " +
@@ -573,6 +579,7 @@ public class SDbItem extends SDbRegistryUser {
                     "paq_name = '" + msPackingName + "', " +
                     "paq_wei = " + mdPackingWeight + ", " +
                     "unit_wei = " + mdUnitaryWeight + ", " +
+                    "oil_yield_adj_per = " + mdOilYieldAdjustmentPercentage + ", " +
                     "fruit_yield_adj_per = " + mdFruitYieldAdjustmentPercentage + ", " +
                     "sta_seas_mon = " + mnStartingSeasonMonth + ", " +
                     "rev_item_id = '" + msRevueltaItemId + "', " +
@@ -650,6 +657,7 @@ public class SDbItem extends SDbRegistryUser {
         registry.setPackingName(this.getPackingName());
         registry.setPackingWeight(this.getPackingWeight());
         registry.setUnitaryWeight(this.getUnitaryWeight());
+        registry.setOilYieldAdjustmentPercentage(this.getOilYieldAdjustmentPercentage());
         registry.setFruitYieldAdjustmentPercentage(this.getFruitYieldAdjustmentPercentage());
         registry.setStartingSeasonMonth(this.getStartingSeasonMonth());
         registry.setRevueltaItemId(this.getRevueltaItemId());

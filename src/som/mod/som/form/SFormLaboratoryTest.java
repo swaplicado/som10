@@ -33,7 +33,7 @@ import som.mod.som.db.SLabUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores, Isabel Servín
+ * @author Juan Barajas, Isabel Servín, Sergio Flores
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
@@ -103,6 +103,8 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         jPanel15 = new javax.swing.JPanel();
         jlOilContentPercentage = new javax.swing.JLabel();
         moDecOilContentPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlOilYieldAdjustmentPercentage = new javax.swing.JLabel();
+        moDecOilYieldAdjustmentPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
         jPanel20 = new javax.swing.JPanel();
         jlAcidityPercentage = new javax.swing.JLabel();
         moDecAcidityPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
@@ -253,6 +255,11 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         jlOilContentPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel15.add(jlOilContentPercentage);
         jPanel15.add(moDecOilContentPercentage);
+
+        jlOilYieldAdjustmentPercentage.setText("Ajuste rendimiento (%):");
+        jlOilYieldAdjustmentPercentage.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel15.add(jlOilYieldAdjustmentPercentage);
+        jPanel15.add(moDecOilYieldAdjustmentPercentage);
 
         jPanel4.add(jPanel15);
 
@@ -444,6 +451,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
     private javax.swing.JLabel jlLinolenicAcidPercentage;
     private javax.swing.JLabel jlMoisturePercentage;
     private javax.swing.JLabel jlOilContentPercentage;
+    private javax.swing.JLabel jlOilYieldAdjustmentPercentage;
     private javax.swing.JLabel jlOleicAcidPercentage;
     private javax.swing.JLabel jlProteinPercentage;
     private javax.swing.JLabel jlRefractionIndex;
@@ -463,6 +471,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
     private sa.lib.gui.bean.SBeanFieldDecimal moDecLinolenicAcidPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecMoisturePercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecOilContentPercentage;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecOilYieldAdjustmentPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecOleicAcidPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecProteinPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecRefractionIndex;
@@ -488,6 +497,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         moDecErucicAcidPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlErucicAcidPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moDecProteinPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlProteinPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moDecOilContentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlOilContentPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDecOilYieldAdjustmentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlOilYieldAdjustmentPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moDecAcidityPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlAcidityPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moDecAcidityAveragePercentage.setDecimalSettings(SGuiUtils.getLabelName(jlAcidityAveragePercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moKeyFruitClass.setKeySettings(miClient, SGuiUtils.getLabelName(jlFruitClass), true);
@@ -513,6 +523,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         moFields.addField(moDecErucicAcidPercentage);
         moFields.addField(moDecProteinPercentage);
         moFields.addField(moDecOilContentPercentage);
+        moFields.addField(moDecOilYieldAdjustmentPercentage);
         moFields.addField(moDecAcidityPercentage);
         moFields.addField(moDecAcidityAveragePercentage);
         moFields.addField(moKeyFruitClass);
@@ -574,6 +585,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         moDecErucicAcidPercentage.setEditable(moParamsItem.isErucicAcidPercentage());
         moDecProteinPercentage.setEditable(moParamsItem.isProteinPercentage());
         moDecOilContentPercentage.setEditable(moParamsItem.isOilContentPercentage() && !moParamsItem.isFruit());
+        moDecOilYieldAdjustmentPercentage.setEditable(false); // allways is read-only
         moDecAcidityPercentage.setEditable(moParamsItem.isAcidityPercentage());
         moDecAcidityAveragePercentage.setEditable(moParamsItem.isAcidityAveragePercentage());
         moKeyFruitClass.setEditable(moParamsItem.isFruit());
@@ -680,6 +692,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
             moRegistry.initPrimaryKey();
             jtfRegistryKey.setText("");
             
+            moRegistry.setOilYieldAdjustmentPercentage(moParamsItem.getOilYieldAdjustmentPercentage());
             moRegistry.setFruitYieldAdjustmentPercentage(moParamsItem.getFruitYieldAdjustmentPercentage());
         }
         else {
@@ -697,6 +710,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         moDecErucicAcidPercentage.setValue(moRegistry.getErucicAcidPercentage());
         moDecProteinPercentage.setValue(moRegistry.getProteinPercentage());
         moDecOilContentPercentage.setValue(moRegistry.getOilContentPercentage());
+        moDecOilYieldAdjustmentPercentage.setValue(moRegistry.getOilYieldAdjustmentPercentage());
         moDecAcidityPercentage.setValue(moRegistry.getAcidityPercentage());
         moDecAcidityAveragePercentage.setValue(moRegistry.getAcidityAveragePercentage());
         moKeyFruitClass.setValue(new int[] { moCompany.getFruitOptionId(SDbCompany.FRUIT_CLASS, moRegistry.getFruitClass()) });
@@ -732,6 +746,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         registry.setErucicAcidPercentage(moDecErucicAcidPercentage.getValue());
         registry.setProteinPercentage(moDecProteinPercentage.getValue());
         registry.setOilContentPercentage(moDecOilContentPercentage.getValue());
+        registry.setOilYieldAdjustmentPercentage(moDecOilYieldAdjustmentPercentage.getValue());
         registry.setAcidityPercentage(moDecAcidityPercentage.getValue());
         registry.setAcidityAveragePercentage(moDecAcidityAveragePercentage.getValue());
         registry.setFruitClass(moKeyFruitClass.getSelectedIndex() <= 0 ? "" : moCompany.getFruitOption(SDbCompany.FRUIT_CLASS, moKeyFruitClass.getValue()[0]));

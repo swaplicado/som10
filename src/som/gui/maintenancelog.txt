@@ -1,4 +1,10 @@
 ================================================================================
+2021-11-04, 1.0 073.0
+Adrián Alejandro AVILÉS GÓMEZ/ Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición en clases registro, forma de captura y vista de columna % ajuste rendimiento aceite, en Ítems y Resultados de Laboratorio.
+
+================================================================================
 2021-07-20, 1.0 072.0
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

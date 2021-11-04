@@ -15,7 +15,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores, Isabel Servín
+ * @author Juan Barajas, Isabel Servín, Sergio Flores
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta, y cálculo de valores '% humedad' y '% contenido aceite'.
  * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
@@ -33,6 +33,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     protected double mdMoisturePercentage;
     protected double mdProteinPercentage;
     protected double mdOilContentPercentage;
+    protected double mdOilYieldAdjustmentPercentage;
     protected double mdOleicAcidPercentage;
     protected double mdLinoleicAcidPercentage;
     protected double mdLinolenicAcidPercentage;
@@ -62,6 +63,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     public void setMoisturePercentage(double d) { mdMoisturePercentage = d; }
     public void setProteinPercentage(double d) { mdProteinPercentage = d; }
     public void setOilContentPercentage(double d) { mdOilContentPercentage = d; }
+    public void setOilYieldAdjustmentPercentage(double d) { mdOilYieldAdjustmentPercentage = d; }
     public void setOleicAcidPercentage(double d) { mdOleicAcidPercentage = d; }
     public void setLinoleicAcidPercentage(double d) { mdLinoleicAcidPercentage = d; }
     public void setLinolenicAcidPercentage(double d) { mdLinolenicAcidPercentage = d; }
@@ -86,6 +88,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     public double getMoisturePercentage() { return mdMoisturePercentage; }
     public double getProteinPercentage() { return mdProteinPercentage; }
     public double getOilContentPercentage() { return mdOilContentPercentage; }
+    public double getOilYieldAdjustmentPercentage() { return mdOilYieldAdjustmentPercentage; }
     public double getOleicAcidPercentage() { return mdOleicAcidPercentage; }
     public double getLinoleicAcidPercentage() { return mdLinoleicAcidPercentage; }
     public double getLinolenicAcidPercentage() { return mdLinolenicAcidPercentage; }
@@ -149,6 +152,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
         mdMoisturePercentage = 0;
         mdProteinPercentage = 0;
         mdOilContentPercentage = 0;
+        mdOilYieldAdjustmentPercentage = 0;
         mdOleicAcidPercentage = 0;
         mdLinoleicAcidPercentage = 0;
         mdLinolenicAcidPercentage = 0;
@@ -219,6 +223,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
             mdMoisturePercentage = resultSet.getDouble("moi_per");
             mdProteinPercentage = resultSet.getDouble("pro_per");
             mdOilContentPercentage = resultSet.getDouble("oil_per");
+            mdOilYieldAdjustmentPercentage = resultSet.getDouble("oil_yield_adj_per");
             mdOleicAcidPercentage = resultSet.getDouble("ole_per");
             mdLinoleicAcidPercentage = resultSet.getDouble("lin_per");
             mdLinolenicAcidPercentage = resultSet.getDouble("llc_per");
@@ -262,6 +267,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                     mdMoisturePercentage + ", " +
                     mdProteinPercentage + ", " +
                     mdOilContentPercentage + ", " +
+                    mdOilYieldAdjustmentPercentage + ", " + 
                     mdOleicAcidPercentage + ", " +
                     mdLinoleicAcidPercentage + ", " +
                     mdLinolenicAcidPercentage + ", " +
@@ -289,6 +295,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                     "moi_per = " + mdMoisturePercentage + ", " +
                     "pro_per = " + mdProteinPercentage + ", " +
                     "oil_per = " + mdOilContentPercentage + ", " +
+                    "oil_yield_adj_per = " + mdOilYieldAdjustmentPercentage + ", " +
                     "ole_per = " + mdOleicAcidPercentage + ", " +
                     "lin_per = " + mdLinoleicAcidPercentage + ", " +
                     "llc_per = " + mdLinolenicAcidPercentage + ", " +
@@ -327,6 +334,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
         registry.setMoisturePercentage(this.getMoisturePercentage());
         registry.setProteinPercentage(this.getProteinPercentage());
         registry.setOilContentPercentage(this.getOilContentPercentage());
+        registry.setOilYieldAdjustmentPercentage(this.getOilYieldAdjustmentPercentage());
         registry.setOleicAcidPercentage(this.getOleicAcidPercentage());
         registry.setLinoleicAcidPercentage(this.getLinoleicAcidPercentage());
         registry.setLinolenicAcidPercentage(this.getLinolenicAcidPercentage());
@@ -428,33 +436,36 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                 value = mdOilContentPercentage;
                 break;
             case 12:
-                value = mdAcidityPercentage;
+                value = mdOilYieldAdjustmentPercentage;
                 break;
             case 13:
-                value = mdAcidityAveragePercentage;
+                value = mdAcidityPercentage;
                 break;
             case 14:
-                value = msFruitClass;
+                value = mdAcidityAveragePercentage;
                 break;
             case 15:
-                value = msFruitRipenessDegree;
+                value = msFruitClass;
                 break;
             case 16:
-                value = mdFruitWeightTotal;
+                value = msFruitRipenessDegree;
                 break;
             case 17:
-                value = mdFruitWeightPeelPit;
+                value = mdFruitWeightTotal;
                 break;
             case 18:
-                value = mdFruitPulpDryMatterPercentage;
+                value = mdFruitWeightPeelPit;
                 break;
             case 19:
-                value = mdFruitPulpHumidityPercentage;
+                value = mdFruitPulpDryMatterPercentage;
                 break;
             case 20:
-                value = mdFruitPulpOilPercentage;
+                value = mdFruitPulpHumidityPercentage;
                 break;
             case 21:
+                value = mdFruitPulpOilPercentage;
+                break;
+            case 22:
                 value = mdFruitYieldAdjustmentPercentage;
                 break;
             default:
@@ -465,47 +476,6 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
 
     @Override
     public void setRowValueAt(Object value, int row) {
-        switch(row) {
-            case 0:
-                mnPkTestId = (int) value;
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6:
-                break;
-            case 7:
-                break;
-            case 8:
-                break;
-            case 9:
-                break;
-            case 10:
-                break;
-            case 11:
-                break;
-            case 12:
-                break;
-            case 13:
-                break;
-            case 14:
-                break;
-            case 15:
-                break;
-            case 16:
-                break;
-            case 17:
-                break;
-            case 18:
-                break;
-            default:
-        }
+        // grid is non editable
     }
 }

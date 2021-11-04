@@ -17,7 +17,7 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Adrián Avilés
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
@@ -53,6 +53,7 @@ public class SViewItem extends SGridPaneView {
                 + "v.ext_code, "
                 + "v.ext_name, "
                 + "v.unit_wei, "
+                + "v.oil_yield_adj_per, "
                 + "v.fruit_yield_adj_per, "
                 + "v.den, "
                 + "v.mfg_fg_per, "
@@ -133,7 +134,7 @@ public class SViewItem extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[51];
+        columns = new SGridColumnView[52];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
@@ -164,20 +165,21 @@ public class SViewItem extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "v.umn_box", "Destinatario(s) mail manual");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_umn_owm", "Envío mail sólo si movimientos período");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_lab", "Análisis laboratorio");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_imp_per", "Impurezas");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_moi_per", "Humedad");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_imp_per", "Impurezas %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_moi_per", "Humedad %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_den", "Densidad");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_ref_ind", "IR");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_iod_val", "VI");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_ole_per", "Ácido oleico");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_lin_per", "Ácido linoleico");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_llc_per", "Ácido linolénico");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_eru_per", "Ácido erúcico");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_pro_per", "Proteína");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_oil_per", "Aceite");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_aci_per", "Acidez");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_ref_ind", "Índice refracción (IR)");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_iod_val", "Valor yodo (VI)");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_ole_per", "Ácido oleico %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_lin_per", "Ácido linoleico %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_llc_per", "Ácido linolénico %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_eru_per", "Ácido erúcico %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_pro_per", "Proteína %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_oil_per", "Aceite %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_DISC, "v.oil_yield_adj_per", "Ajuste rendimiento aceite %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_aci_per", "Acidez %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_fruit", "Parámetros fruta");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_DISC, "v.fruit_yield_adj_per", "Ajuste rendimiento");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_DISC, "v.fruit_yield_adj_per", "Ajuste rendimiento fruta %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_prt_inp_tp", "Tipo insumo impresión boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);

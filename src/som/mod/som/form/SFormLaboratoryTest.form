@@ -298,6 +298,16 @@
                     </Component>
                     <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecOilContentPercentage">
                     </Component>
+                    <Component class="javax.swing.JLabel" name="jlOilYieldAdjustmentPercentage">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Ajuste rendimiento (%):"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[125, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecOilYieldAdjustmentPercentage">
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel20">
