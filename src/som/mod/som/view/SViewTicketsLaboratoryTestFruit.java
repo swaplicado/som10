@@ -21,7 +21,7 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Sergio Flores, Isabel Servín
+ * @author Sergio Flores, Isabel Servín, Adrián Avilés
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  * 2019-01-09, Sergio Flores: Estimación de porcentaje aceite en pulpa a partir de porcentaje materia seca en fruta.
  */
@@ -94,7 +94,7 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
                 + "IF(lt.fruit_wei_total = 0, 0.0, @fruit_sol_wei / lt.fruit_wei_total) AS _fruit_sol_per, "
                 + "@fruit_oil_per := IF(lt.fruit_wei_total = 0, 0.0, @fruit_oil_wei / lt.fruit_wei_total) AS _fruit_oil_per, "
                 + "lt.fruit_yield_adj_per, "
-                + "@fruit_oil_per - lt.fruit_yield_adj_per AS _fruit_yield "
+                + "IF((@fruit_oil_per - lt.fruit_yield_adj_per) < 0.0, 0.0, @fruit_oil_per - lt.fruit_yield_adj_per) AS _fruit_yield "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sca ON T.fk_sca = sca.id_sca "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS itm ON t.fk_item = itm.id_item "
@@ -139,7 +139,7 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_hum_per", "Fruta: humedad % *");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_sol_per", "Fruta: sólidos % *");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_oil_per", "Fruta: aceite % *");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "lt.fruit_yield_adj_per", "Ajuste rendimiento %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "lt.fruit_yield_adj_per", "Ajuste rendimiento fruta %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_yield", "Rendimiento esperado % *");
 
         moModel.getGridColumns().addAll(Arrays.asList(columns));

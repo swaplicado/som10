@@ -32,7 +32,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores, Isabel Servín
+ * @author Juan Barajas, Sergio Flores, Isabel Servín, Adrián Aviés
  */
 public class SViewLaboratory extends SGridPaneView implements ActionListener {
 
@@ -153,6 +153,8 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
                     + "ROUND(SUM(vt.moi_per) / SUM(vt.moi_per <> 0), 4) as f_moi_per, "
                     + "SUM(vt.pro_per) / SUM(vt.pro_per <> 0) as f_pro_per, "
                     + "SUM(vt.oil_per) / SUM(vt.oil_per <> 0) as f_oil_per, "
+                    + "vt.oil_yield_adj_per, "
+                    + "IF((SUM(vt.oil_per) / SUM(vt.oil_per <> 0) - vt.oil_yield_adj_per) < 0.0, 0.0, SUM(vt.oil_per) / SUM(vt.oil_per <> 0) - vt.oil_yield_adj_per) AS f_oil_per_adj, "
                     + "SUM(vt.ole_per) / SUM(vt.ole_per <> 0) as f_ole_per, "
                     + "SUM(vt.lin_per) / SUM(vt.lin_per <> 0) as f_lin_per, "
                     + "SUM(vt.llc_per) / SUM(vt.llc_per <> 0) as f_llc_per, "
@@ -169,6 +171,8 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
                     + "vt.moi_per AS f_moi_per, "
                     + "vt.pro_per AS f_pro_per, "
                     + "vt.oil_per AS f_oil_per, "
+                    + "vt.oil_yield_adj_per, "
+                    + "IF((vt.oil_per - vt.oil_yield_adj_per) < 0.0, 0.0, vt.oil_per - vt.oil_yield_adj_per) AS f_oil_per_adj, "
                     + "vt.ole_per AS f_ole_per, "
                     + "vt.lin_per AS f_lin_per, "
                     + "vt.llc_per AS f_llc_per, "
@@ -228,7 +232,7 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[32];
+        SGridColumnView[] columns = new SGridColumnView[34];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.num", "Análisis lab");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt", SGridConsts.COL_TITLE_DATE + " análisis lab");
@@ -250,18 +254,20 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_1B, "vt.id_test", "Prueba lab");
         }
 
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_2D, "f_imp_per", "Impurezas");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_2D, "f_moi_per", "Humedad");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_2D, "f_imp_per", "Impurezas %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_2D, "f_moi_per", "Humedad %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "f_den", "Densidad");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "f_ref_ind", "Índice refracción (IR)");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "f_iod_val", "Valor yodo (VI)");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_ole_per", "Ácido oleico");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_lin_per", "Ácido linoleico");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_llc_per", "Ácido linolénico");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_eru_per", "Ácido erúcico");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_pro_per", "Proteína");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_oil_per", "Aceite");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_aci_per", "Acidez");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_ole_per", "Ácido oleico %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_lin_per", "Ácido linoleico %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_llc_per", "Ácido linolénico %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_eru_per", "Ácido erúcico %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_pro_per", "Proteína %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_oil_per", "Aceite %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_DISC, "vt.oil_yield_adj_per", "Ajuste rendimiento aceite %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_oil_per_adj", "Rendimiento teórico aceite %");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_aci_per", "Acidez %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "f_aci_avg_per", "Acidez promedio proceso");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);

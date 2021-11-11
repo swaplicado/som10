@@ -831,9 +831,9 @@
                         </Component>
                         <Component class="javax.swing.JLabel" name="jlFruitYieldAdjustmentPercentage">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Ajuste rendimiento:"/>
+                            <Property name="text" type="java.lang.String" value="Ajuste rendimiento (%):"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
+                              <Dimension value="[125, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
@@ -943,6 +943,21 @@
                             <Property name="text" type="java.lang.String" value="Aplica aceite (%)"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[175, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jlOilYieldAdjustmentPercentage">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Ajuste rendimiento (%):"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[125, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecOilYieldAdjustmentPercentage">
+                          <Properties>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
                             </Property>
                           </Properties>
                         </Component>
