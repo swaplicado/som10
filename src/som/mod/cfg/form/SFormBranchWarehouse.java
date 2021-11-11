@@ -74,6 +74,10 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         jlAcidity = new javax.swing.JLabel();
         moDecAcidity = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlAcidityUnit = new javax.swing.JLabel();
+        jPanel13 = new javax.swing.JPanel();
+        jlAdjust = new javax.swing.JLabel();
+        moDecAdjust = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlAdjustlLiterUnit = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jlNote = new javax.swing.JLabel();
         moTextNote = new sa.lib.gui.bean.SBeanFieldText();
@@ -82,7 +86,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         jPanel1.setPreferredSize(new java.awt.Dimension(560, 350));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(9, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(10, 1, 0, 5));
 
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -189,6 +193,19 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel10);
 
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlAdjust.setText("Ajuste volumen:");
+        jlAdjust.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel13.add(jlAdjust);
+        jPanel13.add(moDecAdjust);
+
+        jlAdjustlLiterUnit.setText("l");
+        jlAdjustlLiterUnit.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel13.add(jlAdjustlLiterUnit);
+
+        jPanel2.add(jPanel13);
+
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNote.setText("Nota:");
@@ -210,6 +227,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -220,6 +238,8 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JLabel jlAcidity;
     private javax.swing.JLabel jlAcidityUnit;
+    private javax.swing.JLabel jlAdjust;
+    private javax.swing.JLabel jlAdjustlLiterUnit;
     private javax.swing.JLabel jlBranch;
     private javax.swing.JLabel jlCapacityRealLiter;
     private javax.swing.JLabel jlCapacityRealLiterUnit;
@@ -233,6 +253,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JLabel jlProductionLine;
     private javax.swing.JLabel jlWarehouseType;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecAcidity;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecAdjust;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecCapacityRealLiter;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDimensionBase;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDimensionHeight;
@@ -245,7 +266,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 560, 350);
+        SGuiUtils.setWindowBounds(this, 640, 400);
 
         moKeyBranch.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranch.getText()), true);
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode.getText()), 5);
@@ -255,6 +276,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         moDecDimensionBase.setDecimalSettings(SGuiUtils.getLabelName(jlDimensionBase.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecDimensionHeight.setDecimalSettings(SGuiUtils.getLabelName(jlDimensionHeight.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecCapacityRealLiter.setDecimalSettings(SGuiUtils.getLabelName(jlCapacityRealLiter.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecAdjust.setDecimalSettings(SGuiUtils.getLabelName(jlAdjust.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecAcidity.setDecimalSettings(SGuiUtils.getLabelName(jlCapacityRealLiter.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 250, 0);
 
@@ -325,6 +347,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         moDecDimensionBase.setValue(moRegistry.getDimensionBase());
         moDecDimensionHeight.setValue(moRegistry.getDimensionHeight());
         moDecCapacityRealLiter.setValue(moRegistry.getCapacityRealLiter());
+        moDecAdjust.setValue(moRegistry.getAdjustLiter());
         moDecAcidity.setValue(moRegistry.getAcidity());
         moKeyWarehouseType.setValue(new int[] { moRegistry.getFkWarehouseTypeId() });
         moKeyProductionLine.setValue(new int[] { moRegistry.getFkProductionLineId() });
@@ -352,6 +375,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         registry.setDimensionBase(moDecDimensionBase.getValue());
         registry.setDimensionHeight(moDecDimensionHeight.getValue());
         registry.setCapacityRealLiter(moDecCapacityRealLiter.getValue());
+        registry.setAdjustLiter(moDecAdjust.getValue());
         registry.setAcidity(moDecAcidity.getValue());
         registry.setFkWarehouseTypeId(moKeyWarehouseType.getValue()[0]);
         registry.setFkProductionLineId(moKeyProductionLine.getValue()[0]);

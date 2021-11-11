@@ -17,7 +17,7 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Edwin Carmona
  */
 public class SViewBranchWarehouse extends SGridPaneView {
 
@@ -52,6 +52,7 @@ public class SViewBranchWarehouse extends SGridPaneView {
                 + "v.dim_base, "
                 + "v.dim_heig, "
                 + "v.cap_real_lt, "
+                + "v.vol_adj_lt, "
                 + "v.acidity, "
                 + "co.name, "
                 + "cob.name, "
@@ -92,7 +93,7 @@ public class SViewBranchWarehouse extends SGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[19];
+        SGridColumnView[] columns = new SGridColumnView[20];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
@@ -103,6 +104,7 @@ public class SViewBranchWarehouse extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.dim_base", "Diámetro (" + SSomConsts.M + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.dim_heig", "Altura (" + SSomConsts.M + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.cap_real_lt", "Capacidad real (" + SSomConsts.L + ")");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.vol_adj_lt", "Ajuste vol. (" + SSomConsts.L + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "_cap_theo", "Capacidad teórica (" + SSomConsts.L + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "_cap_diff", "Diferencia capacidad (" + SSomConsts.L + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.acidity", "Acidez (%)");

@@ -36,7 +36,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Néstor Ávalos, Sergio Flores
+ * @author Néstor Ávalos, Sergio Flores, Edwin Carmona
  */
 public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemListener, FocusListener {
 
@@ -125,6 +125,10 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         jlWarehouseHeightCull = new javax.swing.JLabel();
         moDecWarehouseHeightCull = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlWarehouseHeightCullUnit = new javax.swing.JLabel();
+        jPanel16 = new javax.swing.JPanel();
+        jlWarehouseHeightAdjust = new javax.swing.JLabel();
+        moDecWarehouseHeightAdjust = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlWarehouseHeightAdjustUnit = new javax.swing.JLabel();
         jPanel19 = new javax.swing.JPanel();
         jlWarehouseHeightAvailable = new javax.swing.JLabel();
         moDecWarehouseHeightAvailable = new sa.lib.gui.bean.SBeanFieldDecimal();
@@ -137,6 +141,10 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         jlWarehouseVolumeCull = new javax.swing.JLabel();
         moDecWarehouseVolumeCull = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlWarehouseVolumeCullUnit = new javax.swing.JLabel();
+        jPanel27 = new javax.swing.JPanel();
+        jlWarehouseVolumeAdjust = new javax.swing.JLabel();
+        moDecWarehouseVolumeAdjust = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlWarehouseVolumeAdjustUnit = new javax.swing.JLabel();
         jPanel22 = new javax.swing.JPanel();
         jlWarehouseVolumeAvailable = new javax.swing.JLabel();
         moDecWarehouseVolumeAvailable = new sa.lib.gui.bean.SBeanFieldDecimal();
@@ -331,7 +339,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del tanque e ítem:"));
         jPanel5.setLayout(new java.awt.BorderLayout());
 
-        jPanel17.setLayout(new java.awt.GridLayout(7, 0, 0, 5));
+        jPanel17.setLayout(new java.awt.GridLayout(9, 0, 0, 5));
 
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -362,6 +370,21 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         jPanel13.add(jlWarehouseHeightCullUnit);
 
         jPanel17.add(jPanel13);
+
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlWarehouseHeightAdjust.setText("Altura ajuste:");
+        jlWarehouseHeightAdjust.setPreferredSize(new java.awt.Dimension(120, 23));
+        jPanel16.add(jlWarehouseHeightAdjust);
+
+        moDecWarehouseHeightAdjust.setEditable(false);
+        jPanel16.add(moDecWarehouseHeightAdjust);
+
+        jlWarehouseHeightAdjustUnit.setText("m");
+        jlWarehouseHeightAdjustUnit.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel16.add(jlWarehouseHeightAdjustUnit);
+
+        jPanel17.add(jPanel16);
 
         jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -411,6 +434,21 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
 
         jPanel17.add(jPanel21);
 
+        jPanel27.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlWarehouseVolumeAdjust.setText("Volumen ajuste:");
+        jlWarehouseVolumeAdjust.setPreferredSize(new java.awt.Dimension(120, 23));
+        jPanel27.add(jlWarehouseVolumeAdjust);
+
+        moDecWarehouseVolumeAdjust.setEditable(false);
+        jPanel27.add(moDecWarehouseVolumeAdjust);
+
+        jlWarehouseVolumeAdjustUnit.setText("l");
+        jlWarehouseVolumeAdjustUnit.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel27.add(jlWarehouseVolumeAdjustUnit);
+
+        jPanel17.add(jPanel27);
+
         jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlWarehouseVolumeAvailable.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -458,6 +496,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
@@ -468,6 +507,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     private javax.swing.JPanel jPanel24;
     private javax.swing.JPanel jPanel25;
     private javax.swing.JPanel jPanel26;
+    private javax.swing.JPanel jPanel27;
     private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel30;
@@ -497,12 +537,16 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     private javax.swing.JLabel jlStockUnitBefore;
     private javax.swing.JLabel jlWarehouse;
     private javax.swing.JLabel jlWarehouseHeight;
+    private javax.swing.JLabel jlWarehouseHeightAdjust;
+    private javax.swing.JLabel jlWarehouseHeightAdjustUnit;
     private javax.swing.JLabel jlWarehouseHeightAvailable;
     private javax.swing.JLabel jlWarehouseHeightAvailableUnit;
     private javax.swing.JLabel jlWarehouseHeightCull;
     private javax.swing.JLabel jlWarehouseHeightCullUnit;
     private javax.swing.JLabel jlWarehouseHeightUnit;
     private javax.swing.JLabel jlWarehouseVolume;
+    private javax.swing.JLabel jlWarehouseVolumeAdjust;
+    private javax.swing.JLabel jlWarehouseVolumeAdjustUnit;
     private javax.swing.JLabel jlWarehouseVolumeAvailable;
     private javax.swing.JLabel jlWarehouseVolumeAvailableUnit;
     private javax.swing.JLabel jlWarehouseVolumeCull;
@@ -519,9 +563,11 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     private sa.lib.gui.bean.SBeanFieldDecimal moDecPhisicalInventoryVolume;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecStockBefore;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWarehouseHeight;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecWarehouseHeightAdjust;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWarehouseHeightAvailable;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWarehouseHeightCull;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWarehouseVolume;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecWarehouseVolumeAdjust;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWarehouseVolumeAvailable;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWarehouseVolumeCull;
     private sa.lib.gui.bean.SBeanFieldKey moKeyBranch;
@@ -559,6 +605,8 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         moDecWarehouseHeightAvailable.setDecimalSettings(SGuiUtils.getLabelName(jlWarehouseHeightAvailable.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
         moDecWarehouseVolume.setDecimalSettings(SGuiUtils.getLabelName(jlWarehouseVolume.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
         moDecWarehouseVolumeCull.setDecimalSettings(SGuiUtils.getLabelName(jlWarehouseVolumeCull.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecWarehouseVolumeAdjust.setDecimalSettings(SGuiUtils.getLabelName(jlWarehouseVolumeAdjust.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
+        moDecWarehouseHeightAdjust.setDecimalSettings(SGuiUtils.getLabelName(jlWarehouseHeightAdjust.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
         moDecWarehouseVolumeAvailable.setDecimalSettings(SGuiUtils.getLabelName(jlWarehouseVolumeAvailable.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
         moDecItemDensity.setDecimalSettings(SGuiUtils.getLabelName(jlItemDensity.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecPhisicalInventoryHeight.setDecimalSettings(SGuiUtils.getLabelName(jlPhisicalInventoryHeight.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
@@ -650,7 +698,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
                     volNet * moDecWarehouseVolumeAvailable.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
 
             moDecPhisicalInventoryHeight.setValue(SLibUtils.round(
-                moDecWarehouseHeight.getValue() - moDecWarehouseHeightCull.getValue() - moDecEmptiness.getValue(),
+                (moDecWarehouseHeight.getValue() - moDecWarehouseHeightCull.getValue() - moDecEmptiness.getValue() - (moDecWarehouseHeightAdjust.getValue() * -1)),
                 SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
 
             moDecPhisicalInventoryVolume.setValue(SLibUtils.round(qtyByUnit, SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
@@ -706,11 +754,18 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
             moDecWarehouseHeightCull.setValue(
                 SLibUtils.round((moDecWarehouseVolume.getValue() > 0 ? ((dVolume / moDecWarehouseVolume.getValue()) * moDecWarehouseHeight.getValue()) : 0),
                 SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+            
+            double dVolumeAdj = moBranchWarehouse.getAdjustLiter();
+            
+            moDecWarehouseVolumeAdjust.setValue(SLibUtils.round(dVolumeAdj, SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+            moDecWarehouseHeightAdjust.setValue(
+                SLibUtils.round((moDecWarehouseVolume.getValue() > 0 ? ((dVolumeAdj / moDecWarehouseVolume.getValue()) * moDecWarehouseHeight.getValue()) : 0),
+                SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
 
             // Height and volume available:
 
-            moDecWarehouseHeightAvailable.setValue(SLibUtils.round(moDecWarehouseHeight.getValue() - moDecWarehouseHeightCull.getValue(), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
-            moDecWarehouseVolumeAvailable.setValue(SLibUtils.round(moDecWarehouseVolume.getValue() - moDecWarehouseVolumeCull.getValue(), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+            moDecWarehouseHeightAvailable.setValue(SLibUtils.round(moDecWarehouseHeight.getValue() - moDecWarehouseHeightCull.getValue() - (moDecWarehouseHeightAdjust.getValue() * -1), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+            moDecWarehouseVolumeAvailable.setValue(SLibUtils.round(moDecWarehouseVolume.getValue() - moDecWarehouseVolumeCull.getValue() - (moDecWarehouseVolumeAdjust.getValue() * -1), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
        }
         else {
             moDecWarehouseVolumeCull.setValue(0d);
