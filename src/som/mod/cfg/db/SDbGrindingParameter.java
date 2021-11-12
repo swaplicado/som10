@@ -24,6 +24,8 @@ public class SDbGrindingParameter extends SDbRegistryUser {
     protected String msParameterCode;
     protected String msParameter;
     protected String msDetails;
+    protected String msDefaultTextValue;
+    protected boolean mbIsText;
     
     /*
     protected boolean mbUpdatable;
@@ -50,6 +52,8 @@ public class SDbGrindingParameter extends SDbRegistryUser {
     public void setCode(String s) { msParameterCode = s; }
     public void setName(String s) { msParameter = s; }
     public void setDetails(String s) { msDetails = s; }
+    public void setDefaultTextValue(String s) { msDefaultTextValue = s; }
+    public void setIsText(boolean b) { mbIsText = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -65,6 +69,8 @@ public class SDbGrindingParameter extends SDbRegistryUser {
     public String getCode() { return msParameterCode; }
     public String getName() { return msParameter; }
     public String getDetails() { return msDetails; }
+    public String getDefaultTextValue() { return msDefaultTextValue; }
+    public boolean isText() { return mbIsText; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -93,6 +99,9 @@ public class SDbGrindingParameter extends SDbRegistryUser {
         mnPkParameterId = 0;
         msParameterCode = "";
         msParameter = "";
+        msDetails = "";
+        msDefaultTextValue = "";
+        mbIsText = false;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -151,6 +160,8 @@ public class SDbGrindingParameter extends SDbRegistryUser {
             msParameterCode = resultSet.getString("param_code");
             msParameter = resultSet.getString("parameter");
             msDetails = resultSet.getString("details");
+            msDefaultTextValue = resultSet.getString("def_text_value");
+            mbIsText = resultSet.getBoolean("b_text");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -189,6 +200,8 @@ public class SDbGrindingParameter extends SDbRegistryUser {
                     "'" + msParameterCode + "', " +
                     "'" + msParameter + "', " +
                     "'" + msDetails + "', " +
+                    "'" + msDefaultTextValue + "', " +
+                    (mbIsText ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -208,6 +221,8 @@ public class SDbGrindingParameter extends SDbRegistryUser {
                     "param_code = '" + msParameterCode + "', " +
                     "parameter = '" + msParameter + "', " +
                     "details = '" + msDetails + "', " +
+                    "def_text_value = '" + msDefaultTextValue + "', " +
+                    "b_text = " + (mbIsText ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -234,6 +249,8 @@ public class SDbGrindingParameter extends SDbRegistryUser {
         registry.setCode(this.getCode());
         registry.setName(this.getName());
         registry.setDetails(this.getDetails());
+        registry.setDefaultTextValue(this.getDefaultTextValue());
+        registry.setIsText(this.isText());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());

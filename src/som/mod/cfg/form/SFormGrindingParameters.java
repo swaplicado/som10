@@ -4,6 +4,8 @@
  */
 package som.mod.cfg.form;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
@@ -18,7 +20,7 @@ import som.mod.cfg.db.SDbGrindingParameter;
  *
  * @author Edwin Carmona
  */
-public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm {
+public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm implements ItemListener {
 
     private SDbGrindingParameter moRegistry;
 
@@ -52,6 +54,12 @@ public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm {
         jPanel6 = new javax.swing.JPanel();
         jlDetails = new javax.swing.JLabel();
         moTextDetails = new sa.lib.gui.bean.SBeanFieldText();
+        jPanel36 = new javax.swing.JPanel();
+        jlIsText = new javax.swing.JLabel();
+        moBIsText = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel7 = new javax.swing.JPanel();
+        jlDetails1 = new javax.swing.JLabel();
+        moDefaultTextValue = new sa.lib.gui.bean.SBeanFieldText();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -63,8 +71,6 @@ public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm {
         jlCode.setText("Código:*");
         jlCode.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel4.add(jlCode);
-
-        moTextCode.setText("sBeanFieldText1");
         jPanel4.add(moTextCode);
 
         jPanel2.add(jPanel4);
@@ -75,7 +81,6 @@ public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm {
         jlName.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel5.add(jlName);
 
-        moTextName.setText("sBeanFieldText1");
         moTextName.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel5.add(moTextName);
 
@@ -87,26 +92,63 @@ public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm {
         jlDetails.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel6.add(jlDetails);
 
-        moTextDetails.setText("sBeanFieldText1");
         moTextDetails.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel6.add(moTextDetails);
 
         jPanel2.add(jPanel6);
 
+        jPanel36.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlIsText.setText("Es texto:");
+        jlIsText.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel36.add(jlIsText);
+
+        moBIsText.setPreferredSize(new java.awt.Dimension(300, 23));
+        moBIsText.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                moBIsTextItemStateChanged(evt);
+            }
+        });
+        jPanel36.add(moBIsText);
+
+        jPanel2.add(jPanel36);
+
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlDetails1.setText("Valor por defecto:");
+        jlDetails1.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel7.add(jlDetails1);
+
+        moDefaultTextValue.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel7.add(moDefaultTextValue);
+
+        jPanel2.add(jPanel7);
+
         jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void moBIsTextItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_moBIsTextItemStateChanged
+        this.onIsTextChange();
+    }//GEN-LAST:event_moBIsTextItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel36;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlDetails;
+    private javax.swing.JLabel jlDetails1;
+    private javax.swing.JLabel jlIsText;
     private javax.swing.JLabel jlName;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBIsText;
+    private sa.lib.gui.bean.SBeanFieldText moDefaultTextValue;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
     private sa.lib.gui.bean.SBeanFieldText moTextDetails;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
@@ -124,6 +166,13 @@ public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm {
         moFields.addField(moTextDetails);
 
         moFields.setFormButton(jbSave);
+        
+        moBIsText.addItemListener(this);
+    }
+    
+    private void onIsTextChange() {
+        moDefaultTextValue.setEnabled(moBIsText.getValue());
+        moDefaultTextValue.setValue("");
     }
 
     @Override
@@ -162,6 +211,8 @@ public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm {
         moTextName.setValue(moRegistry.getName());
         moTextCode.setValue(moRegistry.getCode());
         moTextDetails.setValue(moRegistry.getDetails());
+        moDefaultTextValue.setValue(moRegistry.getDefaultTextValue());
+        moBIsText.setValue(moRegistry.isText());
 
         setFormEditable(true);
 
@@ -175,6 +226,8 @@ public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm {
         registry.setName(moTextName.getValue());
         registry.setCode(moTextCode.getValue());
         registry.setDetails(moTextDetails.getValue());
+        registry.setIsText(moBIsText.getValue());
+        registry.setDefaultTextValue(moBIsText.getValue() ? moDefaultTextValue.getValue() : "");
 
         return registry;
     }
@@ -185,4 +238,7 @@ public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm {
 
         return validation;
     }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) { }
 }

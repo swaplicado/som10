@@ -41,7 +41,8 @@ public abstract class SModConsts {
     public static final int CU_REP_GRP = 220016;
     public static final int CU_PARAMS = 220017;
     public static final int CU_LINK_ITEM_PARAM = 220018;
-    public static final int CU_LINK_ITEMS = 220019;
+    public static final int CU_LINK_FORMULAS = 220019;
+    public static final int SS_LINK_CFG_ITEMS = 220020;
 
     public static final int C_USR_GUI = 230001;
 
@@ -68,7 +69,7 @@ public abstract class SModConsts {
     public static final int SU_SEAS_PROD = 320013;
     public static final int SU_IOD_VAL_RANK = 320014;
     public static final int SU_LOT = 320016;
-    public static final int SU_LAB_GRINDING = 320018;
+    public static final int SU_GRINDING_RESULTS = 320018;
     public static final int SU_GRINDING_EVENT = 320019;
     public static final int SU_GRINDINGS = 320020;
     public static final int SU_INP_SRC = 320021;
@@ -106,6 +107,7 @@ public abstract class SModConsts {
     public static final int SX_TIC_WAH_UNLD = 340081;
     public static final int SX_TIC_LOG = 340023;
     public static final int SX_TIC_LAB_TEST_FRUIT = 340026;
+    public static final int SX_GRINDING_RESUME = 340028;
     public static final int SX_STK_STK = 340031;
     public static final int SX_STK_DIV = 340032;
     public static final int SX_STK_MOVE = 340033;
@@ -198,7 +200,7 @@ public abstract class SModConsts {
         TablesMap.put(CU_REP_GRP, "cu_rep_grp");
         TablesMap.put(CU_PARAMS, "cu_grin_params");
         TablesMap.put(CU_LINK_ITEM_PARAM, "cu_link_itm_params");
-        TablesMap.put(CU_LINK_ITEMS, "su_item");
+        TablesMap.put(CU_LINK_FORMULAS, "cu_link_forms");
 
         TablesMap.put(C_USR_GUI, "c_usr_gui");
 
@@ -227,7 +229,7 @@ public abstract class SModConsts {
         TablesMap.put(SU_LOT, "su_lots");
         TablesMap.put(SU_INP_SRC, "su_inp_src");
         TablesMap.put(SU_GRINDING_EVENT, "su_grin_events");
-        TablesMap.put(SU_LAB_GRINDING, "su_grin_res");
+        TablesMap.put(SU_GRINDING_RESULTS, "su_grin_res");
         TablesMap.put(SU_GRINDINGS, "su_grinding");
 
         TablesMap.put(S_LAB, "s_lab");

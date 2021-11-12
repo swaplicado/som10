@@ -287,11 +287,11 @@ public class SModuleSom extends SGuiModule {
                 sql = "SELECT id_parameter AS " + SDbConsts.FIELD_ID + "1, parameter AS " + SDbConsts.FIELD_ITEM + ", param_code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY parameter, id_parameter ";
                 break;
-            case SModConsts.CU_LINK_ITEMS:
+            case SModConsts.SS_LINK_CFG_ITEMS:
                 settings = new SGuiCatalogueSettings("Ítems configurados", 1);
                 settings.setCodeApplying(true);
                 sql = "SELECT id_item AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND id_item IN "
+                        + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " WHERE b_del = 0 AND id_item IN "
                         + "(SELECT DISTINCT fk_item_id FROM cu_link_itm_params WHERE b_del = 0) "
                         + "ORDER BY name, id_item ";
                 break;

@@ -80,7 +80,6 @@
                 <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextMonth">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="text" type="java.lang.String" value="sBeanFieldText3"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -160,7 +159,6 @@
                 <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextDate">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="text" type="java.lang.String" value="sBeanFieldText1"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -172,7 +170,7 @@
                 <Property name="verticalGap" type="int" value="0"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlDate3">
+                <Component class="javax.swing.JLabel" name="jlGrinPorc">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Molienda Porc. Ac."/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">

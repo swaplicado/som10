@@ -5,6 +5,7 @@
 
 package som.mod.som.db;
 
+import som.mod.som.data.SCaptureConfiguration;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -12,6 +13,7 @@ import sa.gui.util.SUtilConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
+import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
 
@@ -19,7 +21,7 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SDbGrindingResult extends SDbRegistryUser {
+public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
 
     protected int mnPkResultId;
     protected Date mtDateCapture;
@@ -54,9 +56,12 @@ public class SDbGrindingResult extends SDbRegistryUser {
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
+    
+    protected String msParameterAux;
+    protected SCaptureConfiguration moConfigurationAux;
 
     public SDbGrindingResult() {
-        super(SModConsts.SU_LAB_GRINDING);
+        super(SModConsts.SU_GRINDING_RESULTS);
         initRegistry();
     }
 
@@ -99,6 +104,9 @@ public class SDbGrindingResult extends SDbRegistryUser {
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
+    
+    public void setParameterAux(String msParameterAux) { this.msParameterAux = msParameterAux; }
+    public void setCaptureConfigurationAux(SCaptureConfiguration oCfgAux) { this.moConfigurationAux = oCfgAux; }
 
     public int getPkResultId() { return mnPkResultId; }
     public Date getDateCapture() { return mtDateCapture; }
@@ -130,7 +138,10 @@ public class SDbGrindingResult extends SDbRegistryUser {
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
-
+    
+    public String getParameterAux() { return msParameterAux; }
+    public SCaptureConfiguration getCaptureConfigurationAux() { return moConfigurationAux; }
+    
     @Override
     public void setPrimaryKey(int[] pk) {
         mnPkResultId = pk[0];
@@ -175,6 +186,9 @@ public class SDbGrindingResult extends SDbRegistryUser {
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
+        
+        msParameterAux = "";
+        moConfigurationAux = null;
     }
 
     @Override
@@ -397,5 +411,137 @@ public class SDbGrindingResult extends SDbRegistryUser {
         }
 
         return can;
+    }
+
+    @Override
+    public int[] getRowPrimaryKey() {
+        return getPrimaryKey();
+    }
+
+    @Override
+    public String getRowCode() {
+        return getCode();
+    }
+
+    @Override
+    public String getRowName() {
+        return getName();
+    }
+
+    @Override
+    public boolean isRowSystem() {
+        return isSystem();
+    }
+
+    @Override
+    public boolean isRowDeletable() {
+        return isDeletable();
+    }
+
+    @Override
+    public boolean isRowEdited() {
+        return isRegistryEdited();
+    }
+
+    @Override
+    public void setRowEdited(boolean edited) {
+        setRegistryEdited(edited);
+    }
+
+    @Override
+    public Object getRowValueAt(int col) {
+        Object value = null;
+
+        switch (col) {
+            case 0:
+                value = mnPkResultId;
+                break;
+            case 1:
+                value = msParameterAux;
+                break;
+            case 2:
+                value = mdResult8;
+                break;
+            case 3:
+                value = mdResult10;
+                break;
+            case 4:
+                value = mdResult12;
+                break;
+            case 5:
+                value = mdResult14;
+                break;
+            case 6:
+                value = mdResult16;
+                break;
+            case 7:
+                value = mdResult18;
+                break;
+            case 8:
+                value = mdResult20;
+                break;
+            case 9:
+                value = mdResult22;
+                break;
+            case 10:
+                value = mdResult0;
+                break;
+            case 11:
+                value = mdResult2;
+                break;
+            case 12:
+                value = mdResult4;
+                break;
+            case 13:
+                value = mdResult6;
+                break;
+            default:
+        }
+
+        return value;
+    }
+
+    @Override
+    public void setRowValueAt(Object value, int col) {
+        switch (col) {
+            case 2:
+                mdResult8 = (Double) value;
+                break;
+            case 3:
+                mdResult10 = (Double) value;
+                break;
+            case 4:
+                mdResult12 = (Double) value;
+                break;
+            case 5:
+                mdResult14 = (Double) value;
+                break;
+            case 6:
+                mdResult16 = (Double) value;
+                break;
+            case 7:
+                mdResult18 = (Double) value;
+                break;
+            case 8:
+                mdResult20 = (Double) value;
+                break;
+            case 9:
+                mdResult22 = (Double) value;
+                break;
+            case 10:
+                mdResult0 = (Double) value;
+                break;
+            case 11:
+                mdResult2 = (Double) value;
+                break;
+            case 12:
+                mdResult4 = (Double) value;
+                break;
+            case 13:
+                mdResult6 = (Double) value;
+                break;
+            
+            default:
+        }
     }
 }

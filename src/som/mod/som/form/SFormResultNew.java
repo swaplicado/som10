@@ -9,7 +9,6 @@ import java.awt.event.ItemListener;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import sa.lib.SLibConsts;
-import sa.lib.SLibTimeUtils;
 import sa.lib.db.SDbRegistry;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
@@ -35,7 +34,7 @@ public class SFormResultNew extends SBeanForm implements ItemListener {
      * @param title
      */
     public SFormResultNew(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_LAB_GRINDING, SLibConsts.UNDEFINED, title);
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_GRINDING_RESULTS, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -147,13 +146,16 @@ public class SFormResultNew extends SBeanForm implements ItemListener {
 
         moCaptureDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlDate.getText()), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
+        moKeyLot.setKeySettings(miClient, SGuiUtils.getLabelName(jlLot.getText()), moKeyLot.isEnabled());
 
         moFields.addField(moCaptureDate);
         moFields.addField(moKeyItem);
+        moFields.addField(moKeyLot);
         
         moFields.setFormButton(jbSave);
         
         maItemPk = new int[] { 1 };
+        moKeyLot.setValue(new int[] { 0 });
         
         jbEdit.setEnabled(false);
         
@@ -186,7 +188,7 @@ public class SFormResultNew extends SBeanForm implements ItemListener {
 
     @Override
     public void reloadCatalogues() {
-        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.CU_LINK_ITEMS, 0, null);
+        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SS_LINK_CFG_ITEMS, 0, null);
         this.reloadLots();
     }
     
@@ -208,16 +210,15 @@ public class SFormResultNew extends SBeanForm implements ItemListener {
         mbFirstActivation = true;
 
         removeAllListeners();
-        reloadCatalogues();
         jtfRegistryKey.setText("");
         
         maItemPk = new int[] { moRegistry.getFkItemId() };
         
         moCaptureDate.setValue(moRegistry.getDateCapture());
-        moKeyItem.setValue(maItemPk);
         bAllItems.setSelected(false);
         onChangeAllItems();
-
+        reloadCatalogues();
+        moKeyItem.setValue(maItemPk);
         addAllListeners();
         
         moKeyLot.setSelectedIndex(1);
@@ -246,21 +247,7 @@ public class SFormResultNew extends SBeanForm implements ItemListener {
     @Override
     public void setValue(int type, Object value) {
         switch(type) {
-            case SModConsts.SX_TIC_SUP_RM:
-                
-                break;
-
-            case SModConsts.SS_IOG_TP:
-              
-                break;
-
-            case SModConsts.SX_EXT_DPS:
-               
-                break;
-
-            case SModConsts.S_TIC:
-               
-                break;
+            default:
         }
     }
 
@@ -269,7 +256,12 @@ public class SFormResultNew extends SBeanForm implements ItemListener {
         SGuiValidation validation = moFields.validateFields();
 
         if (validation.isValid()) {
-            
+            if (! bAllItems.isSelected()) {
+                if (moKeyLot.getValue() == null || moKeyLot.getValue().length == 0) {
+                    validation.setMessage("Debe elegir un lote.");
+                    validation.setComponent(moKeyLot.getComponent());
+                }
+            }
         }
 
         return validation;

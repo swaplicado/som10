@@ -25,6 +25,8 @@ import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiReport;
 import som.mod.ext.db.SExtUtils;
 import som.mod.ext.form.SDialogRepComparativeTicket;
+import som.mod.som.db.SDbGrindingEvent;
+import som.mod.som.db.SDbGrindingResult;
 import som.mod.som.db.SDbLaboratory;
 import som.mod.som.db.SDbLaboratoryTest;
 import som.mod.som.db.SDbMgmtTicketsSupplierInputType;
@@ -44,6 +46,8 @@ import som.mod.som.form.SDialogRepReceivedFruitHist;
 import som.mod.som.form.SDialogRepReceivedSeed;
 import som.mod.som.form.SDialogTicketsSearch;
 import som.mod.som.form.SFormDialogAssignSeasonRegion;
+import som.mod.som.form.SFormGrindingEvent;
+import som.mod.som.form.SFormGrindingResultHr;
 import som.mod.som.form.SFormLaboratory;
 import som.mod.som.form.SFormMgmtSupplierInputType;
 import som.mod.som.form.SFormMgmtSupplierItem;
@@ -57,6 +61,9 @@ import som.mod.som.form.SFormTicketMgmt;
 import som.mod.som.form.SFormTicketSeasonRegion;
 import som.mod.som.form.SFormTicketWahUnld;
 import som.mod.som.form.SFormWarehouseStart;
+import som.mod.som.view.SViewGrindingEvents;
+import som.mod.som.view.SViewGrindingResults;
+import som.mod.som.view.SViewGrindingResume;
 import som.mod.som.view.SViewLaboratory;
 import som.mod.som.view.SViewOilMoiPond;
 import som.mod.som.view.SViewRegion;
@@ -75,7 +82,7 @@ import som.mod.som.view.SViewWarehouseStart;
 
 /**
  * 
- * @author Néstor Ávalos, Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
+ * @author Néstor Ávalos, Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín, Edwin Carmona
  * 2019-01-17, Sergio Flores: Cambio de ubicación del catálogo de agrupadores de reporte, del módulo configuración al módulo materias primas.
  */
 public class SModuleSomRm extends SGuiModule implements ActionListener {
@@ -83,6 +90,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenu mjCat;   // Catalogues
     private JMenuItem mjCatProducer;
     private JMenuItem mjCatItem;
+    private JMenuItem mjCatLot;
     private JMenuItem mjCatInputType;
     private JMenuItem mjCatInputClass;
     private JMenuItem mjCatInputCategory;
@@ -110,6 +118,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjTicManSupplierInputType;
     private JMenuItem mjTicRank;
     private JMenuItem mjTicSearch;
+    private JMenu mjGrinding;   // Tickets
+    private JMenuItem mjGriEvents;
+    private JMenuItem mjGriResume;
+    private JMenuItem mjGriResults;
     private JMenu mjQa;    // Quality Assurrance
     private JMenuItem mjQaLabTest;
     private JMenuItem mjQaLabTestDet;
@@ -133,6 +145,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private SFormSupraRegion moFormSupraRegion;
     private SFormRegion moFormRegion;
     private SFormSeason moFormSeason;
+    private SFormGrindingEvent moFormGrindingEvent;
+    private SFormGrindingResultHr moFormResult;
     private SFormLaboratory moFormLaboratory;
     private SFormTicket moFormTicket;
     private SFormTicket moFormTicketTare;
@@ -159,6 +173,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCat = new JMenu("Catálogos");
         mjCatProducer = new JMenuItem("Proveedores");
         mjCatItem = new JMenuItem("Ítems");
+        mjCatLot = new JMenuItem("Lotes");
         mjCatInputType = new JMenuItem("Tipos de insumo");
         mjCatInputClass = new JMenuItem("Clases de insumo");
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
@@ -170,6 +185,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
         mjCat.add(mjCatProducer);
         mjCat.add(mjCatItem);
+        mjCat.add(mjCatLot);
         mjCat.addSeparator();
         mjCat.add(mjCatInputType);
         mjCat.add(mjCatInputClass);
@@ -186,6 +202,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
         mjCatProducer.addActionListener(this);
         mjCatItem.addActionListener(this);
+        mjCatLot.addActionListener(this);
         mjCatInputType.addActionListener(this);
         mjCatInputClass.addActionListener(this);
         mjCatInputCategory.addActionListener(this);
@@ -259,6 +276,18 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicManSupplierInputType.addActionListener(this);
         mjTicRank.addActionListener(this);
         mjTicSearch.addActionListener(this);
+        mjGrinding = new JMenu("Molienda");
+        mjGriEvents = new JMenuItem("Eventos de molienda");
+        mjGriResume = new JMenuItem("Resumen de molienda");
+        mjGriResults = new JMenuItem("Resultados de molienda");
+        
+        mjGrinding.add(mjGriEvents);
+        mjGrinding.add(mjGriResume);
+        mjGrinding.add(mjGriResults);
+        
+        mjGriEvents.addActionListener(this);
+        mjGriResume.addActionListener(this);
+        mjGriResults.addActionListener(this);
 
         mjQa = new JMenu("Control calidad");
         mjQaLabTest = new JMenuItem("Análisis de laboratorio");
@@ -345,6 +374,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicManSupplierInputType.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
         mjTicRank.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
         mjTicSearch.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_SCA, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_REP_RM }));
+        
+        mjGrinding.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB }));
 
         mjQa.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
         mjQaWahStart.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
@@ -359,7 +390,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
     @Override
     public JMenu[] getMenus() {
-        return new JMenu[] { mjCat, mjCfg, mjTic, mjQa, mjRep };
+        return new JMenu[] { mjCat, mjCfg, mjTic, mjGrinding, mjQa, mjRep };
     }
 
     @Override
@@ -390,6 +421,12 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.SX_SEAS_REG:
                 registry = new SDbSeason();
+                break;
+            case SModConsts.SU_GRINDING_EVENT:
+                registry = new SDbGrindingEvent();
+                break;
+            case SModConsts.SU_GRINDING_RESULTS:
+                registry = new SDbGrindingResult();
                 break;
             case SModConsts.S_LAB:
                 registry = new SDbLaboratory();
@@ -521,6 +558,15 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SU_SEAS_PROD:
                 view = new SViewSeasonProducer(miClient, "Config. proveedores");
                 break;
+            case SModConsts.SU_GRINDING_EVENT:
+                view = new SViewGrindingEvents(miClient, "Eventos de molienda");
+                break;
+            case SModConsts.SX_GRINDING_RESUME:
+                view = new SViewGrindingResume(miClient, "Resumen de molienda");
+                break;
+            case SModConsts.SU_GRINDING_RESULTS:
+                view = new SViewGrindingResults(miClient, "Resultados de molienda");
+                break;
             case SModConsts.S_LAB:
                 switch (subtype) {
                     case SModSysConsts.SX_LAB_TEST:
@@ -632,6 +678,14 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 if (moFormDialogAssignSeasonRegion == null) moFormDialogAssignSeasonRegion = new SFormDialogAssignSeasonRegion(miClient, "Clasificar boletos sin temporada y/o región");
                 form = moFormDialogAssignSeasonRegion;
                 break;
+            case SModConsts.SU_GRINDING_EVENT:
+                if (moFormGrindingEvent == null) moFormGrindingEvent = new SFormGrindingEvent(miClient, "Evento de molienda");
+                form = moFormGrindingEvent;
+                break;
+            case SModConsts.SU_GRINDING_RESULTS:
+                if (moFormResult == null) moFormResult = new SFormGrindingResultHr(miClient, "Resultado molienda");
+                form = moFormResult;
+                break;
             case SModConsts.S_TIC:
                 if (moFormTicket == null) moFormTicket = new SFormTicket(miClient, "Boleto", SLibConsts.UNDEFINED);
                 form = moFormTicket;
@@ -737,6 +791,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             else if (menuItem == mjCatItem) {
                 miClient.getSession().showView(SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
             }
+            else if (menuItem == mjCatLot) {
+                miClient.getSession().showView(SModConsts.SU_LOT, SLibConsts.UNDEFINED, null);
+            }
             else if (menuItem == mjCatInputType) {
                 miClient.getSession().showView(SModConsts.SU_INP_TP, SLibConsts.UNDEFINED, null);
             }
@@ -769,6 +826,15 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCfgSeasonProducer) {
                 showView(SModConsts.SU_SEAS_PROD, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjGriEvents) {
+                showView(SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjGriResume) {
+                showView(SModConsts.SX_GRINDING_RESUME, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjGriResults) {
+                showView(SModConsts.SU_GRINDING_RESULTS, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCfgRegions) {
                 showView(SModConsts.SU_REG, SLibConsts.UNDEFINED, null);

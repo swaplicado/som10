@@ -29,8 +29,9 @@ import sa.lib.gui.SGuiUtils;
 import som.mod.SModConsts;
 import som.mod.som.db.SDbGrinding;
 import som.mod.som.db.SRowData;
-import som.mod.som.db.data.SGrindingData;
-import som.mod.som.db.data.SGrindingResultsUtils;
+import som.mod.som.data.SGrindingResultsUtils;
+import som.mod.som.data.SGrindingResume;
+import som.mod.som.data.SGrindingResumeRow;
 
 /**
  *
@@ -82,7 +83,7 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         jlDate2 = new javax.swing.JLabel();
         moTextDate = new sa.lib.gui.bean.SBeanFieldText();
         jPanel11 = new javax.swing.JPanel();
-        jlDate3 = new javax.swing.JLabel();
+        jlGrinPorc = new javax.swing.JLabel();
         moGrindingOilPercent = new sa.lib.gui.bean.SBeanFieldDecimal();
         jbSaveOilP = new javax.swing.JButton();
         jpEvents = new javax.swing.JPanel();
@@ -109,7 +110,6 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         jPanel8.add(jlDate);
 
         moTextMonth.setEditable(false);
-        moTextMonth.setText("sBeanFieldText3");
         jPanel8.add(moTextMonth);
 
         jPanel4.add(jPanel8);
@@ -149,16 +149,15 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         jPanel10.add(jlDate2);
 
         moTextDate.setEditable(false);
-        moTextDate.setText("sBeanFieldText1");
         jPanel10.add(moTextDate);
 
         jPanel4.add(jPanel10);
 
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlDate3.setText("Molienda Porc. Ac.");
-        jlDate3.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel11.add(jlDate3);
+        jlGrinPorc.setText("Molienda Porc. Ac.");
+        jlGrinPorc.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel11.add(jlGrinPorc);
         jPanel11.add(moGrindingOilPercent);
 
         jbSaveOilP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/erp/img/icon_std_action.gif"))); // NOI18N
@@ -197,7 +196,10 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         SGuiUtils.setWindowBounds(this, 720, 450);
 
         moTextMonth.setTextSettings(SGuiUtils.getLabelName(jlDate.getText()), 50);
-        moDecRendTeo.setDecimalSettings(SGuiUtils.getLabelName(jlRT.getText()), SGuiConsts.GUI_TYPE_DEC, false);
+        moDecRendTeo.setDecimalSettings(SGuiUtils.getLabelName(jlRT.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        
+        moGrindingBasc.setDecimalSettings(SGuiUtils.getLabelName(jlGrinBas.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moGrindingOilPercent.setDecimalSettings(SGuiUtils.getLabelName(jlGrinPorc.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
 
         moGridEvents = new SGridPaneForm(miClient, SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, "Eventos durante molienda") {
             @Override
@@ -251,119 +253,21 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
     @SuppressWarnings("unchecked")
     private void showEvents() {
         Vector<SGridRow> rows = new Vector<>();
+        ArrayList<SGrindingResumeRow> grindingRows = SGrindingResume.getResumeRows(miClient, mtParamDate, mnItem);
         
-        boolean onlyCurrentMonth = false;
-        ArrayList<SGrindingData> grindingOfMonths = SGrindingResultsUtils.getGrindingByMonth(miClient, mtParamDate, mnItem, onlyCurrentMonth);
+        SGrindingResumeRow last = grindingRows.remove(grindingRows.size() - 1);
         
-        double dTotalGrindingBascule = 0d;
-        double dTotalGrindingOilPercent = 0d;
-        for (SGrindingData grindingOfMonth : grindingOfMonths) {
-            SRowData row = new SRowData();
-            
-            row.setData("Molienda " + grindingOfMonth.getMonthText());
-            row.setValueD(grindingOfMonth.getSumGrindingOilPercent());
-            row.setUnit("kg");
-            
-            rows.add(row);
-            
-            SRowData row1 = new SRowData();
-            
-            row1.setData("Molienda " + grindingOfMonth.getMonthText() + " báscula");
-            row1.setValueD(grindingOfMonth.getSumGrindingBascule());
-            row1.setUnit("kg");
-            
-            rows.add(row1);
-            
-            dTotalGrindingOilPercent += grindingOfMonth.getSumGrindingOilPercent();
-            dTotalGrindingBascule += grindingOfMonth.getSumGrindingBascule();
-        }
-        
-        String [] dataRows = {
-                            "Prom. Mensual Residual 9C",
-                            "Prom. Mensual Residual Prensa",
-                            "Prom. Mensual Cont. Ac.Semilla",
-                            "Prom. Mensual Proteína",
-                            "Molienda total x dif aceite",
-                            "Molienda total  Báscula",
-                        };
-        
-        for (int i = 0; i < dataRows.length; i++) {
-            String string = dataRows[i];
-            
-            SRowData row = new SRowData();
-            row.setData(string);
-            
-            switch (i) {
-                case 0:
-                    row.setValueD(SGrindingResultsUtils.getMonthAverage(miClient, mtParamDate, mnItem, SGrindingResultsUtils.RESID_PASTA));
-                    row.setUnit("%");
-                    break;
-                case 1:
-                    row.setValueD(SGrindingResultsUtils.getMonthAverage(miClient, mtParamDate, mnItem, SGrindingResultsUtils.RESID_PRENSA));
-                    row.setUnit(" ");
-                    break;
-                case 2:
-                    row.setValueD(SGrindingResultsUtils.getMonthAverage(miClient, mtParamDate, mnItem, SGrindingResultsUtils.CONT_ACEITE_SEM));
-                    row.setUnit("%");
-                    break;
-                case 3:
-                    row.setValueD(SGrindingResultsUtils.getMonthAverage(miClient, mtParamDate, mnItem, SGrindingResultsUtils.PROTEINA));
-                    row.setUnit("%");
-                    break;
-                case 4:
-                    row.setValueD(dTotalGrindingOilPercent);
-                    row.setUnit("kg");
-                    break;
-                case 5:
-                    row.setValueD(dTotalGrindingBascule);
-                    row.setUnit("kg");
-                    break;
-                    
-                default:
-                    row.setValueD(0d);
-                    row.setUnit("");
-            }
+        SRowData row = null;
+        for (SGrindingResumeRow grindingRow : grindingRows) {
+            row = new SRowData();
+            row.setData(grindingRow.getDataName());
+            row.setValueD(grindingRow.getValue());
+            row.setUnit(grindingRow.getUnit());
             
             rows.add(row);
         }
         
-        boolean onlyCurrentDay = false;
-        boolean isWeightedAverage = true;
-        double dWeightedAvgContSem =  SGrindingResultsUtils.getWeightedAverage(miClient, mtParamDate, dTotalGrindingOilPercent, 
-                                                        mnItem, SGrindingResultsUtils.CONT_ACEITE_SEM, onlyCurrentDay, isWeightedAverage);
-        SRowData row1 = new SRowData();
-            
-        row1.setData("Ponderado Cont. Aceite Semilla");
-        row1.setValueD(dWeightedAvgContSem);
-        row1.setUnit("%");
-
-        rows.add(row1);
-        
-        double dWeightedAvgResPasta =  SGrindingResultsUtils.getWeightedAverage(miClient, mtParamDate, dTotalGrindingOilPercent, 
-                                                            mnItem, SGrindingResultsUtils.RESID_PASTA, onlyCurrentDay, isWeightedAverage);
-        
-        SRowData row = new SRowData();
-            
-        row.setData("Ponderado Residual Promedio 9C");
-        row.setValueD(dWeightedAvgResPasta);
-        row.setUnit("%");
-
-        rows.add(row);
-        
-        SRowData rowRt = new SRowData();
-            
-        rowRt.setData("Ponderado rendmiento teórico");
-        rowRt.setValueD(1 - (1 - dWeightedAvgContSem)/(1 - dWeightedAvgResPasta));
-        rowRt.setUnit("%");
-
-        rows.add(rowRt);
-        
-        double resPasta = SGrindingResultsUtils.getWeightedAverage(miClient, mtParamDate, 0d, 
-                                                            mnItem, SGrindingResultsUtils.RESID_PASTA, true, false);
-        double conAcSem = SGrindingResultsUtils.getWeightedAverage(miClient, mtParamDate, 0d, 
-                                                            mnItem, SGrindingResultsUtils.CONT_ACEITE_SEM, true, false);
-        
-        moDecRendTeo.setValue((1 - (1 - (conAcSem / 100)) / (1 - (resPasta / 100))) * 100);
+        moDecRendTeo.setValue(last.getValue());
         
         moGridEvents.clearGridRows();
         moGridEvents.populateGrid(rows);
@@ -386,8 +290,8 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
     private javax.swing.JButton jbSaveOilP;
     private javax.swing.JLabel jlDate;
     private javax.swing.JLabel jlDate2;
-    private javax.swing.JLabel jlDate3;
     private javax.swing.JLabel jlGrinBas;
+    private javax.swing.JLabel jlGrinPorc;
     private javax.swing.JLabel jlRT;
     private javax.swing.JPanel jpControls;
     private javax.swing.JPanel jpEvents;

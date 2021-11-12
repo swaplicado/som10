@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package som.mod.som.db.data;
+package som.mod.som.data;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +59,7 @@ public class SDailyStockUtils {
             
             SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "AETHSOM", "som@aeth.mx");
             
-            ArrayList<String> mails = new ArrayList();
+            ArrayList<String> mails = new ArrayList<>();
             mails.add("edwin.carmona@swaplicado.com.mx");
             
             SMail mail = new SMail(sender, SMailUtils.encodeSubjectUtf8("Inventario diario"), SDailyStockReportWriter.createMailBody(est, estEty, productionStock, resumeStock, allStock), mails);

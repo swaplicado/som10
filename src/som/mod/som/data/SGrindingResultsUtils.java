@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package som.mod.som.db.data;
+package som.mod.som.data;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Month;
@@ -14,6 +16,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.poi.ss.util.CellReference;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiClient;
 import som.mod.SModConsts;
@@ -54,22 +57,37 @@ public class SGrindingResultsUtils {
     public static int getLastConfiguration(SGuiClient client, final int option) {
         String field = "";
         
+        String sql2 = "";
         if (option == ITEM) {
             field = "fk_item_id";
+            
+            sql2 = "SELECT " + field + " AS l_conf FROM " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + 
+                            " WHERE b_del = 0 ORDER BY fk_usr_ins DESC;";
         }
         else {
             field = "fk_lot_id";
+            
+            sql2 = "SELECT id_lot AS l_conf FROM " + SModConsts.TablesMap.get(SModConsts.SU_LOT) + 
+                            " WHERE b_del = 0 ORDER BY fk_usr_ins DESC;";
         }
         
-        String sql = "SELECT " + field + " FROM " + SModConsts.TablesMap.get(SModConsts.SU_LAB_GRINDING) + 
+        String sql = "SELECT " + field + " FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + 
                         " WHERE b_del = 0 ORDER BY id_result DESC;";
         
+        
         ResultSet itemIdRes;
+        ResultSet lastConfRes;
         try {
             itemIdRes = client.getSession().getStatement().executeQuery(sql);
             
             while(itemIdRes.next()) {
                 return itemIdRes.getInt(field);
+            }
+            
+            lastConfRes = client.getSession().getStatement().executeQuery(sql2);
+            
+            while(lastConfRes.next()) {
+                return lastConfRes.getInt("l_conf");
             }
             
             return 0;
@@ -89,15 +107,29 @@ public class SGrindingResultsUtils {
      * @return int id del lote
      */
     public static int getLastLotByItem(SGuiClient client, final int item) {
-        String sql = "SELECT fk_lot_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_LAB_GRINDING) + 
+        if (item == 0) {
+            return 0;
+        }
+        
+        String sql = "SELECT fk_lot_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + 
                         " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY id_result DESC;";
         
+        String sqlLots = "SELECT id_lot FROM " + SModConsts.TablesMap.get(SModConsts.SU_LOT) + 
+                        " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY fk_usr_ins DESC;";
+        
         ResultSet itemIdRes;
+        ResultSet lotIdRes;
         try {
             itemIdRes = client.getSession().getStatement().executeQuery(sql);
             
             while(itemIdRes.next()) {
                 return itemIdRes.getInt("fk_lot_id");
+            }
+            
+            lotIdRes = client.getSession().getStatement().executeQuery(sqlLots);
+            
+            while(lotIdRes.next()) {
+                return lotIdRes.getInt("id_lot");
             }
             
             return 0;
@@ -213,7 +245,7 @@ public class SGrindingResultsUtils {
         }
         
         String sql = "SELECT dt_capture FROM " + 
-                    SModConsts.TablesMap.get(SModConsts.SU_LAB_GRINDING) + 
+                    SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + 
                     " WHERE fk_item_id = " + nItemId +
                     " AND fk_lot_id = " + nLotId +
                     " AND MONTH(dt_capture) = MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
@@ -249,7 +281,7 @@ public class SGrindingResultsUtils {
      */
     private static int resultExists(SGuiClient client, final int itm, final int param, final int lot, final Date dtCapture) {
         String sql = "SELECT id_result FROM " + 
-                        SModConsts.TablesMap.get(SModConsts.SU_LAB_GRINDING) + 
+                        SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + 
                     " WHERE fk_item_id = " + itm + 
                     " AND fk_parameter_id = " + param + 
                     " AND fk_lot_id = " + lot +
@@ -302,7 +334,7 @@ public class SGrindingResultsUtils {
                     "result_04," +
                     "result_06 " +
                     "FROM " +
-                    SModConsts.TablesMap.get(SModConsts.SU_LAB_GRINDING) + " " +
+                    SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " " +
                     "WHERE " +
                     " MONTH(dt_capture) = MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
                     " AND fk_parameter_id = " + parameter + " " +
@@ -444,7 +476,7 @@ public class SGrindingResultsUtils {
                     "	IF(result_02 > 0, 1, 0) + IF(result_04 > 0, 1, 0) + IF(result_06 > 0, 1, 0)), 0) AS promedio, " +
                     "	" + (!onlyCurrentDay ? "SUM(" : "") + "COALESCE(@prom / " + monthGrinding + 
                     " * COALESCE((SELECT grinding_oil_perc FROM som_com.su_grinding WHERE dt_capture = sgr.dt_capture), 0),0)" + (!onlyCurrentDay ? ")" : "") + " AS ponderado " +
-                    "FROM " + SModConsts.TablesMap.get(SModConsts.SU_LAB_GRINDING) + " sgr " +
+                    "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " sgr " +
                     "WHERE fk_parameter_id = " + parameterId + " " +
                     "AND fk_item_id = " + nItemId + " " +
                     "AND MONTH(dt_capture) = MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
@@ -504,7 +536,8 @@ public class SGrindingResultsUtils {
         
         String sql = "SELECT id_grinding FROM " + 
                     SModConsts.TablesMap.get(SModConsts.SU_GRINDINGS) + 
-                    " WHERE dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' "+
+                    " WHERE dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' " +
+                    " AND NOT b_del " +
                     " ORDER BY id_grinding DESC;";
         
         ResultSet resIdResult;
@@ -554,7 +587,8 @@ public class SGrindingResultsUtils {
                         "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDINGS) + " " +
                         "WHERE " +
                         "NOT b_del " +
-                        "AND MONTH(dt_capture) " + (onlyCurrentMonth ? "=" : "<=" ) +  " MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "')" +
+                        "AND MONTH(dt_capture) " + (onlyCurrentMonth ? "=" : "<=" ) +  " MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
+                        "AND YEAR(dt_capture) = " + " YEAR('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
                         "AND fk_item_id = " + nItemId + " " +
                         "GROUP BY g_month;";
         
@@ -583,5 +617,61 @@ public class SGrindingResultsUtils {
         }
         
         return null;
+    }
+    
+    /**
+     * Obtiene el archivo de configuración contenido en el campo de la relación de parámetro vs ítem
+     * 
+     * @param client
+     * @param nItemId
+     * 
+     * @return SCaptureConfiguration
+     */
+    public static SCaptureConfiguration getCfgFile(SGuiClient client, final int nItemId) {
+        String query = "SELECT " +
+                        "    capture_cfg " +
+                        "FROM " +
+                        "    " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + " " +
+                        "WHERE " +
+                        "    fk_item_id = " + nItemId + " AND NOT b_del " +
+                        "ORDER BY capture_order ASC " +
+                        "LIMIT 1;";
+        
+        ResultSet resCfg;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            resCfg = client.getSession().getStatement().getConnection().createStatement().executeQuery(query);
+            
+            if (resCfg.next()) {
+                SCaptureConfiguration cfg = mapper.readValue(resCfg.getString("capture_cfg"), SCaptureConfiguration.class);
+                
+                return cfg;
+            }
+        } 
+        catch (SQLException ex) {
+            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    public static String getFormula(String sFormula, int row) {
+        int startPos = sFormula.indexOf("[");
+        int endPos = sFormula.indexOf("]");
+
+        while (startPos != -1 && endPos != -1) {
+            String pair = sFormula.substring(startPos + 1, endPos);
+            String[] aPair = pair.split(",");
+            String colName = aPair[0];
+            int r = row + 1 + Integer.parseInt(aPair[1]);
+            sFormula = sFormula.replace(("[" + pair + "]"), colName + r);
+
+            startPos = sFormula.indexOf("[");
+            endPos = sFormula.indexOf("]");
+        }
+        
+        return sFormula;
     }
 }

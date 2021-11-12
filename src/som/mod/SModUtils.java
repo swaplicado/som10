@@ -31,8 +31,7 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SU_SCA,
             SModConsts.SU_PROD,
             SModConsts.SU_IOD_VAL_RANK,
-            SModConsts.SU_EXT_WAH,
-            SModConsts.CU_LINK_ITEMS
+            SModConsts.SU_EXT_WAH
         });
     }
 
@@ -45,7 +44,7 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SU_SEAS_REG,
             SModConsts.SU_SEAS_PROD,
             SModConsts.SU_GRINDING_EVENT,
-            SModConsts.SU_LAB_GRINDING,
+            SModConsts.SU_GRINDING_RESULTS,
             SModConsts.SU_GRINDINGS,
             SModConsts.S_LAB,
             SModConsts.S_LAB_TEST,

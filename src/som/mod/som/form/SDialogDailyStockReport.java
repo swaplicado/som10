@@ -15,7 +15,7 @@ import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanFormDialog;
-import som.mod.som.db.data.SDailyStockUtils;
+import som.mod.som.data.SDailyStockUtils;
 
 /**
  *

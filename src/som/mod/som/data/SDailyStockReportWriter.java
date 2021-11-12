@@ -1,4 +1,4 @@
-package som.mod.som.db.data;
+package som.mod.som.data;
  
 import java.io.File;
 import java.io.FileOutputStream;
