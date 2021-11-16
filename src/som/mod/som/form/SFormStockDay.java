@@ -755,7 +755,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
                 SLibUtils.round((moDecWarehouseVolume.getValue() > 0 ? ((dVolume / moDecWarehouseVolume.getValue()) * moDecWarehouseHeight.getValue()) : 0),
                 SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
             
-            double dVolumeAdj = moBranchWarehouse.getAdjustLiter();
+            double dVolumeAdj = moBranchWarehouse.getVolumeAdjustLiter();
             
             moDecWarehouseVolumeAdjust.setValue(SLibUtils.round(dVolumeAdj, SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
             moDecWarehouseHeightAdjust.setValue(

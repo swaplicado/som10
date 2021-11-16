@@ -347,7 +347,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         moDecDimensionBase.setValue(moRegistry.getDimensionBase());
         moDecDimensionHeight.setValue(moRegistry.getDimensionHeight());
         moDecCapacityRealLiter.setValue(moRegistry.getCapacityRealLiter());
-        moDecAdjust.setValue(moRegistry.getAdjustLiter());
+        moDecAdjust.setValue(moRegistry.getVolumeAdjustLiter());
         moDecAcidity.setValue(moRegistry.getAcidity());
         moKeyWarehouseType.setValue(new int[] { moRegistry.getFkWarehouseTypeId() });
         moKeyProductionLine.setValue(new int[] { moRegistry.getFkProductionLineId() });
@@ -375,7 +375,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         registry.setDimensionBase(moDecDimensionBase.getValue());
         registry.setDimensionHeight(moDecDimensionHeight.getValue());
         registry.setCapacityRealLiter(moDecCapacityRealLiter.getValue());
-        registry.setAdjustLiter(moDecAdjust.getValue());
+        registry.setVolumeAdjustLiter(moDecAdjust.getValue());
         registry.setAcidity(moDecAcidity.getValue());
         registry.setFkWarehouseTypeId(moKeyWarehouseType.getValue()[0]);
         registry.setFkProductionLineId(moKeyProductionLine.getValue()[0]);
