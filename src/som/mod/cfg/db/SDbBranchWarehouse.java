@@ -28,7 +28,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     protected double mdDimensionBase;
     protected double mdDimensionHeight;
     protected double mdCapacityRealLiter;
-    protected double mdAdjustLiter;
+    protected double mdVolumeAdjustLiter;
     protected double mdAcidity;
     protected String msNote;
     /*
@@ -61,7 +61,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     public void setDimensionBase(double d) { mdDimensionBase = d; }
     public void setDimensionHeight(double d) { mdDimensionHeight = d; }
     public void setCapacityRealLiter(double d) { mdCapacityRealLiter = d; }
-    public void setAdjustLiter(double d) { mdAdjustLiter = d; }
+    public void setVolumeAdjustLiter(double d) { mdVolumeAdjustLiter = d; }
     public void setAcidity(double d) { mdAcidity = d; }
     public void setNote(String s) { msNote = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -85,7 +85,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     public double getDimensionBase() { return mdDimensionBase; }
     public double getDimensionHeight() { return mdDimensionHeight; }
     public double getCapacityRealLiter() { return mdCapacityRealLiter; }
-    public double getAdjustLiter() { return mdAdjustLiter; }
+    public double getVolumeAdjustLiter() { return mdVolumeAdjustLiter; }
     public double getAcidity() { return mdAcidity; }
     public String getNote() { return msNote; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -125,7 +125,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
         mdDimensionBase = 0;
         mdDimensionHeight = 0;
         mdCapacityRealLiter = 0;
-        mdAdjustLiter = 0;
+        mdVolumeAdjustLiter = 0;
         mdAcidity = 0;
         msNote = "";
         mbUpdatable = false;
@@ -198,7 +198,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
             mdDimensionBase = resultSet.getDouble("dim_base");
             mdDimensionHeight = resultSet.getDouble("dim_heig");
             mdCapacityRealLiter = resultSet.getDouble("cap_real_lt");
-            mdAdjustLiter = resultSet.getDouble("vol_adj_lt");
+            mdVolumeAdjustLiter = resultSet.getDouble("vol_adj_lt");
             mdAcidity = resultSet.getDouble("acidity");
             msNote = resultSet.getString("note");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -245,7 +245,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
                     mdDimensionBase + ", " +
                     mdDimensionHeight + ", " +
                     mdCapacityRealLiter + ", " +
-                    mdAdjustLiter + ", " +
+                    mdVolumeAdjustLiter + ", " +
                     mdAcidity + ", " +
                     (msNote.equals("") ? "'-'" : msNote) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -274,7 +274,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
                     "dim_base = " + mdDimensionBase + ", " +
                     "dim_heig = " + mdDimensionHeight + ", " +
                     "cap_real_lt = " + mdCapacityRealLiter + ", " +
-                    "vol_adj_lt = " + mdAdjustLiter + ", " +
+                    "vol_adj_lt = " + mdVolumeAdjustLiter + ", " +
                     "acidity = " + mdAcidity + ", " +
                     "note = " + (msNote.equals("") ? "'-'" : "'" + msNote + "'") + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -309,7 +309,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
         registry.setDimensionBase(this.getDimensionBase());
         registry.setDimensionHeight(this.getDimensionHeight());
         registry.setCapacityRealLiter(this.getCapacityRealLiter());
-        registry.setAdjustLiter(this.getAdjustLiter());
+        registry.setVolumeAdjustLiter(this.getVolumeAdjustLiter());
         registry.setAcidity(this.getAcidity());
         registry.setNote(this.getNote());
         registry.setUpdatable(this.isUpdatable());
