@@ -7,8 +7,14 @@ package som.mod.som.data;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -16,12 +22,21 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.poi.ss.util.CellReference;
+import javax.mail.MessagingException;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiClient;
+import sa.lib.mail.SMail;
+import sa.lib.mail.SMailConsts;
+import sa.lib.mail.SMailSender;
+import sa.lib.mail.SMailUtils;
+import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
+import som.mod.cfg.db.SDbCompany;
 import som.mod.som.db.SDbGrinding;
 import som.mod.som.db.SDbGrindingResult;
+import som.mod.som.db.SDbItem;
+import som.mod.som.db.SDbLot;
 
 /**
  *
@@ -647,10 +662,11 @@ public class SGrindingResultsUtils {
                 
                 return cfg;
             }
-        } 
+        }
         catch (SQLException ex) {
             Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JsonProcessingException ex) {
+        }
+        catch (JsonProcessingException ex) {
             Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -673,5 +689,73 @@ public class SGrindingResultsUtils {
         }
         
         return sFormula;
+    }
+    
+    public static boolean sendReport(SGuiClient client, XSSFWorkbook workbook, SDbLot oLot, SDbItem oItem, Date cutOffDate) {
+        DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
+        DateFormat subjectformatter = new SimpleDateFormat("dd-MM-yyyy");
+        String sFileName = "molienda/Molienda_" + fileNameformatter.format(new Date());
+        File file = new File(sFileName + ".xlsx");
+        try (FileOutputStream outputStream = new FileOutputStream(sFileName + ".xlsx")) {
+            workbook.write(outputStream);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            
+            // get the content in bytes
+            
+            outputStream.flush();
+            outputStream.close();
+            
+            SDbCompany company = ((SGuiClientSessionCustom) client.getSession().getSessionCustom()).getCompany();
+            SMailSender sender = new SMailSender(
+                    company.getMailNotificationConfigHost(),
+                    company.getMailNotificationConfigPort(),
+                    company.getMailNotificationConfigProtocol(),
+                    company.isMailNotificationConfigStartTls(),
+                    company.isMailNotificationConfigAuth(),
+                    company.getMailNotificationConfigUser(),
+                    company.getMailNotificationConfigPassword(),
+                company.getMailNotificationConfigUser());
+            
+//            SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "Aeth2021*s.", "som@aeth.mx");
+            
+            ArrayList<String> rc = new ArrayList<String>();
+            String[] mails = company.getGrindingReportMails().split(";");
+            for (String mail : mails) {
+                rc.add(mail);
+            }
+            
+            String subject = "Reporte molienda del " + subjectformatter.format(cutOffDate) + ". " + oItem.getNameShort() + " " + oLot.getLot();
+            
+            String body = "<html>" +
+                            "<body>";
+            
+            body += "<p>" + SLibUtils.textToHtml("Última fecha de captura: ") + "&nbsp;<b>" + SLibUtils.textToHtml(subjectformatter.format(cutOffDate)) + "</b></p>" +
+                            "<p>" + SLibUtils.textToHtml("Ítem: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oItem.getCode() + "-" + oItem.getName()) + "</b></p>" +
+                            "<p>" + SLibUtils.textToHtml("Lote: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oLot.getLot()) + "</b></p>";
+            
+            body += "</body>" +
+                    "</html>";
+            
+            SMail mail = new SMail(sender, SMailUtils.encodeSubjectUtf8(subject), body, rc);
+            mail.getAttachments().add(file);
+            mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
+            mail.send();
+            
+            System.out.println("Mail sent!");
+            client.showMsgBoxInformation("Reporte de molienda enviado a " + company.getGrindingReportMails());
+        }
+        catch (FileNotFoundException ex) {
+            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (IOException ex) {
+            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (MessagingException ex) {
+            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
     }
 }

@@ -274,6 +274,19 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
         if (registryRows.size() > 0) {
             SDbGrindingResult format = registryRows.get(0);
             
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(2)).setColumnTitle(format.getCaptureConfigurationAux().getR08().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(3)).setColumnTitle(format.getCaptureConfigurationAux().getR10().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(4)).setColumnTitle(format.getCaptureConfigurationAux().getR12().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(5)).setColumnTitle(format.getCaptureConfigurationAux().getR14().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(6)).setColumnTitle(format.getCaptureConfigurationAux().getR16().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(7)).setColumnTitle(format.getCaptureConfigurationAux().getR18().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(8)).setColumnTitle(format.getCaptureConfigurationAux().getR20().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(9)).setColumnTitle(format.getCaptureConfigurationAux().getR22().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(10)).setColumnTitle(format.getCaptureConfigurationAux().getR00().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(11)).setColumnTitle(format.getCaptureConfigurationAux().getR02().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(12)).setColumnTitle(format.getCaptureConfigurationAux().getR04().getLabel());
+            ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(13)).setColumnTitle(format.getCaptureConfigurationAux().getR06().getLabel());
+            
             ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(2)).setEditable(format.getCaptureConfigurationAux().getR08().getIsActive());
             ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(3)).setEditable(format.getCaptureConfigurationAux().getR10().getIsActive());
             ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(4)).setEditable(format.getCaptureConfigurationAux().getR12().getIsActive());

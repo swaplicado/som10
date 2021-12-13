@@ -22,6 +22,7 @@ public class SFormulasRow {
     FormulaColumn r18;
     FormulaColumn r20;
     FormulaColumn r22;
+    FormulaColumn rExtra;
 
 
     // Getter Methods 
@@ -74,7 +75,10 @@ public class SFormulasRow {
         return r22;
     }
 
-    
+    public FormulaColumn getrExtra() {
+        return rExtra;
+    }
+
 
     // Setter Methods 
 
@@ -125,11 +129,17 @@ public class SFormulasRow {
     public void setR22(FormulaColumn r22Object) {
      this.r22 = r22Object;
     }
+
+    public void setrExtra(FormulaColumn rExtra) {
+        this.rExtra = rExtra;
+    }
 }
     
 class FormulaColumn {
     private boolean isActive;
     private String formula;
+    private int indexRow;
+    private int colNumber;
 
 
     // Getter Methods 
@@ -141,6 +151,16 @@ class FormulaColumn {
     public String getFormula() {
         return formula;
     }
+    
+    public int getIndexRow() {
+        return indexRow;
+    }
+
+    public int getColNumber() {
+        return colNumber;
+    }
+    
+    
 
     // Setter Methods 
 
@@ -150,5 +170,13 @@ class FormulaColumn {
 
     public void setFormula(String f) {
         this.formula = f;
+    }
+
+    public void setIndexRow(int indexRow) {
+        this.indexRow = indexRow;
+    }
+
+    public void setColNumber(int colNumber) {
+        this.colNumber = colNumber;
     }
 }

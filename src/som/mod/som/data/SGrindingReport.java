@@ -7,7 +7,6 @@ package som.mod.som.data;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,6 +73,12 @@ public class SGrindingReport {
             return;
         }
         
+        SDbLot oLot = new SDbLot();
+        oLot.read(client.getSession(), new int [] { idLot });
+
+        SDbItem oItem = new SDbItem(); 
+        oItem.read(client.getSession(), new int [] { idItem });
+        
         while(indexDate.isBefore(lastDate) || indexDate.isEqual(lastDate)) {
             // 
             calendar.setTime(indexDate.toDate());
@@ -89,12 +94,6 @@ public class SGrindingReport {
 
             LinkedHashMap<Date, ArrayList<SGrindingResultReport>> info = this.getGrinding(client, indexDate.toDate(), idItem, idLot);
             
-            SDbLot oLot = new SDbLot();
-            oLot.read(client.getSession(), new int [] { idLot });
-            
-            SDbItem oItem = new SDbItem(); 
-            oItem.read(client.getSession(), new int [] { idItem });
-            
             this.generateReport(grindingRows, rendTeo, events, cfg, info, sheet, oLot, oItem);
             
             sheet.autoSizeColumn(1);
@@ -104,10 +103,7 @@ public class SGrindingReport {
             indexDate = indexDate.dayOfMonth().withMaximumValue();
         }
         
-        DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
-        try (FileOutputStream outputStream = new FileOutputStream("molienda/Molienda_" + fileNameformatter.format(new Date()) + ".xlsx")) {
-            workbook.write(outputStream);
-        }
+        SGrindingResultsUtils.sendReport(client, workbook, oLot, oItem, dtDate);
     }
 
     /**
@@ -267,7 +263,8 @@ public class SGrindingReport {
             cellDateEmpty.setCellValue("" + formatter.format(keyDate));
             
             for (SGrindingResultReport row : rows) {
-                Row infoRow = sheet.createRow(rowsCount++);
+                int rowIndex = rowsCount++;
+                Row infoRow = sheet.createRow(rowIndex);
                 int columnCount = 1;
 
                 //Fecha
@@ -384,79 +381,337 @@ public class SGrindingReport {
                  * Fórmulas
                  */
                 if (row.formulas.size() > 0) {
+                    boolean bRowAdded = false;
                     for (SDbLinkGrindingFormula formula : row.formulas) {
-                        int formulaRowI = rowsCount++;
-                        Row formulaRow = sheet.createRow(formulaRowI);
-                        int columnRowCount = 1;
-
-                        //Fecha
-                        Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
-                        cellFormulaDate.setCellValue("" + formatter.format(keyDate));
-                        
-                        // Texto
-                        Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
-                        cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                        
                         SFormulasRow formObj = mapper.readValue(formula.getFormula(), SFormulasRow.class);
+                        boolean isNewRow = (formula.getRowText() != null && formula.getRowText().length() > 0) || formObj.getR08().getIndexRow() != 0;
                         if (formObj.r08.getIsActive()) {
-                            Cell cell08 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR08().getFormula(), formulaRowI);
-                            cell08.setCellFormula(formulaS);
+                            if (isNewRow) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR08().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR08 = formulaRow.createCell(formObj.getR08().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR08().getFormula(), rIndex);
+                                cellR08.setCellFormula(formulaS);
+                                
+                                bRowAdded = true;
+                                infoRow = formulaRow;
+                            }
+                            else {
+                                Cell cellR08 = infoRow.createCell(formObj.getR08().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR08().getFormula(), rowIndex);
+                                cellR08.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r10.getIsActive()) {
-                            Cell cell10 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR10().getFormula(), formulaRowI);
-                            cell10.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR10().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR10 = formulaRow.createCell(formObj.getR10().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR10().getFormula(), rIndex);
+                                cellR10.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR10 = infoRow.createCell(formObj.getR10().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR10().getFormula(), rowIndex);
+                                cellR10.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r12.getIsActive()) {
-                            Cell cell12 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR12().getFormula(), formulaRowI);
-                            cell12.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR12().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR12 = formulaRow.createCell(formObj.getR12().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR12().getFormula(), rIndex);
+                                cellR12.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR12 = infoRow.createCell(formObj.getR12().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR12().getFormula(), rowIndex);
+                                cellR12.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r14.getIsActive()) {
-                            Cell cell14 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR14().getFormula(), formulaRowI);
-                            cell14.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR14().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR14 = formulaRow.createCell(formObj.getR14().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR14().getFormula(), rIndex);
+                                cellR14.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR14 = infoRow.createCell(formObj.getR14().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR14().getFormula(), rowIndex);
+                                cellR14.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r16.getIsActive()) {
-                            Cell cell16 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR16().getFormula(), formulaRowI);
-                            cell16.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR16().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR16 = formulaRow.createCell(formObj.getR16().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR16().getFormula(), rIndex);
+                                cellR16.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR16 = infoRow.createCell(formObj.getR16().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR16().getFormula(), rowIndex);
+                                cellR16.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r18.getIsActive()) {
-                            Cell cell18 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR18().getFormula(), formulaRowI);
-                            cell18.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR18().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR18 = formulaRow.createCell(formObj.getR18().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR18().getFormula(), rIndex);
+                                cellR18.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR18 = infoRow.createCell(formObj.getR18().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR18().getFormula(), rowIndex);
+                                cellR18.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r20.getIsActive()) {
-                            Cell cell20 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR20().getFormula(), formulaRowI);
-                            cell20.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR20().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR20 = formulaRow.createCell(formObj.getR20().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR20().getFormula(), rIndex);
+                                cellR20.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR20 = infoRow.createCell(formObj.getR20().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR20().getFormula(), rowIndex);
+                                cellR20.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r22.getIsActive()) {
-                            Cell cell22 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR22().getFormula(), formulaRowI);
-                            cell22.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR22().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR22 = formulaRow.createCell(formObj.getR22().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR22().getFormula(), rIndex);
+                                cellR22.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR22 = infoRow.createCell(formObj.getR22().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR22().getFormula(), rowIndex);
+                                cellR22.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r00.getIsActive()) {
-                            Cell cell00 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR00().getFormula(), formulaRowI);
-                            cell00.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR00().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR00 = formulaRow.createCell(formObj.getR00().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR00().getFormula(), rIndex);
+                                cellR00.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR00 = infoRow.createCell(formObj.getR00().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR00().getFormula(), rowIndex);
+                                cellR00.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r02.getIsActive()) {
-                            Cell cell02 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR02().getFormula(), formulaRowI);
-                            cell02.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR02().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR02 = formulaRow.createCell(formObj.getR02().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR02().getFormula(), rIndex);
+                                cellR02.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR02 = infoRow.createCell(formObj.getR02().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR02().getFormula(), rowIndex);
+                                cellR02.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r04.getIsActive()) {
-                            Cell cell04 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR04().getFormula(), formulaRowI);
-                            cell04.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR04().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR04 = formulaRow.createCell(formObj.getR04().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR04().getFormula(), rIndex);
+                                cellR04.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR04 = infoRow.createCell(formObj.getR04().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR04().getFormula(), rowIndex);
+                                cellR04.setCellFormula(formulaS);
+                            }
                         }
                         if (formObj.r06.getIsActive()) {
-                            Cell cell06 = formulaRow.createCell(columnRowCount++);
-                            String formulaS = SGrindingResultsUtils.getFormula(formObj.getR06().getFormula(), formulaRowI);
-                            cell06.setCellFormula(formulaS);
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getR06().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellR06 = formulaRow.createCell(formObj.getR06().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR06().getFormula(), rIndex);
+                                cellR06.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellR06 = infoRow.createCell(formObj.getR06().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getR06().getFormula(), rowIndex);
+                                cellR06.setCellFormula(formulaS);
+                            }
+                        }
+                        if (formObj.rExtra.getIsActive()) {
+                            if (isNewRow && !bRowAdded) {
+                                int formulaRowIndex = rowsCount++;
+                                int columnRowCount = 1;
+                                int rIndex = formulaRowIndex + formObj.getrExtra().getIndexRow();
+                                Row formulaRow = formulaRow = sheet.createRow(rIndex);
+                                
+                                 //Fecha
+                                Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
+                                cellFormulaDate.setCellValue("" + formatter.format(keyDate));
+
+                                // Texto
+                                Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
+                                cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
+                                
+                                Cell cellrExtra = formulaRow.createCell(formObj.getrExtra().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getrExtra().getFormula(), rIndex);
+                                cellrExtra.setCellFormula(formulaS);
+                            }
+                            else {
+                                Cell cellrExtra = infoRow.createCell(formObj.getrExtra().getColNumber());
+                                String formulaS = SGrindingResultsUtils.getFormula(formObj.getrExtra().getFormula(), rowIndex);
+                                cellrExtra.setCellFormula(formulaS);
+                            }
                         }
                     }
                 }

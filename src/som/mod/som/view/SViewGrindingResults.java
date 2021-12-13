@@ -249,18 +249,18 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                     "COALESCE(v.result_02, 0) + " +
                     "COALESCE(v.result_04, 0) + " +
                     "COALESCE(v.result_06, 0)) / "
-                + "(IF(v.result_08 > 0, 1, 0) + " +
-                "    IF(v.result_10 > 0, 1, 0) + " +
-                "    IF(v.result_12 > 0, 1, 0) + " +
-                "    IF(v.result_14 > 0, 1, 0) + " +
-                "    IF(v.result_16 > 0, 1, 0) + " +
-                "    IF(v.result_18 > 0, 1, 0) + " +
-                "    IF(v.result_20 > 0, 1, 0) + " +
-                "    IF(v.result_22 > 0, 1, 0) + " +
-                "    IF(v.result_00 > 0, 1, 0) + " +
-                "    IF(v.result_02 > 0, 1, 0) + " +
-                "    IF(v.result_04 > 0, 1, 0) + " +
-                "    IF(v.result_06 > 0, 1, 0))) AS promedio, "
+                + "(IF(v.result_08 <> 0, 1, 0) + " +
+                "    IF(v.result_10 <> 0, 1, 0) + " +
+                "    IF(v.result_12 <> 0, 1, 0) + " +
+                "    IF(v.result_14 <> 0, 1, 0) + " +
+                "    IF(v.result_16 <> 0, 1, 0) + " +
+                "    IF(v.result_18 <> 0, 1, 0) + " +
+                "    IF(v.result_20 <> 0, 1, 0) + " +
+                "    IF(v.result_22 <> 0, 1, 0) + " +
+                "    IF(v.result_00 <> 0, 1, 0) + " +
+                "    IF(v.result_02 <> 0, 1, 0) + " +
+                "    IF(v.result_04 <> 0, 1, 0) + " +
+                "    IF(v.result_06 <> 0, 1, 0))) AS promedio, "
                 + "(@dg / " + mdGrindingOil + " * @prom) AS pond, "
                 + "COALESCE(v.b_del, 0) AS b_deleted, "
                 + "COALESCE(v.b_can_upd, 1) AS " + SDbConsts.FIELD_CAN_UPD + ", "

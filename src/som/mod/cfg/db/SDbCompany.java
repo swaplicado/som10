@@ -59,6 +59,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     protected String msFruitClasses;
     protected String msFruitRipenessDegrees;
     protected String msPlateCageLabels;
+    protected String msGrindingReportMails;
     protected int mnVersion;
     protected Date mtVersionTs;
     /*
@@ -220,6 +221,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public void setFruitClasses(String s) { msFruitClasses = s; }
     public void setFruitRipenessDegrees(String s) { msFruitRipenessDegrees = s; }
     public void setPlateCageLabels(String s) { msPlateCageLabels = s; }
+    public void setGrindingReportMails(String s) { msGrindingReportMails = s; }
     public void setVersion(int n) { mnVersion = n; }
     public void setVersionTs(Date t) { mtVersionTs = t; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -263,6 +265,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public String getFruitClasses() { return msFruitClasses; }
     public String getFruitRipenessDegrees() { return msFruitRipenessDegrees; }
     public String getPlateCageLabels() { return msPlateCageLabels; }
+    public String getGrindingReportMails() { return msGrindingReportMails; }
     public int getVersion() { return mnVersion; }
     public Date getVersionTs() { return mtVersionTs; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -322,6 +325,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         msFruitClasses = "";
         msFruitRipenessDegrees = "";
         msPlateCageLabels = "";
+        msGrindingReportMails = "";
         mnVersion = 0;
         mtVersionTs = null;
         mbUpdatable = false;
@@ -413,6 +417,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
             msFruitClasses = resultSet.getString("fruit_class");
             msFruitRipenessDegrees = resultSet.getString("fruit_ripe");
             msPlateCageLabels = resultSet.getString("pla_cag_labels");
+            msGrindingReportMails = resultSet.getString("grin_rep_mails");
             mnVersion = resultSet.getInt("ver");
             mtVersionTs = resultSet.getTimestamp("ver_ts");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -497,6 +502,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "'" + msFruitClasses + "', " + 
                     "'" + msFruitRipenessDegrees + "', " + 
                     "'" + msPlateCageLabels + "', " + 
+                    "'" + msGrindingReportMails + "', " + 
                     mnVersion + ", " +
                     "NOW()" + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -545,6 +551,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "fruit_class = '" + msFruitClasses + "', " +
                     "fruit_ripe = '" + msFruitRipenessDegrees + "', " +
                     "pla_cag_labels = '" + msPlateCageLabels + "', " +
+                    "grin_rep_mails = '" + msGrindingReportMails + "', " +
                     //"ver = " + mnVersion + ", " +
                     //"ver_ts = " + "NOW()" + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -611,6 +618,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         registry.setFruitClasses(this.getFruitClasses());
         registry.setFruitRipenessDegrees(this.getFruitRipenessDegrees());
         registry.setPlateCageLabels(this.getPlateCageLabels());
+        registry.setGrindingReportMails(this.getGrindingReportMails());
         registry.setVersion(this.getVersion());
         registry.setVersionTs(this.getVersionTs());
         registry.setUpdatable(this.isUpdatable());
