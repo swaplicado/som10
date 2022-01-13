@@ -130,7 +130,7 @@ public class SGrindingReport {
         
         CellStyle style = sheet.getWorkbook().createCellStyle();
         Font font = sheet.getWorkbook().createFont();
-        font.setBold(true);
+//        font.setBold(true);
         style.setFont(font);
 
         int rowsCount = 1;
