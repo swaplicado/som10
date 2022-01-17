@@ -1,5 +1,5 @@
 ================================================================================
-2021-11-12, 1.0 074.0
+2021-11-12, 1.0 075.0
 Edwin Omar CARMONA FIGUEROA
 --------------------------------------------------------------------------------
 1) Ajuste de la existencia en almacenes mediante el campo ajuste en litros introducido en el catálogo de almacenes.

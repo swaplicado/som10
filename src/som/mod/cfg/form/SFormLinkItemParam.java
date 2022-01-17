@@ -7,7 +7,6 @@ package som.mod.cfg.form;
 import erp.lib.SLibConstants;
 import erp.lib.SLibUtilities;
 import erp.mod.SModConsts;
-import erp.data.SDataConstants;
 import som.mod.cfg.db.SDbLinkItemParameter;
 import java.awt.event.ItemEvent;
 import sa.lib.SLibConsts;
@@ -176,7 +175,6 @@ public class SFormLinkItemParam extends sa.lib.gui.bean.SBeanForm {
 
     @Override
     public void setRegistry(SDbRegistry registry) throws Exception {
-        int[] key = null;
         moRegistry = (SDbLinkItemParameter) registry;
 
         mnFormResult = SLibConsts.UNDEFINED;
@@ -184,8 +182,6 @@ public class SFormLinkItemParam extends sa.lib.gui.bean.SBeanForm {
 
         removeAllListeners();
         reloadCatalogues();
-
-        key = moRegistry.getPrimaryKey();
 
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
@@ -196,7 +192,8 @@ public class SFormLinkItemParam extends sa.lib.gui.bean.SBeanForm {
         }
         
         moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
-        moKeyParameter.setValue(new int[] { moRegistry.getFkParameterId()});
+        moKeyParameter.setValue(new int[] { moRegistry.getFkParameterId() });
+        moIntOrder.setValue(moRegistry.getOrder());
         
         setFormEditable(true);
         
@@ -214,10 +211,8 @@ public class SFormLinkItemParam extends sa.lib.gui.bean.SBeanForm {
     public SDbRegistry getRegistry() throws Exception {
         SDbLinkItemParameter registry = moRegistry.clone();
         
-        if (registry.isRegistryNew()) {}
-        
+        moRegistry.setOrder(moRegistry.getOrder());
         moRegistry.setFkItemId(moKeyItem.getValue()[0]);
-        
         moRegistry.setFkParameterId(moKeyParameter.getValue()[0]);
         
         return registry;
