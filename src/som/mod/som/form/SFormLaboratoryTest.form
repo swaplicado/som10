@@ -346,6 +346,21 @@
                     </Component>
                     <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecAcidityAveragePercentage">
                     </Component>
+                    <Component class="javax.swing.JLabel" name="jlGrindingDate">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Fecha molienda:"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[125, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateGrindingDate">
+                      <Properties>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[130, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>

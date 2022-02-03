@@ -680,7 +680,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
                     <Property name="columns" type="int" value="1"/>
-                    <Property name="rows" type="int" value="22"/>
+                    <Property name="rows" type="int" value="23"/>
                     <Property name="verticalGap" type="int" value="5"/>
                   </Layout>
                   <SubComponents>
@@ -1003,7 +1003,15 @@
                         </Component>
                         <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolAcidityAvgPercentage">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Aplica acidez promedio proceso (%)&#xa;"/>
+                            <Property name="text" type="java.lang.String" value="Aplica acidez prom. proc. (%) "/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[175, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolGrindingDate">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Aplica fecha molienda"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[235, 23]"/>
                             </Property>
@@ -1265,6 +1273,22 @@
                             <Property name="verticalGap" type="int" value="0"/>
                           </Layout>
                         </Container>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JPanel" name="jPanel55">
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                        <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="0"/>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jLabel10">
+                          <Properties>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[175, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
                       </SubComponents>
                     </Container>
                   </SubComponents>

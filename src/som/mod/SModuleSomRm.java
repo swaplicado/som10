@@ -42,6 +42,7 @@ import som.mod.som.form.SDialogRepFreightTime;
 import som.mod.som.form.SDialogRepFruitYieldByOrigin;
 import som.mod.som.form.SDialogRepIodineRank;
 import som.mod.som.form.SDialogRepReceivedFruit;
+import som.mod.som.form.SDialogRepReceivedFruitAcidity;
 import som.mod.som.form.SDialogRepReceivedFruitHist;
 import som.mod.som.form.SDialogRepReceivedSeed;
 import som.mod.som.form.SDialogTicketsSearch;
@@ -130,8 +131,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjQaOilMoiPond;
     private JMenu mjRep;   // Reports
     private JMenuItem mjRepSeedReceived;
-    private JMenuItem mjRepSeedReceivedFruit;
-    private JMenuItem mjRepSeedReceivedFruitHist;
+    private JMenuItem mjRepReceivedFruit;
+    private JMenuItem mjRepReceivedFruitHist;
+    private JMenuItem mjRepReceivedFruitAcidity;
     private JMenuItem mjRepFruitYieldByOrigin;
     private JMenuItem mjRepSeedReceivedByIodVal;
     private JMenuItem mjRepSeedReceivedByPerOle;
@@ -312,8 +314,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
         mjRep = new JMenu("Reportes");
         mjRepSeedReceived = new JMenuItem("Materia prima recibida...");
-        mjRepSeedReceivedFruit = new JMenuItem("Fruta recibida...");
-        mjRepSeedReceivedFruitHist = new JMenuItem("Comparativo histórico de fruta recibida...");
+        mjRepReceivedFruit = new JMenuItem("Fruta recibida...");
+        mjRepReceivedFruitHist = new JMenuItem("Comparativo histórico de fruta recibida...");
+        mjRepReceivedFruitAcidity = new JMenuItem("Acidez fruta recibida...");
         mjRepFruitYieldByOrigin = new JMenuItem("Rendimiento de fruta por origen...");
         mjRepSeedReceivedByIodVal = new JMenuItem("Materia prima recibida por valor de yodo...");
         mjRepSeedReceivedByPerOle = new JMenuItem("Materia prima recibida por porcentaje de ácido oleico...");
@@ -326,8 +329,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
         mjRep.add(mjRepSeedReceived);
         mjRep.addSeparator();
-        mjRep.add(mjRepSeedReceivedFruit);
-        mjRep.add(mjRepSeedReceivedFruitHist);
+        mjRep.add(mjRepReceivedFruit);
+        mjRep.add(mjRepReceivedFruitHist);
+        mjRep.add(mjRepReceivedFruitAcidity);
         mjRep.add(mjRepFruitYieldByOrigin);
         mjRep.addSeparator();
         mjRep.add(mjRepSeedReceivedByIodVal);
@@ -343,8 +347,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjRep.add(mjRepCompTic);
 
         mjRepSeedReceived.addActionListener(this);
-        mjRepSeedReceivedFruit.addActionListener(this);
-        mjRepSeedReceivedFruitHist.addActionListener(this);
+        mjRepReceivedFruit.addActionListener(this);
+        mjRepReceivedFruitHist.addActionListener(this);
+        mjRepReceivedFruitAcidity.addActionListener(this);
         mjRepFruitYieldByOrigin.addActionListener(this);
         mjRepSeedReceivedByIodVal.addActionListener(this);
         mjRepSeedReceivedByPerOle.addActionListener(this);
@@ -756,6 +761,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SR_ITEM_FRUIT_HIST:
                 guiReport = new SGuiReport("reps/s_item_rec_fruit_hist.jasper", "Reporte comparativo histórico de fruta recibida");
                 break;
+            case SModConsts.SR_ITEM_FRUIT_ACI:
+                guiReport = new SGuiReport("reps/s_item_rec_fruit_aci.jasper", "Reporte acidez de fruta recibida");
+                break;
             case SModConsts.SR_FRUIT_YIELD_ORIG:
                 guiReport = new SGuiReport("reps/s_tic_yield.jasper", "Reporte de rendimiento de fruta por origen");
                 break;
@@ -896,11 +904,14 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             else if (menuItem == mjRepSeedReceived) {
                 new SDialogRepReceivedSeed(miClient, SModConsts.SR_ITEM_REC, "Reporte materia prima recibida").setVisible(true);
             }
-            else if (menuItem == mjRepSeedReceivedFruit) {
+            else if (menuItem == mjRepReceivedFruit) {
                 new SDialogRepReceivedFruit(miClient, SModConsts.SR_ITEM_FRUIT, "Reporte de fruta recibida").setVisible(true);
             }
-            else if (menuItem == mjRepSeedReceivedFruitHist) {
+            else if (menuItem == mjRepReceivedFruitHist) {
                 new SDialogRepReceivedFruitHist(miClient, SModConsts.SR_ITEM_FRUIT_HIST, "Reporte comparativo histórico de fruta recibida").setVisible(true);
+            }
+            else if (menuItem == mjRepReceivedFruitAcidity) {
+                new SDialogRepReceivedFruitAcidity(miClient, SModConsts.SR_ITEM_FRUIT_ACI, "Reporte de acidez fruta recibida").setVisible(true);
             }
             else if (menuItem == mjRepFruitYieldByOrigin) {
                 new SDialogRepFruitYieldByOrigin(miClient, SModConsts.SR_FRUIT_YIELD_ORIG, "Reporte de rendimiento de fruta por origen").setVisible(true);

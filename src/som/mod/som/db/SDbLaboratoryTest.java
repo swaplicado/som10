@@ -7,6 +7,8 @@ package som.mod.som.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistry;
 import sa.lib.grid.SGridRow;
@@ -40,6 +42,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     protected double mdErucicAcidPercentage;
     protected double mdAcidityPercentage;
     protected double mdAcidityAveragePercentage;
+    protected Date mtGrindingDate_n;
     protected String msFruitClass;
     protected String msFruitRipenessDegree;
     protected double mdFruitWeightTotal;
@@ -70,6 +73,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     public void setErucicAcidPercentage(double d) { mdErucicAcidPercentage = d; }
     public void setAcidityPercentage(double d) { mdAcidityPercentage = d; }
     public void setAcidityAveragePercentage(double d) { mdAcidityAveragePercentage = d; }
+    public void setGrindingDate_n(Date t) { mtGrindingDate_n = t; }
     public void setFruitClass(String s) { msFruitClass = s; }
     public void setFruitRipenessDegree(String s) { msFruitRipenessDegree = s; }
     public void setFruitWeightTotal(double d) { mdFruitWeightTotal = d; }
@@ -95,6 +99,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
     public double getErucicAcidPercentage() { return mdErucicAcidPercentage; }
     public double getAcidityPercentage() { return mdAcidityPercentage; }
     public double getAcidityAveragePercentage() { return mdAcidityAveragePercentage; }
+    public Date getGrindingDate_n() { return mtGrindingDate_n; }
     public String getFruitClass() { return msFruitClass; }
     public String getFruitRipenessDegree() { return msFruitRipenessDegree; }
     public double getFruitWeightTotal() { return mdFruitWeightTotal; }
@@ -159,6 +164,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
         mdErucicAcidPercentage = 0;
         mdAcidityPercentage = 0;
         mdAcidityAveragePercentage = 0;
+        mtGrindingDate_n = null;
         msFruitClass = "";
         msFruitRipenessDegree = "";
         mdFruitWeightTotal = 0;
@@ -230,6 +236,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
             mdErucicAcidPercentage = resultSet.getDouble("eru_per");
             mdAcidityPercentage = resultSet.getDouble("aci_per");
             mdAcidityAveragePercentage = resultSet.getDouble("aci_avg_per");
+            mtGrindingDate_n = resultSet.getDate("grinding_dt_n");
             msFruitClass = resultSet.getString("fruit_class");
             msFruitRipenessDegree = resultSet.getString("fruit_ripe");
             mdFruitWeightTotal = resultSet.getDouble("fruit_wei_total");
@@ -274,6 +281,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                     mdErucicAcidPercentage + ", " +
                     mdAcidityPercentage + ", " +
                     mdAcidityAveragePercentage + ", " + 
+                    (mtGrindingDate_n == null ? "NULL, " : "'" + SLibUtils.DbmsDateFormatDate.format(mtGrindingDate_n) + "', ") + 
                     "'" + msFruitClass + "', " + 
                     "'" + msFruitRipenessDegree + "', " + 
                     mdFruitWeightTotal + ", " + 
@@ -302,6 +310,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                     "eru_per = " + mdErucicAcidPercentage + ", " +
                     "aci_per = " + mdAcidityPercentage + ", " +
                     "aci_avg_per = " + mdAcidityAveragePercentage + ", " +
+                    "grinding_dt = '" + (mtGrindingDate_n == null ? "NULL, " : SLibUtils.DbmsDateFormatDate.format(mtGrindingDate_n) + "', ") +
                     "fruit_class = '" + msFruitClass + "', " +
                     "fruit_ripe = '" + msFruitRipenessDegree + "', " +
                     "fruit_wei_total = " + mdFruitWeightTotal + ", " +
@@ -341,6 +350,7 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
         registry.setErucicAcidPercentage(this.getErucicAcidPercentage());
         registry.setAcidityPercentage(this.getAcidityPercentage());
         registry.setAcidityAveragePercentage(this.getAcidityAveragePercentage());
+        registry.setGrindingDate_n(this.getGrindingDate_n());
         registry.setFruitClass(this.getFruitClass());
         registry.setFruitRipenessDegree(this.getFruitRipenessDegree());
         registry.setFruitWeightTotal(this.getFruitWeightTotal());
@@ -445,27 +455,30 @@ public class SDbLaboratoryTest extends SDbRegistry implements SGridRow {
                 value = mdAcidityAveragePercentage;
                 break;
             case 15:
-                value = msFruitClass;
+                value = mtGrindingDate_n;
                 break;
             case 16:
-                value = msFruitRipenessDegree;
+                value = msFruitClass;
                 break;
             case 17:
-                value = mdFruitWeightTotal;
+                value = msFruitRipenessDegree;
                 break;
             case 18:
-                value = mdFruitWeightPeelPit;
+                value = mdFruitWeightTotal;
                 break;
             case 19:
-                value = mdFruitPulpDryMatterPercentage;
+                value = mdFruitWeightPeelPit;
                 break;
             case 20:
-                value = mdFruitPulpHumidityPercentage;
+                value = mdFruitPulpDryMatterPercentage;
                 break;
             case 21:
-                value = mdFruitPulpOilPercentage;
+                value = mdFruitPulpHumidityPercentage;
                 break;
             case 22:
+                value = mdFruitPulpOilPercentage;
+                break;
+            case 23:
                 value = mdFruitYieldAdjustmentPercentage;
                 break;
             default:

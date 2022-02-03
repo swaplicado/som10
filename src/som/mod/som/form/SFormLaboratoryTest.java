@@ -111,6 +111,8 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         jPanel32 = new javax.swing.JPanel();
         jlAcidityAveragePercentage = new javax.swing.JLabel();
         moDecAcidityAveragePercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlGrindingDate = new javax.swing.JLabel();
+        moDateGrindingDate = new sa.lib.gui.bean.SBeanFieldDate();
         jPanel7 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jPanel22 = new javax.swing.JPanel();
@@ -279,6 +281,13 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         jPanel32.add(jlAcidityAveragePercentage);
         jPanel32.add(moDecAcidityAveragePercentage);
 
+        jlGrindingDate.setText("Fecha molienda:");
+        jlGrindingDate.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel32.add(jlGrindingDate);
+
+        moDateGrindingDate.setPreferredSize(new java.awt.Dimension(130, 23));
+        jPanel32.add(moDateGrindingDate);
+
         jPanel4.add(jPanel32);
 
         jPanel6.add(jPanel4, java.awt.BorderLayout.NORTH);
@@ -445,6 +454,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
     private javax.swing.JLabel jlFruitWeightTotal;
     private javax.swing.JLabel jlFruitWeightTotalUnit;
     private javax.swing.JLabel jlFruitYieldAdjustmentPercentage;
+    private javax.swing.JLabel jlGrindingDate;
     private javax.swing.JLabel jlImpuritiesPercentage;
     private javax.swing.JLabel jlIodineValue;
     private javax.swing.JLabel jlLinoleicAcidPercentage;
@@ -455,6 +465,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
     private javax.swing.JLabel jlOleicAcidPercentage;
     private javax.swing.JLabel jlProteinPercentage;
     private javax.swing.JLabel jlRefractionIndex;
+    private sa.lib.gui.bean.SBeanFieldDate moDateGrindingDate;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecAcidityAveragePercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecAcidityPercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDensity;
@@ -500,6 +511,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         moDecOilYieldAdjustmentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlOilYieldAdjustmentPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moDecAcidityPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlAcidityPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moDecAcidityAveragePercentage.setDecimalSettings(SGuiUtils.getLabelName(jlAcidityAveragePercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moDateGrindingDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlGrindingDate), false);
         moKeyFruitClass.setKeySettings(miClient, SGuiUtils.getLabelName(jlFruitClass), true);
         moKeyFruitRipenessDegree.setKeySettings(miClient, SGuiUtils.getLabelName(jlFruitRipenessDegree), true);
         moDecFruitWeightTotal.setDecimalSettings(SGuiUtils.getLabelName(jlFruitWeightTotal), SGuiConsts.GUI_TYPE_DEC_QTY, false);
@@ -526,6 +538,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         moFields.addField(moDecOilYieldAdjustmentPercentage);
         moFields.addField(moDecAcidityPercentage);
         moFields.addField(moDecAcidityAveragePercentage);
+        moFields.addField(moDateGrindingDate);
         moFields.addField(moKeyFruitClass);
         moFields.addField(moKeyFruitRipenessDegree);
         moFields.addField(moDecFruitWeightTotal);
@@ -588,6 +601,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         moDecOilYieldAdjustmentPercentage.setEditable(false); // allways is read-only
         moDecAcidityPercentage.setEditable(moParamsItem.isAcidityPercentage());
         moDecAcidityAveragePercentage.setEditable(moParamsItem.isAcidityAveragePercentage());
+        moDateGrindingDate.setEditable(moParamsItem.isGrindingDate());
         moKeyFruitClass.setEditable(moParamsItem.isFruit());
         moKeyFruitRipenessDegree.setEditable(moParamsItem.isFruit());
         moDecFruitWeightTotal.setEditable(moParamsItem.isFruit());
@@ -713,6 +727,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         moDecOilYieldAdjustmentPercentage.setValue(moRegistry.getOilYieldAdjustmentPercentage());
         moDecAcidityPercentage.setValue(moRegistry.getAcidityPercentage());
         moDecAcidityAveragePercentage.setValue(moRegistry.getAcidityAveragePercentage());
+        moDateGrindingDate.setValue(moRegistry.getGrindingDate_n() == null ? miClient.getSession().getWorkingDate() : moRegistry.getGrindingDate_n());
         moKeyFruitClass.setValue(new int[] { moCompany.getFruitOptionId(SDbCompany.FRUIT_CLASS, moRegistry.getFruitClass()) });
         moKeyFruitRipenessDegree.setValue(new int[] { moCompany.getFruitOptionId(SDbCompany.FRUIT_RIPENESS_DEGREE, moRegistry.getFruitRipenessDegree()) });
         moDecFruitWeightTotal.setValue(moRegistry.getFruitWeightTotal());
@@ -749,6 +764,7 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         registry.setOilYieldAdjustmentPercentage(moDecOilYieldAdjustmentPercentage.getValue());
         registry.setAcidityPercentage(moDecAcidityPercentage.getValue());
         registry.setAcidityAveragePercentage(moDecAcidityAveragePercentage.getValue());
+        registry.setGrindingDate_n(!moDateGrindingDate.isEditable() ? null : moDateGrindingDate.getValue());
         registry.setFruitClass(moKeyFruitClass.getSelectedIndex() <= 0 ? "" : moCompany.getFruitOption(SDbCompany.FRUIT_CLASS, moKeyFruitClass.getValue()[0]));
         registry.setFruitRipenessDegree(moKeyFruitRipenessDegree.getSelectedIndex() <= 0 ? "" : moCompany.getFruitOption(SDbCompany.FRUIT_RIPENESS_DEGREE, moKeyFruitRipenessDegree.getValue()[0]));
         registry.setFruitWeightTotal(moDecFruitWeightTotal.getValue());

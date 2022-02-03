@@ -189,6 +189,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         jPanel45 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         moBoolAcidityAvgPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
+        moBoolGrindingDate = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel21 = new javax.swing.JPanel();
         moBoolPacking = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel22 = new javax.swing.JPanel();
@@ -220,6 +221,8 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         jPanel53 = new javax.swing.JPanel();
         moBoolPrintInputType = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel54 = new javax.swing.JPanel();
+        jPanel55 = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(1040, 650));
 
@@ -521,7 +524,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel8.setLayout(new java.awt.BorderLayout());
 
-        jPanel18.setLayout(new java.awt.GridLayout(22, 1, 0, 5));
+        jPanel18.setLayout(new java.awt.GridLayout(23, 1, 0, 5));
 
         jPanel50.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -674,9 +677,13 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         jLabel9.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel45.add(jLabel9);
 
-        moBoolAcidityAvgPercentage.setText("Aplica acidez promedio proceso (%)\n");
-        moBoolAcidityAvgPercentage.setPreferredSize(new java.awt.Dimension(235, 23));
+        moBoolAcidityAvgPercentage.setText("Aplica acidez prom. proc. (%) ");
+        moBoolAcidityAvgPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel45.add(moBoolAcidityAvgPercentage);
+
+        moBoolGrindingDate.setText("Aplica fecha molienda");
+        moBoolGrindingDate.setPreferredSize(new java.awt.Dimension(235, 23));
+        jPanel45.add(moBoolGrindingDate);
 
         jPanel18.add(jPanel45);
 
@@ -798,6 +805,13 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel18.add(jPanel53);
 
+        jPanel55.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jLabel10.setPreferredSize(new java.awt.Dimension(175, 23));
+        jPanel55.add(jLabel10);
+
+        jPanel18.add(jPanel55);
+
         jPanel8.add(jPanel18, java.awt.BorderLayout.NORTH);
 
         jPanel5.add(jPanel8, java.awt.BorderLayout.CENTER);
@@ -825,6 +839,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -880,6 +895,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JPanel jPanel52;
     private javax.swing.JPanel jPanel53;
     private javax.swing.JPanel jPanel54;
+    private javax.swing.JPanel jPanel55;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
@@ -927,6 +943,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolDensity;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolErucicAcidPercentage;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolFruit;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolGrindingDate;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolImpuritiesPercentage;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolIodineValue;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolLaboratory;
@@ -1027,6 +1044,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moDecOilYieldAdjustmentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlOilYieldAdjustmentPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moBoolAcidityPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolAcidityPercentage.getText()), false);
         moBoolAcidityAvgPercentage.setBooleanSettings(SGuiUtils.getLabelName(moBoolAcidityAvgPercentage.getText()), false);
+        moBoolGrindingDate.setBooleanSettings(SGuiUtils.getLabelName(moBoolGrindingDate.getText()), false);
         moBoolFruit.setBooleanSettings(SGuiUtils.getLabelName(moBoolFruit.getText()), false);
         moDecFruitYieldAdjustmentPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlFruitYieldAdjustmentPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moBoolPacking.setBooleanSettings(SGuiUtils.getLabelName(moBoolPacking.getText()), false);
@@ -1085,6 +1103,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moFields.addField(moDecOilYieldAdjustmentPercentage);
         moFields.addField(moBoolAcidityPercentage);
         moFields.addField(moBoolAcidityAvgPercentage);
+        moFields.addField(moBoolGrindingDate);
         moFields.addField(moBoolFruit);
         moFields.addField(moDecFruitYieldAdjustmentPercentage);
         moFields.addField(moBoolPacking);
@@ -1197,6 +1216,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moBoolOilContentPercentage.setEnabled(moBoolLaboratory.getValue());
         moBoolAcidityPercentage.setEnabled(moBoolLaboratory.getValue());
         moBoolAcidityAvgPercentage.setEnabled(moBoolLaboratory.getValue());
+        moBoolGrindingDate.setEnabled(moBoolLaboratory.getValue());
         moBoolFruit.setEnabled(moBoolLaboratory.getValue());
         itemStateBoolOilContentPercentage();
         itemStateBoolFruit();
@@ -1215,6 +1235,16 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private void itemStateBoolPacking() {
         moTextPackingName.setEditable(moBoolPacking.getValue());
         moDecPackingWeight.setEditable(moBoolPacking.getValue());
+    }
+    
+    private void itemStateBoolAcidityAvgPercentage() {
+        if (!moBoolAcidityAvgPercentage.isSelected()) {
+            moBoolGrindingDate.setSelected(false);
+            moBoolGrindingDate.setEnabled(false);
+        }
+        else {
+            moBoolGrindingDate.setEnabled(true);
+        }
     }
     
     private void updateStartingSeasonMonthTip() {
@@ -1258,6 +1288,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moBoolPacking.addItemListener(this);
         moKeyUnit.addItemListener(this);
         moBoolUserMailNotificationOnlyWhenMoves.addItemListener(this);
+        moBoolAcidityAvgPercentage.addItemListener(this);
         moIntStartingSeasonMonth.addFocusListener(this);
         moTextAutoMailNotificationBoxes.addFocusListener(this);
         moTextUserMailNotificationBoxes.addFocusListener(this);
@@ -1273,6 +1304,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moBoolPacking.removeItemListener(this);
         moKeyUnit.removeItemListener(this);
         moBoolUserMailNotificationOnlyWhenMoves.removeItemListener(this);
+        moBoolAcidityAvgPercentage.removeItemListener(this);
         moIntStartingSeasonMonth.removeFocusListener(this);
         moTextAutoMailNotificationBoxes.removeFocusListener(this);
         moTextUserMailNotificationBoxes.removeFocusListener(this);
@@ -1349,6 +1381,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moDecOilYieldAdjustmentPercentage.setValue(moRegistry.getOilYieldAdjustmentPercentage());
         moBoolAcidityPercentage.setValue(moRegistry.isAcidityPercentage());
         moBoolAcidityAvgPercentage.setValue(moRegistry.isAcidityAveragePercentage());
+        moBoolGrindingDate.setValue(moRegistry.isGrindingDate());
         moBoolFruit.setValue(moRegistry.isFruit());
         moDecFruitYieldAdjustmentPercentage.setValue(moRegistry.getFruitYieldAdjustmentPercentage());
         moBoolPacking.setValue(moRegistry.isPacking());
@@ -1397,6 +1430,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
             moKeyExternalItem.setEnabled(false);
         }
 
+        itemStateBoolAcidityAvgPercentage();
         addAllListeners();
     }
 
@@ -1458,6 +1492,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
             registry.setErucicAcidPercentage(moBoolErucicAcidPercentage.getValue());
             registry.setAcidityPercentage(moBoolAcidityPercentage.getValue());
             registry.setAcidityAveragePercentage(moBoolAcidityAvgPercentage.getValue());
+            registry.setGrindingDate(moBoolGrindingDate.getValue());
             registry.setFruit(moBoolFruit.getValue());
             registry.setFruitYieldAdjustmentPercentage(!registry.isFruit() ? 0 : moDecFruitYieldAdjustmentPercentage.getValue());
         }
@@ -1637,6 +1672,9 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
             }
             else if (checkBox == moBoolPacking) {
                 itemStateBoolPacking();
+            }
+            else if (checkBox == moBoolAcidityAvgPercentage) {
+                itemStateBoolAcidityAvgPercentage();
             }
         }
     }

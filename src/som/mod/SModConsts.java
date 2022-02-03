@@ -170,6 +170,7 @@ public abstract class SModConsts {
     public static final int SR_FRUIT_YIELD_ORIG = 350014;
     public static final int SR_CH_OIL_PERC = 350016;
     public static final int SR_STK_DAILY = 350021;
+    public static final int SR_ITEM_FRUIT_ACI = 350022;
 
     public static final int E_TIC_REV = 430001;
 

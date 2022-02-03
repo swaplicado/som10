@@ -418,7 +418,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
             @Override
             public void createGridColumns() {
                 int col = 0;
-                SGridColumnForm[] columns = new SGridColumnForm[23];
+                SGridColumnForm[] columns = new SGridColumnForm[24];
 
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_1B, "Prueba lab");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_2D, "Impurezas %");
@@ -435,6 +435,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Ajuste rendimiento aceite %");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Acidez %");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_PER_4D, "Acidez promedio proceso %");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DATE, "Fecha molienda");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Clase fruta");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Grado madurez");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Peso fruta (g)");
