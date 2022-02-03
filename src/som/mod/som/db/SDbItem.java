@@ -609,7 +609,7 @@ public class SDbItem extends SDbRegistryUser {
                     "b_eru_per = " + (mbErucicAcidPercentage ? 1 : 0) + ", " +
                     "b_aci_per = " + (mbAcidityPercentage ? 1 : 0) + ", " +
                     "b_aci_avg_per = " + (mbAcidityAveragePercentage ? 1 : 0) + ", " +
-                    "b_grin_dt = " + (mbGrindingDate ? 1 : 0) + ", " +
+                    "b_grinding_dt = " + (mbGrindingDate ? 1 : 0) + ", " +
                     "b_fruit = " + (mbFruit ? 1 : 0) + ", " +
                     "b_prt_inp_tp = " + (mbPrintInputType ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
