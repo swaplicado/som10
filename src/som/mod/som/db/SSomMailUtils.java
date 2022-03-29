@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -60,9 +59,9 @@ public class SSomMailUtils {
         String html = "";
         
         if (SLibUtils.round(totInputYear, SLibUtils.getDecimalFormatQuantity().getMaximumFractionDigits()) != SLibUtils.round(totLastItemYear, SLibUtils.getDecimalFormatQuantity().getMaximumFractionDigits())) {
-            String sql = "";
+            String sql;
             Statement statement = session.getStatement().getConnection().createStatement();
-            ResultSet resultSet = null;
+            ResultSet resultSet;
             
             sql = "SELECT " +
                     "i.name_sht, i.id_item, " +
@@ -111,10 +110,10 @@ public class SSomMailUtils {
         int count = 0;
         double totalPeriod = 0;
         double totalYear = 0;
-        String sql = "";
+        String sql;
         String html = "";
         Statement statement = session.getStatement().getConnection().createStatement();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         
         sql = "SELECT "
                 + "it.name, it.id_inp_ct, it.id_inp_cl, it.id_inp_tp, "
@@ -188,7 +187,7 @@ public class SSomMailUtils {
      * @param session SGuiSession,
      * @param mailSubject String,
      * @param mailBodyHtml String,
-     * @param notificationBoxes String,
+     * @param recipientsTo String,
      * @param isDataAvailable boolean,
      * @param isByDate Is by date or by period.
      * @param dateStart Period start.
@@ -212,14 +211,14 @@ public class SSomMailUtils {
      * @param totInputYear int,
      * @return boolean.
      */
-    private static void sendMailReceptions(final SGuiSession session, final String mailSubject, final String mailBodyHtml, final String notificationBoxes, final boolean isDataAvailable, 
-            final boolean isByDate, final Date dateStart, final Date dateEnd, final int year, final DecimalFormat formatPercentage, 
+    private static void sendMailReceptions(final SGuiSession session, final String mailSubject, final String mailBodyHtml, final String recipientsTo, final String recipientsBcc, 
+            final boolean isDataAvailable, final boolean isByDate, final Date dateStart, final Date dateEnd, final int year, final DecimalFormat formatPercentage, 
             final String txtSregion, final String txtItem, final String txtItemUnit, final int itemUnitId, final String txtInput, final int[] inputKey, final String txtInputUnit, 
             final double totRegionCurr, final double totRegionYear, final double totSregionCurr, final double totSregionYear, 
             final double totItemCurr, final double totItemYear, final double totInputCurr, final double totInputYear) throws SQLException, MessagingException {
         String html = mailBodyHtml;
         SDbCompany company = ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany();
-        SMail mail = null;
+        SMail mail;
         SMailSender sender = new SMailSender(
                 company.getMailNotificationConfigHost(),
                 company.getMailNotificationConfigPort(),
@@ -311,7 +310,7 @@ public class SSomMailUtils {
                     "<td align='center'><b>" + SLibUtils.textToHtml("Temporada (" + txtInputUnit + ")") + "</b></td>" +
                     "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>" +
                     "</tr>" +
-                    composeInputTypeDetail(session, dateStart, dateEnd, year, inputKey, notificationBoxes, itemUnitId, totInputYear, totItemYear, formatPercentage) +
+                    composeInputTypeDetail(session, dateStart, dateEnd, year, inputKey, recipientsTo, itemUnitId, totInputYear, totItemYear, formatPercentage) +
                     "<tr bgcolor='" + COLOR_INPUT_FTR + "'>" +
                     "<td align='left'><b>" + SLibUtils.textToHtml("Total insumo") + "</b></td>" +
                     "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(totInputCurr) + "</b></td>" +
@@ -322,7 +321,7 @@ public class SSomMailUtils {
                     "</table>" +
                     "<br>";
             
-            html += composeInputClassTable(session, isByDate, dateStart, dateEnd, year, inputKey, notificationBoxes, itemUnitId, txtInputUnit, formatPercentage);
+            html += composeInputClassTable(session, isByDate, dateStart, dateEnd, year, inputKey, recipientsTo, itemUnitId, txtInputUnit, formatPercentage);
 
             // END OF SNIPPET HTML CODE #1 (Note: when modified, update aswell all snippets in this class!)
             //================================================================================
@@ -332,13 +331,16 @@ public class SSomMailUtils {
         
         html += composeMailWarning();
 
-        mail = new SMail(sender, mailSubject, html, new ArrayList<String>(Arrays.asList(SLibUtils.textExplode(notificationBoxes, ";"))));
+        mail = new SMail(sender, mailSubject, html, new ArrayList<String>(Arrays.asList(SLibUtils.textExplode(recipientsTo, ";"))));
+        if (!recipientsBcc.isEmpty()) {
+            mail.getBccRecipients().addAll(new ArrayList<String>(Arrays.asList(SLibUtils.textExplode(recipientsBcc, ";"))));
+        }
         mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
         mail.send();
     }
     
     private static int noInformationFound(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isByDate, 
-            final String subject, String message, final int year, final DecimalFormat formatPercentage, int count, String mailTo) throws Exception {
+            final String subject, String message, final int year, final DecimalFormat formatPercentage, int count, String mailTo, String mailBcc) throws Exception {
         // If no information found:
         String html;
         String sql;
@@ -372,7 +374,7 @@ public class SSomMailUtils {
                     "ORDER BY i.umn_box ";
             ResultSet resultSet = session.getStatement().executeQuery(sql);
             while (resultSet.next()) {
-                sendMailReceptions(session, subject, html, resultSet.getString("i.umn_box"), false,
+                sendMailReceptions(session, subject, html, resultSet.getString("i.umn_box"), mailBcc, false,
                         isByDate, dateStart, dateEnd, year, formatPercentage,
                         "", "", "", 0, "", null, "",
                         0, 0, 0, 0,
@@ -381,7 +383,7 @@ public class SSomMailUtils {
             }
         }
         else {
-            sendMailReceptions(session, subject, html, mailTo, false,
+            sendMailReceptions(session, subject, html, mailTo, mailBcc, false,
                     isByDate, dateStart, dateEnd, year, formatPercentage,
                     "", "", "", 0, "", null, "",
                     0, 0, 0, 0,
@@ -403,9 +405,11 @@ public class SSomMailUtils {
      * @param isMailer
      * @param daysToSendMail
      * @param mailTo
+     * @param mailBcc
      * @return int Mails sent.
      */
-    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isMailer, final int daysToSendMail, final String mailTo) {
+    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isMailer, final int daysToSendMail, 
+            final String mailTo, final String mailBcc) {
         int count = 0;
         boolean isByDate;
         boolean sent = false;
@@ -548,7 +552,7 @@ public class SSomMailUtils {
                     // Change of User Mail Notification Boxes (recipients), i.e., a new mail is composed:
                     
                     if (!html.isEmpty() && !umn_box.isEmpty()) {
-                        sendMailReceptions(session, subject, html, umn_box, true,
+                        sendMailReceptions(session, subject, html, umn_box, mailBcc, true,
                                 isByDate, dateStart, dateEnd, year, formatPercentage,
                                 txtSregion, txtItem, txtItemUnit, itemUnitId, txtInput, inputKey, txtInputUnit,
                                 totRegionCurr, totRegionYear, totSregionCurr, totSregionYear,
@@ -591,7 +595,6 @@ public class SSomMailUtils {
                     totSregionYear = 0;
                     
                     regionId = SLibConsts.UNDEFINED;
-                    txtRegion = "";
                     totRegionCurr = 0;
                     totRegionYear = 0;
 
@@ -706,7 +709,6 @@ public class SSomMailUtils {
                     txtInput = resultSet.getString("it.name");
                     txtInputUnit = resultSet.getString("u.code");
                     totInputCurr = 0;
-                    totInputYear = 0;
                     
                     itemId = SLibConsts.UNDEFINED;
                     itemUnitId = SLibConsts.UNDEFINED;
@@ -721,7 +723,6 @@ public class SSomMailUtils {
                     totSregionYear = 0;
                     
                     regionId = SLibConsts.UNDEFINED;
-                    txtRegion = "";
                     totRegionCurr = 0;
                     totRegionYear = 0;
                     
@@ -803,7 +804,6 @@ public class SSomMailUtils {
                     txtItem = resultSet.getString("i.name");
                     txtItemUnit = resultSet.getString("u.code");
                     totItemCurr = 0;
-                    totItemYear = 0;
                     
                     sregionId = 0;
                     txtSregion = "";
@@ -811,7 +811,6 @@ public class SSomMailUtils {
                     totSregionYear = 0;
                     
                     regionId = 0;
-                    txtRegion = "";
                     totRegionCurr = 0;
                     totRegionYear = 0;
                     
@@ -865,7 +864,6 @@ public class SSomMailUtils {
                     totSregionYear = 0;
                     
                     regionId = SLibConsts.UNDEFINED;
-                    txtRegion = "";
                     totRegionCurr = 0;
                     totRegionYear = 0;
 
@@ -936,7 +934,7 @@ public class SSomMailUtils {
             if (html.isEmpty()) {
                 String message = "(No se encontró información para el " + (isByDate ? "día" : "período") + " solicitado.)";
                 if (!isMailer) {
-                    count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo);
+                    count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
                 }
                 else {
                     sql = "SELECT * FROM s_cli_umn_log WHERE b_sent ORDER BY id DESC LIMIT 1;";
@@ -957,7 +955,7 @@ public class SSomMailUtils {
                             String dayOfWeek = getDayOfWeek(c.get(Calendar.DAY_OF_WEEK)); 
                             long daysLastReception = SLibTimeUtils.getDaysDiff(dateStart, lastReception);
                             message = "(Van " + daysLastReception + " días sin recepciones de semillas, desde el " + dayOfWeek + " " + SLibUtils.DateFormatDate.format(lastReception) + ".)";
-                            count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo);
+                            count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
                             sent = true;
                         }
                         sql = "SELECT max(id) FROM s_cli_umn_log";
@@ -968,7 +966,7 @@ public class SSomMailUtils {
                         }
                     }
                     else {
-                        count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo);
+                        count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
                         sent = true;
                     }
                     
@@ -977,7 +975,7 @@ public class SSomMailUtils {
                 }
             }
             else if (!umn_box.isEmpty()) {
-                sendMailReceptions(session, subject, html, umn_box, true,
+                sendMailReceptions(session, subject, html, umn_box, mailBcc, true,
                         isByDate, dateStart, dateEnd, year, formatPercentage,
                         txtSregion, txtItem, txtItemUnit, itemUnitId, txtInput, inputKey, txtInputUnit,
                         totRegionCurr, totRegionYear, totSregionCurr, totSregionYear,
