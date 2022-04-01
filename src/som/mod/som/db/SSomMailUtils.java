@@ -954,7 +954,7 @@ public class SSomMailUtils {
                             c.setTime(lastReception);
                             String dayOfWeek = getDayOfWeek(c.get(Calendar.DAY_OF_WEEK)); 
                             long daysLastReception = SLibTimeUtils.getDaysDiff(dateStart, lastReception);
-                            message = "(Van " + daysLastReception + " días sin recepciones de semillas, desde el " + dayOfWeek + " " + SLibUtils.DateFormatDate.format(lastReception) + ".)";
+                            message = "(" + (daysLastReception == 1 ? "Va 1 día" : "Van " + daysLastReception + " días") + " sin recepciones de semillas, desde el " + dayOfWeek + " " + SLibUtils.DateFormatDate.format(lastReception) + ".)";
                             count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
                             sent = true;
                         }
