@@ -24,7 +24,7 @@ import som.mod.cfg.db.SDbCompany;
 
 /**
  *
- * @author Néstor Ávalos, Sergio Flores
+ * @author Néstor Ávalos, Sergio Flores, Isabel Servín
  */
 public class SSomMailUtils {
     
@@ -326,6 +326,9 @@ public class SSomMailUtils {
             // END OF SNIPPET HTML CODE #1 (Note: when modified, update aswell all snippets in this class!)
             //================================================================================
         }
+        // Year summary
+        
+        html += yearSummary(session, year);
         
         // Mail footer:
         
@@ -337,6 +340,67 @@ public class SSomMailUtils {
         }
         mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
         mail.send();
+        System.out.println("Correo enviado!");
+    }
+    
+    private static String yearSummary(final SGuiSession session, final int year) throws SQLException {
+        DecimalFormat formatPercentage = new DecimalFormat("#,##0.0%");
+        String html = "<hr>" +
+                "<font size='" + (FONT_SIZE_INPUT - 1) + "' color='" + COLOR_INPUT_HDR + "'><b>" + SLibUtils.textToHtml("RESUMEN GLOBAL ANUAL") + "</b></font>" +
+                "<br>" +
+                "<table border='1' bordercolor='#000000' width='400' cellpadding='0' cellspacing='0'>" +
+                "<font size='" + FONT_SIZE_TBL + "'>" +
+                "<tr>" +
+                "<td align='center'><b>" + SLibUtils.textToHtml("Insumo") + "</b></td>" +
+                "<td align='center' colspan=\"2\"><b>" + SLibUtils.textToHtml(year + " (kg)") + "</b></td>" +
+                "<td align='center' colspan=\"2\"><b>" + SLibUtils.textToHtml((year - 1) + " (kg)") + "</b></td>" +
+                "</tr>";
+        
+        double totalYear = 0;
+        double totalLastYear = 0;
+        String sql = "SELECT SUM(IF(YEAR(t.dt) = " + year + ", t.qty, 0.0)) AS y, SUM(IF(YEAR(t.dt) = " + (year - 1) + ", t.qty, 0.0)) AS y_1 " +
+                "FROM s_tic AS t " +
+                "INNER JOIN su_item AS i ON t.fk_item = i.id_item " +
+                "INNER JOIN su_inp_tp AS tp ON i.fk_inp_ct = tp.id_inp_ct AND i.fk_inp_cl = tp.id_inp_cl AND i.fk_inp_tp = tp.id_inp_tp " +
+                "WHERE YEAR(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn;";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            totalYear = resultSet.getDouble("y");
+            totalLastYear = resultSet.getDouble("y_1");
+        }
+        
+        double sumTotalYear = 0;
+        double sumTotalLastYear = 0;
+        sql = "SELECT tp.name, SUM(IF(YEAR(t.dt) = " + year + ", t.qty, 0.0)) AS y, SUM(IF(YEAR(t.dt) = " + (year - 1) + ", t.qty, 0.0)) AS y_1 " +
+                "FROM s_tic AS t " +
+                "INNER JOIN su_item AS i ON t.fk_item = i.id_item " +
+                "INNER JOIN su_inp_tp AS tp ON i.fk_inp_ct = tp.id_inp_ct AND i.fk_inp_cl = tp.id_inp_cl AND i.fk_inp_tp = tp.id_inp_tp " +
+                "WHERE year(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn " +
+                "GROUP BY tp.id_inp_ct, tp.id_inp_cl, tp.id_inp_tp;";
+        resultSet = session.getStatement().executeQuery(sql);
+        while (resultSet.next()) {
+            sumTotalYear += resultSet.getDouble("y");
+            sumTotalLastYear += resultSet.getDouble("y_1");
+            html += "<tr>" +
+                    "<td align='left'><b>" + SLibUtils.textToHtml(resultSet.getString(1)) + "</b></td>" +
+                    "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble(2)) + "</b></td>" +
+                    "<td align='right'><b>" + formatPercentage.format(resultSet.getDouble(2)/totalYear) + "</b></td>" +
+                    "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble(3)) + "</b></td>" +
+                    "<td align='right'><b>" + formatPercentage.format(resultSet.getDouble(3)/totalLastYear) + "</b></td>" +
+                    "</tr>";
+        }
+        html += "<tr bgcolor='" + COLOR_INPUT_FTR + "'>" +
+                "<td align='left'><b>" + SLibUtils.textToHtml("TOTAL") + "</b></td>" +
+                "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(sumTotalYear) + "</b></td>" +
+                "<td align='right'><b>" + formatPercentage.format(1) + "</b></td>" +
+                "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(sumTotalLastYear) + "</b></td>" +
+                "<td align='right'><b>" + formatPercentage.format(1) + "</b></td>" +
+                "</tr>" +
+                "</font>" +
+                "</table>" +
+                "<br>";
+
+        return html;
     }
     
     private static int noInformationFound(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isByDate, 
@@ -564,7 +628,14 @@ public class SSomMailUtils {
                     // START OF SNIPPET HTML CODE #2 (Note: when modified, update aswell all snippets in this class!)
                     
                     // Body header:
-                    html =
+                    html =  "<head> " +
+                            "<style> " +
+                            "table, th, td {" +
+                            "border: 1px solid black;" +
+                            "border-collapse: collapse;" +
+                            "}" +
+                            "</style> " +
+                            "</head>" +
                             "<font size='" + FONT_SIZE_TITLE + "'><b>" +
                             SLibUtils.textToHtml(((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getName()) + "<br>" +
                             SSomConsts.SOM_MAIL_MAN + SLibUtils.DateFormatDate.format(dateStart) + (isByDate ? "" : " al " + SLibUtils.DateFormatDate.format(dateEnd)) +

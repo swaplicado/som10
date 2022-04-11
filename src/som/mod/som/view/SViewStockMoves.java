@@ -103,6 +103,7 @@ public class SViewStockMoves extends SGridPaneView implements ActionListener {
             + "t.code AS f_type_code, "
             + "ad.name AS f_adj, "
             + "ad.code AS f_adj_code, "
+            + "byp.code AS f_by_prod_code, "
             + "cob.name AS f_cob, "
             + "cob.code AS f_cob_code, "
             + "wa.name AS f_wa, "
@@ -125,6 +126,7 @@ public class SViewStockMoves extends SGridPaneView implements ActionListener {
             + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_DIV) + " AS d ON v.id_div = d.id_div "
             + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_IOG_TP) + " AS t ON v.fk_iog_ct = t.id_iog_ct AND v.fk_iog_cl = t.id_iog_cl AND v.fk_iog_tp = t.id_iog_tp "
             + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS g ON v.fk_iog = g.id_iog "
+            + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_BY_PRODUCT) + " AS byp ON g.fk_by_product = byp.id_by_product "  
             + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_IOG_ADJ_TP) + " AS ad ON g.fk_iog_adj_tp = ad.id_iog_adj_tp "
             + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS vi ON v.id_item = vi.id_item "
             + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS vu ON v.id_unit = vu.id_unit "
@@ -154,7 +156,7 @@ public class SViewStockMoves extends SGridPaneView implements ActionListener {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[mnGridSubtype == SModConsts.SX_STK_MOVE_DET ? 21 : 10];
+        columns = new SGridColumnView[mnGridSubtype == SModConsts.SX_STK_MOVE_DET ? 22 : 11];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, SDbConsts.FIELD_NAME, "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, SDbConsts.FIELD_CODE, "Ítem código");
@@ -166,6 +168,7 @@ public class SViewStockMoves extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, "f_di_code", "División");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "f_type", "Tipo movimiento");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "f_adj_code", "Tipo ajuste");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "f_by_prod_code", "Subproducto");
 
         if (mnGridSubtype == SModConsts.SX_STK_MOVE_DET) {
             //columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "f_type_code", "Tipo docto");

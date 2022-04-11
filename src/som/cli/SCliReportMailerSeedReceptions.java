@@ -26,7 +26,7 @@ public class SCliReportMailerSeedReceptions {
     
     private static SGuiSession moSession;
     
-    public static final int DAYS_TO_SEND_MAIL = 3;
+    public static final int DAYS_TO_SEND_MAIL = 1;
     
     private static final int ARG_DAYS_TO_SEND_MAIL = 0;
     private static final int ARG_MAIL_TO = 1;
@@ -36,7 +36,7 @@ public class SCliReportMailerSeedReceptions {
         try {
             
             int daysToSendMail = DAYS_TO_SEND_MAIL;
-            String mailTo = "isabel.garcia@swaplicado.com.mx;sflores@swaplicado.com.mx";
+            String mailTo = "isabel.garcia@swaplicado.com.mx";
             String mailBcc = "";
             
             if (args.length >= 1) {
@@ -66,6 +66,9 @@ public class SCliReportMailerSeedReceptions {
 
             if (result != SDbConsts.CONNECTION_OK) {
                 throw new Exception(SDbConsts.ERR_MSG_DB_CONNECTION);
+            }
+            else {
+                System.out.println("Conexión a la bd establecida");
             }
             
             moSession.setDatabase(database);

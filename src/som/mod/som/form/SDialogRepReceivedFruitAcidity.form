@@ -4,6 +4,8 @@
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="reportTypeGroup">
     </Component>
+    <Component class="javax.swing.ButtonGroup" name="reportGroupByGroup">
+    </Component>
   </NonVisualComponents>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="2"/>
@@ -137,6 +139,22 @@
                 </Component>
               </SubComponents>
             </Container>
+            <Component class="sa.lib.gui.bean.SBeanFieldRadio" name="moRadByOrigin">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="reportGroupByGroup"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Agrupar por origen y proveedor"/>
+              </Properties>
+            </Component>
+            <Component class="sa.lib.gui.bean.SBeanFieldRadio" name="moRadByProducer">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="reportGroupByGroup"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Agrupar por proveedor"/>
+              </Properties>
+            </Component>
             <Component class="sa.lib.gui.bean.SBeanFieldRadio" name="moRadDetail">
               <Properties>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">

@@ -124,6 +124,7 @@ public class SViewIogProd extends SGridPaneView implements ActionListener {
             "tp.name AS tp_name, " +
             "adj.code AS adj_code, " +
             "adj.name AS adj_name, " +
+            "byp.code AS by_prod_code, " +
             "co.code AS co_code, " +
             "co.name AS co_name, " +
             "cob.code AS cob_code, " +
@@ -158,6 +159,8 @@ public class SViewIogProd extends SGridPaneView implements ActionListener {
             "v.fk_iog_ct = tp.id_iog_ct AND v.fk_iog_cl = tp.id_iog_cl AND v.fk_iog_tp = tp.id_iog_tp " +
             "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_IOG_ADJ_TP) + " AS adj ON " +
             "v.fk_iog_adj_tp = adj.id_iog_adj_tp " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_BY_PRODUCT) + " AS byp ON " + 
+            "v.fk_by_product = byp.id_by_product " + 
             "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_CO) + " AS co ON " +
             "v.fk_wah_co = co.id_co " +
             "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_COB) + " AS cob ON " +
@@ -189,7 +192,7 @@ public class SViewIogProd extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[21];
+        SGridColumnView[] columns = new SGridColumnView[22];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "f_num", "Folio");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, SDbConsts.FIELD_DATE, SGridConsts.COL_TITLE_DATE);
@@ -199,6 +202,7 @@ public class SViewIogProd extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, "div_code", "División");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "tp_name", "Tipo movimiento");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "adj_code", "Tipo ajuste");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "by_prod_code", "Subproducto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_L, "i_name", "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "i_code", "Ítem código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "v.qty", "Cantidad");
@@ -228,6 +232,7 @@ public class SViewIogProd extends SGridPaneView implements ActionListener {
         moSuscriptionsSet.add(SModConsts.CU_COB);
         moSuscriptionsSet.add(SModConsts.CU_WAH);
         moSuscriptionsSet.add(SModConsts.SU_IOG_ADJ_TP);
+        moSuscriptionsSet.add(SModConsts.SU_BY_PRODUCT);
         moSuscriptionsSet.add(SModConsts.SU_ITEM);
         moSuscriptionsSet.add(SModConsts.SU_UNIT);
         moSuscriptionsSet.add(SModConsts.CU_USR);

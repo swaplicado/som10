@@ -47,6 +47,7 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
     private void initComponents() {
 
         reportTypeGroup = new javax.swing.ButtonGroup();
+        reportGroupByGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
@@ -61,6 +62,8 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
         jPanel7 = new javax.swing.JPanel();
         jlProducer = new javax.swing.JLabel();
         moKeyProducer = new sa.lib.gui.bean.SBeanFieldKey();
+        moRadByOrigin = new sa.lib.gui.bean.SBeanFieldRadio();
+        moRadByProducer = new sa.lib.gui.bean.SBeanFieldRadio();
         moRadDetail = new sa.lib.gui.bean.SBeanFieldRadio();
         moRadSummary = new sa.lib.gui.bean.SBeanFieldRadio();
 
@@ -109,6 +112,14 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
 
         jPanel2.add(jPanel7);
 
+        reportGroupByGroup.add(moRadByOrigin);
+        moRadByOrigin.setText("Agrupar por origen y proveedor");
+        jPanel2.add(moRadByOrigin);
+
+        reportGroupByGroup.add(moRadByProducer);
+        moRadByProducer.setText("Agrupar por proveedor");
+        jPanel2.add(moRadByProducer);
+
         reportTypeGroup.add(moRadDetail);
         moRadDetail.setText("Modalidad detallada");
         jPanel2.add(moRadDetail);
@@ -138,8 +149,11 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
     private sa.lib.gui.bean.SBeanFieldDate moDateDateStart;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProducer;
+    private sa.lib.gui.bean.SBeanFieldRadio moRadByOrigin;
+    private sa.lib.gui.bean.SBeanFieldRadio moRadByProducer;
     private sa.lib.gui.bean.SBeanFieldRadio moRadDetail;
     private sa.lib.gui.bean.SBeanFieldRadio moRadSummary;
+    private javax.swing.ButtonGroup reportGroupByGroup;
     private javax.swing.ButtonGroup reportTypeGroup;
     // End of variables declaration//GEN-END:variables
 
@@ -151,6 +165,8 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
         moDateDateEnd.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateEnd), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem), false);
         moKeyProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlProducer), false);
+        moRadByOrigin.setBooleanSettings(SGuiUtils.getLabelName(moRadByOrigin.getText()), false);
+        moRadByProducer.setBooleanSettings(SGuiUtils.getLabelName(moRadByProducer.getText()), false);
         moRadDetail.setBooleanSettings(SGuiUtils.getLabelName(moRadDetail.getText()), false);
         moRadSummary.setBooleanSettings(SGuiUtils.getLabelName(moRadSummary.getText()), false);
 
@@ -158,6 +174,8 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
         moFields.addField(moDateDateEnd);
         moFields.addField(moKeyItem);
         moFields.addField(moKeyProducer);
+        moFields.addField(moRadByOrigin);
+        moFields.addField(moRadByProducer);
         moFields.addField(moRadDetail);
         moFields.addField(moRadSummary);
 
@@ -173,6 +191,7 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
         miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SModSysConsts.SX_ITEM_TP_FRUIT, null);
         moRadDetail.setSelected(true);
+        moRadByOrigin.setSelected(true);
     }
 
     @Override
@@ -201,6 +220,7 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
         
         moParamsMap.put("tDateStart", moDateDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
+        moParamsMap.put("bGroupByOrigin", moRadByOrigin.getValue());
         moParamsMap.put("bShowDetails", !moRadSummary.getValue());
         moParamsMap.put("sSqlWhere", sqlWhere + " AND i.b_fruit ");
         moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());

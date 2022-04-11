@@ -24,6 +24,7 @@ import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiReport;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.ext.db.SExtUtils;
+import som.mod.som.db.SDbByProduct;
 import som.mod.som.db.SDbIog;
 import som.mod.som.db.SDbIogExportation;
 import som.mod.som.db.SDbMfgEstimation;
@@ -37,6 +38,7 @@ import som.mod.som.form.SDialogRepStock;
 import som.mod.som.form.SDialogRepStockComparate;
 import som.mod.som.form.SDialogRepStockDay;
 import som.mod.som.form.SDialogRepStockMoves;
+import som.mod.som.form.SFormByProduct;
 import som.mod.som.form.SFormDialogIogExportation;
 import som.mod.som.form.SFormDialogStockClosing;
 import som.mod.som.form.SFormDialogWizardDps;
@@ -45,6 +47,7 @@ import som.mod.som.form.SFormMix;
 import som.mod.som.form.SFormProductionEstimate;
 import som.mod.som.form.SFormStockDay;
 import som.mod.som.form.SFormStockDays;
+import som.mod.som.view.SViewByProduct;
 import som.mod.som.view.SViewExternalDpsReturn;
 import som.mod.som.view.SViewExternalDpsSupply;
 import som.mod.som.view.SViewIog;
@@ -76,6 +79,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjCatInputCategory;
     private JMenuItem mjCatIodineValueRank;
     private JMenuItem mjCatExternalWarehouses;
+    private JMenuItem mjCatByProduct;
     private JMenuItem mjCatUpdateCatalogues;
     private JMenu mjTic;
     private JMenuItem mjTicSupply;
@@ -142,6 +146,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private SFormDialogIogExportation moFormDialogIogExportation;
     private SFormDialogStockClosing moFormDialogStockClosing;
     private SFormDialogWizardDps moFormDialogWizardDps;
+    private SFormByProduct moFormByProduct;
 
     public SModuleSomOs(SGuiClient client) {
         super(client, SModConsts.MOD_SOM_OS, SLibConsts.UNDEFINED);
@@ -158,6 +163,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
         mjCatIodineValueRank = new JMenuItem("Rangos de yodo");
         mjCatExternalWarehouses = new JMenuItem("Almacenes sistema externo");
+        mjCatByProduct = new JMenuItem("Subproductos");
         mjCatUpdateCatalogues = new JMenuItem("Actualizar catálogos sistema externo...");
 
         mjCat.add(mjCatProducer);
@@ -168,6 +174,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCat.add(mjCatInputCategory);
         mjCat.add(mjCatIodineValueRank);
         mjCat.add(mjCatExternalWarehouses);
+        mjCat.add(mjCatByProduct);
         mjCat.addSeparator();
         mjCat.add(mjCatUpdateCatalogues);
 
@@ -178,6 +185,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCatInputCategory.addActionListener(this);
         mjCatIodineValueRank.addActionListener(this);
         mjCatExternalWarehouses.addActionListener(this);
+        mjCatByProduct.addActionListener(this);
         mjCatUpdateCatalogues.addActionListener(this);
 
         mjTic = new JMenu("Boletos báscula");
@@ -467,6 +475,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.SX_WIZ_DPS:
                 break;
+            case SModConsts.SU_BY_PRODUCT:
+                registry = new SDbByProduct();
+                break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -509,6 +520,12 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 settings = new SGuiCatalogueSettings("Tipo ajuste mov. inv.", 1);
                 sql = "SELECT id_iog_adj_tp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY sort ";
+                break;
+            case SModConsts.SU_BY_PRODUCT:
+                settings = new SGuiCatalogueSettings("Subproductos", 1);
+                sql = "SELECT id_by_product AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", " 
+                        + "code AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name;";
                 break;
             case SModConsts.SX_EXT_DPS:
                 settings = new SGuiCatalogueSettings("Partida documento CV", 3);
@@ -729,6 +746,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                         break;
                 }
                 break;
+            case SModConsts.SU_BY_PRODUCT:
+                view = new SViewByProduct(miClient, "Subproductos");
+                break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -773,6 +793,10 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             case SModConsts.SX_WIZ_DPS:
                 if (moFormDialogWizardDps == null) { moFormDialogWizardDps = new SFormDialogWizardDps(miClient, "Movimientos externos"); }
                 form = moFormDialogWizardDps;
+                break;
+            case SModConsts.SU_BY_PRODUCT:
+                if (moFormByProduct == null) { moFormByProduct = new SFormByProduct(miClient, "Subproductos"); }
+                form = moFormByProduct;
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -831,6 +855,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatExternalWarehouses) {
                 miClient.getSession().showView(SModConsts.SU_EXT_WAH, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatByProduct) {
+                miClient.getSession().showView(SModConsts.SU_BY_PRODUCT, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatUpdateCatalogues) {
                 SExtUtils.updateCatalogues(miClient);

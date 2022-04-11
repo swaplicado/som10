@@ -73,6 +73,7 @@ public abstract class SModConsts {
     public static final int SU_GRINDING_EVENT = 320019;
     public static final int SU_GRINDINGS = 320020;
     public static final int SU_INP_SRC = 320021;
+    public static final int SU_BY_PRODUCT = 320022;
 
     public static final int S_LAB = 330001;
     public static final int S_LAB_NOTE = 330002;
@@ -229,6 +230,7 @@ public abstract class SModConsts {
         TablesMap.put(SU_IOD_VAL_RANK, "su_iod_val_rank");
         TablesMap.put(SU_LOT, "su_lots");
         TablesMap.put(SU_INP_SRC, "su_inp_src");
+        TablesMap.put(SU_BY_PRODUCT, "su_by_product");
         TablesMap.put(SU_GRINDING_EVENT, "su_grin_events");
         TablesMap.put(SU_GRINDING_RESULTS, "su_grin_res");
         TablesMap.put(SU_GRINDINGS, "su_grinding");

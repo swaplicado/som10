@@ -81,6 +81,7 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SS_IOG_TP,
             SModConsts.SS_MIX_TP,
             SModConsts.SU_IOG_ADJ_TP,
+            SModConsts.SU_BY_PRODUCT,
             SModConsts.SU_EXT_WAH,
             SModConsts.S_IOG,
             SModConsts.S_IOG_EXP,

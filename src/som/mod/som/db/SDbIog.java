@@ -26,7 +26,7 @@ import som.mod.cfg.db.SDbBranchWarehouse;
 
 /**
  *
- * @author Néstor Ávalos, Sergio Flores
+ * @author Néstor Ávalos, Sergio Flores, Isabel Servín
  * 2018-11-21, Sergio Flores:
  * 1) Adición de columna referencia en tabla de movimientos de almacén.
  */
@@ -48,6 +48,7 @@ public class SDbIog extends SDbRegistryUser {
     protected int mnFkIogClassId;
     protected int mnFkIogTypeId;
     protected int mnFkIogAdjustmentTypeId;
+    protected int mnFkByProduct;
     protected int mnFkItemId;
     protected int mnFkUnitId;
     protected int mnFkWarehouseCompanyId;
@@ -617,6 +618,7 @@ public class SDbIog extends SDbRegistryUser {
     public void setFkIogClassId(int n) { mnFkIogClassId = n; }
     public void setFkIogTypeId(int n) { mnFkIogTypeId = n; }
     public void setFkIogAdjustmentTypeId(int n) { mnFkIogAdjustmentTypeId = n; }
+    public void setFkByProduct(int n) { mnFkByProduct = n; }
     public void setFkItemId(int n) { mnFkItemId = n; }
     public void setFkUnitId(int n) { mnFkUnitId = n; }
     public void setFkWarehouseCompanyId(int n) { mnFkWarehouseCompanyId = n; }
@@ -657,6 +659,7 @@ public class SDbIog extends SDbRegistryUser {
     public int getFkIogClassId() { return mnFkIogClassId; }
     public int getFkIogTypeId() { return mnFkIogTypeId; }
     public int getFkIogAdjustmentTypeId() { return mnFkIogAdjustmentTypeId; }
+    public int getFkByProduct() { return mnFkByProduct; }
     public int getFkItemId() { return mnFkItemId; }
     public int getFkUnitId() { return mnFkUnitId; }
     public int getFkWarehouseCompanyId() { return mnFkWarehouseCompanyId; }
@@ -879,7 +882,7 @@ public class SDbIog extends SDbRegistryUser {
         return res;
     }
 
-    public void computeIog(final Date date, final double quantity, final boolean system, final int[] iogType, final int adjustment,
+    public void computeIog(final Date date, final double quantity, final boolean system, final int[] iogType, final int adjustment, 
             final int item, final int unit, final int[] warehouse, final int nDivisionId, final int estimation, final int version, final int user) {
         mtDate = date;
         mdQuantity = quantity;
@@ -888,6 +891,7 @@ public class SDbIog extends SDbRegistryUser {
         mnFkIogClassId = iogType[1];
         mnFkIogTypeId = iogType[2];
         mnFkIogAdjustmentTypeId = adjustment;
+        mnFkByProduct = 1;
         mnFkItemId = item;
         mnFkUnitId = unit;
         mnFkWarehouseCompanyId = warehouse[0];
@@ -925,6 +929,7 @@ public class SDbIog extends SDbRegistryUser {
         mnFkIogClassId = 0;
         mnFkIogTypeId = 0;
         mnFkIogAdjustmentTypeId = 0;
+        mnFkByProduct = 0;
         mnFkItemId = 0;
         mnFkUnitId = 0;
         mnFkWarehouseCompanyId = 0;
@@ -1059,6 +1064,7 @@ public class SDbIog extends SDbRegistryUser {
             mnFkIogClassId = resultSet.getInt("iog.fk_iog_cl");
             mnFkIogTypeId = resultSet.getInt("iog.fk_iog_tp");
             mnFkIogAdjustmentTypeId = resultSet.getInt("iog.fk_iog_adj_tp");
+            mnFkByProduct = resultSet.getInt("fk_by_product");
             mnFkItemId = resultSet.getInt("iog.fk_item");
             mnFkUnitId = resultSet.getInt("iog.fk_unit");
             mnFkWarehouseCompanyId = resultSet.getInt("iog.fk_wah_co");
@@ -1220,6 +1226,7 @@ public class SDbIog extends SDbRegistryUser {
                     mnFkIogClassId + ", " +
                     mnFkIogTypeId + ", " +
                     mnFkIogAdjustmentTypeId + ", " +
+                    mnFkByProduct + ", " + 
                     mnFkItemId + ", " +
                     mnFkUnitId + ", " +
                     mnFkWarehouseCompanyId + ", " +
@@ -1263,6 +1270,7 @@ public class SDbIog extends SDbRegistryUser {
                     "fk_iog_cl = " + mnFkIogClassId + ", " +
                     "fk_iog_tp = " + mnFkIogTypeId + ", " +
                     "fk_iog_adj_tp = " + mnFkIogAdjustmentTypeId + ", " +
+                    "fk_by_product = " + mnFkByProduct + ", " +
                     "fk_item = " + mnFkItemId + ", " +
                     "fk_unit = " + mnFkUnitId + ", " +
                     "fk_wah_co = " + mnFkWarehouseCompanyId + ", " +
@@ -1449,6 +1457,7 @@ public class SDbIog extends SDbRegistryUser {
         registry.setFkIogClassId(this.getFkIogClassId());
         registry.setFkIogTypeId(this.getFkIogTypeId());
         registry.setFkIogAdjustmentTypeId(this.getFkIogAdjustmentTypeId());
+        registry.setFkByProduct(this.getFkByProduct());
         registry.setFkItemId(this.getFkItemId());
         registry.setFkUnitId(this.getFkUnitId());
         registry.setFkWarehouseCompanyId(this.getFkWarehouseCompanyId());
