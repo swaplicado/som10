@@ -46,7 +46,7 @@ import som.mod.som.db.SSomWarehouseItem;
 public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListener, ItemListener, FocusListener {
 
     private boolean mbTicketRegistry;
-    private boolean mbIsSA;
+    private boolean mbIsStockAdjustment;
     private int[] moFkIogTypeId;
 
     private SDbIog moRegistry;
@@ -233,7 +233,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlByProduct.setText("Subproducto:");
+        jlByProduct.setText("Subproducto:*");
         jlByProduct.setPreferredSize(new java.awt.Dimension(90, 23));
         jPanel17.add(jlByProduct);
 
@@ -807,7 +807,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 1040, 650);
         mbTicketRegistry = false;
-        mbIsSA = false;
+        mbIsStockAdjustment = false;
         moIogRegistryB = null;
         moCompany = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany();
 
@@ -964,7 +964,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moKeyWarehouseSource.setValue(new int[] { moRegistry.getFkWarehouseCompanyId(), moRegistry.getFkWarehouseBranchId(), moRegistry.getFkWarehouseWarehouseId() });
         moKeyDivisionSource.setValue(new int[] { moRegistry.getFkDivisionId() });
         moKeyIogAdjustmentType.setValue(new int[] { moRegistry.getFkIogAdjustmentTypeId() });
-        moKeyByProduct.setValue(new int[] { moRegistry.getFkByProduct() });
+        moKeyByProduct.setValue(new int[] { moRegistry.getFkByProductId() });
         moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
         jlQuantityUnit.setText(moRegistry.getFkItemId() > 0 && moKeyItem.getSelectedItem().getComplement() != null ? moKeyItem.getSelectedItem().getComplement().toString() : "");
         moDecQuantity.setValue(moRegistry.getQuantity() < 0 ? 0 : moRegistry.getQuantity());
@@ -1026,7 +1026,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
             }
         }
 
-        mbIsSA = moRegistry.getXtaIogTypeCode().equals("SA");
+        mbIsStockAdjustment = moRegistry.getXtaIogTypeCode().equals("SA");
         
         disabledFields(false);
         editableDpsFields(false);
@@ -1175,7 +1175,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     }
     
     private void actionChangedIogAdjustmentType() {
-        if (moKeyIogAdjustmentType.isEnabled() && moKeyIogAdjustmentType.getSelectedIndex() > 0 && mbIsSA) {
+        if (moKeyIogAdjustmentType.isEnabled() && moKeyIogAdjustmentType.getSelectedIndex() > 0 && mbIsStockAdjustment) {
             try {
                 String sql = "SELECT b_by_product FROM su_iog_adj_tp WHERE id_iog_adj_tp = " + moKeyIogAdjustmentType.getValue()[0];
                 ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
@@ -1185,12 +1185,12 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
                     }
                     else {
                         moKeyByProduct.setEnabled(false);
-                        moKeyByProduct.setSelectedIndex(1);
+                        moKeyByProduct.setValue(new int[] { SModSysConsts.SU_BY_PRODUCT_NA });
                     }
                 }
                 else {
                     moKeyByProduct.setEnabled(false);
-                    moKeyByProduct.setSelectedIndex(1);
+                    moKeyByProduct.setValue(new int[] { SModSysConsts.SU_BY_PRODUCT_NA });
                 }
             }
             catch (Exception e) {
@@ -1199,7 +1199,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         }
         else {
             moKeyByProduct.setEnabled(false);
-            moKeyByProduct.setSelectedIndex(1);
+            moKeyByProduct.setValue(new int[] { SModSysConsts.SU_BY_PRODUCT_NA });
         }
     }
 
@@ -1271,7 +1271,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     }
 
     private void obtainItem(final boolean bSource) {
-        ArrayList<SSomWarehouseItem> somWarehouseItem = new ArrayList<SSomWarehouseItem>();
+        ArrayList<SSomWarehouseItem> somWarehouseItem = new ArrayList<>();
 
         if ((bSource && moKeyItem.isEnabled() && moKeyWarehouseSource.getSelectedIndex() > 0) ||
             (!bSource && moKeyItemDestiny.isEnabled() && moKeyWarehouseDestiny.getSelectedIndex() > 0)) {
@@ -1501,7 +1501,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         iog.setFkDivisionId(moKeyDivisionDestiny.getValue()[0]);
 
         iog.setFkIogAdjustmentTypeId(moKeyIogAdjustmentType.getValue()[0]);
-        iog.setFkByProduct(moKeyByProduct.getValue()[0]);
+        iog.setFkByProductId(moKeyByProduct.getValue()[0]);
         iog.setDate(moDateDate.getValue());
         //iog.setQuantity(moDecQuantity.getValue());
         iog.setXtaNote(moTextNote.getValue());
@@ -1580,7 +1580,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         //registry.setFkIogClassId(registry.getFkIogClassId());
         //registry.setFkIogTypeId(registry.getFkIogTypeId());
         registry.setFkIogAdjustmentTypeId(moKeyIogAdjustmentType.getValue()[0]);
-        registry.setFkByProduct(moKeyByProduct.getValue()[0]);
+        registry.setFkByProductId(!moKeyByProduct.isEnabled() ? SModSysConsts.SU_BY_PRODUCT_NA : moKeyByProduct.getValue()[0]);
         registry.setFkItemId(moKeyItem.getValue()[0]);
         registry.setFkUnitId(moKeyItem.getSelectedItem().getForeignKey()[0]);
         registry.setFkDivisionId(moKeyDivisionSource.getValue()[0]);
@@ -1664,19 +1664,11 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         }
 
         if (validation.isValid()) {
-            if (moDecQuantity.getValue() <= 0) {
-                validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moDecQuantity.getFieldName() +
-                    "' " + SGuiConsts.ERR_MSG_FIELD_VAL_GREAT + " 0.");
-                validation.setComponent(moDecQuantity.getComponent());
-            }
-        }
-
-        if (validation.isValid()) {
             if (SLibUtils.compareKeys(moFkIogTypeId, SModSysConsts.SS_IOG_TP_IN_EXT_ADJ) ||
                 SLibUtils.compareKeys(moFkIogTypeId, SModSysConsts.SS_IOG_TP_OUT_EXT_ADJ)) {
                 if (moKeyIogAdjustmentType.getValue()[0] == SModSysConsts.SU_IOG_ADJ_TP_NA) {
                     if (miClient.getSession().getUser().getFkUserTypeId() == SModSysConsts.CS_USR_TP_SUP) {
-                        if (miClient.showMsgBoxConfirm("Esté ajuste con la opción '" + moKeyIogAdjustmentType.getSelectedItem().getItem() + "' en el '" + moKeyIogAdjustmentType.getFieldName() + "'  no será enviado en la exportación de información al sistema externo. \n" +
+                        if (miClient.showMsgBoxConfirm("Esté ajuste con la opción '" + moKeyIogAdjustmentType.getSelectedItem().getItem() + "' en el '" + moKeyIogAdjustmentType.getFieldName() + "' no será enviado en la exportación de información al sistema externo.\n" +
                                 SGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
                             validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + moKeyIogAdjustmentType.getFieldName() +
                             "' no puede ser '" + moKeyIogAdjustmentType.getSelectedItem().getItem() + "'.");
@@ -1693,7 +1685,11 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         }
 
         if (validation.isValid()) {
-            if (!moRegistry.getXtaDpsBizPartner().isEmpty() &&
+            if (moKeyByProduct.isEnabled() && moKeyByProduct.getValue()[0] == SModSysConsts.SU_BY_PRODUCT_NA) {
+                validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + SGuiUtils.getLabelName(jlByProduct) + "'.");
+                validation.setComponent(moKeyByProduct);
+            }
+            else if (!moRegistry.getXtaDpsBizPartner().isEmpty() &&
                 (SLibUtils.compareKeys(moFkIogTypeId, SModSysConsts.SS_IOG_TP_IN_PUR_PUR) ||
                 SLibUtils.compareKeys(moFkIogTypeId, SModSysConsts.SS_IOG_TP_IN_SAL_SAL) ||
                 SLibUtils.compareKeys(moFkIogTypeId, SModSysConsts.SS_IOG_TP_OUT_PUR_PUR) ||

@@ -130,6 +130,8 @@ public abstract class SModSysConsts {
     
     public static final int SU_INP_SRC_NA = 1;
     
+    public static final int SU_BY_PRODUCT_NA = 1;
+    
     public static final int SX_DEN = 1;
     public static final int SX_IOD_VAL = 2;
     public static final int SX_REF_IND = 3;

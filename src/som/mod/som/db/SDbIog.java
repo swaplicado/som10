@@ -48,7 +48,7 @@ public class SDbIog extends SDbRegistryUser {
     protected int mnFkIogClassId;
     protected int mnFkIogTypeId;
     protected int mnFkIogAdjustmentTypeId;
-    protected int mnFkByProduct;
+    protected int mnFkByProductId;
     protected int mnFkItemId;
     protected int mnFkUnitId;
     protected int mnFkWarehouseCompanyId;
@@ -120,8 +120,8 @@ public class SDbIog extends SDbRegistryUser {
     public SDbIog() {
         super(SModConsts.S_IOG);
 
-        mvWizardDpsSupplyTicket = new Vector<SSomWizardDpsTicketSupply>();
-        maTransferMoves = new ArrayList<Object[]>();
+        mvWizardDpsSupplyTicket = new Vector<>();
+        maTransferMoves = new ArrayList<>();
 
         initRegistry();
     }
@@ -261,7 +261,6 @@ public class SDbIog extends SDbRegistryUser {
     }
 
     private String obtainTicketQuery(final int nPkTicket) {
-
         return "SELECT v.id_tic, v.num, v.qty, v.fk_item, COALESCE(it.fk_wah_co_n, 0) AS f_fk_wah_co_n, COALESCE(it.fk_wah_cob_n, 0) AS f_fk_wah_cob_n, " +
             "COALESCE(it.fk_wah_wah_n, 0) AS f_fk_wah_wah_n, COALESCE(g.fk_div, 0) AS f_fk_div,  CONCAT(tp.code, '-', g.num) AS f_tp_iog, " +
             "(SELECT COALESCE(SUM(ge.qty), 0) FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS ge WHERE " +
@@ -295,7 +294,7 @@ public class SDbIog extends SDbRegistryUser {
     private static ArrayList<SSomWarehouseItem> stockWarehouseByItem(final SGuiSession session, final int nYearId, final int[] anWarehouseId, final int[] anStockMoveId,
             final Date date, final int nDivisionId) {
         String sql = "";
-        ArrayList<SSomWarehouseItem> aWarehouseItem = new ArrayList<SSomWarehouseItem>();
+        ArrayList<SSomWarehouseItem> aWarehouseItem = new ArrayList<>();
         SSomWarehouseItem warehouseItem = null;
         ResultSet resultSet = null;
 
@@ -390,8 +389,7 @@ public class SDbIog extends SDbRegistryUser {
 
                 // Validate warehouse business rules:
 
-                msQueryResult = SSomUtils.obtainWarehouseItemsForBusinessRules(
-                        session,
+                msQueryResult = SSomUtils.obtainWarehouseItemsForBusinessRules(session,
                         warehouse.getPrimaryKey(),
                         moStock != null ? moStock.getPrimaryKey() : null,
                         mtDate,
@@ -399,7 +397,7 @@ public class SDbIog extends SDbRegistryUser {
                         mnFkUnitId,
                         actionDelete && !mbDeleted ? 0d : mdQuantity,
                         msXtaUnit,
-                        mbXtaValidateWarehouseProduction ? false : true,
+                        !mbXtaValidateWarehouseProduction,
                         mbXtaValidateExportationStock,
                         SLibConsts.UNDEFINED);
 
@@ -618,7 +616,7 @@ public class SDbIog extends SDbRegistryUser {
     public void setFkIogClassId(int n) { mnFkIogClassId = n; }
     public void setFkIogTypeId(int n) { mnFkIogTypeId = n; }
     public void setFkIogAdjustmentTypeId(int n) { mnFkIogAdjustmentTypeId = n; }
-    public void setFkByProduct(int n) { mnFkByProduct = n; }
+    public void setFkByProductId(int n) { mnFkByProductId = n; }
     public void setFkItemId(int n) { mnFkItemId = n; }
     public void setFkUnitId(int n) { mnFkUnitId = n; }
     public void setFkWarehouseCompanyId(int n) { mnFkWarehouseCompanyId = n; }
@@ -659,7 +657,7 @@ public class SDbIog extends SDbRegistryUser {
     public int getFkIogClassId() { return mnFkIogClassId; }
     public int getFkIogTypeId() { return mnFkIogTypeId; }
     public int getFkIogAdjustmentTypeId() { return mnFkIogAdjustmentTypeId; }
-    public int getFkByProduct() { return mnFkByProduct; }
+    public int getFkByProductId() { return mnFkByProductId; }
     public int getFkItemId() { return mnFkItemId; }
     public int getFkUnitId() { return mnFkUnitId; }
     public int getFkWarehouseCompanyId() { return mnFkWarehouseCompanyId; }
@@ -891,7 +889,7 @@ public class SDbIog extends SDbRegistryUser {
         mnFkIogClassId = iogType[1];
         mnFkIogTypeId = iogType[2];
         mnFkIogAdjustmentTypeId = adjustment;
-        mnFkByProduct = 1;
+        mnFkByProductId = SModSysConsts.SU_BY_PRODUCT_NA;
         mnFkItemId = item;
         mnFkUnitId = unit;
         mnFkWarehouseCompanyId = warehouse[0];
@@ -929,7 +927,7 @@ public class SDbIog extends SDbRegistryUser {
         mnFkIogClassId = 0;
         mnFkIogTypeId = 0;
         mnFkIogAdjustmentTypeId = 0;
-        mnFkByProduct = 0;
+        mnFkByProductId = 0;
         mnFkItemId = 0;
         mnFkUnitId = 0;
         mnFkWarehouseCompanyId = 0;
@@ -1064,7 +1062,7 @@ public class SDbIog extends SDbRegistryUser {
             mnFkIogClassId = resultSet.getInt("iog.fk_iog_cl");
             mnFkIogTypeId = resultSet.getInt("iog.fk_iog_tp");
             mnFkIogAdjustmentTypeId = resultSet.getInt("iog.fk_iog_adj_tp");
-            mnFkByProduct = resultSet.getInt("fk_by_product");
+            mnFkByProductId = resultSet.getInt("fk_by_product");
             mnFkItemId = resultSet.getInt("iog.fk_item");
             mnFkUnitId = resultSet.getInt("iog.fk_unit");
             mnFkWarehouseCompanyId = resultSet.getInt("iog.fk_wah_co");
@@ -1226,7 +1224,7 @@ public class SDbIog extends SDbRegistryUser {
                     mnFkIogClassId + ", " +
                     mnFkIogTypeId + ", " +
                     mnFkIogAdjustmentTypeId + ", " +
-                    mnFkByProduct + ", " + 
+                    mnFkByProductId + ", " + 
                     mnFkItemId + ", " +
                     mnFkUnitId + ", " +
                     mnFkWarehouseCompanyId + ", " +
@@ -1270,7 +1268,7 @@ public class SDbIog extends SDbRegistryUser {
                     "fk_iog_cl = " + mnFkIogClassId + ", " +
                     "fk_iog_tp = " + mnFkIogTypeId + ", " +
                     "fk_iog_adj_tp = " + mnFkIogAdjustmentTypeId + ", " +
-                    "fk_by_product = " + mnFkByProduct + ", " +
+                    "fk_by_product = " + mnFkByProductId + ", " +
                     "fk_item = " + mnFkItemId + ", " +
                     "fk_unit = " + mnFkUnitId + ", " +
                     "fk_wah_co = " + mnFkWarehouseCompanyId + ", " +
@@ -1390,7 +1388,7 @@ public class SDbIog extends SDbRegistryUser {
 
         // Delete obtainStock move:
 
-        moStock.setDeleted(mbDeleted ? false : true);
+        moStock.setDeleted(!mbDeleted);
         moStock.delete(session);
 
         // Delete iog's destiny if is necessary:
@@ -1457,7 +1455,7 @@ public class SDbIog extends SDbRegistryUser {
         registry.setFkIogClassId(this.getFkIogClassId());
         registry.setFkIogTypeId(this.getFkIogTypeId());
         registry.setFkIogAdjustmentTypeId(this.getFkIogAdjustmentTypeId());
-        registry.setFkByProduct(this.getFkByProduct());
+        registry.setFkByProductId(this.getFkByProductId());
         registry.setFkItemId(this.getFkItemId());
         registry.setFkUnitId(this.getFkUnitId());
         registry.setFkWarehouseCompanyId(this.getFkWarehouseCompanyId());
