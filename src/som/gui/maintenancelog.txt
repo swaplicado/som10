@@ -1,11 +1,17 @@
 ================================================================================
+2022-04-13, 1.0 077.1
+Isabel Danae GARCÍA SERVÍN/ Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Revisión captura subproducto en ajustes de salida de almacén.
+
+================================================================================
 2022-04-11, 1.0 077.0
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
 1) Se agrego el catálogo de subproductos.
 2) Se agrego el campo "Subproducto" en las salidas por ajuste para cuando sean de tipo de produccion.
 3) Se modificó el reporte de "acidez fruta recibida" para organizarlo por origen 
-    y obtener la diferencia de acidez
+    y obtener la diferencia de acidez.
 4) Se agergó la tabla del "resumen global anual" en el correo de recepciones de semillas.
 
 ================================================================================
