@@ -3,6 +3,7 @@
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
 1) Cambios en la forma de de los reportes de materia prima por valor de yodo y acido.
+2) Corrección al insertar un movimiento de inventario de forma indirecta.
 
 ================================================================================
 2022-04-13, 1.0 077.1
