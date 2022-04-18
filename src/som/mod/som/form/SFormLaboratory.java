@@ -52,11 +52,12 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private SGridPaneForm moGridLaboratoryTest;
 
     private SDbItem moItem;
-    private int mnItemId;
-    private int mnSeasonId;
-    private int mnRegionId;
+    private int mnOldItemId;
+    private String msOldPlates;
+    private String msOldPlatesCage;
+    private int mnNewSeasonId;
+    private int mnNewRegionId;
     private boolean mbIsSaveSend;
-    private String msPlates;
 
     private JButton jbSaveSend;
 
@@ -206,7 +207,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
         moTextProducer.setEditable(false);
         moTextProducer.setText("sBeanFieldText2");
-        moTextProducer.setPreferredSize(new java.awt.Dimension(250, 23));
+        moTextProducer.setPreferredSize(new java.awt.Dimension(350, 23));
         jPanel10.add(moTextProducer);
 
         jPanel2.add(jPanel10);
@@ -230,7 +231,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         jlItem.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel12.add(jlItem);
 
-        moKeyItem.setPreferredSize(new java.awt.Dimension(250, 23));
+        moKeyItem.setPreferredSize(new java.awt.Dimension(350, 23));
         jPanel12.add(moKeyItem);
 
         jbKeyItem.setText("<");
@@ -258,7 +259,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
         moTextSeason.setEditable(false);
         moTextSeason.setText("sBeanFieldText2");
-        moTextSeason.setPreferredSize(new java.awt.Dimension(150, 23));
+        moTextSeason.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel8.add(moTextSeason);
 
         jPanel2.add(jPanel8);
@@ -280,7 +281,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
         moTextRegion.setEditable(false);
         moTextRegion.setText("sBeanFieldText2");
-        moTextRegion.setPreferredSize(new java.awt.Dimension(150, 23));
+        moTextRegion.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel15.add(moTextRegion);
 
         jPanel2.add(jPanel15);
@@ -459,15 +460,15 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
                 if (moKeyItem.getSelectedIndex() > 0 ) {
                     if (moItem.isLaboratory()) {
-                        if (moItem.isPacking()&& !moRegistry.isPacking()) {
-                            miClient.showMsgBoxInformation("El ítem '" + moKeyItem.getSelectedItem() + "' requiere cantidad de empaques, no capturados en el boleto.");
+                        if (moItem.isPacking() && !moRegistry.isPacking()) {
+                            miClient.showMsgBoxInformation("El ítem '" + moKeyItem.getSelectedItem() + "' requiere información de empaque, pero el boleto no cuenta con ella.");
                         }
                         else {
                             super.actionRowNew();
                         }
                     }
                     else {
-                        miClient.showMsgBoxInformation("El ítem '" + moKeyItem.getSelectedItem() + "' no requiere análisis.");
+                        miClient.showMsgBoxInformation("El ítem '" + moKeyItem.getSelectedItem() + "' no requiere análisis de laboratorio.");
                     }
                 }
                 else {
@@ -495,79 +496,60 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     }
 
     private void itemStateKeyItem() {
-        if (moKeyItem.getSelectedIndex() <= 0) {
-        }
-        else if (moGridLaboratoryTest.getModel().getRowCount() > 0) {
-            readItemLaboratoryParams();
-        }
-        else {
-            readItem();
+        if (moKeyItem.getSelectedIndex() > 0) {
+            if (moGridLaboratoryTest.getModel().getRowCount() > 0) {
+                readItemLaboratoryParams();
+            }
+            else {
+                readItem();
+            }
         }
     }
     
     private void readItemLaboratoryParams() {
         try {
-            SDbItem itemNew = new SDbItem();
-            itemNew.read(miClient.getSession(), moKeyItem.getValue());
-            String message = "No se puede asignar el ítem " + itemNew.getName() + "\nya que no tiene los mismos parámetros de laboratorio que el ítem actual.";
-            
-            boolean isSameLabParams = true;
-            if (moItem.getFkInputCategoryId() != itemNew.getFkInputCategoryId()) {
-                isSameLabParams = false;
-                message = "No se puede asignar el ítem " + itemNew.getName() + "\nya que no tiene el mismo tipo de insumo que ítem actual.";
+            SDbItem newItem = new SDbItem();
+            newItem.read(miClient.getSession(), moKeyItem.getValue());
+
+            boolean ok = true;
+            String message = "";
+
+            if (moItem.getFkInputCategoryId() != newItem.getFkInputCategoryId()) {
+                ok = false;
+                message = "no tiene la misma categoría de insumo que el ítem original.";
             }
-            else if (moItem.isLaboratory() != itemNew.isLaboratory()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isDensity() != itemNew.isDensity()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isIodineValue() != itemNew.isIodineValue()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isRefractionIndex() != itemNew.isRefractionIndex()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isImpuritiesPercentage() != itemNew.isImpuritiesPercentage()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isMoisturePercentage() != itemNew.isMoisturePercentage()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isProteinPercentage() != itemNew.isProteinPercentage()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isOilContentPercentage() != itemNew.isOilContentPercentage()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isOleicAcidPercentage() != itemNew.isOleicAcidPercentage()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isLinoleicAcidPercentage()!= itemNew.isLinoleicAcidPercentage()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isLinolenicAcidPercentage() != itemNew.isLinolenicAcidPercentage()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isErucicAcidPercentage() != itemNew.isErucicAcidPercentage()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isAcidityPercentage() != itemNew.isAcidityPercentage()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isAcidityAveragePercentage() != itemNew.isAcidityAveragePercentage()) {
-                isSameLabParams = false;
-            }
-            else if (moItem.isFruit() != itemNew.isFruit()) {
-                isSameLabParams = false;
-            }
-            
-            if (isSameLabParams) {
-                moItem = itemNew;
+            else if (moItem.isLaboratory() != newItem.isLaboratory()) {
+                ok = false;
+                message = "no requiere de análisis de laboratorio como el ítem original.";
             }
             else {
+                if (moItem.isDensity() != newItem.isDensity() ||
+                        moItem.isIodineValue() != newItem.isIodineValue() ||
+                        moItem.isRefractionIndex() != newItem.isRefractionIndex() ||
+                        moItem.isImpuritiesPercentage() != newItem.isImpuritiesPercentage() ||
+                        moItem.isMoisturePercentage() != newItem.isMoisturePercentage() ||
+                        moItem.isProteinPercentage() != newItem.isProteinPercentage() ||
+                        moItem.isOilContentPercentage() != newItem.isOilContentPercentage() ||
+                        moItem.isOleicAcidPercentage() != newItem.isOleicAcidPercentage() ||
+                        moItem.isLinoleicAcidPercentage()!= newItem.isLinoleicAcidPercentage() ||
+                        moItem.isLinolenicAcidPercentage() != newItem.isLinolenicAcidPercentage() ||
+                        moItem.isErucicAcidPercentage() != newItem.isErucicAcidPercentage() ||
+                        moItem.isAcidityPercentage() != newItem.isAcidityPercentage() ||
+                        moItem.isAcidityAveragePercentage() != newItem.isAcidityAveragePercentage() ||
+                        moItem.isFruit() != newItem.isFruit()) {
+                    ok = false;
+                    message = "no tiene los mismos parámetros de laboratorio que el ítem original.";
+                }
+            }
+
+            if (ok) {
+                moItem = newItem;
+            }
+            else {
+                miClient.showMsgBoxWarning("No se puede seleccionar el ítem '" + newItem.getName() + "':"
+                        + "\n" + message + "\n"
+                        + "Se restablecerá el ítem original '" + moItem.getName() + "'.");
                 moKeyItem.setValue(moItem.getPrimaryKey());
-                miClient.showMsgBoxWarning(message);
             }
         }
         catch (Exception e) {
@@ -578,9 +560,6 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private void readItem() {
         try {
             moItem.read(miClient.getSession(), moKeyItem.getValue());
-        }
-        catch (SQLException e) {
-            SLibUtils.showException(this, e);
         }
         catch (Exception e) {
             SLibUtils.showException(this, e);
@@ -597,15 +576,15 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moGridLaboratoryTest.renderGridRows();
     }
 
-    private void getSeasonRegion() {
-        mnSeasonId = 0;
-        mnRegionId = 0;
+    private void getNewSeasonRegion() {
+        mnNewSeasonId = 0;
+        mnNewRegionId = 0;
 
         try {
-            mnSeasonId = SSomUtils.getProperSeasonId(miClient.getSession(), moRegistry.getDatetimeArrival(), moKeyItem.getValue()[0], moRegistry.getFkProducerId());
+            mnNewSeasonId = SSomUtils.getProperSeasonId(miClient.getSession(), moRegistry.getDatetimeArrival(), moKeyItem.getValue()[0], moRegistry.getFkProducerId());
 
-            if (mnSeasonId != SLibConsts.UNDEFINED) {
-                mnRegionId = SSomUtils.getProperRegionId(miClient.getSession(), mnSeasonId, moKeyItem.getValue()[0], moRegistry.getFkProducerId());
+            if (mnNewSeasonId != SLibConsts.UNDEFINED) {
+                mnNewRegionId = SSomUtils.getProperRegionId(miClient.getSession(), mnNewSeasonId, moKeyItem.getValue()[0], moRegistry.getFkProducerId());
             }
         }
         catch (Exception e) {
@@ -683,7 +662,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
     @Override
     public void removeAllListeners() {
-        moKeyItem.removeActionListener(this);
+        moKeyItem.removeItemListener(this);
         jbKeyItem.removeActionListener(this);
         jbSaveSend.removeActionListener(this);
         jbPlates.removeActionListener(this);
@@ -724,24 +703,28 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moTextScaleName.setValue(moRegistry.getXtaScaleName());
         moTextScaleCode.setValue(moRegistry.getXtaScaleCode());
         moTextTicket.setValue(moRegistry.getNumber());
-        moTextPlates.setValue(msPlates = moRegistry.getPlate());
-        moTextPlatesCage.setValue(moRegistry.getPlateCage());
+        msOldPlates = moRegistry.getPlate();
+        moTextPlates.setValue(msOldPlates);
+        msOldPlatesCage = moRegistry.getPlateCage();
+        moTextPlatesCage.setValue(msOldPlatesCage);
         moTextDriver.setValue(moRegistry.getDriver());
         moTextProducer.setValue(moRegistry.getXtaProducer());
         moTextSeason.setValue(moRegistry.getXtaSeason());
         moTextRegion.setValue(moRegistry.getXtaRegion());
-        moKeyItem.setValue(new int[] { mnItemId = moRegistry.getFkItemId() });
+        moItem.initRegistry(); // must be called before setting item combobox
+        mnOldItemId = moRegistry.getFkItemId();
+        moKeyItem.setValue(new int[] { mnOldItemId });
         moTextNote.setValue("");
 
         moIntNumber.setValue(0);
         moBoolDone.setValue(false);
 
-        if (moChildLaboratories.size() > 0) {
+        if (!moChildLaboratories.isEmpty()) {
             moIntNumber.setValue(moChildLaboratories.get(0).getNumber());
             moDateDate.setValue(moChildLaboratories.get(0).getDate());
             moBoolDone.setValue(moChildLaboratories.get(0).isDone());
 
-            if (moChildLaboratories.get(0).getChildNotes().size() > 0) {
+            if (!moChildLaboratories.get(0).getChildNotes().isEmpty()) {
                 moTextNote.setValue(moChildLaboratories.get(0).getChildNotes().get(0).getNote());
             }
         }
@@ -779,8 +762,6 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     @Override
     public SDbRegistry getRegistry() throws Exception {
         SDbTicket registry = moRegistry.clone();
-        SDbLaboratoryNote labNote = new SDbLaboratoryNote();
-        SDbLaboratory laboratory = new SDbLaboratory();
 
         if (registry.isRegistryNew()) { }
 
@@ -790,7 +771,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         registry.setPlateCage(moTextPlatesCage.getValue());
         registry.getChildLaboratories().clear();
 
-        if (moChildLaboratories.size() > 0) {
+        if (!moChildLaboratories.isEmpty()) {
             for (SDbLaboratory childLab : moChildLaboratories) {
                 childLab.setNumber(moIntNumber.getValue());
                 childLab.setDate(moDateDate.getValue());
@@ -801,6 +782,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
             }
         }
         else {
+            SDbLaboratory laboratory = new SDbLaboratory();
             laboratory.setNumber(moIntNumber.getValue());
             laboratory.setDate(moDateDate.getValue());
             laboratory.setDone(moBoolDone.getValue());
@@ -809,7 +791,8 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         }
 
         registry.getChildLaboratories().get(0).getChildNotes().clear();
-        if (moTextNote.getValue().length() > 0) {
+        if (!moTextNote.getValue().isEmpty()) {
+            SDbLaboratoryNote labNote = new SDbLaboratoryNote();
             labNote.setNote(moTextNote.getValue());
             registry.getChildLaboratories().get(0).getChildNotes().add(labNote);
         }
@@ -819,14 +802,13 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
             registry.getChildLaboratories().get(0).getChildTests().add((SDbLaboratoryTest) row);
         }
 
-        if (mnItemId != moKeyItem.getValue()[0]) {
-            getSeasonRegion();
-
-            registry.setFkSeasonId_n(mnSeasonId);
-            registry.setFkRegionId_n(mnRegionId);
+        if (mnOldItemId != moKeyItem.getValue()[0]) {
+            getNewSeasonRegion();
+            registry.setFkSeasonId_n(mnNewSeasonId);
+            registry.setFkRegionId_n(mnNewRegionId);
             registry.setRevueltaImport1(false);
         }
-        else if (!msPlates.equalsIgnoreCase(moTextPlates.getValue())) {
+        else if (!msOldPlates.equalsIgnoreCase(moTextPlates.getValue()) || !msOldPlatesCage.equalsIgnoreCase(moTextPlatesCage.getValue())) {
             registry.setRevueltaImport1(false);
         }
         

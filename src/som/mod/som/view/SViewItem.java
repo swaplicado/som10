@@ -17,7 +17,7 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Adrián Avilés
+ * @author Juan Barajas, Alfredo Pérez, Adrián Avilés, Sergio Flores
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
@@ -156,7 +156,7 @@ public class SViewItem extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "v.mfg_fg_per", "Producto %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "v.mfg_bp_per", "Subproducto %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "v.mfg_cu_per", "Desecho %");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_paq", "Aplica empaque");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_paq", "Aplica información empaque");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.paq_name", "Nombre empaque");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.paq_wei", "Peso empaque (" + SSomConsts.KG + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_amn", "Envío automático mail");

@@ -192,6 +192,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moBoolGrindingDate = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel21 = new javax.swing.JPanel();
         moBoolPacking = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jlPackagingHint = new javax.swing.JLabel();
         jPanel22 = new javax.swing.JPanel();
         jlPackingName = new javax.swing.JLabel();
         moTextPackingName = new sa.lib.gui.bean.SBeanFieldText();
@@ -689,9 +690,14 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolPacking.setText("Aplica empaque");
+        moBoolPacking.setText("Aplica información empaque");
         moBoolPacking.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel21.add(moBoolPacking);
+
+        jlPackagingHint.setForeground(java.awt.Color.gray);
+        jlPackagingHint.setText("(Información de empaque requerida en la captura de boletos.)");
+        jlPackagingHint.setPreferredSize(new java.awt.Dimension(400, 23));
+        jPanel21.add(jlPackagingHint);
 
         jPanel18.add(jPanel21);
 
@@ -926,6 +932,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JLabel jlName;
     private javax.swing.JLabel jlNameShort;
     private javax.swing.JLabel jlOilYieldAdjustmentPercentage;
+    private javax.swing.JLabel jlPackagingHint;
     private javax.swing.JLabel jlPackingName;
     private javax.swing.JLabel jlPackingWeight;
     private javax.swing.JLabel jlPackingWeightUnit;
