@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
 import sa.lib.SLibTimeUtils;
@@ -23,7 +22,7 @@ import som.mod.SModSysConsts;
 
 /**
  *
- * @author Juan Barajas, Néstor Ávalos
+ * @author Juan Barajas, Néstor Ávalos, Isabel Servín
  */
 public class SDbMix extends SDbRegistryUser {
 
@@ -85,7 +84,7 @@ public class SDbMix extends SDbRegistryUser {
     private String validateMixInOutMoves(final SGuiSession session, final boolean actionDelete) throws SQLException, Exception {
         String result = "";
 
-        SDbMfgEstimation estimation = null;
+        SDbMfgEstimation estimation;
 
         // Validate that day is open:
 
@@ -218,7 +217,7 @@ public class SDbMix extends SDbRegistryUser {
             final int pnFkUnitSourceId, final int pnFkUnitDestinyId, final int[] panAuxWarehouseSourceId, final int[] panAuxWarehouseDestinyId, final int pnFkDivisionSourceId_n,
             final int pnFkDivisionDestinyId_n, final double pdQuantity, final int pnFkMixTypeId, final boolean pbRegistryNew) {
         String result = "";
-        SSomStock stock = null;
+        SSomStock stock;
 
         // Validate stock depending of actionDelete:
 
@@ -279,9 +278,9 @@ public class SDbMix extends SDbRegistryUser {
     }
 
     private String validateBusinessRulesWarehouses(final SGuiSession session, final boolean actionDelete) throws Exception {
-        String result = "";
-        boolean validateSourceWarehouseCapacity = false;
-        boolean validateDestinyWarehouseCapacity = false;
+        String result;
+        boolean validateSourceWarehouseCapacity;
+        boolean validateDestinyWarehouseCapacity;
 
         // Validate capacity of warehouses:
 
@@ -372,7 +371,7 @@ public class SDbMix extends SDbRegistryUser {
     }
 
     private void computeNumber(final SGuiSession session) throws SQLException, Exception {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         mnNumber = 0;
         msSql = "SELECT COALESCE(MAX(CONVERT(num, UNSIGNED INTEGER)), 0) + 1 "
@@ -399,6 +398,7 @@ public class SDbMix extends SDbRegistryUser {
             moAuxMixPassiveIogOut.setFkIogClassId(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS[1]);
             moAuxMixPassiveIogOut.setFkIogTypeId(SModSysConsts.SS_IOG_TP_OUT_INT_MIX_PAS[2]);
             moAuxMixPassiveIogOut.setFkIogAdjustmentTypeId(SModSysConsts.SU_IOG_ADJ_TP_NA);
+            moAuxMixPassiveIogOut.setFkByProductId(SModSysConsts.SU_BY_PRODUCT_NA);
             moAuxMixPassiveIogOut.setFkItemId(mnFkItemSourceId);
             moAuxMixPassiveIogOut.setFkUnitId(mnFkUnitSourceId);
             moAuxMixPassiveIogOut.setFkWarehouseCompanyId(mnFkWarehouseSourceCompanyId);
@@ -426,6 +426,7 @@ public class SDbMix extends SDbRegistryUser {
                 moAuxMixPassiveIogIn.setFkIogClassId(SModSysConsts.SS_IOG_TP_IN_INT_MIX_PAS[1]);
                 moAuxMixPassiveIogIn.setFkIogTypeId(SModSysConsts.SS_IOG_TP_IN_INT_MIX_PAS[2]);
                 moAuxMixPassiveIogIn.setFkIogAdjustmentTypeId(SModSysConsts.SU_IOG_ADJ_TP_NA);
+                moAuxMixPassiveIogIn.setFkByProductId(SModSysConsts.SU_BY_PRODUCT_NA);
                 moAuxMixPassiveIogIn.setFkItemId(mnFkItemDestinyId);
                 moAuxMixPassiveIogIn.setFkUnitId(mnFkUnitDestinyId);
                 moAuxMixPassiveIogIn.setFkWarehouseCompanyId(mnFkWarehouseDestinyCompanyId);
@@ -468,9 +469,9 @@ public class SDbMix extends SDbRegistryUser {
             final ArrayList<SDbIog> paAuxConversionIogOut, final ArrayList<SDbIog> paAuxConversionIogIn) throws Exception {
         String result = "";
 
-        SSomStock stock = null;
+        SSomStock stock;
 
-        ArrayList<SDbIog> aAuxConversionIogOut = new ArrayList<SDbIog>();
+        ArrayList<SDbIog> aAuxConversionIogOut;
         ArrayList<SDbIog> aAuxConversionIogIn = new ArrayList<SDbIog>();
 
         // Generate iog's (out) list:
@@ -593,13 +594,13 @@ public class SDbMix extends SDbRegistryUser {
 
     private static ArrayList<SDbIog> conversionGenerateIogOutList(final SGuiSession session, final Date ptDate, final int pnFkItemSourceId, final int pnFkUnitSourceId,
             final int[] pnFkWarehouseSourceCompanyId, final int pnPkMixId) throws Exception {
-        String sSql = "";
+        String sSql;
         ArrayList<SDbIog> aAuxConversionIogOut = new ArrayList<SDbIog>();
 
-        Statement statement = null;
-        ResultSet resultSet = null;
+        Statement statement;
+        ResultSet resultSet;
 
-        SDbIog iog = null;
+        SDbIog iog;
 
         sSql = "SELECT SUM(mov_in - mov_out) AS f_stk, id_div " +
                 "FROM " + SModConsts.TablesMap.get(SModConsts.S_STK) + " " +
@@ -750,7 +751,7 @@ public class SDbMix extends SDbRegistryUser {
     }
 
     private static SSomStock conversionValidateWarehouseEmpty(final SGuiSession session, final Date date, final int nItemId, final int nUnitId, final int[] naWarehouse, final int nDivisionId) {
-        SSomStock stock = null;
+        SSomStock stock;
 
         stock = SSomUtils.obtainStock(
                 session,
@@ -770,7 +771,7 @@ public class SDbMix extends SDbRegistryUser {
 
     private static ArrayList<SDbIog> conversionConvertIogsOutToIn(final ArrayList<SDbIog> paAuxConversionIogOut, final int pnFkItemDestinyId, final int pnFkUnitDestinyId,
             final int[] panFkWarehouseDestinyCompanyId) throws CloneNotSupportedException {
-        SDbIog iogIn = null;
+        SDbIog iogIn;
 
         ArrayList<SDbIog> aAuxConversionIogIn = new ArrayList<SDbIog>();
 
@@ -799,7 +800,7 @@ public class SDbMix extends SDbRegistryUser {
             final int[] panAuxWarehouseDestinyId, final int pnFkItemDestinyId, final int pnFkUnitDestinyId,
             final Date ptDate, final boolean pbDeleted,
             final ArrayList<SDbIog> paAuxConversionIogOut, final ArrayList<SDbIog> paAuxConversionIogIn) throws Exception {
-        String result = "";
+        String result;
 
         // Validate if iogs canDelete:
 
@@ -813,7 +814,7 @@ public class SDbMix extends SDbRegistryUser {
         }
 
         if (result.isEmpty()) {
-            SSomStock stock = null;
+            SSomStock stock;
 
             // Validate if source/destiny warehouse is empty:
 
@@ -867,8 +868,8 @@ public class SDbMix extends SDbRegistryUser {
     }
 
     private String mixActiveCompute(final SGuiSession session) throws CloneNotSupportedException, Exception {
-        String result = "";
-        SDbIog iogTransfer = null;
+        String result;
+        SDbIog iogTransfer;
 
         if (mbRegistryNew) {
 
@@ -1145,10 +1146,10 @@ public class SDbMix extends SDbRegistryUser {
         initQueryMembers();
         mnQueryResultId = SDbConsts.READ_ERROR;
 
-        ResultSet resultSet = null;
-        Statement statement = null;
+        ResultSet resultSet;
+        Statement statement;
 
-        SDbIog iog = null;
+        SDbIog iog;
 
         msSql = "SELECT * " + getSqlFromWhere(pk);
         resultSet = session.getStatement().executeQuery(msSql);
@@ -1508,7 +1509,7 @@ public class SDbMix extends SDbRegistryUser {
             default:
         }
 
-        return msQueryResult.isEmpty() ? true : false;
+        return msQueryResult.isEmpty();
     }
 
     @Override
@@ -1537,7 +1538,7 @@ public class SDbMix extends SDbRegistryUser {
             }
         }
 
-        return msQueryResult.isEmpty() ? true : false;
+        return msQueryResult.isEmpty();
     }
 
     @Override

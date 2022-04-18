@@ -164,6 +164,19 @@ public class SModuleSom extends SGuiModule {
                         + "id_inp_ct AS " + SDbConsts.FIELD_FK + "1, id_inp_cl AS " + SDbConsts.FIELD_FK + "2 "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_inp_ct, id_inp_cl, id_inp_tp ";
                 break;
+            case SModConsts.SU_INP_CL_ALL:
+                settings = new SGuiCatalogueSettings("Clase insumo", 2);
+                sql = "SELECT cl.id_inp_ct AS " + SDbConsts.FIELD_ID + "1, cl.id_inp_cl AS " + SDbConsts.FIELD_ID + "2, CONCAT(ct.name, ' - ', cl.name) AS " + SDbConsts.FIELD_ITEM + " "
+                        + "FROM su_inp_cl AS cl " 
+                        + "INNER JOIN su_inp_ct AS ct ON cl.id_inp_ct = ct.id_inp_ct;";
+                break;
+            case SModConsts.SU_INP_TP_ALL:
+                settings = new SGuiCatalogueSettings("Tipo insumo", 3);
+                sql = "SELECT tp.id_inp_ct AS " + SDbConsts.FIELD_ID + "1, tp.id_inp_cl AS " + SDbConsts.FIELD_ID + "2, tp.id_inp_tp AS " + SDbConsts.FIELD_ID + "3, CONCAT(ct.name, ' - ', cl.name, ' - ', tp.name) AS " + SDbConsts.FIELD_ITEM + " " 
+                        + "FROM su_inp_tp AS tp " 
+                        + "INNER JOIN su_inp_cl AS cl ON tp.id_inp_cl = cl.id_inp_cl " 
+                        + "INNER JOIN su_inp_ct AS ct ON cl.id_inp_ct = ct.id_inp_ct;";
+                break;
             case SModConsts.SU_INP_SRC:
                 settings = new SGuiCatalogueSettings("Origen insumo", 1);
                 sql = "SELECT id_inp_src AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "

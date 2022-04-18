@@ -1224,7 +1224,7 @@ public class SDbIog extends SDbRegistryUser {
                     mnFkIogClassId + ", " +
                     mnFkIogTypeId + ", " +
                     mnFkIogAdjustmentTypeId + ", " +
-                    mnFkByProductId + ", " + 
+                    (mnFkByProductId == 0 ? SModSysConsts.SU_BY_PRODUCT_NA : mnFkByProductId) + ", " + 
                     mnFkItemId + ", " +
                     mnFkUnitId + ", " +
                     mnFkWarehouseCompanyId + ", " +
@@ -1268,7 +1268,7 @@ public class SDbIog extends SDbRegistryUser {
                     "fk_iog_cl = " + mnFkIogClassId + ", " +
                     "fk_iog_tp = " + mnFkIogTypeId + ", " +
                     "fk_iog_adj_tp = " + mnFkIogAdjustmentTypeId + ", " +
-                    "fk_by_product = " + mnFkByProductId + ", " +
+                    "fk_by_product = " + (mnFkByProductId == 0 ? SModSysConsts.SU_BY_PRODUCT_NA : mnFkByProductId) + ", " +
                     "fk_item = " + mnFkItemId + ", " +
                     "fk_unit = " + mnFkUnitId + ", " +
                     "fk_wah_co = " + mnFkWarehouseCompanyId + ", " +
