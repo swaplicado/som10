@@ -74,6 +74,8 @@ public abstract class SModConsts {
     public static final int SU_GRINDINGS = 320020;
     public static final int SU_INP_SRC = 320021;
     public static final int SU_BY_PRODUCT = 320022;
+    public static final int SU_INP_CL_ALL = 320101;
+    public static final int SU_INP_TP_ALL = 320102;
 
     public static final int S_LAB = 330001;
     public static final int S_LAB_NOTE = 330002;
