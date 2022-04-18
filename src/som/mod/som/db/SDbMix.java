@@ -1515,7 +1515,7 @@ public class SDbMix extends SDbRegistryUser {
     @Override
     public boolean canSave(SGuiSession session) throws SQLException, Exception {
 
-//        msQueryResult = validateInputFields();
+        msQueryResult = validateInputFields();
         if (msQueryResult.isEmpty()) {
             switch (mnFkMixTypeId) {
                 case SModSysConsts.SS_MIX_TP_MIX_PAS:
