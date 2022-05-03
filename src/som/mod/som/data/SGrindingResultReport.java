@@ -32,18 +32,18 @@ public class SGrindingResultReport {
     String parameterCode;
     String parameterName;
     
-    double result08;
-    double result10;
-    double result12;
-    double result14;
-    double result16;
-    double result18;
-    double result20;
-    double result22;
-    double result00;
-    double result02;
-    double result04;
-    double result06;
+    String result08;
+    String result10;
+    String result12;
+    String result14;
+    String result16;
+    String result18;
+    String result20;
+    String result22;
+    String result00;
+    String result02;
+    String result04;
+    String result06;
     
     ArrayList<SDbLinkGrindingFormula> formulas;
 }

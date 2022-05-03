@@ -237,30 +237,30 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 + "v.result_02, "
                 + "v.result_04, "
                 + "v.result_06,"
-                + "(@prom := (COALESCE(v.result_08, 0) + " +
-                    "COALESCE(v.result_10, 0) + " +
-                    "COALESCE(v.result_12, 0) + " +
-                    "COALESCE(v.result_14, 0) + " +
-                    "COALESCE(v.result_16, 0) + " +
-                    "COALESCE(v.result_18, 0) + " +
-                    "COALESCE(v.result_20, 0) + " +
-                    "COALESCE(v.result_22, 0) + " +
-                    "COALESCE(v.result_00, 0) + " +
-                    "COALESCE(v.result_02, 0) + " +
-                    "COALESCE(v.result_04, 0) + " +
-                    "COALESCE(v.result_06, 0)) / "
-                + "(IF(v.result_08 <> 0, 1, 0) + " +
-                "    IF(v.result_10 <> 0, 1, 0) + " +
-                "    IF(v.result_12 <> 0, 1, 0) + " +
-                "    IF(v.result_14 <> 0, 1, 0) + " +
-                "    IF(v.result_16 <> 0, 1, 0) + " +
-                "    IF(v.result_18 <> 0, 1, 0) + " +
-                "    IF(v.result_20 <> 0, 1, 0) + " +
-                "    IF(v.result_22 <> 0, 1, 0) + " +
-                "    IF(v.result_00 <> 0, 1, 0) + " +
-                "    IF(v.result_02 <> 0, 1, 0) + " +
-                "    IF(v.result_04 <> 0, 1, 0) + " +
-                "    IF(v.result_06 <> 0, 1, 0))) AS promedio, "
+                + "(@prom := (IF(COALESCE(v.result_08, 0) > 0, v.result_08, 0) + " +
+                    "IF(COALESCE(v.result_10, 0) > 0, v.result_10, 0) + " +
+                    "IF(COALESCE(v.result_12, 0) > 0, v.result_12, 0) + " +
+                    "IF(COALESCE(v.result_14, 0) > 0, v.result_14, 0) + " +
+                    "IF(COALESCE(v.result_16, 0) > 0, v.result_16, 0) + " +
+                    "IF(COALESCE(v.result_18, 0) > 0, v.result_18, 0) + " +
+                    "IF(COALESCE(v.result_20, 0) > 0, v.result_20, 0) + " +
+                    "IF(COALESCE(v.result_22, 0) > 0, v.result_22, 0) + " +
+                    "IF(COALESCE(v.result_00, 0) > 0, v.result_00, 0) + " +
+                    "IF(COALESCE(v.result_02, 0) > 0, v.result_02, 0) + " +
+                    "IF(COALESCE(v.result_04, 0) > 0, v.result_04, 0) + " +
+                    "IF(COALESCE(v.result_06, 0) > 0, v.result_06, 0)) / "
+                + "(IF(v.result_08 > 0, 1, 0) + " +
+                "    IF(v.result_10 > 0, 1, 0) + " +
+                "    IF(v.result_12 > 0, 1, 0) + " +
+                "    IF(v.result_14 > 0, 1, 0) + " +
+                "    IF(v.result_16 > 0, 1, 0) + " +
+                "    IF(v.result_18 > 0, 1, 0) + " +
+                "    IF(v.result_20 > 0, 1, 0) + " +
+                "    IF(v.result_22 > 0, 1, 0) + " +
+                "    IF(v.result_00 > 0, 1, 0) + " +
+                "    IF(v.result_02 > 0, 1, 0) + " +
+                "    IF(v.result_04 > 0, 1, 0) + " +
+                "    IF(v.result_06 > 0, 1, 0))) AS promedio, "
                 + "(@dg / " + mdGrindingOil + " * @prom) AS pond, "
                 + "COALESCE(v.b_del, 0) AS b_deleted, "
                 + "COALESCE(v.b_can_upd, 1) AS " + SDbConsts.FIELD_CAN_UPD + ", "
@@ -297,20 +297,20 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "item_name", "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, "Parámetro");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_08", "08:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_10", "10:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_12", "12:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_14", "14:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_16", "16:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_18", "18:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_20", "20:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_22", "22:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_00", "00:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_02", "02:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_04", "04:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.result_06", "06:00");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "promedio", "Promedio");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "pond", "Ponderado");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_08", "08:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_10", "10:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_12", "12:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_14", "14:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_16", "16:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_18", "18:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_20", "20:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_22", "22:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_00", "00:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_02", "02:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_04", "04:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, "v.result_06", "06:00");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "promedio", "Promedio");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "pond", "Ponderado");
 
         moModel.getGridColumns().addAll(Arrays.asList(columns));
     }

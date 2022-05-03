@@ -365,17 +365,29 @@ public class SGrindingResultsUtils {
             double avg;
             
             double d8;
+            String s8;
             double d10;
+            String s10;
             double d12;
+            String s12;
             double d14;
+            String s14;
             double d16;
+            String s16;
             double d18;
+            String s18;
             double d20;
+            String s20;
             double d22;
+            String s22;
             double d0;
+            String s0;
             double d2;
+            String s2;
             double d4;
+            String s4;
             double d6;
+            String s6;
             
             double avgSumTot = 0;
             int avgNumTot = 0;
@@ -385,18 +397,31 @@ public class SGrindingResultsUtils {
                 avgSum = 0d;
                 avg = 0d;
                 
-                d8 = resIdResult.getDouble("result_08");
-                d10 = resIdResult.getDouble("result_10");
-                d12 = resIdResult.getDouble("result_12");
-                d14 = resIdResult.getDouble("result_14");
-                d16 = resIdResult.getDouble("result_16");
-                d18 = resIdResult.getDouble("result_18");
-                d20 = resIdResult.getDouble("result_20");
-                d22 = resIdResult.getDouble("result_22");
-                d0 = resIdResult.getDouble("result_00");
-                d2 = resIdResult.getDouble("result_02");
-                d4 = resIdResult.getDouble("result_04");
-                d6 = resIdResult.getDouble("result_06");
+                s8 = resIdResult.getString("result_08");
+                s10 = resIdResult.getString("result_10");
+                s12 = resIdResult.getString("result_12");
+                s14 = resIdResult.getString("result_14");
+                s16 = resIdResult.getString("result_16");
+                s18 = resIdResult.getString("result_18");
+                s20 = resIdResult.getString("result_20");
+                s22 = resIdResult.getString("result_22");
+                s0 = resIdResult.getString("result_00");
+                s2 = resIdResult.getString("result_02");
+                s4 = resIdResult.getString("result_04");
+                s6 = resIdResult.getString("result_06");
+                
+                d8 = SGrindingReport.isNumeric(s8.replace(",", "")) ? Double.parseDouble(s8) : 0;
+                d10 = SGrindingReport.isNumeric(s10.replace(",", "")) ? Double.parseDouble(s10) : 0;
+                d12 = SGrindingReport.isNumeric(s12.replace(",", "")) ? Double.parseDouble(s12) : 0;
+                d14 = SGrindingReport.isNumeric(s14.replace(",", "")) ? Double.parseDouble(s14) : 0;
+                d16 = SGrindingReport.isNumeric(s16.replace(",", "")) ? Double.parseDouble(s16) : 0;
+                d18 = SGrindingReport.isNumeric(s18.replace(",", "")) ? Double.parseDouble(s18) : 0;
+                d20 = SGrindingReport.isNumeric(s20.replace(",", "")) ? Double.parseDouble(s20) : 0;
+                d22 = SGrindingReport.isNumeric(s22.replace(",", "")) ? Double.parseDouble(s22) : 0;
+                d0 = SGrindingReport.isNumeric(s0.replace(",", "")) ? Double.parseDouble(s0) : 0;
+                d2 = SGrindingReport.isNumeric(s2.replace(",", "")) ? Double.parseDouble(s2) : 0;
+                d4 = SGrindingReport.isNumeric(s4.replace(",", "")) ? Double.parseDouble(s4) : 0;
+                d6 = SGrindingReport.isNumeric(s6.replace(",", "")) ? Double.parseDouble(s6) : 0;
                 
                 if (d8 != 0) {
                     avgSum += d8;
@@ -481,14 +506,31 @@ public class SGrindingResultsUtils {
                                     final double monthGrinding, final int nItemId, 
                                     final int parameterId, final boolean onlyCurrentDay,
                                     final boolean isWeightedAverage) {
-        String sql = "SELECT @prom := COALESCE((COALESCE(result_08, 0) + COALESCE(result_10, 0) + COALESCE(result_12, 0) + " +
-                    "	COALESCE(result_14, 0) + COALESCE(result_16, 0) + COALESCE(result_18, 0) + " +
-                    "	COALESCE(result_20, 0) + COALESCE(result_22, 0) + COALESCE(result_00, 0) + " +
-                    "	COALESCE(result_02, 0) + COALESCE(result_04, 0) + COALESCE(result_06, 0)) / " +
-                    "	(IF(result_08 > 0, 1, 0) + IF(result_10 > 0, 1, 0) + IF(result_12 > 0, 1, 0) + " +
-                    "	IF(result_14 > 0, 1, 0) + IF(result_16 > 0, 1, 0) + IF(result_18 > 0, 1, 0) + " +
-                    "	IF(result_20 > 0, 1, 0) + IF(result_22 > 0, 1, 0) + IF(result_00 > 0, 1, 0) + " +
-                    "	IF(result_02 > 0, 1, 0) + IF(result_04 > 0, 1, 0) + IF(result_06 > 0, 1, 0)), 0) AS promedio, " +
+        String sql = "SELECT @prom := COALESCE("
+                + "(IF(COALESCE(result_08, 0) > 0, result_08, 0) +"
+                + "IF(COALESCE(result_10, 0) > 0, result_10, 0) + "
+                + "IF(COALESCE(result_12, 0) > 0, result_12, 0) + "
+                + "IF(COALESCE(result_14, 0) > 0, result_14, 0) + "
+                + "IF(COALESCE(result_16, 0) > 0, result_16, 0) + "
+                + "IF(COALESCE(result_18, 0) > 0, result_18, 0) + "
+                + "IF(COALESCE(result_20, 0) > 0, result_20, 0) + "
+                + "IF(COALESCE(result_22, 0) > 0, result_22, 0) + "
+                + "IF(COALESCE(result_00, 0) > 0, result_00, 0) + "
+                + "IF(COALESCE(result_02, 0) > 0, result_02, 0) + "
+                + "IF(COALESCE(result_04, 0) > 0, result_04, 0) + "
+                + "IF(COALESCE(result_06, 0) > 0, result_06, 0)) / "
+                + "(IF(result_08 > 0, 1, 0) + "
+                + "IF(result_10 > 0, 1, 0) + "
+                + "IF(result_12 > 0, 1, 0) + "
+                + "IF(result_14 > 0, 1, 0) + "
+                + "IF(result_16 > 0, 1, 0) + "
+                + "IF(result_18 > 0, 1, 0) + "
+                + "IF(result_20 > 0, 1, 0) + "
+                + "IF(result_22 > 0, 1, 0) + "
+                + "IF(result_00 > 0, 1, 0) + "
+                + "IF(result_02 > 0, 1, 0) + "
+                + "IF(result_04 > 0, 1, 0) + "
+                + "IF(result_06 > 0, 1, 0)), 0) AS promedio, " +
                     "	" + (!onlyCurrentDay ? "SUM(" : "") + "COALESCE(@prom / " + monthGrinding + 
                     " * COALESCE((SELECT grinding_oil_perc FROM som_com.su_grinding WHERE dt_capture = sgr.dt_capture), 0),0)" + (!onlyCurrentDay ? ")" : "") + " AS ponderado " +
                     "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " sgr " +
@@ -694,7 +736,8 @@ public class SGrindingResultsUtils {
     public static boolean sendReport(SGuiClient client, XSSFWorkbook workbook, SDbLot oLot, SDbItem oItem, Date cutOffDate) {
         DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
         DateFormat subjectformatter = new SimpleDateFormat("dd-MM-yyyy");
-        String sFileName = "molienda/Molienda_" + fileNameformatter.format(new Date());
+        String itmName = oItem.getNameShort().replace(" ", "_");
+        String sFileName = "molienda/Mol_" + itmName + "_" + oLot.getLot() + "_" + fileNameformatter.format(new Date());
         File file = new File(sFileName + ".xlsx");
         try (FileOutputStream outputStream = new FileOutputStream(sFileName + ".xlsx")) {
             workbook.write(outputStream);

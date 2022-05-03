@@ -132,6 +132,9 @@ public class SGrindingReport {
         Font font = sheet.getWorkbook().createFont();
 //        font.setBold(true);
         style.setFont(font);
+        
+        CellStyle styleDecimals = sheet.getWorkbook().createCellStyle();
+        styleDecimals.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat("0.0000"));
 
         int rowsCount = 1;
         
@@ -275,105 +278,124 @@ public class SGrindingReport {
                 cellParam.setCellValue(row.parameterName);
                 
                 //horas:
-                
-                if (! row.isText) {
-                    if (cfg.r08.getIsActive()) {
-                        Cell cell08 = infoRow.createCell(columnCount++);
+                if (cfg.r08.getIsActive()) {
+                    Cell cell08 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result08.replace(",", ""))) {
+                        cell08.setCellValue(Double.parseDouble(row.result08.replace(",", "")));
+                        cell08.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell08.setCellValue(row.result08);
                     }
-                    if (cfg.r10.getIsActive()) {
-                        Cell cell10 = infoRow.createCell(columnCount++);
+                }
+                if (cfg.r10.getIsActive()) {
+                    Cell cell10 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result10.replace(",", ""))) {
+                        cell10.setCellValue(Double.parseDouble(row.result10.replace(",", "")));
+                        cell10.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell10.setCellValue(row.result10);
                     }
-                    if (cfg.r12.getIsActive()) {
-                        Cell cell12 = infoRow.createCell(columnCount++);
+                }
+                if (cfg.r12.getIsActive()) {
+                    Cell cell12 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result12.replace(",", ""))) {
+                        cell12.setCellValue(Double.parseDouble(row.result12.replace(",", "")));
+                        cell12.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell12.setCellValue(row.result12);
                     }
-                    if (cfg.r14.getIsActive()) {
-                        Cell cell14 = infoRow.createCell(columnCount++);
+                }
+                if (cfg.r14.getIsActive()) {
+                    Cell cell14 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result14.replace(",", ""))) {
+                        cell14.setCellValue(Double.parseDouble(row.result14.replace(",", "")));
+                        cell14.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell14.setCellValue(row.result14);
                     }
-                    if (cfg.r16.getIsActive()) {
-                        Cell cell16 = infoRow.createCell(columnCount++);
+                }
+                if (cfg.r16.getIsActive()) {
+                    Cell cell16 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result16.replace(",", ""))) {
+                        cell16.setCellValue(Double.parseDouble(row.result16.replace(",", "")));
+                        cell16.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell16.setCellValue(row.result16);
                     }
-                    if (cfg.r18.getIsActive()) {
-                        Cell cell18 = infoRow.createCell(columnCount++);
+                }
+                if (cfg.r18.getIsActive()) {
+                    Cell cell18 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result18.replace(",", ""))) {
+                        cell18.setCellValue(Double.parseDouble(row.result18.replace(",", "")));
+                        cell18.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell18.setCellValue(row.result18);
                     }
-                    if (cfg.r20.getIsActive()) {
-                        Cell cell20 = infoRow.createCell(columnCount++);
+                }
+                if (cfg.r20.getIsActive()) {
+                    Cell cell20 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result20.replace(",", ""))) {
+                        cell20.setCellValue(Double.parseDouble(row.result20.replace(",", "")));
+                        cell20.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell20.setCellValue(row.result20);
                     }
-                    if (cfg.r22.getIsActive()) {
-                        Cell cell22 = infoRow.createCell(columnCount++);
+                }
+                if (cfg.r22.getIsActive()) {
+                    Cell cell22 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result22.replace(",", ""))) {
+                        cell22.setCellValue(Double.parseDouble(row.result22.replace(",", "")));
+                        cell22.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell22.setCellValue(row.result22);
                     }
-                    if (cfg.r00.getIsActive()) {
-                        Cell cell00 = infoRow.createCell(columnCount++);
+                }
+                if (cfg.r00.getIsActive()) {
+                    Cell cell00 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result00.replace(",", ""))) {
+                        cell00.setCellValue(Double.parseDouble(row.result00.replace(",", "")));
+                        cell00.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell00.setCellValue(row.result00);
                     }
-                    if (cfg.r02.getIsActive()) {
-                        Cell cell02 = infoRow.createCell(columnCount++);
+                }
+                if (cfg.r02.getIsActive()) {
+                    Cell cell02 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result02.replace(",", ""))) {
+                        cell02.setCellValue(Double.parseDouble(row.result02.replace(",", "")));
+                        cell02.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell02.setCellValue(row.result02);
                     }
-                    if (cfg.r04.getIsActive()) {
-                        Cell cell04 = infoRow.createCell(columnCount++);
+                }
+                if (cfg.r04.getIsActive()) {
+                    Cell cell04 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result04.replace(",", ""))) {
+                        cell04.setCellValue(Double.parseDouble(row.result04.replace(",", "")));
+                        cell04.setCellStyle(styleDecimals);
+                    }
+                    else {
                         cell04.setCellValue(row.result04);
                     }
-                    if (cfg.r06.getIsActive()) {
-                        Cell cell06 = infoRow.createCell(columnCount++);
-                        cell06.setCellValue(row.result06);
-                    }
                 }
-                else {
-                    if (cfg.r08.getIsActive()) {
-                        Cell cell08 = infoRow.createCell(columnCount++);
-                        cell08.setCellValue(row.result08 < 0d ? row.defaultTextValue : "");
+                if (cfg.r06.getIsActive()) {
+                    Cell cell06 = infoRow.createCell(columnCount++);
+                    if (SGrindingReport.isNumeric(row.result06.replace(",", ""))) {
+                        cell06.setCellValue(Double.parseDouble(row.result06.replace(",", "")));
+                        cell06.setCellStyle(styleDecimals);
                     }
-                    if (cfg.r10.getIsActive()) {
-                        Cell cell10 = infoRow.createCell(columnCount++);
-                        cell10.setCellValue(row.result10 < 0d ? row.defaultTextValue : "");
-                    }
-                    if (cfg.r12.getIsActive()) {
-                        Cell cell12 = infoRow.createCell(columnCount++);
-                        cell12.setCellValue(row.result12 < 0d ? row.defaultTextValue : "");
-                    }
-                    if (cfg.r14.getIsActive()) {
-                        Cell cell14 = infoRow.createCell(columnCount++);
-                        cell14.setCellValue(row.result14 < 0d ? row.defaultTextValue : "");
-                    }
-                    if (cfg.r16.getIsActive()) {
-                        Cell cell16 = infoRow.createCell(columnCount++);
-                        cell16.setCellValue(row.result16 < 0d ? row.defaultTextValue : "");
-                    }
-                    if (cfg.r18.getIsActive()) {
-                        Cell cell18 = infoRow.createCell(columnCount++);
-                        cell18.setCellValue(row.result18 < 0d ? row.defaultTextValue : "");
-                    }
-                    if (cfg.r20.getIsActive()) {
-                        Cell cell20 = infoRow.createCell(columnCount++);
-                        cell20.setCellValue(row.result20 < 0d ? row.defaultTextValue : "");
-                    }
-                    if (cfg.r22.getIsActive()) {
-                        Cell cell22 = infoRow.createCell(columnCount++);
-                        cell22.setCellValue(row.result22 < 0d ? row.defaultTextValue : "");
-                    }
-                    if (cfg.r00.getIsActive()) {
-                        Cell cell00 = infoRow.createCell(columnCount++);
-                        cell00.setCellValue(row.result00 < 0d ? row.defaultTextValue : "");
-                    }
-                    if (cfg.r02.getIsActive()) {
-                        Cell cell02 = infoRow.createCell(columnCount++);
-                        cell02.setCellValue(row.result02 < 0d ? row.defaultTextValue : "");
-                    }
-                    if (cfg.r04.getIsActive()) {
-                        Cell cell04 = infoRow.createCell(columnCount++);
-                        cell04.setCellValue(row.result04 < 0d ? row.defaultTextValue : "");
-                    }
-                    if (cfg.r06.getIsActive()) {
-                        Cell cell06 = infoRow.createCell(columnCount++);
-                        cell06.setCellValue(row.result06 < 0d ? row.defaultTextValue : "");
+                    else {
+                        cell06.setCellValue(row.result06);
                     }
                 }
                 
@@ -403,6 +425,7 @@ public class SGrindingReport {
                                 Cell cellR08 = formulaRow.createCell(formObj.getR08().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR08().getFormula(), rIndex);
                                 cellR08.setCellFormula(formulaS);
+                                cellR08.setCellStyle(styleDecimals);
                                 
                                 bRowAdded = true;
                                 infoRow = formulaRow;
@@ -411,6 +434,7 @@ public class SGrindingReport {
                                 Cell cellR08 = infoRow.createCell(formObj.getR08().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR08().getFormula(), rowIndex);
                                 cellR08.setCellFormula(formulaS);
+                                cellR08.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r10.getIsActive()) {
@@ -431,11 +455,13 @@ public class SGrindingReport {
                                 Cell cellR10 = formulaRow.createCell(formObj.getR10().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR10().getFormula(), rIndex);
                                 cellR10.setCellFormula(formulaS);
+                                cellR10.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR10 = infoRow.createCell(formObj.getR10().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR10().getFormula(), rowIndex);
                                 cellR10.setCellFormula(formulaS);
+                                cellR10.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r12.getIsActive()) {
@@ -456,11 +482,13 @@ public class SGrindingReport {
                                 Cell cellR12 = formulaRow.createCell(formObj.getR12().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR12().getFormula(), rIndex);
                                 cellR12.setCellFormula(formulaS);
+                                cellR12.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR12 = infoRow.createCell(formObj.getR12().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR12().getFormula(), rowIndex);
                                 cellR12.setCellFormula(formulaS);
+                                cellR12.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r14.getIsActive()) {
@@ -481,11 +509,13 @@ public class SGrindingReport {
                                 Cell cellR14 = formulaRow.createCell(formObj.getR14().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR14().getFormula(), rIndex);
                                 cellR14.setCellFormula(formulaS);
+                                cellR14.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR14 = infoRow.createCell(formObj.getR14().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR14().getFormula(), rowIndex);
                                 cellR14.setCellFormula(formulaS);
+                                cellR14.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r16.getIsActive()) {
@@ -506,11 +536,13 @@ public class SGrindingReport {
                                 Cell cellR16 = formulaRow.createCell(formObj.getR16().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR16().getFormula(), rIndex);
                                 cellR16.setCellFormula(formulaS);
+                                cellR16.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR16 = infoRow.createCell(formObj.getR16().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR16().getFormula(), rowIndex);
                                 cellR16.setCellFormula(formulaS);
+                                cellR16.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r18.getIsActive()) {
@@ -531,11 +563,13 @@ public class SGrindingReport {
                                 Cell cellR18 = formulaRow.createCell(formObj.getR18().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR18().getFormula(), rIndex);
                                 cellR18.setCellFormula(formulaS);
+                                cellR18.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR18 = infoRow.createCell(formObj.getR18().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR18().getFormula(), rowIndex);
                                 cellR18.setCellFormula(formulaS);
+                                cellR18.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r20.getIsActive()) {
@@ -556,11 +590,13 @@ public class SGrindingReport {
                                 Cell cellR20 = formulaRow.createCell(formObj.getR20().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR20().getFormula(), rIndex);
                                 cellR20.setCellFormula(formulaS);
+                                cellR20.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR20 = infoRow.createCell(formObj.getR20().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR20().getFormula(), rowIndex);
                                 cellR20.setCellFormula(formulaS);
+                                cellR20.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r22.getIsActive()) {
@@ -581,11 +617,13 @@ public class SGrindingReport {
                                 Cell cellR22 = formulaRow.createCell(formObj.getR22().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR22().getFormula(), rIndex);
                                 cellR22.setCellFormula(formulaS);
+                                cellR22.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR22 = infoRow.createCell(formObj.getR22().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR22().getFormula(), rowIndex);
                                 cellR22.setCellFormula(formulaS);
+                                cellR22.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r00.getIsActive()) {
@@ -606,11 +644,13 @@ public class SGrindingReport {
                                 Cell cellR00 = formulaRow.createCell(formObj.getR00().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR00().getFormula(), rIndex);
                                 cellR00.setCellFormula(formulaS);
+                                cellR00.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR00 = infoRow.createCell(formObj.getR00().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR00().getFormula(), rowIndex);
                                 cellR00.setCellFormula(formulaS);
+                                cellR00.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r02.getIsActive()) {
@@ -631,11 +671,13 @@ public class SGrindingReport {
                                 Cell cellR02 = formulaRow.createCell(formObj.getR02().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR02().getFormula(), rIndex);
                                 cellR02.setCellFormula(formulaS);
+                                cellR02.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR02 = infoRow.createCell(formObj.getR02().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR02().getFormula(), rowIndex);
                                 cellR02.setCellFormula(formulaS);
+                                cellR02.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r04.getIsActive()) {
@@ -656,11 +698,13 @@ public class SGrindingReport {
                                 Cell cellR04 = formulaRow.createCell(formObj.getR04().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR04().getFormula(), rIndex);
                                 cellR04.setCellFormula(formulaS);
+                                cellR04.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR04 = infoRow.createCell(formObj.getR04().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR04().getFormula(), rowIndex);
                                 cellR04.setCellFormula(formulaS);
+                                cellR04.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.r06.getIsActive()) {
@@ -681,11 +725,13 @@ public class SGrindingReport {
                                 Cell cellR06 = formulaRow.createCell(formObj.getR06().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR06().getFormula(), rIndex);
                                 cellR06.setCellFormula(formulaS);
+                                cellR06.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellR06 = infoRow.createCell(formObj.getR06().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR06().getFormula(), rowIndex);
                                 cellR06.setCellFormula(formulaS);
+                                cellR06.setCellStyle(styleDecimals);
                             }
                         }
                         if (formObj.rExtra.getIsActive()) {
@@ -706,11 +752,13 @@ public class SGrindingReport {
                                 Cell cellrExtra = formulaRow.createCell(formObj.getrExtra().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getrExtra().getFormula(), rIndex);
                                 cellrExtra.setCellFormula(formulaS);
+                                cellrExtra.setCellStyle(styleDecimals);
                             }
                             else {
                                 Cell cellrExtra = infoRow.createCell(formObj.getrExtra().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getrExtra().getFormula(), rowIndex);
                                 cellrExtra.setCellFormula(formulaS);
+                                cellrExtra.setCellStyle(styleDecimals);
                             }
                         }
                     }
@@ -795,31 +843,32 @@ public class SGrindingReport {
                 + "v.result_02, "
                 + "v.result_04, "
                 + "v.result_06,"
-                + "(@prom := (COALESCE(v.result_08, 0) + "
-                + "COALESCE(v.result_10, 0) + "
-                + "COALESCE(v.result_12, 0) + "
-                + "COALESCE(v.result_14, 0) + "
-                + "COALESCE(v.result_16, 0) + "
-                + "COALESCE(v.result_18, 0) + "
-                + "COALESCE(v.result_20, 0) + "
-                + "COALESCE(v.result_22, 0) + "
-                + "COALESCE(v.result_00, 0) + "
-                + "COALESCE(v.result_02, 0) + "
-                + "COALESCE(v.result_04, 0) + "
-                + "COALESCE(v.result_06, 0)) / "
+                + "@prom := COALESCE("
+                + "(IF(COALESCE(v.result_08, 0) > 0, v.result_08, 0) +"
+                + "IF(COALESCE(v.result_10, 0) > 0, v.result_10, 0) + "
+                + "IF(COALESCE(v.result_12, 0) > 0, v.result_12, 0) + "
+                + "IF(COALESCE(v.result_14, 0) > 0, v.result_14, 0) + "
+                + "IF(COALESCE(v.result_16, 0) > 0, v.result_16, 0) + "
+                + "IF(COALESCE(v.result_18, 0) > 0, v.result_18, 0) + "
+                + "IF(COALESCE(v.result_20, 0) > 0, v.result_20, 0) + "
+                + "IF(COALESCE(v.result_22, 0) > 0, v.result_22, 0) + "
+                + "IF(COALESCE(v.result_00, 0) > 0, v.result_00, 0) + "
+                + "IF(COALESCE(v.result_02, 0) > 0, v.result_02, 0) + "
+                + "IF(COALESCE(v.result_04, 0) > 0, v.result_04, 0) + "
+                + "IF(COALESCE(v.result_06, 0) > 0, v.result_06, 0)) / "
                 + "(IF(v.result_08 > 0, 1, 0) + "
-                + "    IF(v.result_10 > 0, 1, 0) + "
-                + "    IF(v.result_12 > 0, 1, 0) + "
-                + "    IF(v.result_14 > 0, 1, 0) + "
-                + "    IF(v.result_16 > 0, 1, 0) + "
-                + "    IF(v.result_18 > 0, 1, 0) + "
-                + "    IF(v.result_20 > 0, 1, 0) + "
-                + "    IF(v.result_22 > 0, 1, 0) + "
-                + "    IF(v.result_00 > 0, 1, 0) + "
-                + "    IF(v.result_02 > 0, 1, 0) + "
-                + "    IF(v.result_04 > 0, 1, 0) + "
-                + "    IF(v.result_06 > 0, 1, 0))) AS promedio, "
-                + "(@dg / " + 100 + " * @prom) AS pond "
+                + "IF(v.result_10 > 0, 1, 0) + "
+                + "IF(v.result_12 > 0, 1, 0) + "
+                + "IF(v.result_14 > 0, 1, 0) + "
+                + "IF(v.result_16 > 0, 1, 0) + "
+                + "IF(v.result_18 > 0, 1, 0) + "
+                + "IF(v.result_20 > 0, 1, 0) + "
+                + "IF(v.result_22 > 0, 1, 0) + "
+                + "IF(v.result_00 > 0, 1, 0) + "
+                + "IF(v.result_02 > 0, 1, 0) + "
+                + "IF(v.result_04 > 0, 1, 0) + "
+                + "IF(v.result_06 > 0, 1, 0)), 0) AS promedio, "
+                + "@dg / " + 100 + " * @prom AS pond "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " AS v "
                 + "RIGHT JOIN " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + " AS lip "
                 + "ON (lip.fk_parameter_id = v.fk_parameter_id AND lip.fk_item_id = v.fk_item_id) AND NOT lip.b_del "
@@ -853,18 +902,18 @@ public class SGrindingReport {
                 resultRow.itemCode = result.getString("item_code");
                 resultRow.itemName = result.getString("item_name");
                 
-                resultRow.result08 = result.getDouble("v.result_08");
-                resultRow.result10 = result.getDouble("v.result_10");
-                resultRow.result12 = result.getDouble("v.result_12");
-                resultRow.result14 = result.getDouble("v.result_14");
-                resultRow.result16 = result.getDouble("v.result_16");
-                resultRow.result18 = result.getDouble("v.result_18");
-                resultRow.result20 = result.getDouble("v.result_20");
-                resultRow.result22 = result.getDouble("v.result_22");
-                resultRow.result00 = result.getDouble("v.result_00");
-                resultRow.result02 = result.getDouble("v.result_02");
-                resultRow.result04 = result.getDouble("v.result_04");
-                resultRow.result06 = result.getDouble("v.result_06");
+                resultRow.result08 = result.getString("v.result_08");
+                resultRow.result10 = result.getString("v.result_10");
+                resultRow.result12 = result.getString("v.result_12");
+                resultRow.result14 = result.getString("v.result_14");
+                resultRow.result16 = result.getString("v.result_16");
+                resultRow.result18 = result.getString("v.result_18");
+                resultRow.result20 = result.getString("v.result_20");
+                resultRow.result22 = result.getString("v.result_22");
+                resultRow.result00 = result.getString("v.result_00");
+                resultRow.result02 = result.getString("v.result_02");
+                resultRow.result04 = result.getString("v.result_04");
+                resultRow.result06 = result.getString("v.result_06");
                 
                 resultRow.formulas = this.getFormulas(client, resultRow.itemParamLinkId);
                 
@@ -911,5 +960,20 @@ public class SGrindingReport {
         }
         
         return new ArrayList<>();
+    }
+    
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        
+        try {
+            double d = Double.parseDouble(strNum);
+        }
+        catch (NumberFormatException nfe) {
+            return false;
+        }
+        
+        return true;
     }
 }

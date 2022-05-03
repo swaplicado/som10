@@ -142,29 +142,29 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
                 /**
                  * Valores
                  */
-                columns[2] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "08:00");
+                columns[2] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "08:00");
                 columns[2].setEditable(true);
-                columns[3] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "10:00");
+                columns[3] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "10:00");
                 columns[3].setEditable(true);
-                columns[4] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "12:00");
+                columns[4] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "12:00");
                 columns[4].setEditable(true);
-                columns[5] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "14:00");
+                columns[5] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "14:00");
                 columns[5].setEditable(true);
-                columns[6] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "16:00");
+                columns[6] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "16:00");
                 columns[6].setEditable(true);
-                columns[7] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "18:00");
+                columns[7] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "18:00");
                 columns[7].setEditable(true);
-                columns[8] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "20:00");
+                columns[8] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "20:00");
                 columns[8].setEditable(true);
-                columns[9] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "22:00");
+                columns[9] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "22:00");
                 columns[9].setEditable(true);
-                columns[10] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "00:00");
+                columns[10] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "00:00");
                 columns[10].setEditable(true);
-                columns[11] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "02:00");
+                columns[11] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "02:00");
                 columns[11].setEditable(true);
-                columns[12] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "04:00");
+                columns[12] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "04:00");
                 columns[12].setEditable(true);
-                columns[13] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "06:00");
+                columns[13] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "06:00");
                 columns[13].setEditable(true);
                 
                 for (col = 0; col < columns.length; col++) {
@@ -299,6 +299,8 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
             ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(11)).setEditable(format.getCaptureConfigurationAux().getR02().getIsActive());
             ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(12)).setEditable(format.getCaptureConfigurationAux().getR04().getIsActive());
             ((SGridColumnForm) moGridTableRows.getModel().getGridColumns().get(13)).setEditable(format.getCaptureConfigurationAux().getR06().getIsActive());
+            
+            jpResults.repaint();
         }
         
         setFormEditable(true);

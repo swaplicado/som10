@@ -1,4 +1,16 @@
 ================================================================================
+2022-05-03, 1.0 077.4
+Edwin CARMONA
+--------------------------------------------------------------------------------
+1) Actualización de Funcionalidad de Molienda
+-Se cambia el tipo de los valores a String
+-Se cambia la fórmula del promedio en el excel
+-Se agregan configuraciones de ítems
+-Se toma en cuenta el pellet
+
+Versión estable sin mínimos y máximos de los parámetros
+
+================================================================================
 2022-04-18, 1.0 077.3
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

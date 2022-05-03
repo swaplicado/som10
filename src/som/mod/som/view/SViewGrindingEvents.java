@@ -108,12 +108,11 @@ public class SViewGrindingEvents extends SGridPaneView implements ActionListener
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[11];
+        SGridColumnView[] columns = new SGridColumnView[10];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "dt_start", "Fecha Inicio");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "dt_end", "Fecha Fin");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "description", "Evento");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, "Parámetro");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
