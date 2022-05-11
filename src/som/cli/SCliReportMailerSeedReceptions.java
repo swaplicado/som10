@@ -26,7 +26,7 @@ public class SCliReportMailerSeedReceptions {
     
     private static SGuiSession moSession;
     
-    public static final int DAYS_TO_SEND_MAIL = 1;
+    public static final int DAYS_TO_SEND_MAIL = 0;
     
     private static final int ARG_DAYS_TO_SEND_MAIL = 0;
     private static final int ARG_MAIL_TO = 1;
@@ -36,7 +36,7 @@ public class SCliReportMailerSeedReceptions {
         try {
             
             int daysToSendMail = DAYS_TO_SEND_MAIL;
-            String mailTo = "isabel.garcia@swaplicado.com.mx";
+            String mailTo = "isabel.garcia@swaplicado.com.mx;sflores.swaplicado@gmail.com";
             String mailBcc = "";
             
             if (args.length >= 1) {
