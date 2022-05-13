@@ -1,4 +1,18 @@
 ================================================================================
+2022-05-13, 1.0 078
+Edwin CARMONA
+
+Minuta reunión SOM-Molienda (03-05-2022 11:30 hrs)
+
+PENDIENTES:
+1. Configurar encabezados de reporte y vistas por ítem (Promedios y fórmulas).
+2. Separar eventos de molienda (paros) por día, por proceso y por ítem.
+3. Separación de parámetros por secciones (en el caso de bagazo hay más de una tabla).
+4. Validación si no hay valor en la celda que no muestre nada (VALIDAR).
+5. Considerar tablas adicionales de bagazo y hueso y cáscara externos.
+6. Fórmulas de rendimiento teórico de semilla y aguacate (VALIDAR).
+
+================================================================================
 2022-05-11, 1.0 077.4
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

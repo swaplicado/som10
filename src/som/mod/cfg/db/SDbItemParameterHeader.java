@@ -22,25 +22,31 @@ public class SDbItemParameterHeader extends SDbRegistryUser {
 
     protected int mnPkItemParameterId;
     protected int mnViewOrder;
+    protected String msLabelText;
+    protected String msParameters;
+    protected String msUnitSimbol;
     //protected boolean mbDeleted;
     protected int mnFkItemId;
-    protected int mnFkParameterId;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
+    
+    protected int[] maAuxParameters;
 
     public SDbItemParameterHeader() {
-        super(SModConsts.CU_LINK_ITEM_PARAM);
+        super(SModConsts.CU_ITEM_PARAM_HEADERS);
     }
 
     public void setPkItemParameterId(int n) { mnPkItemParameterId = n; }
     public void setViewOrder(int n) { mnViewOrder = n; }
+    public void setLabelText(String s) { msLabelText = s; }
+    public void setParameters(String s) { msParameters = s; }
+    public void setUnitSimbol(String s) { msUnitSimbol = s; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setFkItemId(int n) { mnFkItemId = n; }
-    public void setFkParameterId(int n) { mnFkParameterId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -48,13 +54,17 @@ public class SDbItemParameterHeader extends SDbRegistryUser {
 
     public int getPkItemParameterId() { return mnPkItemParameterId; }
     public int getViewOrder() { return mnViewOrder; }
+    public String getLabelText() { return msLabelText; }
+    public String getParameters() { return msParameters; }
+    public String getUnitSimbol() { return msUnitSimbol; }
     public boolean isDeleted() { return mbDeleted; }
     public int getFkItemId() { return mnFkItemId; }
-    public int getFkParameterId() { return mnFkParameterId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
+    
+    public int[] getAuxParameters() { return maAuxParameters; }
 
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -72,13 +82,17 @@ public class SDbItemParameterHeader extends SDbRegistryUser {
 
         mnPkItemParameterId = 0;
         mnViewOrder = 0;
+        msLabelText = "";
+        msParameters = "";
+        msUnitSimbol = "";
         mbDeleted = false;
         mnFkItemId = 0;
-        mnFkParameterId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
+        
+        maAuxParameters = new int[] {};
     }
 
     @Override
@@ -88,12 +102,12 @@ public class SDbItemParameterHeader extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_link = " + mnPkItemParameterId + " ";
+        return "WHERE id_itm_prm = " + mnPkItemParameterId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_link = " + pk[0] + " ";
+        return "WHERE id_itm_prm = " + pk[0] + " ";
     }
 
     @Override
@@ -125,15 +139,25 @@ public class SDbItemParameterHeader extends SDbRegistryUser {
         else {
             mnPkItemParameterId = resultSet.getInt("id_itm_prm");
             mnViewOrder = resultSet.getInt("view_order");
+            msLabelText = resultSet.getString("label_text");
+            msParameters = resultSet.getString("parameters_ids");
+            msUnitSimbol = resultSet.getString("unit_simbol");
             mbDeleted = resultSet.getBoolean("b_del");
             mnFkItemId = resultSet.getInt("fk_item_id");
-            mnFkParameterId = resultSet.getInt("fk_parameter_id");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
 
             mbRegistryNew = false;
+        }
+        
+        if (! msParameters.isEmpty()) {
+            String[] params = msParameters.split(",");
+            maAuxParameters = new int[params.length];
+            for (int i = 0; i < params.length; i++) {
+                maAuxParameters[i] = Integer.parseInt(params[i]);
+            }
         }
 
         mnQueryResultId = SDbConsts.READ_OK;
@@ -153,9 +177,11 @@ public class SDbItemParameterHeader extends SDbRegistryUser {
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkItemParameterId + ", " +
                     mnViewOrder + ", " +
+                    "'" + msLabelText + "', " +
+                    "'" + msParameters + "', " +
+                    "'" + msUnitSimbol + "', " +
                     (mbDeleted ? 1 : 0) + ", " +
                     mnFkItemId + ", " +
-                    mnFkParameterId + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     "NOW()" + ", " +
@@ -167,9 +193,11 @@ public class SDbItemParameterHeader extends SDbRegistryUser {
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
                     "view_order = " + mnViewOrder + ", " +
+                    "label_text = '" + msLabelText + "', " +
+                    "parameters_ids = '" + msParameters + "', " +
+                    "unit_simbol = '" + msUnitSimbol + "', " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "fk_item_id = " + mnFkItemId + ", " +
-                    "fk_parameter_id = " + mnFkParameterId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -188,9 +216,11 @@ public class SDbItemParameterHeader extends SDbRegistryUser {
 
         registry.setPkItemParameterId(this.getPkItemParameterId());
         registry.setViewOrder(this.getViewOrder());
+        registry.setLabelText(this.getLabelText());
+        registry.setParameters(this.getParameters());
+        registry.setUnitSimbol(this.getUnitSimbol());
         registry.setDeleted(this.isDeleted());
         registry.setFkItemId(this.getFkItemId());
-        registry.setFkParameterId(this.getFkParameterId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

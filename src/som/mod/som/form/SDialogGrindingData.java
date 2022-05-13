@@ -201,7 +201,7 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         moGrindingBasc.setDecimalSettings(SGuiUtils.getLabelName(jlGrinBas.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moGrindingOilPercent.setDecimalSettings(SGuiUtils.getLabelName(jlGrinPorc.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
 
-        moGridEvents = new SGridPaneForm(miClient, SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, "Eventos durante molienda") {
+        moGridEvents = new SGridPaneForm(miClient, SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, "Datos de molienda") {
             @Override
             public void initGrid() {
                 setRowButtonsEnabled(false);
@@ -247,15 +247,13 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         moGrindingResult.setGrindingOilPerc(moGrindingOilPercent.getValue());
         
         moGrindingResult = SGrindingResultsUtils.saveGrinding(miClient, moGrindingResult);
-        this.showEvents();
+        this.showData();
     }
 
     @SuppressWarnings("unchecked")
-    private void showEvents() {
+    private void showData() {
         Vector<SGridRow> rows = new Vector<>();
         ArrayList<SGrindingResumeRow> grindingRows = SGrindingResume.getResumeRows(miClient, mtParamDate, mnItem);
-        
-        SGrindingResumeRow last = grindingRows.remove(grindingRows.size() - 1);
         
         SRowData row = null;
         for (SGrindingResumeRow grindingRow : grindingRows) {
@@ -267,7 +265,10 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
             rows.add(row);
         }
         
-        moDecRendTeo.setValue(last.getValue());
+        if (! grindingRows.isEmpty()) {
+            SGrindingResumeRow last = grindingRows.get(grindingRows.size() - 1);
+            moDecRendTeo.setValue(last.getValue());
+        }
         
         moGridEvents.clearGridRows();
         moGridEvents.populateGrid(rows);
@@ -321,7 +322,7 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         moGrindingBasc.setValue(moGrindingResult.getGrindingBascule());
         moGrindingOilPercent.setValue(moGrindingResult.getGrindingOilPerc());
         
-        showEvents();
+        showData();
     }
 
     public void formReset() {

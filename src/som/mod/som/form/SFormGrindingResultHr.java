@@ -136,7 +136,7 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
                 /**
                  * ID, Parámetro
                  */
-                columns[0] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_1B, "ID");
+                columns[0] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_1B, "Orden");
                 columns[1] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "Parámetro");
                 
                 /**
@@ -184,14 +184,13 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
         String sql = "SELECT  " +
                 "    res.id_result, " +
                 "    gp.parameter AS param_name, " +
-                "    li.capture_cfg " +
+                "    (SELECT capture_cfg FROM " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + 
+                "        AS li where res.fk_item_id = li.fk_item_id " +
+                "        AND res.fk_parameter_id = li.fk_parameter_id ORDER BY ts_usr_ins ASC LIMIT 1) AS capture_cfg " +
                 "FROM " +
                 "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " AS res " +
                 "        INNER JOIN " +
                 "    " + SModConsts.TablesMap.get(SModConsts.CU_PARAMS) + " AS gp ON res.fk_parameter_id = gp.id_parameter " +
-                "        INNER JOIN " +
-                "    " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + " AS li ON res.fk_item_id = li.fk_item_id " +
-                "        AND res.fk_parameter_id = li.fk_parameter_id " +
                 "WHERE " +
                 "    res.b_del = FALSE " +
                 "    AND gp.b_del = FALSE " +

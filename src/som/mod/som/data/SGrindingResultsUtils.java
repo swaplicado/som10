@@ -5,9 +5,15 @@
  */
 package som.mod.som.data;
 
+import com.aspose.cells.ImageOrPrintOptions;
+import com.aspose.cells.ImageType;
+import com.aspose.cells.SheetRender;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,17 +25,15 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.mail.MessagingException;
+import javax.swing.JFileChooser;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiClient;
-import sa.lib.mail.SMail;
-import sa.lib.mail.SMailConsts;
-import sa.lib.mail.SMailSender;
-import sa.lib.mail.SMailUtils;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
 import som.mod.cfg.db.SDbCompany;
@@ -167,6 +171,7 @@ public class SGrindingResultsUtils {
      */
     public static void generateResults(SGuiClient client, final boolean bAllItems, final int nItemId, final int nLotId, final Date tCaptureDate) {
         String sql = "SELECT  " +
+                    "id_link, " +
                     "capture_order, " +
                     "i.code AS item_code, " +
                     "i.name AS item_name, " +
@@ -203,6 +208,7 @@ public class SGrindingResultsUtils {
                 res.setFkLotId(bAllItems ? links.getInt("lot_id") : nLotId);
                 res.setOrder(links.getInt("capture_order"));
                 res.setDateCapture(tCaptureDate);
+                res.setFklinkId_n(links.getInt("id_link"));
                 
                 if (res.getFkLotId() == 0) {
                     client.showMsgBoxError("El ítem " + links.getString("item_code") + 
@@ -352,8 +358,10 @@ public class SGrindingResultsUtils {
                     SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " " +
                     "WHERE " +
                     " MONTH(dt_capture) = MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
+                    " AND YEAR(dt_capture) = YEAR('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
                     " AND fk_parameter_id = " + parameter + " " +
                     " AND fk_item_id = " + item + " " +
+                    " AND NOT b_del " +
                     "GROUP BY dt_capture";
         
         ResultSet resIdResult;
@@ -677,14 +685,14 @@ public class SGrindingResultsUtils {
     }
     
     /**
-     * Obtiene el archivo de configuración contenido en el campo de la relación de parámetro vs ítem
+     * Obtiene el campo de configuración contenido en el campo de la relación de parámetro vs ítem
      * 
      * @param client
      * @param nItemId
      * 
      * @return SCaptureConfiguration
      */
-    public static SCaptureConfiguration getCfgFile(SGuiClient client, final int nItemId) {
+    public static SCaptureConfiguration getCfgField(SGuiClient client, final int nItemId) {
         String query = "SELECT " +
                         "    capture_cfg " +
                         "FROM " +
@@ -733,7 +741,7 @@ public class SGrindingResultsUtils {
         return sFormula;
     }
     
-    public static boolean sendReport(SGuiClient client, XSSFWorkbook workbook, SDbLot oLot, SDbItem oItem, Date cutOffDate) {
+    public static boolean sendReport(SGuiClient client, XSSFWorkbook workbook, SDbLot oLot, SDbItem oItem, Date cutOffDate, String sMonth, String sRange) {
         DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
         DateFormat subjectformatter = new SimpleDateFormat("dd-MM-yyyy");
         String itmName = oItem.getNameShort().replace(" ", "_");
@@ -750,27 +758,51 @@ public class SGrindingResultsUtils {
             outputStream.flush();
             outputStream.close();
             
-            SDbCompany company = ((SGuiClientSessionCustom) client.getSession().getSessionCustom()).getCompany();
-            SMailSender sender = new SMailSender(
-                    company.getMailNotificationConfigHost(),
-                    company.getMailNotificationConfigPort(),
-                    company.getMailNotificationConfigProtocol(),
-                    company.isMailNotificationConfigStartTls(),
-                    company.isMailNotificationConfigAuth(),
-                    company.getMailNotificationConfigUser(),
-                    company.getMailNotificationConfigPassword(),
-                company.getMailNotificationConfigUser());
-            
-//            SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "Aeth2021*s.", "som@aeth.mx");
-            
-            ArrayList<String> rc = new ArrayList<String>();
-            String[] mails = company.getGrindingReportMails().split(";");
-            for (String mail : mails) {
-                rc.add(mail);
-            }
+            // Se comenta sección que funciona con la librería spire
+            //Get the first worksheet
+//            Workbook workbook1 = new Workbook();
+//            workbook1.loadFromStream(new FileInputStream(file));
+////            Worksheet sheet = workbook1.getWorksheets().get(0);
+//            Worksheet sheet = workbook1.getWorksheets().get(workbook1.getWorksheets().size() - 1);
+//
+//            //Save the sheet to image
+//            BufferedImage bufferedImage = sheet.toImage(68, 1, 125, 7);
+//            ImageIO.write(bufferedImage, "PNG", new File("output/ToImage.png"));
+//            
+//            //Save the sheet to image
+//            sheet.saveToImage("output/image.png");
+
+            // Esta sección funciona con la librería ASPOSE
+            // Create workbook from source file.
+            Workbook workbooka = new Workbook(new FileInputStream(file));
+
+            // Access the first worksheet
+            Worksheet worksheet = workbooka.getWorksheets().get(sMonth);
+
+            // Set the print area with your desired range
+            worksheet.getPageSetup().setPrintArea(sRange);
+
+            // Set all margins as 0
+            worksheet.getPageSetup().setLeftMargin(0);
+            worksheet.getPageSetup().setRightMargin(0);
+            worksheet.getPageSetup().setTopMargin(0);
+            worksheet.getPageSetup().setBottomMargin(0);
+
+            // Set OnePagePerSheet option as true
+            ImageOrPrintOptions options = new ImageOrPrintOptions();            
+            options.setOnePagePerSheet(true);
+            options.setImageType(ImageType.JPEG);
+            options.setHorizontalResolution(200);
+            options.setVerticalResolution(200);
+
+            // Take the image of your worksheet
+            SheetRender sr = new SheetRender(worksheet, options);
+            String img = "output/outputExportRangeOfCellsInWorksheetToImage.jpg";
+            sr.toImage(0, img);
             
             String subject = "Reporte molienda del " + subjectformatter.format(cutOffDate) + ". " + oItem.getNameShort() + " " + oLot.getLot();
-            
+            String basePath = System.getProperty("user.dir");
+            String imageFilePath = basePath + "/" + img;
             String body = "<html>" +
                             "<body>";
             
@@ -778,13 +810,27 @@ public class SGrindingResultsUtils {
                             "<p>" + SLibUtils.textToHtml("Ítem: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oItem.getCode() + "-" + oItem.getName()) + "</b></p>" +
                             "<p>" + SLibUtils.textToHtml("Lote: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oLot.getLot()) + "</b></p>";
             
+            body += "<img src=\"cid:AbcXyz123\" />";
+            
             body += "</body>" +
                     "</html>";
             
-            SMail mail = new SMail(sender, SMailUtils.encodeSubjectUtf8(subject), body, rc);
-            mail.getAttachments().add(file);
-            mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
-            mail.send();
+            // inline images
+            Map<String, String> inlineImages = new HashMap<>();
+            inlineImages.put("AbcXyz123", imageFilePath);
+            
+            ArrayList<String> files = new ArrayList<>();
+            files.add(sFileName + ".xlsx");
+            
+            SDbCompany company = ((SGuiClientSessionCustom) client.getSession().getSessionCustom()).getCompany();
+            ArrayList<String> rc = new ArrayList<>();
+            String[] mails = company.getGrindingReportMails().split(";");
+            for (String mail : mails) {
+                rc.add(mail);
+            }
+            
+            SEmbeddedImageEmailUtil.send(company.getMailNotificationConfigHost(), company.getMailNotificationConfigPort(), company.getMailNotificationConfigUser(), 
+                            company.getMailNotificationConfigPassword(), rc, subject, body, inlineImages, files);
             
             System.out.println("Mail sent!");
             client.showMsgBoxInformation("Reporte de molienda enviado a " + company.getGrindingReportMails());
@@ -795,10 +841,48 @@ public class SGrindingResultsUtils {
         catch (IOException ex) {
             Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch (MessagingException ex) {
+        catch (Exception ex) {
             Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
+//        catch (MessagingException ex) {
+//            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         
         return false;
+    }
+    
+    public static boolean saveReport(SGuiClient client, XSSFWorkbook workbook, SDbLot oLot, SDbItem oItem, Date cutOffDate) {
+        DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
+        String itmName = oItem.getNameShort().replace(" ", "_");
+        String sFileName = "molienda/Mol_" + itmName + "_" + oLot.getLot() + "_" + fileNameformatter.format(new Date());
+        File file = new File(sFileName + ".xlsx");
+        
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Especifica un archivo para el guardado.");
+        fileChooser.setSelectedFile(file);
+        int userSelection = fileChooser.showSaveDialog(client.getFrame());
+        
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+        
+            try (FileOutputStream outputStream = new FileOutputStream(fileToSave)) {
+                workbook.write(outputStream);
+                if (! file.exists()) {
+                    file.createNewFile();
+                }
+
+                // get the content in bytes
+                outputStream.flush();
+                outputStream.close();
+            }
+            catch (IOException ex) {
+                Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+
+                return false;
+            }
+        }
+        
+        return true;
     }
 }

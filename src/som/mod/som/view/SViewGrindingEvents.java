@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Date;
 import javax.swing.JButton;
 import sa.lib.SLibConsts;
-import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
@@ -84,6 +83,7 @@ public class SViewGrindingEvents extends SGridPaneView implements ActionListener
                 + "v.dt_start, "
                 + "v.dt_end, "
                 + "v.description,"
+                + "CONCAT(i.code, '-', i.name) AS item,"
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
                 + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
                 + "v.b_can_dis AS " + SDbConsts.FIELD_CAN_DIS + ", "
@@ -97,6 +97,8 @@ public class SViewGrindingEvents extends SGridPaneView implements ActionListener
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_EVENT) + " AS v "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
+                + "v.fk_item = i.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -108,11 +110,12 @@ public class SViewGrindingEvents extends SGridPaneView implements ActionListener
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[10];
+        SGridColumnView[] columns = new SGridColumnView[11];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "dt_start", "Fecha Inicio");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "dt_end", "Fecha Fin");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "description", "Evento");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "item", "Ítem afectado");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);

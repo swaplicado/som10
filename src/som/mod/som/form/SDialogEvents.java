@@ -36,6 +36,7 @@ public class SDialogEvents extends JDialog implements ActionListener {
 
     private boolean mbFirstTime;
     private Date mtParamDate;
+    private int mnFkItemId;
 
     /** Creates new form SDialogStockCardex */
     public SDialogEvents(SGuiClient client) {
@@ -186,6 +187,7 @@ public class SDialogEvents extends JDialog implements ActionListener {
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
                 + "v.fk_usr_upd = uu.id_usr "
                 + "WHERE v.dt_start >= '" + SLibUtils.DbmsDateFormatDate.format(mtParamDate) + "' "
+                + " AND v.fk_item = " + mnFkItemId + " "
                 + "ORDER BY v.dt_start DESC, v.id_event ASC ";
 
             ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
@@ -226,9 +228,10 @@ public class SDialogEvents extends JDialog implements ActionListener {
     private sa.lib.gui.bean.SBeanFieldText moTextDate;
     // End of variables declaration//GEN-END:variables
 
-    public void setFormParams(final Date dateCutOff) {
+    public void setFormParams(final Date dateCutOff, final int idItem) {
         mtParamDate = dateCutOff;
         moTextDate.setValue(SLibUtils.DbmsDateFormatDate.format(mtParamDate));
+        this.mnFkItemId = idItem;
 
         showEvents();
     }
