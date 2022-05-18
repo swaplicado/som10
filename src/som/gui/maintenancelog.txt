@@ -3,6 +3,7 @@
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
 1) Cambios en el reporte de recepciones de semillas para separar en 2 tablas los totales del año por insumo y otra por supraregión.
+2) Corrección en la generación del reporte de acidez fruta recibida que impedía que este se mostrara.
 
 ================================================================================
 2022-05-11, 1.0 077.4
