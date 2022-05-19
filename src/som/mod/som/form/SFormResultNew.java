@@ -221,7 +221,12 @@ public class SFormResultNew extends SBeanForm implements ItemListener {
         moKeyItem.setValue(maItemPk);
         addAllListeners();
         
-        moKeyLot.setSelectedIndex(1);
+        if (moKeyLot.getItemCount() > 1) {
+            moKeyLot.setSelectedIndex(1);
+        }
+        else {
+            miClient.showMsgBoxError("No se ha configurado un lote para este ítem");
+        }
     }
 
     @Override

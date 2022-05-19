@@ -35,3 +35,4 @@ sa*.xml
 config*.xml
 *.jrxml
 *.log
+output/

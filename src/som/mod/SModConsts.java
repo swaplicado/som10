@@ -43,6 +43,9 @@ public abstract class SModConsts {
     public static final int CU_LINK_ITEM_PARAM = 220018;
     public static final int CU_LINK_FORMULAS = 220019;
     public static final int CU_ITEM_PARAM_HEADERS = 220025;
+    public static final int CU_GRINDING_GROUPS = 220026;
+    public static final int CU_GRINDING_ITEM_GROUP = 220027;
+    public static final int CU_GRINDING_RECIPIENTS = 220028;
     public static final int SS_LINK_CFG_ITEMS = 220020;
 
     public static final int C_USR_GUI = 230001;
@@ -207,6 +210,9 @@ public abstract class SModConsts {
         TablesMap.put(CU_LINK_ITEM_PARAM, "cu_link_itm_params");
         TablesMap.put(CU_LINK_FORMULAS, "cu_link_forms");
         TablesMap.put(CU_ITEM_PARAM_HEADERS, "cu_item_param_hds");
+        TablesMap.put(CU_GRINDING_GROUPS, "cu_grin_groups");
+        TablesMap.put(CU_GRINDING_ITEM_GROUP, "cu_grin_rep_groups");
+        TablesMap.put(CU_GRINDING_RECIPIENTS, "cu_grin_recs");
 
         TablesMap.put(C_USR_GUI, "c_usr_gui");
 

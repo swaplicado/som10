@@ -36,6 +36,7 @@ import org.joda.time.DateTime;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiClient;
 import som.mod.SModConsts;
+import som.mod.cfg.db.SDbGrindingItemGroup;
 import som.mod.cfg.db.SDbLinkGrindingFormula;
 import som.mod.som.db.SDbGrindingEvent;
 import som.mod.som.db.SDbItem;
@@ -65,60 +66,83 @@ public class SGrindingReport {
      * @throws Exception 
      */
     public void processReport(SGuiClient client, Date dtDate, int idItem, int idLot, int actionType) throws IOException, Exception {
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        
-        Calendar calendar = Calendar.getInstance();
-        
-        int year = calendar.get(Calendar.YEAR);
-        DateTime dateStart = DateTime.parse(year + "-01-01");
-        DateTime indexDate = dateStart.dayOfMonth().withMaximumValue();
-        DateTime lastDate = new DateTime(dtDate);
-        lastDate = lastDate.dayOfMonth().withMaximumValue();
-        
-        SCaptureConfiguration cfg = SGrindingResultsUtils.getCfgField(client, idItem);
-        
-        if (cfg == null) {
-            return;
+        ArrayList<SDbGrindingItemGroup> group = SGrindingResultsUtils.getGroupOfGrindingItem(client, idItem);
+        if (group.isEmpty()) {
+            group = new ArrayList<>();
+            SDbGrindingItemGroup aux = new SDbGrindingItemGroup();
+            aux.setFkGrindingGroupId(0);
+            aux.setFkItemId(idItem);
+
+            group.add(aux);
         }
-        
-        SDbLot oLot = new SDbLot();
-        oLot.read(client.getSession(), new int [] { idLot });
 
-        SDbItem oItem = new SDbItem(); 
-        oItem.read(client.getSession(), new int [] { idItem });
-        
         String sMonth = "";
-        String sRange = "";
-        while(indexDate.isBefore(lastDate) || indexDate.isEqual(lastDate)) {
-            // 
-            calendar.setTime(indexDate.toDate());
-            Month month = Month.of(calendar.get(Calendar.MONTH) + 1);
-            sMonth = (month.getDisplayName(TextStyle.FULL, new Locale("es", "ES"))).toUpperCase();
-            XSSFSheet sheet = workbook.createSheet(sMonth);
+        XSSFWorkbook workbook;
+        for (SDbGrindingItemGroup itemGroup : group) {
+            workbook = new XSSFWorkbook();
 
-            ArrayList<SGrindingResumeRow> grindingRows = SGrindingResume.getResumeRows(client, indexDate.toDate(), idItem);
-            double rendTeo = 0d;
-            if (! grindingRows.isEmpty()) {
-                SGrindingResumeRow last = grindingRows.get(grindingRows.size() - 1);
-                rendTeo = last.getValue();
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            DateTime dateStart = DateTime.parse(year + "-01-01");
+            DateTime indexDate = dateStart.dayOfMonth().withMaximumValue();
+            DateTime lastDate = new DateTime(dtDate);
+            lastDate = lastDate.dayOfMonth().withMaximumValue();
+
+            SCaptureConfiguration cfg = SGrindingResultsUtils.getCfgField(client, itemGroup.getFkItemId());
+
+            if (cfg == null) {
+                return;
             }
 
-            LinkedHashMap<Date, ArrayList<SGrindingResultReport>> info = this.getGrinding(client, indexDate.toDate(), idItem, idLot);
-            
-            sRange = this.generateReport(client, grindingRows, rendTeo, cfg, info, sheet, oLot, oItem, dtDate);
-            
-            sheet.autoSizeColumn(1);
-            sheet.autoSizeColumn(2);
-            
-            indexDate = indexDate.plusMonths(1);
-            indexDate = indexDate.dayOfMonth().withMaximumValue();
+            SDbItem oItem = new SDbItem();
+            oItem.read(client.getSession(), new int[]{itemGroup.getFkItemId()});
+
+            itemGroup.setSDbItemAux(oItem);
+
+            String sRange = "";
+            ArrayList<SGrindingResumeRow> grindingRows = new ArrayList<>();
+            while (indexDate.isBefore(lastDate) || indexDate.isEqual(lastDate)) {
+                // 
+                calendar.setTime(indexDate.toDate());
+                Month month = Month.of(calendar.get(Calendar.MONTH) + 1);
+                sMonth = (month.getDisplayName(TextStyle.FULL, new Locale("es", "ES"))).toUpperCase();
+                XSSFSheet sheet = workbook.createSheet(sMonth);
+
+                int idDayLot = SGrindingResultsUtils.getLotByItemAndDate(client, itemGroup.getFkItemId(), dtDate);
+
+                SDbLot oLot = new SDbLot();
+                oLot.read(client.getSession(), new int[]{idDayLot});
+                itemGroup.setSDbLotAux(oLot);
+
+                grindingRows = SGrindingResume.getResumeRows(client, indexDate.toDate(), itemGroup.getFkItemId());
+                double rendTeo = 0d;
+                if (!grindingRows.isEmpty()) {
+                    SGrindingResumeRow last = grindingRows.get(grindingRows.size() - 1);
+                    rendTeo = last.getValue();
+                }
+
+                LinkedHashMap<Date, ArrayList<SGrindingResultReport>> info = this.getGrinding(client, indexDate.toDate(), itemGroup.getFkItemId(), idDayLot);
+
+                sRange = this.generateReport(client, grindingRows, rendTeo, cfg, info, sheet, oLot, oItem, dtDate);
+
+                sheet.autoSizeColumn(1);
+                sheet.autoSizeColumn(2);
+
+                indexDate = indexDate.plusMonths(1);
+                indexDate = indexDate.dayOfMonth().withMaximumValue();
+            }
+
+            itemGroup.setRangeAux(sRange);
+            itemGroup.setWorkbookAux(workbook);
+            itemGroup.getResumeHeaderRows().clear();
+            itemGroup.getResumeHeaderRows().addAll(grindingRows);
         }
-        
+
         if (actionType == SGrindingReport.SEND_REPORT) {
-            SGrindingResultsUtils.sendReport(client, workbook, oLot, oItem, dtDate, sMonth, sRange);
+            SGrindingResultsUtils.sendReport(client, group, dtDate, sMonth);
         }
         else if (actionType == SGrindingReport.SAVE_REPORT) {
-            SGrindingResultsUtils.saveReport(client, workbook, oLot, oItem, dtDate);
+            SGrindingResultsUtils.saveReport(client, group.get(0).getWorkbookAux(), group.get(0).getSDbLotAux(), group.get(0).getSDbItemAux(), dtDate);
         }
     }
 
@@ -133,6 +157,7 @@ public class SGrindingReport {
      * @param sheet
      * @param oLot
      * @param oItem
+     * @param dtDate
      * 
      * @return 
      * 
@@ -145,21 +170,21 @@ public class SGrindingReport {
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat formatterTime = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         ObjectMapper mapper = new ObjectMapper();
-        
+
         CellStyle style = sheet.getWorkbook().createCellStyle();
         Font font = sheet.getWorkbook().createFont();
 //        font.setBold(true);
         style.setFont(font);
-        
+
         moStyleDecimals = sheet.getWorkbook().createCellStyle();
         moStyleDecimals.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat("0.0000"));
-        
+
         moBackgroundBlackStyle = sheet.getWorkbook().createCellStyle();
-        moBackgroundBlackStyle.setFillForegroundColor(IndexedColors.BLACK.getIndex());
+        moBackgroundBlackStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
         moBackgroundBlackStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
 
         int rowsCount = 1;
-        
+
         /**
          * Código y nombre del ítem
          */
@@ -169,7 +194,7 @@ public class SGrindingReport {
         Cell cellI = itemRow.createCell(2);
         cellI.setCellValue(oItem.getCode() + " - " + oItem.getName());
         cellI.setCellStyle(style);
-        
+
         /**
          * Lote
          */
@@ -179,9 +204,9 @@ public class SGrindingReport {
         Cell cellL = lotRow.createCell(2);
         cellL.setCellValue(oLot.getLot() + " / " + formatter.format(oLot.getLotExpiration()));
         cellL.setCellStyle(style);
-        
+
         sheet.createRow(rowsCount++);
-        
+
         /**
          * Resumen
          */
@@ -196,62 +221,9 @@ public class SGrindingReport {
             Cell cellU = resumeRow.createCell(columnCount++);
             cellU.setCellValue(sGrindingResumeRow.getUnit());
         }
-        
+
         sheet.createRow(rowsCount++);
-        
-        /**
-         * Tabla de resultados: Encabezados
-         */
-        // columnas
-        ArrayList<String> columns = new ArrayList<>();
-        columns.add("Fecha");
-        columns.add("Parámetros/Hora");
-        
-        if (cfg.r08.getIsActive()) {
-            columns.add(cfg.r08.getLabel());
-        }
-        if (cfg.r10.getIsActive()) {
-            columns.add(cfg.r10.getLabel());
-        }
-        if (cfg.r12.getIsActive()) {
-            columns.add(cfg.r12.getLabel());
-        }
-        if (cfg.r14.getIsActive()) {
-            columns.add(cfg.r14.getLabel());
-        }
-        if (cfg.r16.getIsActive()) {
-            columns.add(cfg.r16.getLabel());
-        }
-        if (cfg.r18.getIsActive()) {
-            columns.add(cfg.r18.getLabel());
-        }
-        if (cfg.r20.getIsActive()) {
-            columns.add(cfg.r20.getLabel());
-        }
-        if (cfg.r22.getIsActive()) {
-            columns.add(cfg.r22.getLabel());
-        }
-        if (cfg.r00.getIsActive()) {
-            columns.add(cfg.r00.getLabel());
-        }
-        if (cfg.r02.getIsActive()) {
-            columns.add(cfg.r02.getLabel());
-        }
-        if (cfg.r04.getIsActive()) {
-            columns.add(cfg.r04.getLabel());
-        }
-        if (cfg.r06.getIsActive()) {
-            columns.add(cfg.r06.getLabel());
-        }
-        
-        Row headerRow = sheet.createRow(rowsCount++);
-        int headerColumnCount = 1;
-        for (String columnName : columns) {
-            Cell cell = headerRow.createCell(headerColumnCount++);
-            cell.setCellValue(columnName);
-            cell.setCellStyle(style);
-        }
-        
+
         /**
          * Tabla de resultados: datos
          */
@@ -265,7 +237,7 @@ public class SGrindingReport {
             Date keyDate = entry.getKey();
             String sKeyDate = formatter.format(keyDate);
             ArrayList<SGrindingResultReport> rows = entry.getValue();
-            
+
             sheet.createRow(rowsCount++);
             Row emtyRow = sheet.createRow(rowsCount++);
             Cell cellDateEmpty = emtyRow.createCell(1);
@@ -274,10 +246,10 @@ public class SGrindingReport {
                 rowInitialIndex = rowsCount;
             }
             /**
-            * Eventos de molienda
-            */
+             * Eventos de molienda
+             */
             ArrayList<SDbGrindingEvent> events = SGrindingResume.getGrindingEvents(client, keyDate, keyDate, oItem.getPkItemId());
-            if (! events.isEmpty()) {
+            if (!events.isEmpty()) {
                 Row eventsTitle = sheet.createRow(rowsCount++);
                 Cell cellT = eventsTitle.createCell(1);
                 cellT.setCellValue("Eventos de paro de proceso:");
@@ -293,7 +265,62 @@ public class SGrindingReport {
 
                 sheet.createRow(rowsCount++);
             }
-            
+
+            /**
+             * Tabla de resultados: Encabezados
+             */
+            // columnas
+            if (!rows.isEmpty()) {
+                ArrayList<String> columns = new ArrayList<>();
+                columns.add("Fecha");
+                columns.add("Parámetros/Hora");
+
+                if (cfg.r08.getIsActive()) {
+                    columns.add(cfg.r08.getLabel());
+                }
+                if (cfg.r10.getIsActive()) {
+                    columns.add(cfg.r10.getLabel());
+                }
+                if (cfg.r12.getIsActive()) {
+                    columns.add(cfg.r12.getLabel());
+                }
+                if (cfg.r14.getIsActive()) {
+                    columns.add(cfg.r14.getLabel());
+                }
+                if (cfg.r16.getIsActive()) {
+                    columns.add(cfg.r16.getLabel());
+                }
+                if (cfg.r18.getIsActive()) {
+                    columns.add(cfg.r18.getLabel());
+                }
+                if (cfg.r20.getIsActive()) {
+                    columns.add(cfg.r20.getLabel());
+                }
+                if (cfg.r22.getIsActive()) {
+                    columns.add(cfg.r22.getLabel());
+                }
+                if (cfg.r00.getIsActive()) {
+                    columns.add(cfg.r00.getLabel());
+                }
+                if (cfg.r02.getIsActive()) {
+                    columns.add(cfg.r02.getLabel());
+                }
+                if (cfg.r04.getIsActive()) {
+                    columns.add(cfg.r04.getLabel());
+                }
+                if (cfg.r06.getIsActive()) {
+                    columns.add(cfg.r06.getLabel());
+                }
+
+                Row headerRow = sheet.createRow(rowsCount++);
+                int headerColumnCount = 1;
+                for (String columnName : columns) {
+                    Cell cell = headerRow.createCell(headerColumnCount++);
+                    cell.setCellValue(columnName);
+                    cell.setCellStyle(style);
+                }
+            }
+
             for (SGrindingResultReport row : rows) {
                 int rowIndex = rowsCount++;
                 Row infoRow = sheet.createRow(rowIndex);
@@ -302,7 +329,7 @@ public class SGrindingReport {
                 //Fecha
                 Cell cellDate = infoRow.createCell(columnCount++);
                 cellDate.setCellValue("" + formatter.format(keyDate));
-                
+
                 //Parámetro
                 Cell cellParam = infoRow.createCell(columnCount++);
                 cellParam.setCellValue(row.parameterName);
@@ -312,48 +339,48 @@ public class SGrindingReport {
                     cellDate.setCellStyle(moBackgroundBlackStyle);
                     cellParam.setCellStyle(moBackgroundBlackStyle);
                 }
-                
+
                 //horas:
                 if (cfg.r08.getIsActive()) {
                     Cell cell08 = this.createCell(infoRow, columnCount++, row.result08, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r10.getIsActive()) {
-                   Cell cell10 = this.createCell(infoRow, columnCount++, row.result10, row.parameterName, row.defaultTextValue);
+                    Cell cell10 = this.createCell(infoRow, columnCount++, row.result10, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r12.getIsActive()) {
-                   Cell cell12 = this.createCell(infoRow, columnCount++, row.result12, row.parameterName, row.defaultTextValue);
+                    Cell cell12 = this.createCell(infoRow, columnCount++, row.result12, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r14.getIsActive()) {
-                   Cell cell14 = this.createCell(infoRow, columnCount++, row.result14, row.parameterName, row.defaultTextValue);
+                    Cell cell14 = this.createCell(infoRow, columnCount++, row.result14, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r16.getIsActive()) {
-                   Cell cell16 = this.createCell(infoRow, columnCount++, row.result16, row.parameterName, row.defaultTextValue);
+                    Cell cell16 = this.createCell(infoRow, columnCount++, row.result16, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r18.getIsActive()) {
-                   Cell cell18 = this.createCell(infoRow, columnCount++, row.result18, row.parameterName, row.defaultTextValue);
+                    Cell cell18 = this.createCell(infoRow, columnCount++, row.result18, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r20.getIsActive()) {
-                   Cell cell20 = this.createCell(infoRow, columnCount++, row.result20, row.parameterName, row.defaultTextValue);
+                    Cell cell20 = this.createCell(infoRow, columnCount++, row.result20, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r22.getIsActive()) {
-                   Cell cell22 = this.createCell(infoRow, columnCount++, row.result22, row.parameterName, row.defaultTextValue);
+                    Cell cell22 = this.createCell(infoRow, columnCount++, row.result22, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r00.getIsActive()) {
-                   Cell cell00 = this.createCell(infoRow, columnCount++, row.result00, row.parameterName, row.defaultTextValue);
+                    Cell cell00 = this.createCell(infoRow, columnCount++, row.result00, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r02.getIsActive()) {
-                   Cell cell02 = this.createCell(infoRow, columnCount++, row.result02, row.parameterName, row.defaultTextValue);
+                    Cell cell02 = this.createCell(infoRow, columnCount++, row.result02, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r04.getIsActive()) {
-                   Cell cell04 = this.createCell(infoRow, columnCount++, row.result04, row.parameterName, row.defaultTextValue);
+                    Cell cell04 = this.createCell(infoRow, columnCount++, row.result04, row.parameterName, row.defaultTextValue);
                 }
                 if (cfg.r06.getIsActive()) {
-                   Cell cell06 = this.createCell(infoRow, columnCount++, row.result06, row.parameterName, row.defaultTextValue);
+                    Cell cell06 = this.createCell(infoRow, columnCount++, row.result06, row.parameterName, row.defaultTextValue);
                 }
                 if (sDate.equals(sKeyDate)) {
                     columnFinalIndex = columnCount;
                 }
-                
+
                 /**
                  * Fórmulas
                  */
@@ -368,20 +395,20 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR08().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR08 = formulaRow.createCell(formObj.getR08().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR08().getFormula(), rIndex);
                                 cellR08.setCellFormula(formulaS);
                                 cellR08.setCellStyle(moStyleDecimals);
-                                
+
                                 bRowAdded = true;
                                 infoRow = formulaRow;
                             }
@@ -391,7 +418,7 @@ public class SGrindingReport {
                                 cellR08.setCellFormula(formulaS);
                                 cellR08.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -402,15 +429,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR10().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR10 = formulaRow.createCell(formObj.getR10().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR10().getFormula(), rIndex);
                                 cellR10.setCellFormula(formulaS);
@@ -422,7 +449,7 @@ public class SGrindingReport {
                                 cellR10.setCellFormula(formulaS);
                                 cellR10.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -433,15 +460,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR12().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR12 = formulaRow.createCell(formObj.getR12().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR12().getFormula(), rIndex);
                                 cellR12.setCellFormula(formulaS);
@@ -453,7 +480,7 @@ public class SGrindingReport {
                                 cellR12.setCellFormula(formulaS);
                                 cellR12.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -464,15 +491,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR14().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR14 = formulaRow.createCell(formObj.getR14().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR14().getFormula(), rIndex);
                                 cellR14.setCellFormula(formulaS);
@@ -484,7 +511,7 @@ public class SGrindingReport {
                                 cellR14.setCellFormula(formulaS);
                                 cellR14.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -495,15 +522,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR16().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR16 = formulaRow.createCell(formObj.getR16().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR16().getFormula(), rIndex);
                                 cellR16.setCellFormula(formulaS);
@@ -515,7 +542,7 @@ public class SGrindingReport {
                                 cellR16.setCellFormula(formulaS);
                                 cellR16.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -526,15 +553,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR18().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR18 = formulaRow.createCell(formObj.getR18().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR18().getFormula(), rIndex);
                                 cellR18.setCellFormula(formulaS);
@@ -546,7 +573,7 @@ public class SGrindingReport {
                                 cellR18.setCellFormula(formulaS);
                                 cellR18.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -557,15 +584,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR20().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR20 = formulaRow.createCell(formObj.getR20().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR20().getFormula(), rIndex);
                                 cellR20.setCellFormula(formulaS);
@@ -577,7 +604,7 @@ public class SGrindingReport {
                                 cellR20.setCellFormula(formulaS);
                                 cellR20.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -588,15 +615,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR22().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR22 = formulaRow.createCell(formObj.getR22().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR22().getFormula(), rIndex);
                                 cellR22.setCellFormula(formulaS);
@@ -608,7 +635,7 @@ public class SGrindingReport {
                                 cellR22.setCellFormula(formulaS);
                                 cellR22.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -619,15 +646,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR00().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR00 = formulaRow.createCell(formObj.getR00().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR00().getFormula(), rIndex);
                                 cellR00.setCellFormula(formulaS);
@@ -639,7 +666,7 @@ public class SGrindingReport {
                                 cellR00.setCellFormula(formulaS);
                                 cellR00.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -650,15 +677,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR02().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR02 = formulaRow.createCell(formObj.getR02().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR02().getFormula(), rIndex);
                                 cellR02.setCellFormula(formulaS);
@@ -670,7 +697,7 @@ public class SGrindingReport {
                                 cellR02.setCellFormula(formulaS);
                                 cellR02.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -681,15 +708,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR04().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR04 = formulaRow.createCell(formObj.getR04().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR04().getFormula(), rIndex);
                                 cellR04.setCellFormula(formulaS);
@@ -701,7 +728,7 @@ public class SGrindingReport {
                                 cellR04.setCellFormula(formulaS);
                                 cellR04.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -712,15 +739,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getR06().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellR06 = formulaRow.createCell(formObj.getR06().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getR06().getFormula(), rIndex);
                                 cellR06.setCellFormula(formulaS);
@@ -732,7 +759,7 @@ public class SGrindingReport {
                                 cellR06.setCellFormula(formulaS);
                                 cellR06.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -743,15 +770,15 @@ public class SGrindingReport {
                                 int columnRowCount = 1;
                                 int rIndex = formulaRowIndex + formObj.getrExtra().getIndexRow();
                                 Row formulaRow = sheet.createRow(rIndex);
-                                
-                                 //Fecha
+
+                                //Fecha
                                 Cell cellFormulaDate = formulaRow.createCell(columnRowCount++);
                                 cellFormulaDate.setCellValue("" + formatter.format(keyDate));
 
                                 // Texto
                                 Cell cellFormulaText = formulaRow.createCell(columnRowCount++);
                                 cellFormulaText.setCellValue(formula.getRowText().toUpperCase());
-                                
+
                                 Cell cellrExtra = formulaRow.createCell(formObj.getrExtra().getColNumber());
                                 String formulaS = SGrindingResultsUtils.getFormula(formObj.getrExtra().getFormula(), rIndex);
                                 cellrExtra.setCellFormula(formulaS);
@@ -763,7 +790,7 @@ public class SGrindingReport {
                                 cellrExtra.setCellFormula(formulaS);
                                 cellrExtra.setCellStyle(moStyleDecimals);
                             }
-                            
+
                             if (columnFinalIndex < formObj.getrExtra().getColNumber() && sDate.equals(sKeyDate)) {
                                 columnFinalIndex = formObj.getrExtra().getColNumber();
                             }
@@ -771,16 +798,16 @@ public class SGrindingReport {
                     }
                 }
             }
-            
+
             if (sDate.equals(sKeyDate)) {
                 rowFinalIndex = rowsCount;
             }
         }
-        
+
         columnFinalCaracter = CellReference.convertNumToColString(columnFinalIndex + 1);
-        
-        return (columnInitialCaracter + (rowInitialIndex == 0 ? 0 : rowInitialIndex -1) + 
-                ":" + columnFinalCaracter + (rowFinalIndex + 1));
+
+        return (columnInitialCaracter + (rowInitialIndex == 0 ? 0 : rowInitialIndex - 1)
+                + ":" + columnFinalCaracter + (rowFinalIndex + 1));
     }
     
     /**

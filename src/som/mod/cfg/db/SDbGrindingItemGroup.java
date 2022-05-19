@@ -3,29 +3,29 @@
  * and open the template in the editor.
  */
 
-package som.mod.som.db;
+package som.mod.cfg.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import sa.gui.util.SUtilConsts;
-import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
+import som.mod.som.data.SGrindingResumeRow;
+import som.mod.som.db.SDbItem;
+import som.mod.som.db.SDbLot;
 
 /**
  *
  * @author Edwin Carmona
  */
-public class SDbLot extends SDbRegistryUser {
+public class SDbGrindingItemGroup extends SDbRegistryUser {
 
-    protected int mnPkLotId;
-    protected String msLot;
-    protected Date mtLotExpiration;
-    protected int mnFkItemId;
-    
+    protected int mnPkLinkId;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -33,29 +33,30 @@ public class SDbLot extends SDbRegistryUser {
     protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    protected int mnFkItemId;
+    protected int mnFkGrindingGroupId;
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
+    
+    protected SDbGrindingGroup moGroupAux;
+    
+    protected String msRangeAux;
+    protected SDbItem moItemAux;
+    protected SDbLot moLotAux;
+    protected XSSFWorkbook moWorkbookAux;
+    protected ArrayList<SGrindingResumeRow> grindingRows;
 
-    public SDbLot() {
-        super(SModConsts.SU_LOT);
+    public SDbGrindingItemGroup() {
+        super(SModConsts.CU_GRINDING_ITEM_GROUP);
         initRegistry();
     }
 
-    /*
-     * Private methods:
-     */
-    
-    
-    /*
-     * Public methods:
-     */
-    
-    public void setPkLotId(int n) { mnPkLotId = n; }
-    public void setLot(String s) { msLot = s; }
-    public void setLotExpiration(Date t) { mtLotExpiration = t; }
+    public void setPkLinkId(int n) { mnPkLinkId = n; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -63,14 +64,18 @@ public class SDbLot extends SDbRegistryUser {
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkItemId(int n) { mnFkItemId = n; }
+    public void setFkGrindingGroupId(int n) { mnFkGrindingGroupId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
+    
+    public void setRangeAux(String s) { msRangeAux = s; }
+    public void setSDbItemAux(SDbItem o) { moItemAux = o; }
+    public void setSDbLotAux(SDbLot o) { moLotAux = o; }
+    public void setWorkbookAux(XSSFWorkbook o) { moWorkbookAux = o; }
 
-    public int getPkLotId() { return mnPkLotId; }
-    public String getLot() { return msLot; }
-    public Date getLotExpiration() { return mtLotExpiration; }
+    public int getPkLinkId() { return mnPkLinkId; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -78,28 +83,25 @@ public class SDbLot extends SDbRegistryUser {
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
     public int getFkItemId() { return mnFkItemId; }
+    public int getFkGrindingGroupId() { return mnFkGrindingGroupId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
-
-    @Override
-    public void setPrimaryKey(int[] pk) {
-        mnPkLotId = pk[0];
-    }
-
-    @Override
-    public int[] getPrimaryKey() {
-        return new int[] { mnPkLotId };
-    }
+    
+    public SDbGrindingGroup getGrindingGroupAux() { return moGroupAux; }
+    
+    public String getRangeAux() { return msRangeAux; }
+    public SDbItem getSDbItemAux() { return moItemAux; }
+    public SDbLot getSDbLotAux() { return moLotAux; }
+    public XSSFWorkbook getWorkbookAux() { return moWorkbookAux; }
+    public ArrayList<SGrindingResumeRow> getResumeHeaderRows() { return grindingRows; }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkLotId = 0;
-        msLot = "";
-        mtLotExpiration = null;
+        mnPkLinkId = 0;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -107,10 +109,29 @@ public class SDbLot extends SDbRegistryUser {
         mbDeleted = false;
         mbSystem = false;
         mnFkItemId = 0;
+        mnFkGrindingGroupId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
+        
+        moGroupAux = null;
+        
+        msRangeAux = "";
+        moItemAux = null;
+        moLotAux = null;
+        moWorkbookAux = null;
+        grindingRows = new ArrayList<>();
+    }
+    
+    @Override
+    public void setPrimaryKey(int[] pk) {
+        mnPkLinkId = pk[0];
+    }
+
+    @Override
+    public int[] getPrimaryKey() {
+        return new int[] { mnPkLinkId };
     }
 
     @Override
@@ -120,24 +141,24 @@ public class SDbLot extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_lot = " + mnPkLotId + " ";
+        return "WHERE id_link = " + mnPkLinkId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_lot = " + pk[0] + " ";
+        return "WHERE id_link = " + pk[0] + " ";
     }
-
+    
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkLotId = 0;
+        mnPkLinkId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_lot), 0) + 1 FROM " + getSqlTable();
+        msSql = "SELECT COALESCE(MAX(id_link), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkLotId = resultSet.getInt(1);
+            mnPkLinkId = resultSet.getInt(1);
         }
     }
 
@@ -148,33 +169,33 @@ public class SDbLot extends SDbRegistryUser {
         initRegistry();
         initQueryMembers();
         mnQueryResultId = SDbConsts.READ_ERROR;
-        
+
         msSql = "SELECT * " + getSqlFromWhere(pk);
         resultSet = session.getStatement().executeQuery(msSql);
-        if (! resultSet.next()) {
+        if (!resultSet.next()) {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkLotId = resultSet.getInt("id_lot");
-            msLot = resultSet.getString("lot");
-            mtLotExpiration = resultSet.getDate("expiration");
+            mnPkLinkId = resultSet.getInt("id_link");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkItemId = resultSet.getInt("fk_item_id");
+            mnFkItemId = resultSet.getInt("fk_item");
+            mnFkGrindingGroupId = resultSet.getInt("fk_grin_group");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
 
-            // Finish registry reading:
-
             mbRegistryNew = false;
         }
 
+        moGroupAux = new SDbGrindingGroup();
+        moGroupAux.read(session, new int[] { mnFkGrindingGroupId } );
+        
         mnQueryResultId = SDbConsts.READ_OK;
     }
 
@@ -195,9 +216,7 @@ public class SDbLot extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkLotId + ", " +
-                    "'" + msLot + "', " +
-                    "'" + SLibUtils.DbmsDateFormatDate.format(mtLotExpiration) + "', " +
+                    mnPkLinkId + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -205,6 +224,7 @@ public class SDbLot extends SDbRegistryUser {
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
                     mnFkItemId + ", " +
+                    mnFkGrindingGroupId + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     "NOW()" + ", " +
@@ -215,15 +235,17 @@ public class SDbLot extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    //"id_seas = " + mnPkSeasonId + ", " +
-                    "lot = '" + msLot + "', " +
-                    "expiration = '" + SLibUtils.DbmsDateFormatDatetime.format(mtLotExpiration) + "', " +
+                    //"id_co = " + mnPkLinkId + ", " +
+                    //"id_cob = " + mnPkBranchId + ", " +
+                    //"id_wah = " + mnPkWarehouseId + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
+                    "fk_item = " + mnFkItemId + ", " +
+                    "fk_grin_group = " + mnFkGrindingGroupId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -232,20 +254,17 @@ public class SDbLot extends SDbRegistryUser {
         }
 
         session.getStatement().execute(msSql);
-
-        // Finish registry updating:
-
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
-    public SDbLot clone() throws CloneNotSupportedException {
-        SDbLot registry = new SDbLot();
+    public SDbGrindingItemGroup clone() throws CloneNotSupportedException {
+        SDbGrindingItemGroup registry = new SDbGrindingItemGroup();
 
-        registry.setPkLotId(this.getPkLotId());
-        registry.setLot(this.getLot());
-        registry.setLotExpiration(this.getLotExpiration());
+        registry.setPkLinkId(this.getPkLinkId());
+        registry.setCode(this.getCode());
+        registry.setName(this.getName());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
@@ -253,6 +272,7 @@ public class SDbLot extends SDbRegistryUser {
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
         registry.setFkItemId(this.getFkItemId());
+        registry.setFkGrindingGroupId(this.getFkGrindingGroupId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
@@ -260,16 +280,5 @@ public class SDbLot extends SDbRegistryUser {
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
-    }
-
-    @Override
-    public boolean canSave(final SGuiSession session) throws SQLException, Exception {
-        boolean can = super.canSave(session);
-
-        if (can) {
-            initQueryMembers();
-        }
-
-        return can;
     }
 }

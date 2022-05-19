@@ -12,8 +12,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.*;
 import javax.mail.internet.*;
 
@@ -30,7 +28,8 @@ public class SEmbeddedImageEmailUtil {
      * @param port SMTP port
      * @param userName e-mail address of the sender's account
      * @param password password of the sender's account
-     * @param toAddress e-mail address of the recipient
+     * @param toRecsAddress e-mail address of the recipient
+     * @param toCcsAddress
      * @param subject e-mail subject
      * @param htmlBody e-mail content with HTML tags
      * @param mapInlineImages key: Content-ID value: path of the image file
@@ -38,9 +37,12 @@ public class SEmbeddedImageEmailUtil {
      * 
      * @throws AddressException
      * @throws MessagingException
+     * @throws java.io.IOException
      */
     public static void send(String host, String port,
-            final String userName, final String password, ArrayList<String> toAddress,
+            final String userName, final String password, 
+            ArrayList<String> toRecsAddress,
+            ArrayList<String> toCcsAddress, 
             String subject, String htmlBody,
             Map<String, String> mapInlineImages,
             ArrayList<String> filePaths)
@@ -66,11 +68,21 @@ public class SEmbeddedImageEmailUtil {
         Message msg = new MimeMessage(session);
 
         msg.setFrom(new InternetAddress(userName));
-        InternetAddress[] toAddresses = new InternetAddress[toAddress.size()];
-        for (int i = 0; i < toAddress.size(); i++) {
-            toAddresses[i] = new InternetAddress(toAddress.get(i));
+        InternetAddress[] toAddresses = new InternetAddress[toRecsAddress.size()];
+        for (int i = 0; i < toRecsAddress.size(); i++) {
+            toAddresses[i] = new InternetAddress(toRecsAddress.get(i));
         }
         msg.setRecipients(Message.RecipientType.TO, toAddresses);
+        
+        if (! toCcsAddress.isEmpty()) {
+            InternetAddress[] toCcsAddresses = new InternetAddress[toCcsAddress.size()];
+            for (int i = 0; i < toCcsAddress.size(); i++) {
+                toCcsAddresses[i] = new InternetAddress(toCcsAddress.get(i));
+            }
+            
+            msg.setRecipients(Message.RecipientType.CC, toCcsAddresses);
+        }
+        
         msg.setSubject(subject);
         msg.setSentDate(new Date());
 
@@ -112,7 +124,6 @@ public class SEmbeddedImageEmailUtil {
         }
 
         msg.setContent(multipart);
-
         Transport.send(msg);
     }
 }

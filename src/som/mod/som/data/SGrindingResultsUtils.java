@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import javax.swing.JFileChooser;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import sa.lib.SLibUtils;
@@ -37,6 +38,7 @@ import sa.lib.gui.SGuiClient;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
 import som.mod.cfg.db.SDbCompany;
+import som.mod.cfg.db.SDbGrindingItemGroup;
 import som.mod.som.db.SDbGrinding;
 import som.mod.som.db.SDbGrindingResult;
 import som.mod.som.db.SDbItem;
@@ -157,6 +159,113 @@ public class SGrindingResultsUtils {
             Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
+    }
+    
+    /**
+     * Obtiene el último id lote capturado en base al ítem y la fecha recibidas.
+     * 
+     * @param client
+     * @param item
+     * @param dtDate
+     * 
+     * @return int id del lote
+     */
+    public static int getLotByItemAndDate(SGuiClient client, final int item, final Date dtDate) {
+        if (item == 0) {
+            return 0;
+        }
+
+        String sql = "SELECT fk_lot_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS)
+                + " WHERE b_del = 0 AND fk_item_id = " + item + ""
+                + " AND dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' ORDER BY id_result DESC;";
+
+        String sqlLots = "SELECT id_lot FROM " + SModConsts.TablesMap.get(SModConsts.SU_LOT)
+                + " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY fk_usr_ins DESC;";
+
+        ResultSet itemIdRes;
+        ResultSet lotIdRes;
+        try {
+            itemIdRes = client.getSession().getStatement().executeQuery(sql);
+
+            while (itemIdRes.next()) {
+                return itemIdRes.getInt("fk_lot_id");
+            }
+
+            lotIdRes = client.getSession().getStatement().executeQuery(sqlLots);
+
+            while (lotIdRes.next()) {
+                return lotIdRes.getInt("id_lot");
+            }
+
+            return 0;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
+    }
+    
+    /**
+     * 
+     * 
+     * @param client
+     * @param item
+     * 
+     * @return 
+     */
+    public static ArrayList<SDbGrindingItemGroup> getGroupOfGrindingItem(SGuiClient client, final int item) {
+        if (item == 0) {
+            return new ArrayList<>();
+        }
+
+        String sql = "SELECT "
+                + "fk_grin_group "
+                + "FROM "
+                + SModConsts.TablesMap.get(SModConsts.CU_GRINDING_ITEM_GROUP) + " "
+                + "WHERE "
+                + "fk_item = " + item + " LIMIT 1;";
+
+        ResultSet itemIdRes;
+        ResultSet linkIdsRes;
+        try {
+            itemIdRes = client.getSession().getStatement().executeQuery(sql);
+
+            int group = 0;
+            if (itemIdRes.next()) {
+                group = itemIdRes.getInt("fk_grin_group");
+            }
+
+            if (group == 0) {
+                return new ArrayList<>();
+            }
+
+            String sqlGroup = "SELECT "
+                    + "id_link "
+                    + "FROM "
+                    + SModConsts.TablesMap.get(SModConsts.CU_GRINDING_ITEM_GROUP) + " "
+                    + "WHERE "
+                    + "fk_grin_group = " + group + ";";
+
+            ArrayList<SDbGrindingItemGroup> links = new ArrayList<>();
+            linkIdsRes = client.getSession().getStatement().getConnection().createStatement().executeQuery(sqlGroup);
+
+            SDbGrindingItemGroup itemGrp = null;
+            while (linkIdsRes.next()) {
+                itemGrp = new SDbGrindingItemGroup();
+                itemGrp.read(client.getSession(), new int[]{linkIdsRes.getInt("id_link")});
+                links.add(itemGrp);
+            }
+
+            return links;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (Exception ex) {
+            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return new ArrayList<>();
     }
     
     /**
@@ -741,116 +850,162 @@ public class SGrindingResultsUtils {
         return sFormula;
     }
     
-    public static boolean sendReport(SGuiClient client, XSSFWorkbook workbook, SDbLot oLot, SDbItem oItem, Date cutOffDate, String sMonth, String sRange) {
+    public static boolean sendReport(SGuiClient client, ArrayList<SDbGrindingItemGroup> group, Date cutOffDate, String sMonth) {
         DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
         DateFormat subjectformatter = new SimpleDateFormat("dd-MM-yyyy");
-        String itmName = oItem.getNameShort().replace(" ", "_");
-        String sFileName = "molienda/Mol_" + itmName + "_" + oLot.getLot() + "_" + fileNameformatter.format(new Date());
-        File file = new File(sFileName + ".xlsx");
-        try (FileOutputStream outputStream = new FileOutputStream(sFileName + ".xlsx")) {
-            workbook.write(outputStream);
-            if (!file.exists()) {
-                file.createNewFile();
+        ArrayList<String> files = new ArrayList<>();
+        Map<String, String> inlineImages = new HashMap<>();
+
+        SDbLot oLot = group.get(0).getSDbLotAux();
+        SDbItem oItem = group.get(0).getSDbItemAux();
+
+        String body = "<html>"
+                + "<body>";
+
+        int counter = 0;
+        for (SDbGrindingItemGroup oItemGroup : group) {
+            String itmName = oItemGroup.getSDbItemAux().getNameShort().replace(" ", "_");
+            String sFileName = "molienda/Mol_" + itmName + "_" + oItemGroup.getSDbLotAux().getLot() + "_" + fileNameformatter.format(new Date());
+            File file = new File(sFileName + ".xlsx");
+            try (FileOutputStream outputStream = new FileOutputStream(sFileName + ".xlsx")) {
+                oItemGroup.getWorkbookAux().write(outputStream);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+
+                // get the content in bytes
+                outputStream.flush();
+                outputStream.close();
+
+                // Se comenta sección que funciona con la librería spire
+                //Get the first worksheet
+                //            Workbook workbook1 = new Workbook();
+                //            workbook1.loadFromStream(new FileInputStream(file));
+                ////            Worksheet sheet = workbook1.getWorksheets().get(0);
+                //            Worksheet sheet = workbook1.getWorksheets().get(workbook1.getWorksheets().size() - 1);
+                //
+                //            //Save the sheet to image
+                //            BufferedImage bufferedImage = sheet.toImage(68, 1, 125, 7);
+                //            ImageIO.write(bufferedImage, "PNG", new File("output/ToImage.png"));
+                //            
+                //            //Save the sheet to image
+                //            sheet.saveToImage("output/image.png");
+                // Esta sección funciona con la librería ASPOSE
+                // Create workbook from source file.
+                Workbook workbooka = new Workbook(new FileInputStream(file));
+
+                // Access the first worksheet
+                Worksheet worksheet = workbooka.getWorksheets().get(sMonth);
+
+                // Set the print area with your desired range
+                worksheet.getPageSetup().setPrintArea(oItemGroup.getRangeAux());
+
+                // Set all margins as 0
+                worksheet.getPageSetup().setLeftMargin(0);
+                worksheet.getPageSetup().setRightMargin(0);
+                worksheet.getPageSetup().setTopMargin(0);
+                worksheet.getPageSetup().setBottomMargin(0);
+
+                // Set OnePagePerSheet option as true
+                ImageOrPrintOptions options = new ImageOrPrintOptions();
+                options.setOnePagePerSheet(true);
+                options.setImageType(ImageType.JPEG);
+                options.setHorizontalResolution(200);
+                options.setVerticalResolution(200);
+
+                // Take the image of your worksheet
+                SheetRender sr = new SheetRender(worksheet, options);
+                String img = "output/resumeMailBody" + counter + ".jpg";
+                sr.toImage(0, img);
+
+                String basePath = System.getProperty("user.dir");
+                String imageFilePath = basePath + "/" + img;
+
+                body += "<p>" + SLibUtils.textToHtml("Última fecha de captura: ") + "&nbsp;<b>" + SLibUtils.textToHtml(subjectformatter.format(cutOffDate)) + "</b></p>"
+                        + "<p>" + SLibUtils.textToHtml("Ítem: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oItemGroup.getSDbItemAux().getCode() + "-" + oItemGroup.getSDbItemAux().getName()) + "</b>"
+                        + "<br>"
+                        + "" + SLibUtils.textToHtml("Lote: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oItemGroup.getSDbLotAux().getLot()) + "</b></p>";
+
+                if (!oItemGroup.getResumeHeaderRows().isEmpty()) {
+                    body += "<p>";
+                    for (SGrindingResumeRow resumeHeaderRow : oItemGroup.getResumeHeaderRows()) {
+                        body += SLibUtils.textToHtml(resumeHeaderRow.getDataName()) + ": <b>"
+                                + SLibUtils.textToHtml(SLibUtils.getDecimalFormatQuantity().format(resumeHeaderRow.getValue())) + " "
+                                + SLibUtils.textToHtml(resumeHeaderRow.getUnit()) + "</b>";
+                        body += "<br>";
+                    }
+                    body += "</p>";
+                }
+
+                body += "<img src=\"cid:AbcXyz123" + counter + "\" />";
+
+                // inline images
+                inlineImages.put("AbcXyz123" + counter, imageFilePath);
+                files.add(sFileName + ".xlsx");
             }
-            
-            // get the content in bytes
-            
-            outputStream.flush();
-            outputStream.close();
-            
-            // Se comenta sección que funciona con la librería spire
-            //Get the first worksheet
-//            Workbook workbook1 = new Workbook();
-//            workbook1.loadFromStream(new FileInputStream(file));
-////            Worksheet sheet = workbook1.getWorksheets().get(0);
-//            Worksheet sheet = workbook1.getWorksheets().get(workbook1.getWorksheets().size() - 1);
-//
-//            //Save the sheet to image
-//            BufferedImage bufferedImage = sheet.toImage(68, 1, 125, 7);
-//            ImageIO.write(bufferedImage, "PNG", new File("output/ToImage.png"));
-//            
-//            //Save the sheet to image
-//            sheet.saveToImage("output/image.png");
-
-            // Esta sección funciona con la librería ASPOSE
-            // Create workbook from source file.
-            Workbook workbooka = new Workbook(new FileInputStream(file));
-
-            // Access the first worksheet
-            Worksheet worksheet = workbooka.getWorksheets().get(sMonth);
-
-            // Set the print area with your desired range
-            worksheet.getPageSetup().setPrintArea(sRange);
-
-            // Set all margins as 0
-            worksheet.getPageSetup().setLeftMargin(0);
-            worksheet.getPageSetup().setRightMargin(0);
-            worksheet.getPageSetup().setTopMargin(0);
-            worksheet.getPageSetup().setBottomMargin(0);
-
-            // Set OnePagePerSheet option as true
-            ImageOrPrintOptions options = new ImageOrPrintOptions();            
-            options.setOnePagePerSheet(true);
-            options.setImageType(ImageType.JPEG);
-            options.setHorizontalResolution(200);
-            options.setVerticalResolution(200);
-
-            // Take the image of your worksheet
-            SheetRender sr = new SheetRender(worksheet, options);
-            String img = "output/outputExportRangeOfCellsInWorksheetToImage.jpg";
-            sr.toImage(0, img);
-            
-            String subject = "Reporte molienda del " + subjectformatter.format(cutOffDate) + ". " + oItem.getNameShort() + " " + oLot.getLot();
-            String basePath = System.getProperty("user.dir");
-            String imageFilePath = basePath + "/" + img;
-            String body = "<html>" +
-                            "<body>";
-            
-            body += "<p>" + SLibUtils.textToHtml("Última fecha de captura: ") + "&nbsp;<b>" + SLibUtils.textToHtml(subjectformatter.format(cutOffDate)) + "</b></p>" +
-                            "<p>" + SLibUtils.textToHtml("Ítem: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oItem.getCode() + "-" + oItem.getName()) + "</b></p>" +
-                            "<p>" + SLibUtils.textToHtml("Lote: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oLot.getLot()) + "</b></p>";
-            
-            body += "<img src=\"cid:AbcXyz123\" />";
-            
-            body += "</body>" +
-                    "</html>";
-            
-            // inline images
-            Map<String, String> inlineImages = new HashMap<>();
-            inlineImages.put("AbcXyz123", imageFilePath);
-            
-            ArrayList<String> files = new ArrayList<>();
-            files.add(sFileName + ".xlsx");
-            
-            SDbCompany company = ((SGuiClientSessionCustom) client.getSession().getSessionCustom()).getCompany();
-            ArrayList<String> rc = new ArrayList<>();
-            String[] mails = company.getGrindingReportMails().split(";");
-            for (String mail : mails) {
-                rc.add(mail);
+            catch (FileNotFoundException ex) {
+                Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            SEmbeddedImageEmailUtil.send(company.getMailNotificationConfigHost(), company.getMailNotificationConfigPort(), company.getMailNotificationConfigUser(), 
-                            company.getMailNotificationConfigPassword(), rc, subject, body, inlineImages, files);
-            
-            System.out.println("Mail sent!");
-            client.showMsgBoxInformation("Reporte de molienda enviado a " + company.getGrindingReportMails());
+            catch (IOException ex) {
+                Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (Exception ex) {
+                Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            counter++;
         }
-        catch (FileNotFoundException ex) {
+
+        body += "</body>"
+                + "</html>";
+
+        String[] tos = SGrindingResultsUtils.getGrindingRecsAndCcs(client, oItem.getPkItemId());
+
+        if (tos[0].isEmpty()) {
+            client.showMsgBoxError("No se encontró configuración de destinatarios de correo.");
+            return false;
+        }
+
+        ArrayList<String> rc = new ArrayList<>();
+        String[] mails = tos[0].split(";");
+        for (String mail : mails) {
+            rc.add(mail);
+        }
+        ArrayList<String> cc = new ArrayList<>();
+        String[] mailsCC = tos[1].split(";");
+        for (String mail : mailsCC) {
+            cc.add(mail);
+        }
+
+        SDbCompany company = ((SGuiClientSessionCustom) client.getSession().getSessionCustom()).getCompany();
+        String subject = "Reporte molienda del " + subjectformatter.format(cutOffDate) + ". " + oItem.getNameShort() + " " + oLot.getLot();
+
+        try {
+            SEmbeddedImageEmailUtil.send(company.getMailNotificationConfigHost(), company.getMailNotificationConfigPort(), company.getMailNotificationConfigUser(),
+                    company.getMailNotificationConfigPassword(), rc, cc, subject, body, inlineImages, files);
+        }
+        catch (MessagingException ex) {
             Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         catch (IOException ex) {
             Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch (Exception ex) {
-            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
-        }
-//        catch (MessagingException ex) {
-//            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        
-        return false;
+
+        client.showMsgBoxInformation("Reporte de molienda enviado a " + tos[0] + " cc: " + tos[1]);
+
+        return true;
     }
     
+    /**
+     * 
+     * 
+     * @param client
+     * @param workbook
+     * @param oLot
+     * @param oItem
+     * @param cutOffDate
+     * @return 
+     */
     public static boolean saveReport(SGuiClient client, XSSFWorkbook workbook, SDbLot oLot, SDbItem oItem, Date cutOffDate) {
         DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
         String itmName = oItem.getNameShort().replace(" ", "_");
@@ -884,5 +1039,38 @@ public class SGrindingResultsUtils {
         }
         
         return true;
+    }
+    
+    /**
+     * Obtener destinatarios y con copia de la base de datos.
+     * 
+     * @param client
+     * @param idItem
+     * 
+     * @return String[0] destinatarios, String[1] Con copia
+     */
+    private static String[] getGrindingRecsAndCcs(SGuiClient client, final int idItem) {
+        String query = "SELECT "
+                + "    recs, "
+                + "    ccs "
+                + "FROM "
+                + "    " + SModConsts.TablesMap.get(SModConsts.CU_GRINDING_RECIPIENTS) + " "
+                + "WHERE "
+                + "    fk_item = " + idItem + " AND NOT b_del "
+                + ";";
+
+        ResultSet resCfg;
+        try {
+            resCfg = client.getSession().getStatement().getConnection().createStatement().executeQuery(query);
+
+            if (resCfg.next()) {
+                return new String[]{resCfg.getString("recs"), resCfg.getString("ccs")};
+            }
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return new String[]{"", ""};
     }
 }

@@ -1,4 +1,15 @@
 ================================================================================
+2022-05-13, 1.0 079.0
+Edwin CARMONA
+
+Minuta Proceso de Molienda  16/05/2022 10:00 hr.
+
+1. Agrupación de Aguacate y Bagazo en el mismo reporte
+2. Encabezados (renglones de resumen) en reporte
+3. Agregar encabezado de horas de captura por día
+4. Configuración de destinarios de correo por ítem
+
+================================================================================
 2022-05-13, 1.0 078
 Edwin CARMONA
 
