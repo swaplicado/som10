@@ -9,19 +9,35 @@ import sa.lib.SLibConsts;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
 import sa.lib.grid.SGridConsts;
+import sa.lib.grid.SGridFilterYear;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
+import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
+import sa.lib.gui.SGuiConsts;
 import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Sergio Flores
  */
 public class SViewSeasonProducer extends SGridPaneView {
     
+    private SGridFilterYear moFilterYear;
+    private SPaneFilter moPaneFilterInputCategory;
+    
     public SViewSeasonProducer(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SU_SEAS_PROD, SLibConsts.UNDEFINED, title);
+        initComponentsCustom();
+    }
+    
+    private void initComponentsCustom() {
+        moFilterYear = new SGridFilterYear(miClient, this);
+        moFilterYear.initFilter(new int[] { miClient.getSession().getWorkingYear() });
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterYear);
+        
+        moPaneFilterInputCategory = new SPaneFilter(this, SModConsts.SU_INP_TP);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterInputCategory);
     }
     
     @Override
@@ -40,6 +56,16 @@ public class SViewSeasonProducer extends SGridPaneView {
         filter = (Boolean) moFiltersMap.get(SGridConsts.FILTER_DELETED);
         if ((Boolean) filter) {
             sql += (sql.isEmpty() ? "" : "AND ") + "v.b_del = 0 ";
+        }
+
+        filter = (int[]) moFiltersMap.get(SGridConsts.FILTER_YEAR);
+        if (filter != null) {
+            sql += (sql.isEmpty() ? "" : "AND ") + "vs.name LIKE '" + ((int[]) filter)[0] + "%' ";
+        }
+
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_INP_TP);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "vi.fk_inp_ct", "vi.fk_inp_cl", "vi.fk_inp_tp" }, (int[]) filter);
         }
 
         msSql = "SELECT "
