@@ -353,7 +353,7 @@ public class SSomMailUtils {
                 "FROM s_tic AS t " +
                 "INNER JOIN su_item AS i ON t.fk_item = i.id_item " +
                 "INNER JOIN su_inp_tp AS tp ON i.fk_inp_ct = tp.id_inp_ct AND i.fk_inp_cl = tp.id_inp_cl AND i.fk_inp_tp = tp.id_inp_tp " +
-                "WHERE YEAR(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn AND NOT t.b_del;";
+                "WHERE YEAR(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar;";
         ResultSet resultSet = session.getStatement().executeQuery(sql);
         if (resultSet.next()) {
             totalYear = resultSet.getDouble("y");
@@ -377,7 +377,7 @@ public class SSomMailUtils {
                 "FROM s_tic AS t " +
                 "INNER JOIN su_item AS i ON t.fk_item = i.id_item " +
                 "INNER JOIN su_inp_tp AS tp ON i.fk_inp_ct = tp.id_inp_ct AND i.fk_inp_cl = tp.id_inp_cl AND i.fk_inp_tp = tp.id_inp_tp " +
-                "WHERE year(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn AND NOT t.b_del " +
+                "WHERE year(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar " +
                 "GROUP BY tp.id_inp_ct, tp.id_inp_cl, tp.id_inp_tp;";
         resultSet = session.getStatement().executeQuery(sql);
         while (resultSet.next()) {
@@ -420,16 +420,16 @@ public class SSomMailUtils {
         int rowspan = 0; 
         double sumTotalYearIns = 0;
         double sumTotalLastYearIns = 0;
-        sql = "SELECT tp.name, IF(sreg.name IS NULL, 'N/D', sreg.name) as supra, " + 
+        sql = "SELECT tp.name, IF(sreg.name IS NOT NULL, 0, 1) AS _order, IF(sreg.name IS NULL, 'N/D', sreg.name) as supra, " + 
                 "SUM(IF(YEAR(t.dt) = " + year + ", t.qty, 0.0)) AS y, SUM(IF(YEAR(t.dt) = " + (year - 1) + ", t.qty, 0.0)) AS y_1 " +
                 "FROM s_tic AS t " +
                 "INNER JOIN su_item AS i ON t.fk_item = i.id_item " +
                 "INNER JOIN su_inp_tp AS tp ON i.fk_inp_ct = tp.id_inp_ct AND i.fk_inp_cl = tp.id_inp_cl AND i.fk_inp_tp = tp.id_inp_tp " +
                 "LEFT JOIN su_reg AS reg ON t.fk_reg_n = reg.id_reg " +
                 "LEFT JOIN su_sup_reg AS sreg ON reg.fk_sup_reg = sreg.id_sup_reg " + 
-                "WHERE year(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn AND NOT t.b_del " +
+                "WHERE year(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar " +
                 "GROUP BY tp.id_inp_ct, tp.id_inp_cl, tp.id_inp_tp, sreg.name " + 
-                "ORDER by tp.name, supra";
+                "ORDER by tp.name, _order, sreg.sort, supra";
         resultSet = session.getStatement().executeQuery(sql);
         while (resultSet.next()) {
             // Ítem diferente al anterior
@@ -648,7 +648,7 @@ public class SSomMailUtils {
             }
 
             // Mail's body detail entries:
-
+            
             sql = "SELECT " +
                     "i.umn_box, it.name, it.id_inp_ct, it.id_inp_cl, it.id_inp_tp, " +
                     "i.name, i.id_item, u.code, u.id_unit, " +
@@ -796,11 +796,12 @@ public class SSomMailUtils {
                         html +=
                                 "<table border='0' bordercolor='#000000' width='400' cellpadding='0' cellspacing='0'>" +
                                 "<font size='" + FONT_SIZE_TBL + "'>" +
+                                // Para destacar los totales
                                 "<tr><td colspan='4'><hr></td></tr>" +
                                 "<tr><td colspan='4'><b>" + SLibUtils.textToHtml(txtItem + " (" + txtItemUnit + ")") + "</b></td></tr>" +
                                 "</font>" +
                                 "</table>";
-
+                        
                         // Item & Unit summary table:
                         html +=
                                 "<table border='1' bordercolor='#000000' width='400' cellpadding='0' cellspacing='0'>" +
@@ -923,11 +924,12 @@ public class SSomMailUtils {
                         html +=
                                 "<table border='0' bordercolor='#000000' width='400' cellpadding='0' cellspacing='0'>" +
                                 "<font size='" + FONT_SIZE_TBL + "'>" +
+                                // Para destacar los totales
                                 "<tr><td colspan='4'><hr></td></tr>" +
                                 "<tr><td colspan='4'><b>" + SLibUtils.textToHtml(txtItem + " (" + txtItemUnit + ")") + "</b></td></tr>" +
                                 "</font>" +
                                 "</table>";
-
+                        
                         // Item & Unit summary table:
                         html +=
                                 "<table border='1' bordercolor='#000000' width='400' cellpadding='0' cellspacing='0'>" +
