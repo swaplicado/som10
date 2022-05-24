@@ -85,7 +85,6 @@ public abstract class SModConsts {
     public static final int S_IOG = 330021;
     public static final int S_IOG_NOTE = 330022;
     public static final int S_IOG_REF = 330023;
-    public static final int S_IOG_PROD = 330024;
     public static final int S_IOG_EXP = 330026;
     public static final int S_IOG_EXP_HIS = 330027;
     public static final int S_DPS_ASS = 330031;
@@ -107,6 +106,7 @@ public abstract class SModConsts {
     public static final int SX_TIC_REG = 340013;
     public static final int SX_TIC_TARE = 340021;
     public static final int SX_TIC_TARE_PEND = 340022;
+    public static final int SX_IOG_PROD = 340024;
     public static final int SX_TIC_WAH_UNLD = 340081;
     public static final int SX_TIC_LOG = 340023;
     public static final int SX_TIC_LAB_TEST_FRUIT = 340026;
@@ -177,7 +177,7 @@ public abstract class SModConsts {
 
     public static final int E_TIC_REV = 430001;
 
-    public static final HashMap<Integer, String> TablesMap = new HashMap<Integer, String>();
+    public static final HashMap<Integer, String> TablesMap = new HashMap<>();
 
     static {
         TablesMap.put(SU_SYS, "su_sys");

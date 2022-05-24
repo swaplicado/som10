@@ -646,7 +646,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                         break;
                 }
                 break;
-            case SModConsts.S_IOG_PROD:
+            case SModConsts.SX_IOG_PROD:
                 switch (subtype) {
                     case SModConsts.SX_INV_IN_FG:
                         view = new SViewIogProd(miClient, "Doctos. estimaciones", subtype);
@@ -929,7 +929,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 showView(SModConsts.SX_STK_MOVE, SModConsts.SX_STK_MOVE_DET, null);
             }
             else if (menuItem == mjDocInvStkMovesEst) {
-                showView(SModConsts.S_IOG_PROD, SModConsts.SX_INV_IN_FG, null);
+                showView(SModConsts.SX_IOG_PROD, SModConsts.SX_INV_IN_FG, null);
             }
             else if (menuItem == mjDocInvOpenProc) {
                 new SFormDialogStockClosing(miClient, "Generación de inventarios iniciales").setVisible(true);

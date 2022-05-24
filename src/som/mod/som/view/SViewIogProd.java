@@ -30,7 +30,7 @@ public class SViewIogProd extends SGridPaneView implements ActionListener {
     private SPaneFilter moPaneFilter;
 
     public SViewIogProd(SGuiClient client, String title, int subtype) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_IOG_PROD, subtype, title);
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_IOG_PROD, subtype, title);
         setRowButtonsEnabled(false, true, false, false, true);
         initComponetsCustom();
     }
