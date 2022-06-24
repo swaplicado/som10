@@ -233,10 +233,11 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlByProduct.setText("Subproducto:*");
+        jlByProduct.setText("Proceso:*");
         jlByProduct.setPreferredSize(new java.awt.Dimension(90, 23));
         jPanel17.add(jlByProduct);
 
+        moKeyByProduct.setToolTipText("");
         moKeyByProduct.setPreferredSize(new java.awt.Dimension(400, 23));
         jPanel17.add(moKeyByProduct);
 
@@ -1685,11 +1686,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         }
 
         if (validation.isValid()) {
-            if (moKeyByProduct.isEnabled() && moKeyByProduct.getValue()[0] == SModSysConsts.SU_BY_PRODUCT_NA) {
-                validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + SGuiUtils.getLabelName(jlByProduct) + "'.");
-                validation.setComponent(moKeyByProduct);
-            }
-            else if (!moRegistry.getXtaDpsBizPartner().isEmpty() &&
+            if (!moRegistry.getXtaDpsBizPartner().isEmpty() &&
                 (SLibUtils.compareKeys(moFkIogTypeId, SModSysConsts.SS_IOG_TP_IN_PUR_PUR) ||
                 SLibUtils.compareKeys(moFkIogTypeId, SModSysConsts.SS_IOG_TP_IN_SAL_SAL) ||
                 SLibUtils.compareKeys(moFkIogTypeId, SModSysConsts.SS_IOG_TP_OUT_PUR_PUR) ||

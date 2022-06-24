@@ -1,4 +1,11 @@
 ================================================================================
+2022-06-24, 1.0 077.8
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Cambio de nombre al catálogo de subproductos de ajustes de almacén por procesos.
+2) Habilitación para elegir el proceso NA cuando el proceso está habilitado en la forma de captura de movimientos de almacén.
+
+================================================================================
 2022-05-20, 1.0 077.7
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
