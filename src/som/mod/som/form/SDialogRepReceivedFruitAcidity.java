@@ -212,7 +212,7 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
         sqlWhere += (moKeyItem.getSelectedIndex() <= 0 ? "" : " AND i.id_item = " + moKeyItem.getValue()[0] + " ");
         sqlWhere += (moKeyProducer.getSelectedIndex() <= 0 ? "" : " AND t.fk_prod = " + moKeyProducer.getValue()[0] + " ");
         
-        SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "it");
+        SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "i");
         String sqlInputCategories = inputCategory.getSqlFilter();
         if (!sqlInputCategories.isEmpty()) {
             sqlWhere += "AND " + sqlInputCategories;

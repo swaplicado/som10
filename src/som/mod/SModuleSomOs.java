@@ -163,7 +163,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
         mjCatIodineValueRank = new JMenuItem("Rangos de yodo");
         mjCatExternalWarehouses = new JMenuItem("Almacenes sistema externo");
-        mjCatByProduct = new JMenuItem("Subproductos");
+        mjCatByProduct = new JMenuItem("Procesos");
         mjCatUpdateCatalogues = new JMenuItem("Actualizar catálogos sistema externo...");
 
         mjCat.add(mjCatProducer);
@@ -522,7 +522,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY sort ";
                 break;
             case SModConsts.SU_BY_PRODUCT:
-                settings = new SGuiCatalogueSettings("Subproductos", 1);
+                settings = new SGuiCatalogueSettings("Procesos", 1);
                 sql = "SELECT id_by_product AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", " 
                         + "code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name;";
@@ -646,7 +646,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                         break;
                 }
                 break;
-            case SModConsts.S_IOG_PROD:
+            case SModConsts.SX_IOG_PROD:
                 switch (subtype) {
                     case SModConsts.SX_INV_IN_FG:
                         view = new SViewIogProd(miClient, "Doctos. estimaciones", subtype);
@@ -747,7 +747,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 }
                 break;
             case SModConsts.SU_BY_PRODUCT:
-                view = new SViewByProduct(miClient, "Subproductos");
+                view = new SViewByProduct(miClient, "Procesos");
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -795,7 +795,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 form = moFormDialogWizardDps;
                 break;
             case SModConsts.SU_BY_PRODUCT:
-                if (moFormByProduct == null) { moFormByProduct = new SFormByProduct(miClient, "Subproductos"); }
+                if (moFormByProduct == null) { moFormByProduct = new SFormByProduct(miClient, "Proceso"); }
                 form = moFormByProduct;
                 break;
             default:
@@ -929,7 +929,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 showView(SModConsts.SX_STK_MOVE, SModConsts.SX_STK_MOVE_DET, null);
             }
             else if (menuItem == mjDocInvStkMovesEst) {
-                showView(SModConsts.S_IOG_PROD, SModConsts.SX_INV_IN_FG, null);
+                showView(SModConsts.SX_IOG_PROD, SModConsts.SX_INV_IN_FG, null);
             }
             else if (menuItem == mjDocInvOpenProc) {
                 new SFormDialogStockClosing(miClient, "Generación de inventarios iniciales").setVisible(true);

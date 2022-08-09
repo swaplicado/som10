@@ -16,7 +16,7 @@ public class SSomReportProcessor {
     private ArrayList<Entry> maEntries;
 
     public SSomReportProcessor() {
-        maEntries = new ArrayList<Entry>();
+        maEntries = new ArrayList<>();
     }
 
     public void addEntry(String notificationBox, int[] item, int unit, double reception) {

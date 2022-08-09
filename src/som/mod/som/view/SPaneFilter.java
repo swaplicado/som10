@@ -107,6 +107,8 @@ public class SPaneFilter extends JPanel implements SGridFilter {
                 path = "/som/gui/img/icon_std_filter_item_tp.gif";
                 break;
             case SModConsts.SU_INP_CT:
+            case SModConsts.SU_INP_CL:
+            case SModConsts.SU_INP_TP:
                 jtfOption.setPreferredSize(new Dimension(50, 23));
                 path = "/som/gui/img/icon_std_filter_input.gif";
                 break;

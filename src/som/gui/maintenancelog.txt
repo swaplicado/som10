@@ -1,27 +1,34 @@
 ================================================================================
-2022-05-13, 1.0 079.0
-Edwin CARMONA
-
-Minuta Proceso de Molienda  16/05/2022 10:00 hr.
-
-1. Agrupación de Aguacate y Bagazo en el mismo reporte
-2. Encabezados (renglones de resumen) en reporte
-3. Agregar encabezado de horas de captura por día
-4. Configuración de destinarios de correo por ítem
+2022-07-14, 1.0 077.9
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición de suscripción a Suprarregiones en vista de Regiones.
 
 ================================================================================
-2022-05-13, 1.0 078
-Edwin CARMONA
+2022-06-24, 1.0 077.8
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Cambio de nombre al catálogo de subproductos de ajustes de almacén por procesos.
+2) Habilitación para elegir el proceso NA cuando el proceso está habilitado en la forma de captura de movimientos de almacén.
 
-Minuta reunión SOM-Molienda (03-05-2022 11:30 hrs)
+================================================================================
+2022-05-20, 1.0 077.7
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Cambios en el reporte de recepciones de semillas para ordenar la información de acuerdo a la configuración de las supraregiones.
 
-PENDIENTES:
-1. Configurar encabezados de reporte y vistas por ítem (Promedios y fórmulas).
-2. Separar eventos de molienda (paros) por día, por proceso y por ítem.
-3. Separación de parámetros por secciones (en el caso de bagazo hay más de una tabla).
-4. Validación si no hay valor en la celda que no muestre nada (VALIDAR).
-5. Considerar tablas adicionales de bagazo y hueso y cáscara externos.
-6. Fórmulas de rendimiento teórico de semilla y aguacate (VALIDAR).
+================================================================================
+2022-05-20, 1.0 077.6
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición de filtro temporada y tipo de insumo a vistas de temporadas de regiones y de proveedores.
+
+================================================================================
+2022-05-18, 1.0 077.5
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Cambios en el reporte de recepciones de semillas para separar en 2 tablas los totales del año por insumo y otra por supraregión.
+2) Corrección en la generación del reporte de acidez fruta recibida que impedía que este se mostrara.
 
 ================================================================================
 2022-05-11, 1.0 077.4

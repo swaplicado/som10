@@ -16,7 +16,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Sergio Flores
  */
 public class SViewRegion extends SGridPaneView {
 
@@ -96,6 +96,7 @@ public class SViewRegion extends SGridPaneView {
     @Override
     public void defineSuscriptions() {
         moSuscriptionsSet.add(mnGridType);
+        moSuscriptionsSet.add(SModConsts.SU_SUP_REG);
         moSuscriptionsSet.add(SModConsts.CU_USR);
     }
 }
