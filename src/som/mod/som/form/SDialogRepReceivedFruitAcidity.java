@@ -207,10 +207,13 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
     @Override
     public void createParamsMap() {
         String sqlWhere = "";
+        String sqlOrderBy;
         moParamsMap = SPrtUtils.createReportParamsMap(miClient.getSession());
 
         sqlWhere += (moKeyItem.getSelectedIndex() <= 0 ? "" : " AND i.id_item = " + moKeyItem.getValue()[0] + " ");
         sqlWhere += (moKeyProducer.getSelectedIndex() <= 0 ? "" : " AND t.fk_prod = " + moKeyProducer.getValue()[0] + " ");
+        
+        sqlOrderBy = moRadByProducer.isSelected() ? "p.name, t.fk_prod, " : "s.name, t.fk_inp_src, p.name, t.fk_prod, ";
         
         SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "i");
         String sqlInputCategories = inputCategory.getSqlFilter();
@@ -223,6 +226,7 @@ public class SDialogRepReceivedFruitAcidity extends SBeanDialogReport {
         moParamsMap.put("bGroupByOrigin", moRadByOrigin.getValue());
         moParamsMap.put("bShowDetails", !moRadSummary.getValue());
         moParamsMap.put("sSqlWhere", sqlWhere + " AND i.b_fruit ");
+        moParamsMap.put("sSqlOrderBy", sqlOrderBy);
         moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
     }
 }

@@ -52,6 +52,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     private JButton mjbManager;
     private JButton mjbSeasonRegion;
     private JButton mjbPrint;
+    private JButton mjbManifest;
     
     public SViewTicket(SGuiClient client, int gridSubtype, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_TIC, gridSubtype, title);
@@ -66,6 +67,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         mjbManager = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tic_edit.gif")), "Modificar boleto", this);
         mjbSeasonRegion = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tic_cfg.gif")), "Cambiar temporada y región", this);
         mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
+        mjbManifest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), "Manifiesto de entrega, transporte y recepción", this);
 
         moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "itm");
         moPaneFilterInputCategory = new SPaneFilter(this, SModConsts.SU_INP_CT);
@@ -81,6 +83,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 break;
                 
             case SModSysConsts.SS_TIC_ST_ADM:
+            case SModSysConsts.SS_TIC_ST_ALL_LOG:
             case SLibConsts.UNDEFINED:
                 moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
                 moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
@@ -100,6 +103,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterInputCategory);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterItem);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbManifest);
 
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
@@ -108,6 +112,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbLaboratoryTest.setEnabled(false);
                 mjbManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
+                mjbManifest.setEnabled(false);
                 break;
                 
             case SModSysConsts.SS_TIC_ST_LAB:
@@ -116,6 +121,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbLaboratoryTest.setEnabled(true);
                 mjbManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
+                mjbManifest.setEnabled(false);
                 setRowButtonsEnabled(false);
                 break;
                 
@@ -125,6 +131,17 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbLaboratoryTest.setEnabled(false);
                 mjbManager.setEnabled(true);
                 mjbSeasonRegion.setEnabled(true);
+                mjbManifest.setEnabled(false);
+                setRowButtonsEnabled(false);
+                break;
+                
+            case SModSysConsts.SS_TIC_ST_ALL_LOG:
+                mjbPreviousStep.setEnabled(false);
+                mjbNextStep.setEnabled(false);
+                mjbLaboratoryTest.setEnabled(false);
+                mjbManager.setEnabled(false);
+                mjbSeasonRegion.setEnabled(false);
+                mjbManifest.setEnabled(true);
                 setRowButtonsEnabled(false);
                 break;
                 
@@ -134,6 +151,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbLaboratoryTest.setEnabled(false);
                 mjbManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
+                mjbManifest.setEnabled(false);
                 setRowButtonsEnabled(false);
                 break;
                 
@@ -339,6 +357,27 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         }
     }
     
+    private void actionManifest() {
+        if (mjbManifest.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
+                
+                if (gridRow.getRowType() != SGridConsts.ROW_TYPE_DATA) {
+                    miClient.showMsgBoxWarning(SGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                }
+                else {
+                    HashMap<String, Object> map = SPrtUtils.createReportParamsMap(miClient.getSession());
+                    map.put("nTicketId", gridRow.getRowPrimaryKey()[0]);
+
+                    miClient.getSession().printReport(SModConsts.SR_TIC_METRRME, SLibConsts.UNDEFINED, null, map);
+                }
+            }
+        }
+    }
+    
     @Override
     public void prepareSqlQuery() {
         Object filter;
@@ -367,6 +406,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 break;
                 
             case SModSysConsts.SS_TIC_ST_ADM:
+            case SModSysConsts.SS_TIC_ST_ALL_LOG:
             case SLibConsts.UNDEFINED:
                 filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
                 if (filter != null) {
@@ -387,7 +427,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         if (filter != null) {
             sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_item" }, (int[]) filter);
         }
-
+        
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
                 sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + "v.fk_tic_st = " + mnGridSubtype + " ";
@@ -397,6 +437,9 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 break;
             case SModSysConsts.SS_TIC_ST_ADM:
                 sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + "v.fk_tic_st = " + mnGridSubtype + " ";
+                break;
+            case SModSysConsts.SS_TIC_ST_ALL_LOG:
+                sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + "prd.b_log ";
                 break;
             case SLibConsts.UNDEFINED:
                 break;
@@ -694,6 +737,9 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             }
             else if (button == mjbPrint) {
                 actionPrint();
+            }
+            else if (button == mjbManifest) {
+                actionManifest();
             }
         }
     }

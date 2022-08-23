@@ -155,6 +155,10 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
                 access = isAdministrator() ||
                         hasPrivilege(SModSysConsts.CS_RIG_MAN_OM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_OM) || hasPrivilege(SModSysConsts.CS_RIG_REP_OM);
                 break;
+            case SModConsts.MOD_SOM_LOG:
+                access = isAdministrator() || 
+                        hasPrivilege(SModSysConsts.CS_RIG_LOG);
+                break;
             default:
         }
 

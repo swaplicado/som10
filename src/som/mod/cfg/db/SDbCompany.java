@@ -72,6 +72,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     */
     protected int mnFkLanguageId;
     protected int mnFkDivisionDefaultId;
+    protected int mnFkProducerCarrier_n;
+    protected int mnFkProducerReceiver_n;
     protected int mnFkExternalCoId_n;
     /*
     protected int mnFkUserInsertId;
@@ -232,6 +234,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkLanguageId(int n) { mnFkLanguageId = n; }
     public void setFkDivisionDefaultId(int n) { mnFkDivisionDefaultId = n; }
+    public void setFkProducerCarrier_n(int n) { mnFkProducerCarrier_n = n; }
+    public void setFkProducerReceiver_n(int n) { mnFkProducerReceiver_n = n; }
     public void setFkExternalCoId_n(int n) { mnFkExternalCoId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
@@ -276,6 +280,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public boolean isSystem() { return mbSystem; }
     public int getFkLanguageId() { return mnFkLanguageId; }
     public int getFkDivisionDefaultId() { return mnFkDivisionDefaultId; }
+    public int getFkProducerCarrier_n() { return mnFkProducerCarrier_n; }
+    public int getFkProducerReceiver_n() { return mnFkProducerReceiver_n; }
     public int getFkExternalCoId_n() { return mnFkExternalCoId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
@@ -336,6 +342,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         mbSystem = false;
         mnFkLanguageId = 0;
         mnFkDivisionDefaultId = 0;
+        mnFkProducerCarrier_n = 0;
+        mnFkProducerReceiver_n = 0;
         mnFkExternalCoId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -428,6 +436,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkLanguageId = resultSet.getInt("fk_lan");
             mnFkDivisionDefaultId = resultSet.getInt("fk_div_def");
+//            mnFkProducerCarrier_n = resultSet.getInt("fk_prod_carrier_n");
+//            mnFkProducerReceiver_n = resultSet.getInt("fk_prod_receiver_n");
             mnFkExternalCoId_n = resultSet.getInt("fk_ext_co_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
@@ -512,7 +522,9 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
                     mnFkLanguageId + ", " +
-                    mnFkDivisionDefaultId + ", " + 
+                    mnFkDivisionDefaultId + ", " +
+                    (mnFkProducerCarrier_n == SLibConsts.UNDEFINED ? "NULL" : mnFkProducerCarrier_n) + ", " + 
+                    (mnFkProducerReceiver_n == SLibConsts.UNDEFINED ? "NULL" : mnFkProducerReceiver_n) + ", " + 
                     (mnFkExternalCoId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalCoId_n) + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
@@ -562,6 +574,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_lan = " + mnFkLanguageId + ", " +
                     "fk_div_def = " + mnFkDivisionDefaultId + ", " +
+                    "fk_prod_carrier_n = " + (mnFkProducerCarrier_n == SLibConsts.UNDEFINED ? "NULL" : mnFkProducerCarrier_n) + ", " +
+                    "fk_prod_receiver_n = " + (mnFkProducerReceiver_n == SLibConsts.UNDEFINED ? "NULL" : mnFkProducerReceiver_n) + ", " +
                     "fk_ext_co_n = " + (mnFkExternalCoId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalCoId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
@@ -629,6 +643,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         registry.setSystem(this.isSystem());
         registry.setFkLanguageId(this.getFkLanguageId());
         registry.setFkDivisionDefaultId(this.getFkDivisionDefaultId());
+        registry.setFkProducerCarrier_n(this.getFkProducerCarrier_n());
+        registry.setFkProducerReceiver_n(this.getFkProducerReceiver_n());
         registry.setFkExternalCoId_n(this.getFkExternalCoId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());

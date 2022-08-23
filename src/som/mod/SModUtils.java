@@ -105,6 +105,14 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SR_IOG_LIST
         });
     }
+    
+    private boolean belongsToSomLog(final int type) {
+        return SLibUtils.belongsTo(type, new int[] {
+            SModConsts.SX_PROD_LOG,
+            SModConsts.SU_VEH_CONT_TYPE,
+            SModConsts.SR_TIC_METRRME,
+        });
+    }
 
     @Override
     public int getModuleTypeByType(final int type) {
@@ -121,6 +129,9 @@ public class SModUtils implements SGuiModuleUtils {
         }
         else if (belongsToSomOs(type)) {
             module = SModConsts.MOD_SOM_OS;
+        }
+        else if (belongsToSomLog(type)) {
+            module = SModConsts.MOD_SOM_LOG;
         }
 
         return module;

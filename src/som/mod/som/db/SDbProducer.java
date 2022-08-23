@@ -32,11 +32,25 @@ public class SDbProducer extends SDbRegistryUser {
     protected String msCode;
     protected String msName;
     protected String msNameTrade;
+    protected String msNameLogistic;
     protected String msFiscalId;
     protected String msRevueltaProducerId;
+    protected String msStreetNum;
+    protected String msNeighborhood;
+    protected String msLocality;
+    protected String msCounty;
+    protected String msState;
+    protected String msZipCode;
+    protected String msPhone;
+    protected String msLicenseSemaccdet;
+    protected String msLicenseSct;
+    protected String msRecordEnvironmental;
+    protected String msContactName;
+    protected String msContactCharge;
     protected String msAutoMailNotificationBoxes;
     protected boolean mbAutoMailNotification;
     protected boolean mbFreightPayment;
+    protected boolean mbLogistics;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -47,6 +61,7 @@ public class SDbProducer extends SDbRegistryUser {
     */
     protected int mnFkReportingGroupId;
     protected int mnFkInputSourceId;
+    protected int mnFkVehicleContainerType_n;
     protected int mnFkExternalProducerId_n;
     /*
     protected int mnFkUserInsertId;
@@ -89,11 +104,25 @@ public class SDbProducer extends SDbRegistryUser {
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
     public void setNameTrade(String s) { msNameTrade = s; }
+    public void setNameLogistic(String s) { msNameLogistic = s; }
     public void setFiscalId(String s) { msFiscalId = s; }
     public void setRevueltaProducerId(String s) { msRevueltaProducerId = s; }
+    public void setStreetNum(String s) { msStreetNum = s; }
+    public void setNeighborhood(String s) { msNeighborhood = s; }
+    public void setLocality(String s) { msLocality = s; }
+    public void setCounty(String s) { msCounty = s; }
+    public void setState(String s) { msState = s; }
+    public void setZipCode(String s) { msZipCode = s; }
+    public void setPhone(String s) { msPhone = s; }
+    public void setLicenseSemaccdet(String s) { msLicenseSemaccdet = s; }
+    public void setLicenseSct(String s) { msLicenseSct = s; }
+    public void setRecordEnvironmental(String s) { msRecordEnvironmental = s; }
+    public void setContactName(String s) { msContactName = s; }
+    public void setContactCharge(String s) { msContactCharge = s; }
     public void setAutoMailNotificationBoxes(String s) { msAutoMailNotificationBoxes = s; }
     public void setAutoMailNotification(boolean b) { mbAutoMailNotification = b; }
     public void setFreightPayment(boolean b) { mbFreightPayment = b; }
+    public void setLogistics(boolean b) { mbLogistics = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -102,6 +131,7 @@ public class SDbProducer extends SDbRegistryUser {
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkReportingGroupId(int n) { mnFkReportingGroupId = n; }
     public void setFkInputSourceId(int n) { mnFkInputSourceId = n; }
+    public void setFkVehicleContainerType_n(int n) { mnFkVehicleContainerType_n = n; }
     public void setFkExternalProducerId_n(int n) { mnFkExternalProducerId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
@@ -112,11 +142,25 @@ public class SDbProducer extends SDbRegistryUser {
     public String getCode() { return msCode; }
     public String getName() { return msName; }
     public String getNameTrade() { return msNameTrade; }
+    public String getNameLogistic() { return msNameLogistic; }
     public String getFiscalId() { return msFiscalId; }
     public String getRevueltaProducerId() { return msRevueltaProducerId; }
+    public String getStreetNum() { return msStreetNum; }
+    public String getNeighborhood() { return msNeighborhood; }
+    public String getLocality() { return msLocality; }
+    public String getCounty() { return msCounty; }
+    public String getState() { return msState; }
+    public String getZipCode() { return msZipCode; }
+    public String getPhone() { return msPhone; }
+    public String getLicenseSemaccdet() { return msLicenseSemaccdet; }
+    public String getLicenseSct() { return msLicenseSct; }
+    public String getRecordEnvironmental() { return msRecordEnvironmental; }
+    public String getContactName() { return msContactName; }
+    public String getContactCharge() { return msContactCharge; }
     public String getAutoMailNotificationBoxes() { return msAutoMailNotificationBoxes; }
     public boolean isAutoMailNotification() { return mbAutoMailNotification; }
     public boolean isFreightPayment() { return mbFreightPayment; }
+    public boolean isLogistics() { return mbLogistics; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -125,6 +169,7 @@ public class SDbProducer extends SDbRegistryUser {
     public boolean isSystem() { return mbSystem; }
     public int getFkReportingGroupId() { return mnFkReportingGroupId; }
     public int getFkInputSourceId() { return mnFkInputSourceId; }
+    public int getFkVehicleContainerType_n() { return mnFkVehicleContainerType_n; }
     public int getFkExternalProducerId_n() { return mnFkExternalProducerId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
@@ -149,11 +194,25 @@ public class SDbProducer extends SDbRegistryUser {
         msCode = "";
         msName = "";
         msNameTrade = "";
+        msNameLogistic = "";
         msFiscalId = "";
         msRevueltaProducerId = "";
+        msStreetNum = "";
+        msNeighborhood = "";
+        msLocality = "";
+        msCounty = "";
+        msState = "";
+        msZipCode = "";
+        msPhone = "";
+        msLicenseSemaccdet = "";
+        msLicenseSct = "";
+        msRecordEnvironmental = "";
+        msContactName = "";
+        msContactCharge = "";
         msAutoMailNotificationBoxes = "";
         mbAutoMailNotification = false;
         mbFreightPayment = false;
+        mbLogistics = false;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -162,6 +221,7 @@ public class SDbProducer extends SDbRegistryUser {
         mbSystem = false;
         mnFkReportingGroupId = 0;
         mnFkInputSourceId = 0;
+        mnFkVehicleContainerType_n = 0;
         mnFkExternalProducerId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -186,7 +246,7 @@ public class SDbProducer extends SDbRegistryUser {
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         mnPkProducerId = 0;
 
@@ -199,7 +259,7 @@ public class SDbProducer extends SDbRegistryUser {
 
     @Override
     public void read(SGuiSession session, int[] pk) throws SQLException, Exception {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         initRegistry();
         initQueryMembers();
@@ -215,11 +275,25 @@ public class SDbProducer extends SDbRegistryUser {
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
             msNameTrade = resultSet.getString("name_trd");
+            msNameLogistic = resultSet.getString("name_log");
             msFiscalId = resultSet.getString("fis_id");
             msRevueltaProducerId = resultSet.getString("rev_prod_id");
+            msStreetNum = resultSet.getString("street_num");
+            msNeighborhood = resultSet.getString("neighborhood");
+            msLocality = resultSet.getString("locality");
+            msCounty = resultSet.getString("county");
+            msState = resultSet.getString("state");
+            msZipCode = resultSet.getString("zip_code");
+            msPhone = resultSet.getString("phone");
+            msLicenseSemaccdet = resultSet.getString("license_semaccdet");
+            msLicenseSct = resultSet.getString("license_sct");
+            msRecordEnvironmental = resultSet.getString("record_env");
+            msContactName = resultSet.getString("contact_name");
+            msContactCharge = resultSet.getString("contact_charge");
             msAutoMailNotificationBoxes = resultSet.getString("amn_box");
             mbAutoMailNotification = resultSet.getBoolean("b_amn");
             mbFreightPayment = resultSet.getBoolean("b_fre_pay");
+            mbLogistics = resultSet.getBoolean("b_log");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -228,6 +302,7 @@ public class SDbProducer extends SDbRegistryUser {
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkReportingGroupId = resultSet.getInt("fk_rep_grp");
             mnFkInputSourceId = resultSet.getInt("fk_inp_src");
+            mnFkVehicleContainerType_n = resultSet.getInt("fk_veh_cont_type_n");
             mnFkExternalProducerId_n = resultSet.getInt("fk_ext_prod_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
@@ -263,11 +338,25 @@ public class SDbProducer extends SDbRegistryUser {
                     "'" + msCode + "', " +
                     "'" + msName + "', " +
                     "'" + msNameTrade + "', " +
+                    "'" + msNameLogistic + "', " + 
                     "'" + msFiscalId + "', " +
                     "'" + msRevueltaProducerId + "', " +
+                    "'" + msStreetNum + "', " + 
+                    "'" + msNeighborhood + "', " + 
+                    "'" + msLocality + "', " + 
+                    "'" + msCounty + "', " + 
+                    "'" + msState + "', " + 
+                    "'" + msZipCode + "', " + 
+                    "'" + msPhone + "', " + 
+                    "'" + msLicenseSemaccdet + "', " + 
+                    "'" + msLicenseSct + "', " + 
+                    "'" + msRecordEnvironmental + "', " + 
+                    "'" + msContactName + "', " + 
+                    "'" + msContactCharge + "', " + 
                     "'" + msAutoMailNotificationBoxes + "', " + 
                     (mbAutoMailNotification ? 1 : 0) + ", " + 
                     (mbFreightPayment ? 1 : 0) + ", " +
+                    (mbLogistics ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -276,6 +365,7 @@ public class SDbProducer extends SDbRegistryUser {
                     (mbSystem ? 1 : 0) + ", " +
                     mnFkReportingGroupId + ", " +
                     mnFkInputSourceId + ", " + 
+                    (mnFkVehicleContainerType_n == SLibConsts.UNDEFINED ? "NULL" : mnFkVehicleContainerType_n) + ", " + 
                     (mnFkExternalProducerId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalProducerId_n) + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
@@ -291,11 +381,25 @@ public class SDbProducer extends SDbRegistryUser {
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
                     "name_trd = '" + msNameTrade + "', " +
+                    "name_log = '" + msNameLogistic + "', " +
                     "fis_id = '" + msFiscalId + "', " +
                     "rev_prod_id = '" + msRevueltaProducerId + "', " +
+                    "street_num = '" + msStreetNum + "', " +
+                    "neighborhood = '" + msNeighborhood + "', " +
+                    "locality = '" + msLocality + "', " +
+                    "county = '" + msCounty + "', " +
+                    "state = '" + msState + "', " +
+                    "zip_code = '" + msZipCode + "', " +
+                    "phone = '" + msPhone + "', " +
+                    "license_semaccdet = '" + msLicenseSemaccdet + "', " +
+                    "license_sct = '" + msLicenseSct + "', " +
+                    "record_env = '" + msRecordEnvironmental + "', " +
+                    "contact_name = '" + msContactName + "', " +
+                    "contact_charge = '" + msContactCharge + "', " +
                     "amn_box = '" + msAutoMailNotificationBoxes + "', " +
                     "b_amn = " + (mbAutoMailNotification ? 1 : 0) + ", " +
                     "b_fre_pay = " + (mbFreightPayment ? 1 : 0) + ", " +
+                    "b_log = " + (mbLogistics ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -304,6 +408,7 @@ public class SDbProducer extends SDbRegistryUser {
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_rep_grp = " + mnFkReportingGroupId + ", " +
                     "fk_inp_src = " + mnFkInputSourceId + ", " +
+                    "fk_veh_cont_type_n = " + (mnFkVehicleContainerType_n == SLibConsts.UNDEFINED ? "NULL" : mnFkVehicleContainerType_n) + ", " +
                     "fk_ext_prod_n = " + (mnFkExternalProducerId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalProducerId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
@@ -328,11 +433,25 @@ public class SDbProducer extends SDbRegistryUser {
         registry.setCode(this.getCode());
         registry.setName(this.getName());
         registry.setNameTrade(this.getNameTrade());
+        registry.setNameLogistic(this.getNameLogistic());
         registry.setFiscalId(this.getFiscalId());
         registry.setRevueltaProducerId(this.getRevueltaProducerId());
+        registry.setStreetNum(this.getStreetNum());
+        registry.setNeighborhood(this.getNeighborhood());
+        registry.setLocality(this.getLocality());
+        registry.setCounty(this.getCounty());
+        registry.setState(this.getState());
+        registry.setZipCode(this.getZipCode());
+        registry.setPhone(this.getPhone());
+        registry.setLicenseSemaccdet(this.getLicenseSemaccdet());
+        registry.setLicenseSct(this.getLicenseSct());
+        registry.setRecordEnvironmental(this.getRecordEnvironmental());
+        registry.setContactName(this.getContactName());
+        registry.setContactCharge(this.getContactCharge());
         registry.setAutoMailNotificationBoxes(this.getAutoMailNotificationBoxes());
         registry.setAutoMailNotification(this.isAutoMailNotification());
         registry.setFreightPayment(this.isFreightPayment());
+        registry.setLogistics(this.isLogistics());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
@@ -341,6 +460,7 @@ public class SDbProducer extends SDbRegistryUser {
         registry.setSystem(this.isSystem());
         registry.setFkReportingGroupId(this.getFkReportingGroupId());
         registry.setFkInputSourceId(this.getFkInputSourceId());
+        registry.setFkVehicleContainerType_n(this.getFkVehicleContainerType_n());
         registry.setFkExternalProducerId_n(this.getFkExternalProducerId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
