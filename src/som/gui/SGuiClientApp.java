@@ -54,6 +54,7 @@ import som.mod.SModConsts;
 import som.mod.SModUtils;
 import som.mod.SModuleCfg;
 import som.mod.SModuleSom;
+import som.mod.SModuleSomLog;
 import som.mod.SModuleSomOs;
 import som.mod.SModuleSomRm;
 import som.mod.cfg.db.SDbCompany;
@@ -67,7 +68,7 @@ import som.mod.cfg.db.SDbUserGui;
 public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener {
 
     public static final String APP_NAME = "SOM 1.0";
-    public static final String APP_RELEASE = "SOM 1.0 077.9"; // release date: 2022-07-14
+    public static final String APP_RELEASE = "SOM 1.0 079.0"; // release date: 2022-08-22
     public static final String APP_COPYRIGHT = "2013-2022";
     public static final String APP_PROVIDER = "Software Aplicado SA de CV";
 
@@ -119,6 +120,7 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jtbModuleCfg = new javax.swing.JToggleButton();
         jtbModuleSomRm = new javax.swing.JToggleButton();
         jtbModuleSomOs = new javax.swing.JToggleButton();
+        jtbModuleSomLog = new javax.swing.JToggleButton();
         jtpTabbedPane = new javax.swing.JTabbedPane();
         jpStatusBar = new javax.swing.JPanel();
         jpStatusBar1 = new javax.swing.JPanel();
@@ -146,6 +148,7 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jmiViewModuleCfg = new javax.swing.JMenuItem();
         jmiViewModuleSomSeed = new javax.swing.JMenuItem();
         jmiViewModuleSomOil = new javax.swing.JMenuItem();
+        jmiViewModuleSomLogistic = new javax.swing.JMenuItem();
         jmHelp = new javax.swing.JMenu();
         jmiHelpHelp = new javax.swing.JMenuItem();
         jsHelp1 = new javax.swing.JPopupMenu.Separator();
@@ -202,6 +205,19 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jtbModuleSomOs.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_oil.gif"))); // NOI18N
         jtbModuleSomOs.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jtbToolbar.add(jtbModuleSomOs);
+
+        bgModules.add(jtbModuleSomLog);
+        jtbModuleSomLog.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_log_bw.gif"))); // NOI18N
+        jtbModuleSomLog.setToolTipText("Módulo logística");
+        jtbModuleSomLog.setFocusable(false);
+        jtbModuleSomLog.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jtbModuleSomLog.setMaximumSize(new java.awt.Dimension(64, 64));
+        jtbModuleSomLog.setMinimumSize(new java.awt.Dimension(64, 64));
+        jtbModuleSomLog.setPreferredSize(new java.awt.Dimension(64, 64));
+        jtbModuleSomLog.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_log.gif"))); // NOI18N
+        jtbModuleSomLog.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_log.gif"))); // NOI18N
+        jtbModuleSomLog.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jtbToolbar.add(jtbModuleSomLog);
 
         getContentPane().add(jtbToolbar, java.awt.BorderLayout.NORTH);
         getContentPane().add(jtpTabbedPane, java.awt.BorderLayout.CENTER);
@@ -328,6 +344,10 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jmiViewModuleSomOil.setText("Ver módulo aceites y pastas");
         jmView.add(jmiViewModuleSomOil);
 
+        jmiViewModuleSomLogistic.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.InputEvent.CTRL_MASK));
+        jmiViewModuleSomLogistic.setText("Ver módulo logística");
+        jmView.add(jmiViewModuleSomLogistic);
+
         jmbMenuBar.add(jmView);
 
         jmHelp.setText("Ayuda");
@@ -401,6 +421,7 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
     private javax.swing.JMenuItem jmiHelpAbout;
     private javax.swing.JMenuItem jmiHelpHelp;
     private javax.swing.JMenuItem jmiViewModuleCfg;
+    private javax.swing.JMenuItem jmiViewModuleSomLogistic;
     private javax.swing.JMenuItem jmiViewModuleSomOil;
     private javax.swing.JMenuItem jmiViewModuleSomSeed;
     private javax.swing.JPanel jpStatusBar;
@@ -411,6 +432,7 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
     private javax.swing.JPopupMenu.Separator jsFile3;
     private javax.swing.JPopupMenu.Separator jsHelp1;
     private javax.swing.JToggleButton jtbModuleCfg;
+    private javax.swing.JToggleButton jtbModuleSomLog;
     private javax.swing.JToggleButton jtbModuleSomOs;
     private javax.swing.JToggleButton jtbModuleSomRm;
     private javax.swing.JToolBar jtbToolbar;
@@ -487,6 +509,7 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jtbModuleCfg.addActionListener(this);
         jtbModuleSomRm.addActionListener(this);
         jtbModuleSomOs.addActionListener(this);
+        jtbModuleSomLog.addActionListener(this);
 
         jmiFileWorkingDate.addActionListener(this);
         jmiFileUserPassword.addActionListener(this);
@@ -497,6 +520,7 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jmiViewModuleCfg.addActionListener(this);
         jmiViewModuleSomSeed.addActionListener(this);
         jmiViewModuleSomOil.addActionListener(this);
+        jmiViewModuleSomLogistic.addActionListener(this);
         jmiHelpHelp.addActionListener(this);
         jmiHelpAbout.addActionListener(this);
 
@@ -561,10 +585,12 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jmiViewModuleCfg.setEnabled(false);
         jmiViewModuleSomSeed.setEnabled(false);
         jmiViewModuleSomOil.setEnabled(false);
+        jmiViewModuleSomLogistic.setEnabled(false);
         jbWorkingDate.setEnabled(false);
         jtbModuleCfg.setEnabled(false);
         jtbModuleSomRm.setEnabled(false);
         jtbModuleSomOs.setEnabled(false);
+        jtbModuleSomLog.setEnabled(false);
         bgModules.clearSelection();
     }
 
@@ -620,6 +646,7 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
                 moSession.getModules().add(new SModuleSom(this));
                 moSession.getModules().add(new SModuleSomRm(this));
                 moSession.getModules().add(new SModuleSomOs(this));
+                moSession.getModules().add(new SModuleSomLog(this));
 
                 //user.computeAccess(moSession);    // not implemented yet!
                 moSession.setSessionCustom(user.createDefaultUserSession(this, mnTerminal));
@@ -698,11 +725,19 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
                         defaultToggleButton = jtbModuleSomOs;
                     }
                 }
+                if (user.hasModuleAccess(SModConsts.MOD_SOM_LOG)) {
+                    modulesAccessed++;
+                    jtbModuleSomLog.setEnabled(true);
+                    if (defaultToggleButton == null) {
+                        defaultToggleButton = jtbModuleSomLog;
+                    }
+                }
 
                 jmiFileWorkingDate.setEnabled(jbWorkingDate.isEnabled());
                 jmiViewModuleCfg.setEnabled(jtbModuleCfg.isEnabled());
                 jmiViewModuleSomSeed.setEnabled(jtbModuleSomRm.isEnabled());
                 jmiViewModuleSomOil.setEnabled(jtbModuleSomOs.isEnabled());
+                jmiViewModuleSomLogistic.setEnabled(jtbModuleSomLog.isEnabled());
 
                 renderClientSession((SGuiClientSessionCustom) moSession.getSessionCustom());
 
@@ -1027,6 +1062,9 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
             else if (toggleButton == jtbModuleSomOs) {
                 actionToggleViewModule(SModConsts.MOD_SOM_OS, SLibConsts.UNDEFINED);
             }
+            else if (toggleButton == jtbModuleSomLog) {
+                actionToggleViewModule(SModConsts.MOD_SOM_LOG, SLibConsts.UNDEFINED);
+            }
         }
         else if (e.getSource() instanceof JMenuItem) {
             JMenuItem menuItem = (JMenuItem) e.getSource();
@@ -1060,6 +1098,10 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
             else if (menuItem == jmiViewModuleSomOil) {
                 jtbModuleSomOs.doClick();
                 jtbModuleSomOs.requestFocus();
+            }
+            else if (menuItem == jmiViewModuleSomLogistic) {
+                jtbModuleSomLog.doClick();
+                jtbModuleSomLog.requestFocus();
             }
             else if (menuItem == jmiHelpHelp) {
                 actionHelpHelp();

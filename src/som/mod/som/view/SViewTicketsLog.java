@@ -91,7 +91,7 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
 
                     map.put("nTicketId", gridRow.getRowPrimaryKey()[0]);
                     map.put("sCurrencyCode", ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getLocalCurrencyCode());
-                    map.put("bShowMoney", miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) ? true : false);
+                    map.put("bShowMoney", miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
                     map.put("oFormatDecimal", oformatDecimal);
 
                     miClient.getSession().printReport(SModConsts.SR_TIC, SLibConsts.UNDEFINED, null, map);

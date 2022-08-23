@@ -16,6 +16,7 @@ public abstract class SModConsts {
     public static final int MOD_SOM = 2;
     public static final int MOD_SOM_RM = 3;
     public static final int MOD_SOM_OS = 4;
+    public static final int MOD_SOM_LOG = 5;
 
     public static final int SU_SYS = 110001;
     public static final int SU_CO = 110002;
@@ -61,6 +62,7 @@ public abstract class SModConsts {
     public static final int SU_SUP_REG = 320008;
     public static final int SU_REG = 320009;
     public static final int SU_PROD = 320010;
+    public static final int SX_PROD_LOG = 320024;
     public static final int SU_SEAS = 320011;
     public static final int SU_SEAS_REG = 320012;
     public static final int SU_SEAS_PROD = 320013;
@@ -74,6 +76,7 @@ public abstract class SModConsts {
     public static final int SU_GRINDING_REP_GROUP = 320045;
     public static final int SU_GRINDING_REP_ITEM_GROUP = 320046;
     public static final int SU_GRINDING_REP_RECIPIENT = 320047;
+    public static final int SU_VEH_CONT_TYPE = 320023;
     public static final int SU_INP_CL_ALL = 320101;
     public static final int SU_INP_TP_ALL = 320102;
 
@@ -162,6 +165,7 @@ public abstract class SModConsts {
     public static final int SX_QA_OIL_MOI_POND = 340082;
 
     public static final int SR_TIC = 350001;
+    public static final int SR_TIC_METRRME = 350015;
     public static final int SR_TIC_COMP = 350002;
     public static final int SR_ITEM_REC = 350003;
     public static final int SR_ITEM_REC_PAY = 350004;
@@ -239,6 +243,10 @@ public abstract class SModConsts {
         TablesMap.put(SU_GRINDING_REP_GROUP, "su_grin_group");
         TablesMap.put(SU_GRINDING_REP_ITEM_GROUP, "su_grin_rep_group");
         TablesMap.put(SU_GRINDING_REP_RECIPIENT, "su_grin_recipient");
+        TablesMap.put(SU_VEH_CONT_TYPE, "su_veh_cont_type");
+        TablesMap.put(SU_GRINDING_EVENT, "su_grin_events");
+        TablesMap.put(SU_GRINDING_RESULTS, "su_grin_res");
+        TablesMap.put(SU_GRINDINGS, "su_grinding");
 
         TablesMap.put(S_LAB, "s_lab");
         TablesMap.put(S_LAB_NOTE, "s_lab_note");
