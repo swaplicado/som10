@@ -49,7 +49,7 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
      * @param title
      */
     public SFormGrindingResultHr(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_GRINDING_RESULTS, SLibConsts.UNDEFINED, title);
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.S_GRINDING_RESULT, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -122,7 +122,7 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 1024, 640);
         
-        moGridTableRows = new SGridPaneForm(miClient, SModConsts.SU_GRINDING_RESULTS, SLibConsts.UNDEFINED, "Captura de resultados") {
+        moGridTableRows = new SGridPaneForm(miClient, SModConsts.S_GRINDING_RESULT, SLibConsts.UNDEFINED, "Captura de resultados") {
             @Override
             public void initGrid() {
                 setRowButtonsEnabled(false);
@@ -183,14 +183,14 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
     private ArrayList<SDbGrindingResult> createNewTableRows() {
         String sql = "SELECT  " +
                 "    res.id_result, " +
-                "    gp.parameter AS param_name, " +
-                "    (SELECT capture_cfg FROM " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + 
+                "    gp.param AS param_name, " +
+                "    (SELECT capture_cfg FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + 
                 "        AS li where res.fk_item_id = li.fk_item_id " +
-                "        AND res.fk_parameter_id = li.fk_parameter_id ORDER BY ts_usr_ins ASC LIMIT 1) AS capture_cfg " +
+                "        AND res.fk_param_id = li.fk_param_id ORDER BY ts_usr_ins ASC LIMIT 1) AS capture_cfg " +
                 "FROM " +
-                "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " AS res " +
+                "    " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " AS res " +
                 "        INNER JOIN " +
-                "    " + SModConsts.TablesMap.get(SModConsts.CU_PARAMS) + " AS gp ON res.fk_parameter_id = gp.id_parameter " +
+                "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_PARAM) + " AS gp ON res.fk_param_id = gp.id_param " +
                 "WHERE " +
                 "    res.b_del = FALSE " +
                 "    AND gp.b_del = FALSE " +
@@ -343,7 +343,7 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
                     row.save(miClient.getSession());
                 }
                 
-                miClient.getSession().notifySuscriptors(SModConsts.SU_GRINDING_RESULTS);
+                miClient.getSession().notifySuscriptors(SModConsts.S_GRINDING_RESULT);
                 dispose();
             }
             catch (Exception e) {

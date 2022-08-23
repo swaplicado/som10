@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package som.mod.cfg.db;
+package som.mod.som.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,22 +18,14 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SDbGrindingRecipient extends SDbRegistryUser {
+public class SDbGrindingLinkItemParameter extends SDbRegistryUser {
 
-    protected int mnPkGrindingRecipientId;
-    protected String msRecipients;
-    protected String msCarbonCopy;
-    /*
-    protected boolean mbUpdatable;
-    protected boolean mbDisableable;
-    protected boolean mbDeletable;
-    protected boolean mbDisabled;
-    protected boolean mbDeleted;
-    protected boolean mbSystem;
-    */
-    
+    protected int mnPkLinkId;
+    protected int mnCaptureOrder;
+    protected String msCaptureConfig;
+    //protected boolean mbDeleted;
     protected int mnFkItemId;
-    
+    protected int mnFkParameterId;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -41,36 +33,27 @@ public class SDbGrindingRecipient extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-    public SDbGrindingRecipient() {
-        super(SModConsts.CU_GRINDING_RECIPIENTS);
-        initRegistry();
+    public SDbGrindingLinkItemParameter() {
+        super(SModConsts.SU_GRINDING_LINK_ITEM_PARAM);
     }
 
-    public void setPkGrindingRecipientId(int n) { mnPkGrindingRecipientId = n; }
-    public void setRecipients(String s) { msRecipients = s; }
-    public void setCarbonCopy(String s) { msCarbonCopy = s; }
-    public void setUpdatable(boolean b) { mbUpdatable = b; }
-    public void setDisableable(boolean b) { mbDisableable = b; }
-    public void setDeletable(boolean b) { mbDeletable = b; }
-    public void setDisabled(boolean b) { mbDisabled = b; }
+    public void setPkLinkId(int n) { mnPkLinkId = n; }
+    public void setCaptureOrder(int n) { mnCaptureOrder = n; }
+    public void setCaptureConfig(String s) { msCaptureConfig = s; }
     public void setDeleted(boolean b) { mbDeleted = b; }
-    public void setSystem(boolean b) { mbSystem = b; }
     public void setFkItemId(int n) { mnFkItemId = n; }
+    public void setFkParameterId(int n) { mnFkParameterId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkGrindingRecipientId() { return mnPkGrindingRecipientId; }
-    public String getRecipients() { return msRecipients; }
-    public String getCarbonCopy() { return msCarbonCopy; }
-    public boolean isUpdatable() { return mbUpdatable; }
-    public boolean isDisableable() { return mbDisableable; }
-    public boolean isDeletable() { return mbDeletable; }
-    public boolean isDisabled() { return mbDisabled; }
+    public int getPkLinkId() { return mnPkLinkId; }
+    public int getCaptureOrder() { return mnCaptureOrder; }
+    public String getCaptureConfig() { return msCaptureConfig; }
     public boolean isDeleted() { return mbDeleted; }
-    public boolean isSystem() { return mbSystem; }
     public int getFkItemId() { return mnFkItemId; }
+    public int getFkParameterId() { return mnFkParameterId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -78,28 +61,24 @@ public class SDbGrindingRecipient extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkGrindingRecipientId = pk[0];
+        mnPkLinkId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkGrindingRecipientId };
+        return new int[] { mnPkLinkId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkGrindingRecipientId = 0;
-        msRecipients = "";
-        msCarbonCopy = "";
-        mbUpdatable = false;
-        mbDisableable = false;
-        mbDeletable = false;
-        mbDisabled = false;
+        mnPkLinkId = 0;
+        mnCaptureOrder = 0;
+        msCaptureConfig = "";
         mbDeleted = false;
-        mbSystem = false;
         mnFkItemId = 0;
+        mnFkParameterId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -113,24 +92,24 @@ public class SDbGrindingRecipient extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_grin_rec = " + mnPkGrindingRecipientId + " ";
+        return "WHERE id_link = " + mnPkLinkId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_grin_rec = " + pk[0] + " ";
+        return "WHERE id_link = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkGrindingRecipientId = 0;
+        mnPkLinkId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_grin_rec), 0) + 1 FROM " + getSqlTable() + " ";
+        msSql = "SELECT COALESCE(MAX(id_link), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkGrindingRecipientId = resultSet.getInt(1);
+            mnPkLinkId = resultSet.getInt(1);
         }
     }
 
@@ -148,16 +127,12 @@ public class SDbGrindingRecipient extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkGrindingRecipientId = resultSet.getInt("id_grin_rec");
-            msRecipients = resultSet.getString("recs");
-            msCarbonCopy = resultSet.getString("ccs");
-            mbUpdatable = resultSet.getBoolean("b_can_upd");
-            mbDisableable = resultSet.getBoolean("b_can_dis");
-            mbDeletable = resultSet.getBoolean("b_can_del");
-            mbDisabled = resultSet.getBoolean("b_dis");
+            mnPkLinkId = resultSet.getInt("id_link");
+            mnCaptureOrder = resultSet.getInt("capture_order");
+            msCaptureConfig = resultSet.getString("capture_cfg");
             mbDeleted = resultSet.getBoolean("b_del");
-            mbSystem = resultSet.getBoolean("b_sys");
-            mnFkItemId = resultSet.getInt("fk_item");
+            mnFkItemId = resultSet.getInt("fk_item_id");
+            mnFkParameterId = resultSet.getInt("fk_param_id");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -176,26 +151,17 @@ public class SDbGrindingRecipient extends SDbRegistryUser {
 
         if (mbRegistryNew) {
             computePrimaryKey(session);
-            mbUpdatable = true;
-            mbDisableable = true;
-            mbDeletable = true;
-            mbDisabled = false;
             mbDeleted = false;
-            mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkGrindingRecipientId + ", " +
-                    "'" + msRecipients + "', " +
-                    "'" + msCarbonCopy + "', " +
-                    (mbUpdatable ? 1 : 0) + ", " +
-                    (mbDisableable ? 1 : 0) + ", " +
-                    (mbDeletable ? 1 : 0) + ", " +
-                    (mbDisabled ? 1 : 0) + ", " +
+                    mnPkLinkId + ", " +
+                    mnCaptureOrder + ", " +
+                    "'" + msCaptureConfig + "', " +
                     (mbDeleted ? 1 : 0) + ", " +
-                    (mbSystem ? 1 : 0) + ", " +
                     mnFkItemId + ", " +
+                    mnFkParameterId + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     "NOW()" + ", " +
@@ -206,16 +172,11 @@ public class SDbGrindingRecipient extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    //"id_grin_rec = " + mnPkGrindingRecipientId + ", " +
-                    "recs = '" + msRecipients + "', " +
-                    "ccs = '" + msCarbonCopy + "', " +
-                    "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
-                    "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
-                    "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
-                    "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
+                    "capture_order = " + mnCaptureOrder + ", " +
+                    "capture_cfg = '" + msCaptureConfig + "', " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
-                    "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_item = " + mnFkItemId + ", " +
+                    "fk_item_id = " + mnFkItemId + ", " +
+                    "fk_param_id = " + mnFkParameterId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -229,19 +190,15 @@ public class SDbGrindingRecipient extends SDbRegistryUser {
     }
 
     @Override
-    public SDbGrindingRecipient clone() throws CloneNotSupportedException {
-        SDbGrindingRecipient registry = new SDbGrindingRecipient();
+    public SDbGrindingLinkItemParameter clone() throws CloneNotSupportedException {
+        SDbGrindingLinkItemParameter registry = new SDbGrindingLinkItemParameter();
 
-        registry.setPkGrindingRecipientId(this.getPkGrindingRecipientId());
-        registry.setRecipients(this.getRecipients());
-        registry.setCarbonCopy(this.getCarbonCopy());
-        registry.setUpdatable(this.isUpdatable());
-        registry.setDisableable(this.isDisableable());
-        registry.setDeletable(this.isDeletable());
-        registry.setDisabled(this.isDisabled());
+        registry.setPkLinkId(this.getPkLinkId());
+        registry.setCaptureOrder(this.getCaptureOrder());
+        registry.setCaptureConfig(this.getCaptureConfig());
         registry.setDeleted(this.isDeleted());
-        registry.setSystem(this.isSystem());
         registry.setFkItemId(this.getFkItemId());
+        registry.setFkParameterId(this.getFkParameterId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

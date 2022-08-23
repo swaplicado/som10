@@ -38,11 +38,11 @@ import sa.lib.gui.SGuiClient;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
 import som.mod.cfg.db.SDbCompany;
-import som.mod.cfg.db.SDbGrindingItemGroup;
+import som.mod.som.db.SDbGrindingReportItemGroup;
 import som.mod.som.db.SDbGrinding;
 import som.mod.som.db.SDbGrindingResult;
 import som.mod.som.db.SDbItem;
-import som.mod.som.db.SDbLot;
+import som.mod.som.db.SDbGrindingLot;
 
 /**
  *
@@ -82,17 +82,17 @@ public class SGrindingResultsUtils {
         if (option == ITEM) {
             field = "fk_item_id";
             
-            sql2 = "SELECT " + field + " AS l_conf FROM " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + 
+            sql2 = "SELECT " + field + " AS l_conf FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + 
                             " WHERE b_del = 0 ORDER BY fk_usr_ins DESC;";
         }
         else {
             field = "fk_lot_id";
             
-            sql2 = "SELECT id_lot AS l_conf FROM " + SModConsts.TablesMap.get(SModConsts.SU_LOT) + 
+            sql2 = "SELECT id_lot AS l_conf FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT) + 
                             " WHERE b_del = 0 ORDER BY fk_usr_ins DESC;";
         }
         
-        String sql = "SELECT " + field + " FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + 
+        String sql = "SELECT " + field + " FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + 
                         " WHERE b_del = 0 ORDER BY id_result DESC;";
         
         
@@ -132,10 +132,10 @@ public class SGrindingResultsUtils {
             return 0;
         }
         
-        String sql = "SELECT fk_lot_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + 
+        String sql = "SELECT fk_lot_id FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + 
                         " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY id_result DESC;";
         
-        String sqlLots = "SELECT id_lot FROM " + SModConsts.TablesMap.get(SModConsts.SU_LOT) + 
+        String sqlLots = "SELECT id_lot FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT) + 
                         " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY fk_usr_ins DESC;";
         
         ResultSet itemIdRes;
@@ -175,11 +175,11 @@ public class SGrindingResultsUtils {
             return 0;
         }
 
-        String sql = "SELECT fk_lot_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS)
+        String sql = "SELECT fk_lot_id FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT)
                 + " WHERE b_del = 0 AND fk_item_id = " + item + ""
                 + " AND dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' ORDER BY id_result DESC;";
 
-        String sqlLots = "SELECT id_lot FROM " + SModConsts.TablesMap.get(SModConsts.SU_LOT)
+        String sqlLots = "SELECT id_lot FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT)
                 + " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY fk_usr_ins DESC;";
 
         ResultSet itemIdRes;
@@ -213,7 +213,7 @@ public class SGrindingResultsUtils {
      * 
      * @return 
      */
-    public static ArrayList<SDbGrindingItemGroup> getGroupOfGrindingItem(SGuiClient client, final int item) {
+    public static ArrayList<SDbGrindingReportItemGroup> getGroupOfGrindingItem(SGuiClient client, final int item) {
         if (item == 0) {
             return new ArrayList<>();
         }
@@ -221,7 +221,7 @@ public class SGrindingResultsUtils {
         String sql = "SELECT "
                 + "fk_grin_group "
                 + "FROM "
-                + SModConsts.TablesMap.get(SModConsts.CU_GRINDING_ITEM_GROUP) + " "
+                + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_REP_ITEM_GROUP) + " "
                 + "WHERE "
                 + "fk_item = " + item + " LIMIT 1;";
 
@@ -242,16 +242,16 @@ public class SGrindingResultsUtils {
             String sqlGroup = "SELECT "
                     + "id_link "
                     + "FROM "
-                    + SModConsts.TablesMap.get(SModConsts.CU_GRINDING_ITEM_GROUP) + " "
+                    + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_REP_ITEM_GROUP) + " "
                     + "WHERE "
                     + "fk_grin_group = " + group + ";";
 
-            ArrayList<SDbGrindingItemGroup> links = new ArrayList<>();
+            ArrayList<SDbGrindingReportItemGroup> links = new ArrayList<>();
             linkIdsRes = client.getSession().getStatement().getConnection().createStatement().executeQuery(sqlGroup);
 
-            SDbGrindingItemGroup itemGrp = null;
+            SDbGrindingReportItemGroup itemGrp = null;
             while (linkIdsRes.next()) {
-                itemGrp = new SDbGrindingItemGroup();
+                itemGrp = new SDbGrindingReportItemGroup();
                 itemGrp.read(client.getSession(), new int[]{linkIdsRes.getInt("id_link")});
                 links.add(itemGrp);
             }
@@ -288,20 +288,20 @@ public class SGrindingResultsUtils {
                     (bAllItems ? ("COALESCE((SELECT  " +
                     "        id_lot " +
                     "     FROM " +
-                    "        su_lots " +
+                    "        " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT) + " " +
                     "     WHERE " +
                     "        fk_item_id = lip.fk_item_id " +
                     "        AND b_del = 0 " +
                     "        ORDER BY id_lot DESC LIMIT 1), " +
                     "        0) AS lot_id, ") : "") +
-                    "lip.fk_parameter_id " +
-                    "FROM " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + " lip " +
+                    "lip.fk_param_id " +
+                    "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " lip " +
                     "INNER JOIN " +
                     "su_item i ON lip.fk_item_id = i.id_item " +
                     "WHERE " +
                     "lip.b_del = 0 " +
                     (! bAllItems ? (" AND lip.fk_item_id = ") + nItemId : "") + " " +
-                    "ORDER BY lip.fk_item_id ASC, lip.fk_parameter_id ASC;";
+                    "ORDER BY lip.fk_item_id ASC, lip.fk_param_id ASC;";
         
         ResultSet links;
         ArrayList<SDbGrindingResult> resultsToCapture = new ArrayList<>();
@@ -313,7 +313,7 @@ public class SGrindingResultsUtils {
                 SDbGrindingResult res = new SDbGrindingResult();
 
                 res.setFkItemId(links.getInt("fk_item_id"));
-                res.setFkParameterId(links.getInt("fk_parameter_id"));
+                res.setFkParameterId(links.getInt("fk_param_id"));
                 res.setFkLotId(bAllItems ? links.getInt("lot_id") : nLotId);
                 res.setOrder(links.getInt("capture_order"));
                 res.setDateCapture(tCaptureDate);
@@ -375,7 +375,7 @@ public class SGrindingResultsUtils {
         }
         
         String sql = "SELECT dt_capture FROM " + 
-                    SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + 
+                    SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + 
                     " WHERE fk_item_id = " + nItemId +
                     " AND fk_lot_id = " + nLotId +
                     " AND MONTH(dt_capture) = MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
@@ -411,9 +411,9 @@ public class SGrindingResultsUtils {
      */
     private static int resultExists(SGuiClient client, final int itm, final int param, final int lot, final Date dtCapture) {
         String sql = "SELECT id_result FROM " + 
-                        SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + 
+                        SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + 
                     " WHERE fk_item_id = " + itm + 
-                    " AND fk_parameter_id = " + param + 
+                    " AND fk_param_id = " + param + 
                     " AND fk_lot_id = " + lot +
                     " AND dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtCapture) + "' "+
                     " AND b_del = 0 ORDER BY id_result DESC;";
@@ -464,11 +464,11 @@ public class SGrindingResultsUtils {
                     "result_04," +
                     "result_06 " +
                     "FROM " +
-                    SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " " +
+                    SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " " +
                     "WHERE " +
                     " MONTH(dt_capture) = MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
                     " AND YEAR(dt_capture) = YEAR('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
-                    " AND fk_parameter_id = " + parameter + " " +
+                    " AND fk_param_id = " + parameter + " " +
                     " AND fk_item_id = " + item + " " +
                     " AND NOT b_del " +
                     "GROUP BY dt_capture";
@@ -650,8 +650,8 @@ public class SGrindingResultsUtils {
                 + "IF(result_06 > 0, 1, 0)), 0) AS promedio, " +
                     "	" + (!onlyCurrentDay ? "SUM(" : "") + "COALESCE(@prom / " + monthGrinding + 
                     " * COALESCE((SELECT grinding_oil_perc FROM som_com.su_grinding WHERE dt_capture = sgr.dt_capture), 0),0)" + (!onlyCurrentDay ? ")" : "") + " AS ponderado " +
-                    "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " sgr " +
-                    "WHERE fk_parameter_id = " + parameterId + " " +
+                    "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " sgr " +
+                    "WHERE fk_param_id = " + parameterId + " " +
                     "AND fk_item_id = " + nItemId + " " +
                     "AND MONTH(dt_capture) = MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
                     (onlyCurrentDay ? "AND dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' " : "") + 
@@ -709,7 +709,7 @@ public class SGrindingResultsUtils {
         SDbGrinding grindingResult = new SDbGrinding();
         
         String sql = "SELECT id_grinding FROM " + 
-                    SModConsts.TablesMap.get(SModConsts.SU_GRINDINGS) + 
+                    SModConsts.TablesMap.get(SModConsts.S_GRINDING) + 
                     " WHERE dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' " +
                     " AND NOT b_del " +
                     " ORDER BY id_grinding DESC;";
@@ -758,7 +758,7 @@ public class SGrindingResultsUtils {
                         "SUM(grinding_bascule) AS sum_gr_basc, " +
                         "SUM(grinding_oil_perc) AS sum_gr_op, " +
                         "MONTH(dt_capture) AS g_month " +
-                        "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDINGS) + " " +
+                        "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING) + " " +
                         "WHERE " +
                         "NOT b_del " +
                         "AND MONTH(dt_capture) " + (onlyCurrentMonth ? "=" : "<=" ) +  " MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
@@ -805,7 +805,7 @@ public class SGrindingResultsUtils {
         String query = "SELECT " +
                         "    capture_cfg " +
                         "FROM " +
-                        "    " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + " " +
+                        "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " " +
                         "WHERE " +
                         "    fk_item_id = " + nItemId + " AND NOT b_del " +
                         "ORDER BY capture_order ASC " +
@@ -850,20 +850,20 @@ public class SGrindingResultsUtils {
         return sFormula;
     }
     
-    public static boolean sendReport(SGuiClient client, ArrayList<SDbGrindingItemGroup> group, Date cutOffDate, String sMonth) {
+    public static boolean sendReport(SGuiClient client, ArrayList<SDbGrindingReportItemGroup> group, Date cutOffDate, String sMonth) {
         DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
         DateFormat subjectformatter = new SimpleDateFormat("dd-MM-yyyy");
         ArrayList<String> files = new ArrayList<>();
         Map<String, String> inlineImages = new HashMap<>();
 
-        SDbLot oLot = group.get(0).getSDbLotAux();
+        SDbGrindingLot oLot = group.get(0).getSDbLotAux();
         SDbItem oItem = group.get(0).getSDbItemAux();
 
         String body = "<html>"
                 + "<body>";
 
         int counter = 0;
-        for (SDbGrindingItemGroup oItemGroup : group) {
+        for (SDbGrindingReportItemGroup oItemGroup : group) {
             String itmName = oItemGroup.getSDbItemAux().getNameShort().replace(" ", "_");
             String sFileName = "molienda/Mol_" + itmName + "_" + oItemGroup.getSDbLotAux().getLot() + "_" + fileNameformatter.format(new Date());
             File file = new File(sFileName + ".xlsx");
@@ -1006,7 +1006,7 @@ public class SGrindingResultsUtils {
      * @param cutOffDate
      * @return 
      */
-    public static boolean saveReport(SGuiClient client, XSSFWorkbook workbook, SDbLot oLot, SDbItem oItem, Date cutOffDate) {
+    public static boolean saveReport(SGuiClient client, XSSFWorkbook workbook, SDbGrindingLot oLot, SDbItem oItem, Date cutOffDate) {
         DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
         String itmName = oItem.getNameShort().replace(" ", "_");
         String sFileName = "molienda/Mol_" + itmName + "_" + oLot.getLot() + "_" + fileNameformatter.format(new Date());
@@ -1054,7 +1054,7 @@ public class SGrindingResultsUtils {
                 + "    recs, "
                 + "    ccs "
                 + "FROM "
-                + "    " + SModConsts.TablesMap.get(SModConsts.CU_GRINDING_RECIPIENTS) + " "
+                + "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_REP_RECIPIENT) + " "
                 + "WHERE "
                 + "    fk_item = " + idItem + " AND NOT b_del "
                 + ";";

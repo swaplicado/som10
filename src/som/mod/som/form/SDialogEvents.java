@@ -119,7 +119,7 @@ public class SDialogEvents extends JDialog implements ActionListener {
 
         moTextDate.setTextSettings(SGuiUtils.getLabelName(jlDate.getText()), 50);
 
-        moGridEvents = new SGridPaneForm(miClient, SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, "Eventos durante molienda") {
+        moGridEvents = new SGridPaneForm(miClient, SModConsts.S_GRINDING_EVENT, SLibConsts.UNDEFINED, "Eventos durante molienda") {
             @Override
             public void initGrid() {
                 setRowButtonsEnabled(false);
@@ -181,7 +181,7 @@ public class SDialogEvents extends JDialog implements ActionListener {
                 + "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", "
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_EVENT) + " AS v "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_EVENT) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "

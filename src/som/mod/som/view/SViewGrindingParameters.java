@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package som.mod.cfg.view;
+package som.mod.som.view;
 
 import java.util.Arrays;
 import sa.lib.SLibConsts;
@@ -18,10 +18,10 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SViewLinkItmParam extends SGridPaneView {
+public class SViewGrindingParameters extends SGridPaneView {
 
-    public SViewLinkItmParam(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.CU_LINK_ITEM_PARAM, SLibConsts.UNDEFINED, title);
+    public SViewGrindingParameters(SGuiClient client, String title) {
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SU_GRINDING_PARAM, SLibConsts.UNDEFINED, title);
     }
 
     @Override
@@ -30,6 +30,10 @@ public class SViewLinkItmParam extends SGridPaneView {
         Object filter = null;
 
         moPaneSettings = new SGridPaneSettings(1);
+        moPaneSettings.setUpdatableApplying(true);
+        moPaneSettings.setDisableableApplying(false);
+        moPaneSettings.setDeletableApplying(true);
+        moPaneSettings.setSystemApplying(false);
         moPaneSettings.setUserInsertApplying(true);
         moPaneSettings.setUserUpdateApplying(true);
 
@@ -39,32 +43,29 @@ public class SViewLinkItmParam extends SGridPaneView {
         }
 
         msSql = "SELECT "
-                + "v.id_link AS " + SDbConsts.FIELD_ID + "1, "
-                + "'' AS " + SDbConsts.FIELD_CODE + ", "
-                + "'' AS " + SDbConsts.FIELD_NAME + ", "
-                + "v.capture_order, "
-                + "itm.code, "
-                + "itm.name, "
-                + "pms.param_code, "
-                + "pms.parameter, "
+                + "v.id_param AS " + SDbConsts.FIELD_ID + "1, "
+                + "v.param_code AS " + SDbConsts.FIELD_CODE + ", "
+                + "v.param AS " + SDbConsts.FIELD_NAME + ", "
+                + "v.details, "
+                + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
+                + "v.b_can_dis AS " + SDbConsts.FIELD_CAN_DIS + ", "
+                + "v.b_can_del AS " + SDbConsts.FIELD_CAN_DEL + ", "
+                + "v.b_dis AS " + SDbConsts.FIELD_IS_DIS + ", "
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
+                + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
                 + "v.fk_usr_ins AS " + SDbConsts.FIELD_USER_INS_ID + ", "
                 + "v.fk_usr_upd AS " + SDbConsts.FIELD_USER_UPD_ID + ", "
                 + "v.ts_usr_ins AS " + SDbConsts.FIELD_USER_INS_TS + ", "
                 + "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", "
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + " AS v "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_PARAMS) + " AS pms ON "
-                + "v.fk_parameter_id = pms.id_parameter "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS itm ON "
-                + "v.fk_item_id = itm.id_item "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_PARAM) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
                 + "v.fk_usr_upd = uu.id_usr "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)
-                + "ORDER BY itm.name, v.id_link";
+                + "ORDER BY v.param, v.id_param, v.param_code";
     }
 
     @Override
@@ -72,12 +73,12 @@ public class SViewLinkItmParam extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = new SGridColumnView[10];
 
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "itm.code", "Código ítem");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "itm.name", "Ítem");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "pms.param_code", "Código parámetro");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "pms.parameter", "Parámetro");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.capture_order", "Orden captura");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.details", "Detalle");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, SDbConsts.FIELD_USER_INS_TS, SGridConsts.COL_TITLE_USER_INS_TS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_UPD_NAME, SGridConsts.COL_TITLE_USER_UPD_NAME);

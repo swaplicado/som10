@@ -36,11 +36,11 @@ import org.joda.time.DateTime;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiClient;
 import som.mod.SModConsts;
-import som.mod.cfg.db.SDbGrindingItemGroup;
-import som.mod.cfg.db.SDbLinkGrindingFormula;
+import som.mod.som.db.SDbGrindingReportItemGroup;
+import som.mod.som.db.SDbGrindingLinkFormula;
 import som.mod.som.db.SDbGrindingEvent;
 import som.mod.som.db.SDbItem;
-import som.mod.som.db.SDbLot;
+import som.mod.som.db.SDbGrindingLot;
 
 /**
  *
@@ -66,11 +66,11 @@ public class SGrindingReport {
      * @throws Exception 
      */
     public void processReport(SGuiClient client, Date dtDate, int idItem, int idLot, int actionType) throws IOException, Exception {
-        ArrayList<SDbGrindingItemGroup> group = SGrindingResultsUtils.getGroupOfGrindingItem(client, idItem);
+        ArrayList<SDbGrindingReportItemGroup> group = SGrindingResultsUtils.getGroupOfGrindingItem(client, idItem);
         if (group.isEmpty()) {
             group = new ArrayList<>();
-            SDbGrindingItemGroup aux = new SDbGrindingItemGroup();
-            aux.setFkGrindingGroupId(0);
+            SDbGrindingReportItemGroup aux = new SDbGrindingReportItemGroup();
+            aux.setFkReportGroupId(0);
             aux.setFkItemId(idItem);
 
             group.add(aux);
@@ -78,7 +78,7 @@ public class SGrindingReport {
 
         String sMonth = "";
         XSSFWorkbook workbook;
-        for (SDbGrindingItemGroup itemGroup : group) {
+        for (SDbGrindingReportItemGroup itemGroup : group) {
             workbook = new XSSFWorkbook();
 
             Calendar calendar = Calendar.getInstance();
@@ -110,7 +110,7 @@ public class SGrindingReport {
 
                 int idDayLot = SGrindingResultsUtils.getLotByItemAndDate(client, itemGroup.getFkItemId(), dtDate);
 
-                SDbLot oLot = new SDbLot();
+                SDbGrindingLot oLot = new SDbGrindingLot();
                 oLot.read(client.getSession(), new int[]{idDayLot});
                 itemGroup.setSDbLotAux(oLot);
 
@@ -166,7 +166,7 @@ public class SGrindingReport {
      */
     public String generateReport(SGuiClient client, ArrayList<SGrindingResumeRow> resume, double rendTeo, SCaptureConfiguration cfg, 
                             LinkedHashMap<Date, ArrayList<SGrindingResultReport>> info, 
-                            XSSFSheet sheet, SDbLot oLot, SDbItem oItem, Date dtDate) throws FileNotFoundException, IOException {
+                            XSSFSheet sheet, SDbGrindingLot oLot, SDbItem oItem, Date dtDate) throws FileNotFoundException, IOException {
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat formatterTime = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         ObjectMapper mapper = new ObjectMapper();
@@ -202,7 +202,7 @@ public class SGrindingReport {
         Cell cellLabelL = lotRow.createCell(1);
         cellLabelL.setCellValue("Lote:");
         Cell cellL = lotRow.createCell(2);
-        cellL.setCellValue(oLot.getLot() + " / " + formatter.format(oLot.getLotExpiration()));
+        cellL.setCellValue(oLot.getLot() + " / " + formatter.format(oLot.getExpiration()));
         cellL.setCellStyle(style);
 
         sheet.createRow(rowsCount++);
@@ -260,7 +260,7 @@ public class SGrindingReport {
                     cell.setCellValue(event.getDescription());
                     cell.setCellStyle(style);
                     Cell cellV = eventRow.createCell(columnEventCount++);
-                    cellV.setCellValue("De " + formatterTime.format(event.getStartDate()) + " a " + formatterTime.format(event.getEndDate()));
+                    cellV.setCellValue("De " + formatterTime.format(event.getDateStart()) + " a " + formatterTime.format(event.getDateEnd()));
                 }
 
                 sheet.createRow(rowsCount++);
@@ -386,7 +386,7 @@ public class SGrindingReport {
                  */
                 if (row.formulas.size() > 0) {
                     boolean bRowAdded = false;
-                    for (SDbLinkGrindingFormula formula : row.formulas) {
+                    for (SDbGrindingLinkFormula formula : row.formulas) {
                         SFormulasRow formObj = mapper.readValue(formula.getFormula(), SFormulasRow.class);
                         boolean isNewRow = (formula.getRowText() != null && formula.getRowText().length() > 0) || formObj.getR08().getIndexRow() != 0;
                         if (formObj.r08.getIsActive()) {
@@ -882,9 +882,9 @@ public class SGrindingReport {
     private ArrayList<SGrindingResultReport> getGrindingDay(SGuiClient client, Date dtDate, int idItem, int idLot) {
         String msSql = "SELECT "
                 + "v.id_result, "
-                + "v.fk_parameter_id, "
+                + "v.fk_param_id, "
                 + "gp.param_code, "
-                + "gp.parameter, "
+                + "gp.param, "
                 + "COALESCE(v.dt_capture, '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') AS dt_result, "
                 + "gp.b_text, "
                 + "gp.def_text_value, "
@@ -897,7 +897,7 @@ public class SGrindingReport {
                 + " (@dg := (SELECT "
                 + "  grinding_oil_perc "
                 + "FROM "
-                + " su_grinding "
+                + " " + SModConsts.TablesMap.get(SModConsts.S_GRINDING) + " "
                 + "WHERE "
                 + " fk_item_id = v.fk_item_id "
                 + " AND fk_lot_id = v.fk_lot_id "
@@ -941,9 +941,9 @@ public class SGrindingReport {
                 + "IF(v.result_04 > 0, 1, 0) + "
                 + "IF(v.result_06 > 0, 1, 0)), 0) AS promedio, "
                 + "@dg / " + 100 + " * @prom AS pond "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " AS v "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_PARAMS) + " AS gp ON "
-                + "gp.id_parameter = v.fk_parameter_id AND NOT gp.b_del "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " AS v "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_PARAM) + " AS gp ON "
+                + "gp.id_param = v.fk_param_id AND NOT gp.b_del "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
                 + "v.fk_item_id = i.id_item "
                 + "WHERE v.dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' AND v.fk_item_id = " + idItem + " "
@@ -961,9 +961,9 @@ public class SGrindingReport {
                 
                 resultRow.dtCapture = result.getDate("dt_result");
                 
-                resultRow.parameterId = result.getInt("fk_parameter_id");
+                resultRow.parameterId = result.getInt("fk_param_id");
                 resultRow.parameterCode = result.getString("param_code");
-                resultRow.parameterName = result.getString("parameter");
+                resultRow.parameterName = result.getString("param");
                 resultRow.isText = result.getBoolean("b_text");
                 resultRow.defaultTextValue = result.getString("def_text_value");
                 
@@ -999,23 +999,23 @@ public class SGrindingReport {
         return results;
     }
     
-    private ArrayList<SDbLinkGrindingFormula> getFormulas(SGuiClient client, final int idLink) {
+    private ArrayList<SDbGrindingLinkFormula> getFormulas(SGuiClient client, final int idLink) {
         String sql = "SELECT " +
                     "    f.id_formula " +
                     "FROM " +
-                    "    cu_link_forms f " +
+                    "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_FORMULA) + " f " +
                     "        INNER JOIN " +
-                    "    som_com.cu_link_itm_params l ON f.fk_link = l.id_link " +
+                    "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " l ON f.fk_link_id = l.id_link " +
                     "WHERE " +
-                    "    NOT f.b_del AND fk_link = " + idLink + " " +
+                    "    NOT f.b_del AND fk_link_id = " + idLink + " " +
                     "ORDER BY form_order ASC;";
         
         try {
             ResultSet result = client.getSession().getStatement().getConnection().createStatement().executeQuery(sql);
             
-            ArrayList<SDbLinkGrindingFormula> formulas = new ArrayList<>();
+            ArrayList<SDbGrindingLinkFormula> formulas = new ArrayList<>();
             while(result.next()) {
-                SDbLinkGrindingFormula form = new SDbLinkGrindingFormula();
+                SDbGrindingLinkFormula form = new SDbGrindingLinkFormula();
                 form.read(client.getSession(), new int[] { result.getInt("id_formula") });
                 
                 formulas.add(form);

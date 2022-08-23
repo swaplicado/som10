@@ -26,8 +26,8 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
 
     protected int mnPkResultId;
     protected Date mtDateCapture;
-    protected int mnOrder;
-    protected String mdResult8;
+    protected int mnCaptureOrder;
+    protected String mdResult08;
     protected String mdResult10;
     protected String mdResult12;
     protected String mdResult14;
@@ -35,16 +35,12 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
     protected String mdResult18;
     protected String mdResult20;
     protected String mdResult22;
-    protected String mdResult0;
-    protected String mdResult2;
-    protected String mdResult4;
-    protected String mdResult6;
+    protected String mdResult00;
+    protected String mdResult02;
+    protected String mdResult04;
+    protected String mdResult06;
     protected String msResultText;
     protected boolean mbText;
-    protected int mnFkItemId;
-    protected int mnFkParameterId;
-    protected int mnFkLotId;
-    protected int mnFkLinkId_n;
     
     /*
     protected boolean mbUpdatable;
@@ -53,6 +49,14 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
     protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    
+    protected int mnFkItemId;
+    protected int mnFkParameterId;
+    protected int mnFkLotId;
+    protected int mnFkLinkId_n;
+    
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
@@ -63,7 +67,7 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
     protected SCaptureConfiguration moConfigurationAux;
 
     public SDbGrindingResult() {
-        super(SModConsts.SU_GRINDING_RESULTS);
+        super(SModConsts.S_GRINDING_RESULT);
         initRegistry();
     }
 
@@ -78,8 +82,8 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
     
     public void setPkResultId(int n) { mnPkResultId = n; }
     public void setDateCapture(Date t) { mtDateCapture = t; }
-    public void setOrder(int n) { mnOrder = n; }
-    public void setResult8(String s) { mdResult8 = s; }
+    public void setOrder(int n) { mnCaptureOrder = n; }
+    public void setResult08(String s) { mdResult08 = s; }
     public void setResult10(String s) { mdResult10 = s; }
     public void setResult12(String s) { mdResult12 = s; }
     public void setResult14(String s) { mdResult14 = s; }
@@ -87,10 +91,10 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
     public void setResult18(String s) { mdResult18 = s; }
     public void setResult20(String s) { mdResult20 = s; }
     public void setResult22(String s) { mdResult22 = s; }
-    public void setResult0(String s) { mdResult0 = s; }
-    public void setResult2(String s) { mdResult2 = s; }
-    public void setResult4(String s) { mdResult4 = s; }
-    public void setResult6(String s) { mdResult6 = s; }
+    public void setResult00(String s) { mdResult00 = s; }
+    public void setResult02(String s) { mdResult02 = s; }
+    public void setResult04(String s) { mdResult04 = s; }
+    public void setResult06(String s) { mdResult06 = s; }
     public void setResultText(String s) { msResultText = s; }
     public void setIsText(boolean b) { mbText = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -113,8 +117,8 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
 
     public int getPkResultId() { return mnPkResultId; }
     public Date getDateCapture() { return mtDateCapture; }
-    public int getOrder() { return mnOrder; }
-    public String getResult8() { return mdResult8; }
+    public int getOrder() { return mnCaptureOrder; }
+    public String getResult08() { return mdResult08; }
     public String getResult10() { return mdResult10; }
     public String getResult12() { return mdResult12; }
     public String getResult14() { return mdResult14; }
@@ -122,10 +126,10 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
     public String getResult18() { return mdResult18; }
     public String getResult20() { return mdResult20; }
     public String getResult22() { return mdResult22; }
-    public String getResult0() { return mdResult0; }
-    public String getResult2() { return mdResult2; }
-    public String getResult4() { return mdResult4; }
-    public String getResult6() { return mdResult6; }
+    public String getResult00() { return mdResult00; }
+    public String getResult02() { return mdResult02; }
+    public String getResult04() { return mdResult04; }
+    public String getResult06() { return mdResult06; }
     public String getResultText() { return msResultText; }
     public boolean isText() { return mbText; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -162,8 +166,8 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
 
         mnPkResultId = 0;
         mtDateCapture = null;
-        mnOrder = 0;
-        mdResult8 = "";
+        mnCaptureOrder = 0;
+        mdResult08 = "";
         mdResult10 = "";
         mdResult12 = "";
         mdResult14 = "";
@@ -171,10 +175,10 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
         mdResult18 = "";
         mdResult20 = "";
         mdResult22 = "";
-        mdResult0 = "";
-        mdResult2 = "";
-        mdResult4 = "";
-        mdResult6 = "";
+        mdResult00 = "";
+        mdResult02 = "";
+        mdResult04 = "";
+        mdResult06 = "";
         msResultText = "";
         mbText = false;
         mbUpdatable = false;
@@ -240,8 +244,8 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
         else {
             mnPkResultId = resultSet.getInt("id_result");
             mtDateCapture = resultSet.getDate("dt_capture");
-            mnOrder = resultSet.getInt("capture_order");
-            mdResult8 = resultSet.getString("result_08");
+            mnCaptureOrder = resultSet.getInt("capture_order");
+            mdResult08 = resultSet.getString("result_08");
             mdResult10 = resultSet.getString("result_10");
             mdResult12 = resultSet.getString("result_12");
             mdResult14 = resultSet.getString("result_14");
@@ -249,10 +253,10 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
             mdResult18 = resultSet.getString("result_18");
             mdResult20 = resultSet.getString("result_20");
             mdResult22 = resultSet.getString("result_22");
-            mdResult0 = resultSet.getString("result_00");
-            mdResult2 = resultSet.getString("result_02");
-            mdResult4 = resultSet.getString("result_04");
-            mdResult6 = resultSet.getString("result_06");
+            mdResult00 = resultSet.getString("result_00");
+            mdResult02 = resultSet.getString("result_02");
+            mdResult04 = resultSet.getString("result_04");
+            mdResult06 = resultSet.getString("result_06");
             msResultText = resultSet.getString("result_text");
             mbText = resultSet.getBoolean("b_text");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -262,7 +266,7 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkItemId = resultSet.getInt("fk_item_id");
-            mnFkParameterId = resultSet.getInt("fk_parameter_id");
+            mnFkParameterId = resultSet.getInt("fk_param_id");
             mnFkLotId = resultSet.getInt("fk_lot_id");
             mnFkLinkId_n = resultSet.getInt("fk_link_id_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
@@ -297,8 +301,8 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkResultId + ", " +
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDateCapture) + "', " +
-                    mnOrder + ", " +
-                    "'" + mdResult8 + "', " +
+                    mnCaptureOrder + ", " +
+                    "'" + mdResult08 + "', " +
                     "'" + mdResult10 + "', " +
                     "'" + mdResult12 + "', " +
                     "'" + mdResult14 + "', " +
@@ -306,10 +310,10 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
                     "'" + mdResult18 + "', " +
                     "'" + mdResult20 + "', " +
                     "'" + mdResult22 + "', " +
-                    "'" + mdResult0 + "', " +
-                    "'" + mdResult2 + "', " +
-                    "'" + mdResult4 + "', " +
-                    "'" + mdResult6 + "', " +
+                    "'" + mdResult00 + "', " +
+                    "'" + mdResult02 + "', " +
+                    "'" + mdResult04 + "', " +
+                    "'" + mdResult06 + "', " +
                     "'" + msResultText + "', " +
                     (mbText ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -334,8 +338,8 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
             msSql = "UPDATE " + getSqlTable() + " SET " +
                     //"id_seas = " + mnPkSeasonId + ", " +
                     "dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(mtDateCapture) + "', " +
-                    "capture_order = " + mnOrder + ", " +
-                    "result_08 = '" + mdResult8 + "', " +
+                    "capture_order = " + mnCaptureOrder + ", " +
+                    "result_08 = '" + mdResult08 + "', " +
                     "result_10 = '" + mdResult10 + "', " +
                     "result_12 = '" + mdResult12 + "', " +
                     "result_14 = '" + mdResult14 + "', " +
@@ -343,10 +347,10 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
                     "result_18 = '" + mdResult18 + "', " +
                     "result_20 = '" + mdResult20 + "', " +
                     "result_22 = '" + mdResult22 + "', " +
-                    "result_00 = '" + mdResult0 + "', " +
-                    "result_02 = '" + mdResult2 + "', " +
-                    "result_04 = '" + mdResult4 + "', " +
-                    "result_06 = '" + mdResult6 + "', " +
+                    "result_00 = '" + mdResult00 + "', " +
+                    "result_02 = '" + mdResult02 + "', " +
+                    "result_04 = '" + mdResult04 + "', " +
+                    "result_06 = '" + mdResult06 + "', " +
                     "result_text = '" + msResultText + "', " +
                     "b_text = " + (mbText ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -377,7 +381,7 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
         registry.setPkResultId(this.getPkResultId());
         registry.setDateCapture(this.getDateCapture());
         registry.setOrder(this.getOrder());
-        registry.setResult8(this.getResult8());
+        registry.setResult08(this.getResult08());
         registry.setResult10(this.getResult10());
         registry.setResult12(this.getResult12());
         registry.setResult14(this.getResult14());
@@ -385,10 +389,10 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
         registry.setResult18(this.getResult18());
         registry.setResult20(this.getResult20());
         registry.setResult22(this.getResult22());
-        registry.setResult0(this.getResult0());
-        registry.setResult2(this.getResult2());
-        registry.setResult4(this.getResult4());
-        registry.setResult6(this.getResult6());
+        registry.setResult00(this.getResult00());
+        registry.setResult02(this.getResult02());
+        registry.setResult04(this.getResult04());
+        registry.setResult06(this.getResult06());
         registry.setResultText(this.getResultText());
         registry.setIsText(this.isText());
         registry.setUpdatable(this.isUpdatable());
@@ -462,13 +466,13 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
 
         switch (col) {
             case 0:
-                value = mnOrder;
+                value = mnCaptureOrder;
                 break;
             case 1:
                 value = msParameterAux;
                 break;
             case 2:
-                value = mdResult8;
+                value = mdResult08;
                 break;
             case 3:
                 value = mdResult10;
@@ -492,16 +496,16 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
                 value = mdResult22;
                 break;
             case 10:
-                value = mdResult0;
+                value = mdResult00;
                 break;
             case 11:
-                value = mdResult2;
+                value = mdResult02;
                 break;
             case 12:
-                value = mdResult4;
+                value = mdResult04;
                 break;
             case 13:
-                value = mdResult6;
+                value = mdResult06;
                 break;
             default:
         }
@@ -515,7 +519,7 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
         String absValue = SGrindingReport.isNumeric(v.replace(",", "")) ? SLibUtils.DecimalFormatValue4D.format(Double.parseDouble(v)) : v;
         switch (col) {
             case 2:
-                mdResult8 = absValue;
+                mdResult08 = absValue;
                 break;
             case 3:
                 mdResult10 = absValue;
@@ -539,16 +543,16 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
                 mdResult22 = absValue;
                 break;
             case 10:
-                mdResult0 = absValue;
+                mdResult00 = absValue;
                 break;
             case 11:
-                mdResult2 = absValue;
+                mdResult02 = absValue;
                 break;
             case 12:
-                mdResult4 = absValue;
+                mdResult04 = absValue;
                 break;
             case 13:
-                mdResult6 = absValue;
+                mdResult06 = absValue;
                 break;
             
             default:

@@ -24,7 +24,7 @@ import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiDate;
 import som.mod.SModConsts;
-import som.mod.cfg.db.SDbLinkItemParameter;
+import som.mod.som.db.SDbGrindingLinkItemParameter;
 import som.mod.som.db.SDbGrindingResult;
 import som.mod.som.form.SFormGrindingResultHr;
 
@@ -78,13 +78,13 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
                 "u.code, " +
                 "l.lot " +
                 "FROM " +
-                "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " AS v " +
+                "    " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " AS v " +
                 "        INNER JOIN " +
                 "    " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON v.fk_item_id = i.id_item " +
                 "        INNER JOIN " +
                 "    " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON i.fk_unit = u.id_unit " +
                 "        INNER JOIN " +
-                "    " + SModConsts.TablesMap.get(SModConsts.SU_LOT) + " AS l ON v.fk_lot_id = l.id_lot " +
+                "    " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT) + " AS l ON v.fk_lot_id = l.id_lot " +
                 "WHERE " + sql +
                 "GROUP BY v.dt_capture , v.fk_item_id , v.fk_lot_id;";
     }
@@ -119,7 +119,7 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
                 return;
             }
             
-            SDbLinkItemParameter dbLink = new SDbLinkItemParameter();
+            SDbGrindingLinkItemParameter dbLink = new SDbGrindingLinkItemParameter();
             SDbGrindingResult dbResult = new SDbGrindingResult();
             try {
                 
@@ -130,7 +130,7 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
                 dbResult.setDateCapture(new Date());
                 dbResult.setFkItemId(dbLink.getFkItemId());
                 dbResult.setFkParameterId(dbLink.getFkParameterId());
-                dbResult.setOrder(dbLink.getOrder());
+                dbResult.setOrder(dbLink.getCaptureOrder());
                 
                 form.setRegistry(dbResult);
                 form.setVisible(true);

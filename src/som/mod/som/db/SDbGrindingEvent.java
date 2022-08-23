@@ -22,10 +22,9 @@ import som.mod.SModConsts;
 public class SDbGrindingEvent extends SDbRegistryUser {
 
     protected int mnPkEventId;
-    protected Date mtStartDate;
-    protected Date mtEndDate;
+    protected Date mtDateStart;
+    protected Date mtDateEnd;
     protected String msDescription;
-    protected int mnFkItemId;
     
     /*
     protected boolean mbUpdatable;
@@ -34,6 +33,11 @@ public class SDbGrindingEvent extends SDbRegistryUser {
     protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    
+    protected int mnFkItemId;
+    
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
@@ -41,7 +45,7 @@ public class SDbGrindingEvent extends SDbRegistryUser {
     */
 
     public SDbGrindingEvent() {
-        super(SModConsts.SU_GRINDING_EVENT);
+        super(SModConsts.S_GRINDING_EVENT);
         initRegistry();
     }
 
@@ -55,8 +59,8 @@ public class SDbGrindingEvent extends SDbRegistryUser {
      */
     
     public void setPkEventId(int n) { mnPkEventId = n; }
-    public void setStartDate(Date t) { mtStartDate = t; }
-    public void setEndDate(Date t) { mtEndDate = t; }
+    public void setDateStart(Date t) { mtDateStart = t; }
+    public void setDateEnd(Date t) { mtDateEnd = t; }
     public void setDescription(String s) { msDescription = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
@@ -71,8 +75,8 @@ public class SDbGrindingEvent extends SDbRegistryUser {
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
     public int getPkEventId() { return mnPkEventId; }
-    public Date getStartDate() { return mtStartDate; }
-    public Date getEndDate() { return mtEndDate; }
+    public Date getDateStart() { return mtDateStart; }
+    public Date getDateEnd() { return mtDateEnd; }
     public String getDescription() { return msDescription; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
@@ -101,8 +105,8 @@ public class SDbGrindingEvent extends SDbRegistryUser {
         initBaseRegistry();
 
         mnPkEventId = 0;
-        mtStartDate = null;
-        mtEndDate = null;
+        mtDateStart = null;
+        mtDateEnd = null;
         msDescription = "";
         mbUpdatable = false;
         mbDisableable = false;
@@ -160,8 +164,8 @@ public class SDbGrindingEvent extends SDbRegistryUser {
         }
         else {
             mnPkEventId = resultSet.getInt("id_event");
-            mtStartDate = resultSet.getDate("dt_start");
-            mtEndDate = resultSet.getDate("dt_end");
+            mtDateStart = resultSet.getDate("dt_start");
+            mtDateEnd = resultSet.getDate("dt_end");
             msDescription = resultSet.getString("description");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
@@ -169,7 +173,7 @@ public class SDbGrindingEvent extends SDbRegistryUser {
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkItemId = resultSet.getInt("fk_item");
+            mnFkItemId = resultSet.getInt("fk_item_id");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -201,8 +205,8 @@ public class SDbGrindingEvent extends SDbRegistryUser {
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkEventId + ", " +
-                    "'" + SLibUtils.DbmsDateFormatDatetime.format(mtStartDate) + "', " +
-                    "'" + SLibUtils.DbmsDateFormatDatetime.format(mtEndDate) + "', " +
+                    "'" + SLibUtils.DbmsDateFormatDatetime.format(mtDateStart) + "', " +
+                    "'" + SLibUtils.DbmsDateFormatDatetime.format(mtDateEnd) + "', " +
                     "'" + msDescription + "', " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
@@ -222,8 +226,8 @@ public class SDbGrindingEvent extends SDbRegistryUser {
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
                     //"id_seas = " + mnPkSeasonId + ", " +
-                    "dt_start = '" + SLibUtils.DbmsDateFormatDatetime.format(mtStartDate) + "', " +
-                    "dt_end = '" + SLibUtils.DbmsDateFormatDatetime.format(mtEndDate) + "', " +
+                    "dt_start = '" + SLibUtils.DbmsDateFormatDatetime.format(mtDateStart) + "', " +
+                    "dt_end = '" + SLibUtils.DbmsDateFormatDatetime.format(mtDateEnd) + "', " +
                     "description = '" + msDescription + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
@@ -231,7 +235,7 @@ public class SDbGrindingEvent extends SDbRegistryUser {
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_item = " + mnFkItemId + ", " +
+                    "fk_item_id = " + mnFkItemId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -252,8 +256,8 @@ public class SDbGrindingEvent extends SDbRegistryUser {
         SDbGrindingEvent registry = new SDbGrindingEvent();
 
         registry.setPkEventId(this.getPkEventId());
-        registry.setStartDate(this.getStartDate());
-        registry.setEndDate(this.getEndDate());
+        registry.setDateStart(this.getDateStart());
+        registry.setDateEnd(this.getDateEnd());
         registry.setDescription(this.getDescription());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package som.mod.cfg.db;
+package som.mod.som.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,16 +16,15 @@ import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
 import som.mod.som.data.SGrindingResumeRow;
-import som.mod.som.db.SDbItem;
-import som.mod.som.db.SDbLot;
 
 /**
  *
  * @author Edwin Carmona
  */
-public class SDbGrindingItemGroup extends SDbRegistryUser {
+public class SDbGrindingReportItemGroup extends SDbRegistryUser {
 
-    protected int mnPkLinkId;
+    protected int mnPkItemGroupId;
+
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -35,7 +34,8 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
     protected boolean mbSystem;
     */
     protected int mnFkItemId;
-    protected int mnFkGrindingGroupId;
+    protected int mnFkReportGroupId;
+    
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -43,20 +43,20 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
     
-    protected SDbGrindingGroup moGroupAux;
+    protected SDbGrindingReportGroup moGroupAux;
     
     protected String msRangeAux;
     protected SDbItem moItemAux;
-    protected SDbLot moLotAux;
+    protected SDbGrindingLot moLotAux;
     protected XSSFWorkbook moWorkbookAux;
     protected ArrayList<SGrindingResumeRow> grindingRows;
 
-    public SDbGrindingItemGroup() {
-        super(SModConsts.CU_GRINDING_ITEM_GROUP);
+    public SDbGrindingReportItemGroup() {
+        super(SModConsts.SU_GRINDING_REP_ITEM_GROUP);
         initRegistry();
     }
 
-    public void setPkLinkId(int n) { mnPkLinkId = n; }
+    public void setPkItemGroupId(int n) { mnPkItemGroupId = n; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -64,7 +64,7 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkItemId(int n) { mnFkItemId = n; }
-    public void setFkGrindingGroupId(int n) { mnFkGrindingGroupId = n; }
+    public void setFkReportGroupId(int n) { mnFkReportGroupId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -72,10 +72,10 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
     
     public void setRangeAux(String s) { msRangeAux = s; }
     public void setSDbItemAux(SDbItem o) { moItemAux = o; }
-    public void setSDbLotAux(SDbLot o) { moLotAux = o; }
+    public void setSDbLotAux(SDbGrindingLot o) { moLotAux = o; }
     public void setWorkbookAux(XSSFWorkbook o) { moWorkbookAux = o; }
 
-    public int getPkLinkId() { return mnPkLinkId; }
+    public int getPkItemGroupId() { return mnPkItemGroupId; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -83,17 +83,17 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
     public int getFkItemId() { return mnFkItemId; }
-    public int getFkGrindingGroupId() { return mnFkGrindingGroupId; }
+    public int getFkReportGroupId() { return mnFkReportGroupId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
     
-    public SDbGrindingGroup getGrindingGroupAux() { return moGroupAux; }
+    public SDbGrindingReportGroup getGrindingGroupAux() { return moGroupAux; }
     
     public String getRangeAux() { return msRangeAux; }
     public SDbItem getSDbItemAux() { return moItemAux; }
-    public SDbLot getSDbLotAux() { return moLotAux; }
+    public SDbGrindingLot getSDbLotAux() { return moLotAux; }
     public XSSFWorkbook getWorkbookAux() { return moWorkbookAux; }
     public ArrayList<SGrindingResumeRow> getResumeHeaderRows() { return grindingRows; }
 
@@ -101,7 +101,7 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkLinkId = 0;
+        mnPkItemGroupId = 0;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -109,7 +109,7 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
         mbDeleted = false;
         mbSystem = false;
         mnFkItemId = 0;
-        mnFkGrindingGroupId = 0;
+        mnFkReportGroupId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -126,12 +126,12 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
     
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkLinkId = pk[0];
+        mnPkItemGroupId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkLinkId };
+        return new int[] { mnPkItemGroupId };
     }
 
     @Override
@@ -141,24 +141,24 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_link = " + mnPkLinkId + " ";
+        return "WHERE id_item_group = " + mnPkItemGroupId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_link = " + pk[0] + " ";
+        return "WHERE id_item_group = " + pk[0] + " ";
     }
     
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkLinkId = 0;
+        mnPkItemGroupId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_link), 0) + 1 FROM " + getSqlTable() + " ";
+        msSql = "SELECT COALESCE(MAX(id_item_group), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkLinkId = resultSet.getInt(1);
+            mnPkItemGroupId = resultSet.getInt(1);
         }
     }
 
@@ -176,15 +176,15 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkLinkId = resultSet.getInt("id_link");
+            mnPkItemGroupId = resultSet.getInt("id_item_group");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkItemId = resultSet.getInt("fk_item");
-            mnFkGrindingGroupId = resultSet.getInt("fk_grin_group");
+            mnFkItemId = resultSet.getInt("fk_item_id");
+            mnFkReportGroupId = resultSet.getInt("fk_rep_group_id");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -193,8 +193,8 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
             mbRegistryNew = false;
         }
 
-        moGroupAux = new SDbGrindingGroup();
-        moGroupAux.read(session, new int[] { mnFkGrindingGroupId } );
+        moGroupAux = new SDbGrindingReportGroup();
+        moGroupAux.read(session, new int[] { mnFkReportGroupId } );
         
         mnQueryResultId = SDbConsts.READ_OK;
     }
@@ -216,40 +216,38 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkLinkId + ", " +
-                    (mbUpdatable ? 1 : 0) + ", " +
-                    (mbDisableable ? 1 : 0) + ", " +
-                    (mbDeletable ? 1 : 0) + ", " +
-                    (mbDisabled ? 1 : 0) + ", " +
-                    (mbDeleted ? 1 : 0) + ", " +
-                    (mbSystem ? 1 : 0) + ", " +
-                    mnFkItemId + ", " +
-                    mnFkGrindingGroupId + ", " +
-                    mnFkUserInsertId + ", " +
-                    mnFkUserUpdateId + ", " +
-                    "NOW()" + ", " +
-                    "NOW()" + " " +
+                    mnPkItemGroupId + ", " + 
+                    (mbUpdatable ? 1 : 0) + ", " + 
+                    (mbDisableable ? 1 : 0) + ", " + 
+                    (mbDeletable ? 1 : 0) + ", " + 
+                    (mbDisabled ? 1 : 0) + ", " + 
+                    (mbDeleted ? 1 : 0) + ", " + 
+                    (mbSystem ? 1 : 0) + ", " + 
+                    mnFkItemId + ", " + 
+                    mnFkReportGroupId + ", " + 
+                    mnFkUserInsertId + ", " + 
+                    mnFkUserUpdateId + ", " + 
+                    "NOW()" + ", " + 
+                    "NOW()" + ", " + 
                     ")";
         }
         else {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    //"id_co = " + mnPkLinkId + ", " +
-                    //"id_cob = " + mnPkBranchId + ", " +
-                    //"id_wah = " + mnPkWarehouseId + ", " +
+                    "id_item_group = " + mnPkItemGroupId + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_item = " + mnFkItemId + ", " +
-                    "fk_grin_group = " + mnFkGrindingGroupId + ", " +
-                    //"fk_usr_ins = " + mnFkUserInsertId + ", " +
+                    "fk_item_id = " + mnFkItemId + ", " +
+                    "fk_rep_group_id = " + mnFkReportGroupId + ", " +
+                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
-                    //"ts_usr_ins = " + "NOW()" + ", " +
-                    "ts_usr_upd = " + "NOW()" + " " +
+                    "ts_usr_ins = " + "NOW()" + ", " +
+                    "ts_usr_upd = " + "NOW()" + ", " +
                     getSqlWhere();
         }
 
@@ -259,12 +257,10 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
     }
 
     @Override
-    public SDbGrindingItemGroup clone() throws CloneNotSupportedException {
-        SDbGrindingItemGroup registry = new SDbGrindingItemGroup();
+    public SDbGrindingReportItemGroup clone() throws CloneNotSupportedException {
+        SDbGrindingReportItemGroup registry = new SDbGrindingReportItemGroup();
 
-        registry.setPkLinkId(this.getPkLinkId());
-        registry.setCode(this.getCode());
-        registry.setName(this.getName());
+        registry.setPkItemGroupId(this.getPkItemGroupId());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
@@ -272,7 +268,7 @@ public class SDbGrindingItemGroup extends SDbRegistryUser {
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
         registry.setFkItemId(this.getFkItemId());
-        registry.setFkGrindingGroupId(this.getFkGrindingGroupId());
+        registry.setFkReportGroupId(this.getFkReportGroupId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

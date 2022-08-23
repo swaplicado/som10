@@ -201,7 +201,7 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
         moGrindingBasc.setDecimalSettings(SGuiUtils.getLabelName(jlGrinBas.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moGrindingOilPercent.setDecimalSettings(SGuiUtils.getLabelName(jlGrinPorc.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
 
-        moGridEvents = new SGridPaneForm(miClient, SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, "Datos de molienda") {
+        moGridEvents = new SGridPaneForm(miClient, SModConsts.S_GRINDING_EVENT, SLibConsts.UNDEFINED, "Datos de molienda") {
             @Override
             public void initGrid() {
                 setRowButtonsEnabled(false);
@@ -237,7 +237,7 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
     }
     
     private void actionSaveGrinding(int option) {
-        if (moGrindingResult.getPkResultId() == 0) {
+        if (moGrindingResult.getPkGrindingId() == 0) {
             moGrindingResult.setDateCapture(mtParamDate);
             moGrindingResult.setFkItemId(mnItem);
             moGrindingResult.setFkLotId(mnLot);

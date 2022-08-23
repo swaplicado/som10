@@ -37,7 +37,7 @@ public class SViewGrindingEvents extends SGridPaneView implements ActionListener
     private Date mtDate;
 
     public SViewGrindingEvents(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, title);
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_GRINDING_EVENT, SLibConsts.UNDEFINED, title);
         this.miClient = client;
         
         moFilterDate = new SGridFilterDate(miClient, this);
@@ -96,7 +96,7 @@ public class SViewGrindingEvents extends SGridPaneView implements ActionListener
                 + "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", "
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_EVENT) + " AS v "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_EVENT) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
                 + "v.fk_item = i.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "

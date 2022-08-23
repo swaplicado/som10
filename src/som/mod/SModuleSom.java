@@ -26,7 +26,7 @@ import som.mod.som.db.SDbInputSource;
 import som.mod.som.db.SDbInputType;
 import som.mod.som.db.SDbIodineValueRank;
 import som.mod.som.db.SDbItem;
-import som.mod.som.db.SDbLot;
+import som.mod.som.db.SDbGrindingLot;
 import som.mod.som.db.SDbProducer;
 import som.mod.som.db.SDbScale;
 import som.mod.som.db.SDbUnit;
@@ -38,7 +38,7 @@ import som.mod.som.form.SFormInputSource;
 import som.mod.som.form.SFormInputType;
 import som.mod.som.form.SFormIodineValueRank;
 import som.mod.som.form.SFormItem;
-import som.mod.som.form.SFormLot;
+import som.mod.som.form.SFormGrindingLot;
 import som.mod.som.form.SFormProducer;
 import som.mod.som.form.SFormScale;
 import som.mod.som.view.SViewExternalWarehouse;
@@ -48,7 +48,7 @@ import som.mod.som.view.SViewInputSource;
 import som.mod.som.view.SViewInputType;
 import som.mod.som.view.SViewIodineValueRank;
 import som.mod.som.view.SViewItem;
-import som.mod.som.view.SViewLots;
+import som.mod.som.view.SViewGrindingLots;
 import som.mod.som.view.SViewProducer;
 import som.mod.som.view.SViewScale;
 
@@ -64,7 +64,7 @@ public class SModuleSom extends SGuiModule {
     private SFormInputType moFormInputType;
     private SFormInputSource moformFormInputSource;
     private SFormItem moFormItem;
-    private SFormLot SFormLot;
+    private SFormGrindingLot SFormLot;
     private SFormScale moFormScale;
     private SFormProducer moFormProducer;
     private SFormIodineValueRank moFormIodineValueRank;
@@ -110,8 +110,8 @@ public class SModuleSom extends SGuiModule {
             case SModConsts.SU_ITEM:
                 registry = new SDbItem();
                 break;
-            case SModConsts.SU_LOT:
-                registry = new SDbLot();
+            case SModConsts.S_GRINDING_LOT:
+                registry = new SDbGrindingLot();
                 break;
             case SModConsts.SU_SCA:
                 registry = new SDbScale();
@@ -280,7 +280,7 @@ public class SModuleSom extends SGuiModule {
                 sql = "SELECT id_prod AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_prod ";
                 break;
-            case SModConsts.SU_LOT:
+            case SModConsts.S_GRINDING_LOT:
                 settings = new SGuiCatalogueSettings("Lotes", 1);
                 settings.setCodeApplying(false);
                 
@@ -294,18 +294,18 @@ public class SModuleSom extends SGuiModule {
                 sql = "SELECT id_lot AS " + SDbConsts.FIELD_ID + "1, lot AS " + SDbConsts.FIELD_ITEM + ", lot AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 " + aux + " ORDER BY id_lot DESC, lot ASC;";
                 break;
-            case SModConsts.CU_PARAMS:
+            case SModConsts.SU_GRINDING_PARAM:
                 settings = new SGuiCatalogueSettings("Parámetros", 1);
                 settings.setCodeApplying(true);
-                sql = "SELECT id_parameter AS " + SDbConsts.FIELD_ID + "1, parameter AS " + SDbConsts.FIELD_ITEM + ", param_code AS " + SDbConsts.FIELD_CODE + " "
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY parameter, id_parameter ";
+                sql = "SELECT id_param AS " + SDbConsts.FIELD_ID + "1, param AS " + SDbConsts.FIELD_ITEM + ", param_code AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY param, id_param ";
                 break;
             case SModConsts.SS_LINK_CFG_ITEMS:
                 settings = new SGuiCatalogueSettings("Ítems configurados", 1);
                 settings.setCodeApplying(true);
                 sql = "SELECT id_item AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " WHERE b_del = 0 AND id_item IN "
-                        + "(SELECT DISTINCT fk_item_id FROM cu_link_itm_params WHERE b_del = 0) "
+                        + "(SELECT DISTINCT fk_item_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " WHERE b_del = 0) "
                         + "ORDER BY name, id_item ";
                 break;
             case SModConsts.SU_IOD_VAL_RANK:
@@ -353,8 +353,8 @@ public class SModuleSom extends SGuiModule {
             case SModConsts.SU_ITEM:
                 view = new SViewItem(miClient, "Ítems");
                 break;
-            case SModConsts.SU_LOT:
-                view = new SViewLots(miClient, "Lotes");
+            case SModConsts.S_GRINDING_LOT:
+                view = new SViewGrindingLots(miClient, "Lotes");
                 break;
             case SModConsts.SU_SCA:
                 view = new SViewScale(miClient, "Básculas");
@@ -406,8 +406,8 @@ public class SModuleSom extends SGuiModule {
                 if (moFormItem == null) moFormItem = new SFormItem(miClient, "Ítem");
                 form = moFormItem;
                 break;
-            case SModConsts.SU_LOT:
-                if (SFormLot == null) SFormLot = new SFormLot(miClient, "Lote");
+            case SModConsts.S_GRINDING_LOT:
+                if (SFormLot == null) SFormLot = new SFormGrindingLot(miClient, "Lote");
                 form = SFormLot;
                 break;
             case SModConsts.SU_SCA:

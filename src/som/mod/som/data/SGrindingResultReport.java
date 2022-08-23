@@ -7,7 +7,7 @@ package som.mod.som.data;
 
 import java.util.ArrayList;
 import java.util.Date;
-import som.mod.cfg.db.SDbLinkGrindingFormula;
+import som.mod.som.db.SDbGrindingLinkFormula;
 
 /**
  *
@@ -45,5 +45,5 @@ public class SGrindingResultReport {
     String result04;
     String result06;
     
-    ArrayList<SDbLinkGrindingFormula> formulas;
+    ArrayList<SDbGrindingLinkFormula> formulas;
 }

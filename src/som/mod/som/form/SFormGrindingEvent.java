@@ -29,7 +29,7 @@ public class SFormGrindingEvent extends SBeanForm {
      * Creates new form SFormSeason
      */
     public SFormGrindingEvent(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, title);
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.S_GRINDING_EVENT, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -169,8 +169,8 @@ public class SFormGrindingEvent extends SBeanForm {
 
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
-            moRegistry.setStartDate(init);
-            moRegistry.setEndDate(init);
+            moRegistry.setDateStart(init);
+            moRegistry.setDateEnd(init);
             jtfRegistryKey.setText("");
         }
         else {
@@ -179,8 +179,8 @@ public class SFormGrindingEvent extends SBeanForm {
 
         moDescription.setValue(moRegistry.getDescription());
         moKeyItem.setValue(new int[] {moRegistry.getFkItemId()});
-        moDateDateStart.setValue(moRegistry.getStartDate());
-        moDateDateEnd.setValue(moRegistry.getEndDate());
+        moDateDateStart.setValue(moRegistry.getDateStart());
+        moDateDateEnd.setValue(moRegistry.getDateEnd());
 
         setFormEditable(true);
 
@@ -195,8 +195,8 @@ public class SFormGrindingEvent extends SBeanForm {
 
         registry.setDescription(moDescription.getValue());
         registry.setFkItemId(moKeyItem.getValue()[0]);
-        registry.setStartDate(moDateDateStart.getValue());
-        registry.setEndDate(moDateDateEnd.getValue());
+        registry.setDateStart(moDateDateStart.getValue());
+        registry.setDateEnd(moDateDateEnd.getValue());
 
         return registry;
     }

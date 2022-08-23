@@ -23,14 +23,14 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SViewLots extends SGridPaneView implements ActionListener {
+public class SViewGrindingLots extends SGridPaneView implements ActionListener {
     
     private SPaneFilter moPaneFilter;
     
     SGuiClient miClient;
 
-    public SViewLots(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SU_LOT, SLibConsts.UNDEFINED, title);
+    public SViewGrindingLots(SGuiClient client, String title) {
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_GRINDING_LOT, SLibConsts.UNDEFINED, title);
         this.miClient = client;
         
         moPaneFilter = new SPaneFilter(this, SModConsts.SU_ITEM);
@@ -82,7 +82,7 @@ public class SViewLots extends SGridPaneView implements ActionListener {
                 + "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", "
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_LOT) + " AS v "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
                 + "v.fk_item_id = i.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "

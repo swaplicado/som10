@@ -29,16 +29,16 @@ import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiDate;
 import som.mod.SModConsts;
-import som.mod.cfg.db.SDbLinkItemParameter;
+import som.mod.som.db.SDbGrindingLinkItemParameter;
 import som.mod.som.db.SDbGrindingResult;
-import som.mod.som.db.SDbLot;
+import som.mod.som.db.SDbGrindingLot;
 import som.mod.som.data.SGrindingData;
 import som.mod.som.data.SGrindingReport;
 import som.mod.som.data.SGrindingResultsUtils;
 import som.mod.som.form.SDialogEvents;
 import som.mod.som.form.SDialogGrindingData;
 import som.mod.som.form.SFormGrindingResultHr;
-import som.mod.som.form.SFormResultNew;
+import som.mod.som.form.SFormGrindingResultNew;
 
 /**
  *
@@ -67,7 +67,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
     private double mdGrindingOil;
 
     public SViewGrindingResults(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SU_GRINDING_RESULTS, SLibConsts.UNDEFINED, title);
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_GRINDING_RESULT, SLibConsts.UNDEFINED, title);
         this.miClient = client;
         
         moFilterDate = new SGridFilterDate(miClient, this);
@@ -115,7 +115,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
         
         moFilterDate.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_DATE, dt.getTime()));
         mtDate = dt;
-        miClient.getSession().notifySuscriptors(SModConsts.SU_GRINDING_RESULTS);
+        miClient.getSession().notifySuscriptors(SModConsts.S_GRINDING_RESULT);
     }
     
     private void actionSendMail() {
@@ -196,7 +196,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 
                 mnLot = SGrindingResultsUtils.getLastLotByItem(miClient, ((int[]) filter)[0]);
                 
-                SDbLot oLot = new SDbLot();
+                SDbGrindingLot oLot = new SDbGrindingLot();
                 oLot.read(miClient.getSession(), new int [] { mnLot });
                 
                 jtLot.setText(oLot.getLot());
@@ -223,11 +223,11 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
 
         msSql = "SELECT "
                 + "v.id_result AS " + SDbConsts.FIELD_ID + "1, "
-                + "v.fk_parameter_id AS " + SDbConsts.FIELD_ID + "2, "
+                + "v.fk_param_id AS " + SDbConsts.FIELD_ID + "2, "
                 + "gp.param_code AS " + SDbConsts.FIELD_CODE + ", "
-                + "gp.parameter AS " + SDbConsts.FIELD_NAME + ", "
+                + "gp.param AS " + SDbConsts.FIELD_NAME + ", "
                 + "COALESCE(v.dt_capture, '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "') AS " + SDbConsts.FIELD_DATE + ", "
-                + "v.fk_parameter_id AS " + SDbConsts.FIELD_COMP + "1, "
+                + "v.fk_param_id AS " + SDbConsts.FIELD_COMP + "1, "
                 + "gp.b_text, "
                 + "gp.def_text_value, "
                 + "v.capture_order AS order_res, "
@@ -238,7 +238,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 + " (@dg := (SELECT " +
                     "  grinding_oil_perc " +
                     "FROM " +
-                    " su_grinding " +
+                    " " + SModConsts.TablesMap.get(SModConsts.S_GRINDING) + " " +
                     "WHERE " +
                     " fk_item_id = v.fk_item_id " +
                     " AND fk_lot_id = v.fk_lot_id " +
@@ -294,9 +294,9 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 + "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", "
                 + "'' AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "'' AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_RESULTS) + " AS v "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_PARAMS) + " AS gp ON "
-                + "gp.id_parameter = v.fk_parameter_id AND NOT gp.b_del "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " AS v "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_PARAM) + " AS gp ON "
+                + "gp.id_param = v.fk_param_id AND NOT gp.b_del "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
                 + "v.fk_item_id = i.id_item "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)
@@ -348,7 +348,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 return;
             }
             
-            SDbLinkItemParameter dbLink = new SDbLinkItemParameter();
+            SDbGrindingLinkItemParameter dbLink = new SDbGrindingLinkItemParameter();
             SDbGrindingResult dbResult = new SDbGrindingResult();
             try {
                 
@@ -359,7 +359,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 dbResult.setDateCapture(mtDate);
                 dbResult.setFkItemId(dbLink.getFkItemId());
                 dbResult.setFkParameterId(dbLink.getFkParameterId());
-                dbResult.setOrder(dbLink.getOrder());
+                dbResult.setOrder(dbLink.getCaptureOrder());
                 
                 form.setRegistry(dbResult);
                 form.setVisible(true);
@@ -376,11 +376,11 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
     
     @Override
     public void actionRowNew() {
-        SFormResultNew form;
+        SFormGrindingResultNew form;
         
         SDbGrindingResult dbResult = new SDbGrindingResult();
                 
-        form = new SFormResultNew(miClient, "Captura Resultados Molienda");
+        form = new SFormGrindingResultNew(miClient, "Captura Resultados Molienda");
         
         dbResult.setDateCapture(mtDate);
         
@@ -407,7 +407,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                                                         dbResult.getDateCapture());
 
                 mnLot = dbResult.getFkLotId();
-                miClient.getSession().notifySuscriptors(SModConsts.SU_GRINDING_RESULTS);
+                miClient.getSession().notifySuscriptors(SModConsts.S_GRINDING_RESULT);
             }
             
         }

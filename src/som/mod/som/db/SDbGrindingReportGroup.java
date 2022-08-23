@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package som.mod.cfg.db;
+package som.mod.som.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,9 +18,9 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SDbGrindingGroup extends SDbRegistryUser {
+public class SDbGrindingReportGroup extends SDbRegistryUser {
 
-    protected int mnPkGrindingGroupId;
+    protected int mnPkReportGroupId;
     protected String msCode;
     protected String msName;
     
@@ -37,12 +37,12 @@ public class SDbGrindingGroup extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-    public SDbGrindingGroup() {
-        super(SModConsts.CU_GRINDING_GROUPS);
+    public SDbGrindingReportGroup() {
+        super(SModConsts.SU_GRINDING_REP_GROUP);
         initRegistry();
     }
 
-    public void setPkGrindingGroupId(int n) { mnPkGrindingGroupId = n; }
+    public void setPkReportGroupId(int n) { mnPkReportGroupId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -56,7 +56,7 @@ public class SDbGrindingGroup extends SDbRegistryUser {
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkGrindingGroupId() { return mnPkGrindingGroupId; }
+    public int getPkReportGroupId() { return mnPkReportGroupId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -72,19 +72,19 @@ public class SDbGrindingGroup extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkGrindingGroupId = pk[0];
+        mnPkReportGroupId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkGrindingGroupId };
+        return new int[] { mnPkReportGroupId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkGrindingGroupId = 0;
+        mnPkReportGroupId = 0;
         msCode = "";
         msName = "";
         mbUpdatable = false;
@@ -106,24 +106,24 @@ public class SDbGrindingGroup extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_group = " + mnPkGrindingGroupId + " ";
+        return "WHERE id_rep_group = " + mnPkReportGroupId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_group = " + pk[0] + " ";
+        return "WHERE id_rep_group = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkGrindingGroupId = 0;
+        mnPkReportGroupId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_group), 0) + 1 FROM " + getSqlTable() + " ";
+        msSql = "SELECT COALESCE(MAX(id_rep_group), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkGrindingGroupId = resultSet.getInt(1);
+            mnPkReportGroupId = resultSet.getInt(1);
         }
     }
 
@@ -141,7 +141,7 @@ public class SDbGrindingGroup extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkGrindingGroupId = resultSet.getInt("id_group");
+            mnPkReportGroupId = resultSet.getInt("id_rep_group");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -178,7 +178,7 @@ public class SDbGrindingGroup extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkGrindingGroupId + ", " + 
+                    mnPkReportGroupId + ", " + 
                     "'" + msCode + "', " + 
                     "'" + msName + "', " + 
                     (mbUpdatable ? 1 : 0) + ", " + 
@@ -189,15 +189,15 @@ public class SDbGrindingGroup extends SDbRegistryUser {
                     (mbSystem ? 1 : 0) + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
-                    "NOW()" + ", " +
-                    "NOW()" + " " +
+                    "NOW()" + ", " + 
+                    "NOW()" + ", " + 
                     ")";
         }
         else {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    //"id_group = " + mnPkGrindingGroupId + ", " +
+//                    "id_rep_group = " + mnPkReportGroupId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -206,10 +206,10 @@ public class SDbGrindingGroup extends SDbRegistryUser {
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    //"fk_usr_ins = " + mnFkUserInsertId + ", " +
+//                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
-                    //"ts_usr_ins = " + "NOW()" + ", " +
-                    "ts_usr_upd = " + "NOW()" + " " +
+//                    "ts_usr_ins = " + "NOW()" + ", " +
+                    "ts_usr_upd = " + "NOW()" + ", " +
                     getSqlWhere();
         }
 
@@ -219,10 +219,10 @@ public class SDbGrindingGroup extends SDbRegistryUser {
     }
 
     @Override
-    public SDbGrindingGroup clone() throws CloneNotSupportedException {
-        SDbGrindingGroup registry = new SDbGrindingGroup();
+    public SDbGrindingReportGroup clone() throws CloneNotSupportedException {
+        SDbGrindingReportGroup registry = new SDbGrindingReportGroup();
 
-        registry.setPkGrindingGroupId(this.getPkGrindingGroupId());
+        registry.setPkReportGroupId(this.getPkReportGroupId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
         registry.setUpdatable(this.isUpdatable());

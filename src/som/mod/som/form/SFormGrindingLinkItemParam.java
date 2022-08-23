@@ -2,12 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package som.mod.cfg.form;
+package som.mod.som.form;
 
 import erp.lib.SLibConstants;
 import erp.lib.SLibUtilities;
-import erp.mod.SModConsts;
-import som.mod.cfg.db.SDbLinkItemParameter;
+import som.mod.som.db.SDbGrindingLinkItemParameter;
 import java.awt.event.ItemEvent;
 import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
@@ -17,21 +16,22 @@ import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
+import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 
 /**
  *
  * @author Edwin Carmona
  */
-public class SFormLinkItemParam extends sa.lib.gui.bean.SBeanForm {
+public class SFormGrindingLinkItemParam extends sa.lib.gui.bean.SBeanForm {
 
-    private SDbLinkItemParameter moRegistry;
+    private SDbGrindingLinkItemParameter moRegistry;
     
     /**
-     * Creates new form SFormTaxItemLink
+     * Creates new form SFormGrindingLinkItemParam
      */
-    public SFormLinkItemParam(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.FIN_ABP_ITEM_LINK, SLibConstants.UNDEFINED, title);
+    public SFormGrindingLinkItemParam(SGuiClient client, String title) {
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_GRINDING_LINK_ITEM_PARAM, SLibConstants.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -169,13 +169,13 @@ public class SFormLinkItemParam extends sa.lib.gui.bean.SBeanForm {
     public void reloadCatalogues() {
         SGuiParams params = new SGuiParams();
         
-        miClient.getSession().populateCatalogue(moKeyParameter, som.mod.SModConsts.CU_PARAMS, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyParameter, som.mod.SModConsts.SU_GRINDING_PARAM, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyItem, som.mod.SModConsts.SU_ITEM, SModSysConsts.SS_ITEM_TP_RM, null);
     }
 
     @Override
     public void setRegistry(SDbRegistry registry) throws Exception {
-        moRegistry = (SDbLinkItemParameter) registry;
+        moRegistry = (SDbGrindingLinkItemParameter) registry;
 
         mnFormResult = SLibConsts.UNDEFINED;
         mbFirstActivation = true;
@@ -193,7 +193,7 @@ public class SFormLinkItemParam extends sa.lib.gui.bean.SBeanForm {
         
         moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
         moKeyParameter.setValue(new int[] { moRegistry.getFkParameterId() });
-        moIntOrder.setValue(moRegistry.getOrder());
+        moIntOrder.setValue(moRegistry.getCaptureOrder());
         
         setFormEditable(true);
         
@@ -209,9 +209,9 @@ public class SFormLinkItemParam extends sa.lib.gui.bean.SBeanForm {
 
     @Override
     public SDbRegistry getRegistry() throws Exception {
-        SDbLinkItemParameter registry = moRegistry.clone();
+        SDbGrindingLinkItemParameter registry = moRegistry.clone();
         
-        moRegistry.setOrder(moRegistry.getOrder());
+        moRegistry.setCaptureOrder(moRegistry.getCaptureOrder());
         moRegistry.setFkItemId(moKeyItem.getValue()[0]);
         moRegistry.setFkParameterId(moKeyParameter.getValue()[0]);
         

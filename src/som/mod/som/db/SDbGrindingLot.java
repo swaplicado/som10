@@ -19,12 +19,11 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SDbLot extends SDbRegistryUser {
+public class SDbGrindingLot extends SDbRegistryUser {
 
     protected int mnPkLotId;
     protected String msLot;
-    protected Date mtLotExpiration;
-    protected int mnFkItemId;
+    protected Date mtExpiration;
     
     /*
     protected boolean mbUpdatable;
@@ -33,14 +32,19 @@ public class SDbLot extends SDbRegistryUser {
     protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    
+    protected int mnFkItemId;
+    
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
 
-    public SDbLot() {
-        super(SModConsts.SU_LOT);
+    public SDbGrindingLot() {
+        super(SModConsts.S_GRINDING_LOT);
         initRegistry();
     }
 
@@ -55,7 +59,7 @@ public class SDbLot extends SDbRegistryUser {
     
     public void setPkLotId(int n) { mnPkLotId = n; }
     public void setLot(String s) { msLot = s; }
-    public void setLotExpiration(Date t) { mtLotExpiration = t; }
+    public void setExpiration(Date t) { mtExpiration = t; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -70,7 +74,7 @@ public class SDbLot extends SDbRegistryUser {
 
     public int getPkLotId() { return mnPkLotId; }
     public String getLot() { return msLot; }
-    public Date getLotExpiration() { return mtLotExpiration; }
+    public Date getExpiration() { return mtExpiration; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -99,7 +103,7 @@ public class SDbLot extends SDbRegistryUser {
 
         mnPkLotId = 0;
         msLot = "";
-        mtLotExpiration = null;
+        mtExpiration = null;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -157,7 +161,7 @@ public class SDbLot extends SDbRegistryUser {
         else {
             mnPkLotId = resultSet.getInt("id_lot");
             msLot = resultSet.getString("lot");
-            mtLotExpiration = resultSet.getDate("expiration");
+            mtExpiration = resultSet.getDate("expiration");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -197,7 +201,7 @@ public class SDbLot extends SDbRegistryUser {
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkLotId + ", " +
                     "'" + msLot + "', " +
-                    "'" + SLibUtils.DbmsDateFormatDate.format(mtLotExpiration) + "', " +
+                    "'" + SLibUtils.DbmsDateFormatDate.format(mtExpiration) + "', " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -217,7 +221,7 @@ public class SDbLot extends SDbRegistryUser {
             msSql = "UPDATE " + getSqlTable() + " SET " +
                     //"id_seas = " + mnPkSeasonId + ", " +
                     "lot = '" + msLot + "', " +
-                    "expiration = '" + SLibUtils.DbmsDateFormatDatetime.format(mtLotExpiration) + "', " +
+                    "expiration = '" + SLibUtils.DbmsDateFormatDatetime.format(mtExpiration) + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -240,12 +244,12 @@ public class SDbLot extends SDbRegistryUser {
     }
 
     @Override
-    public SDbLot clone() throws CloneNotSupportedException {
-        SDbLot registry = new SDbLot();
+    public SDbGrindingLot clone() throws CloneNotSupportedException {
+        SDbGrindingLot registry = new SDbGrindingLot();
 
         registry.setPkLotId(this.getPkLotId());
         registry.setLot(this.getLot());
-        registry.setLotExpiration(this.getLotExpiration());
+        registry.setExpiration(this.getExpiration());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
