@@ -36,3 +36,4 @@ config*.xml
 *.jrxml
 *.log
 output/
+.tmp.driveupload/
