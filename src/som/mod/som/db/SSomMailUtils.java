@@ -545,13 +545,15 @@ public class SSomMailUtils {
      * @param dateStart Start date.
      * @param dateEnd End date.
      * @param isMailer
+     * @param ordinaryPeriod
+     * @param noReceptionMail
      * @param daysToSendMail
      * @param mailTo
      * @param mailBcc
      * @return int Mails sent.
      */
-    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isMailer, final int daysToSendMail, 
-            final String mailTo, final String mailBcc) {
+    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isMailer, final boolean ordinaryPeriod,
+            final String noReceptionMail, final int daysToSendMail, final String mailTo, final String mailBcc) {
         int count = 0;
         boolean isByDate;
         boolean sent = false;
@@ -1089,37 +1091,39 @@ public class SSomMailUtils {
                     count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
                 }
                 else {
-                    sql = "SELECT * FROM s_cli_umn_log WHERE b_sent ORDER BY id DESC LIMIT 1;";
-                    resultSet = statement.executeQuery(sql);
-                    if (resultSet.next()) {
-                        long daysLastMailSent = SLibTimeUtils.getDaysDiff(dateStart, resultSet.getDate("ts_exe"));
-                        if (daysLastMailSent >= daysToSendMail) {
-                            Statement statementAux = session.getDatabase().getConnection().createStatement();
-                            ResultSet resultSetAux;
-                            sql = "SELECT * FROM s_cli_umn_log WHERE b_data ORDER BY id DESC LIMIT 1;";
-                            resultSetAux = statementAux.executeQuery(sql);
-                            Date lastReception = null;
-                            if (resultSetAux.next()) {
-                                lastReception = resultSetAux.getDate("ts_exe");
+                    if ((ordinaryPeriod && noReceptionMail.equals("1")) || noReceptionMail.equals("2")) {
+                        sql = "SELECT * FROM s_cli_umn_log WHERE b_sent ORDER BY id DESC LIMIT 1;";
+                        resultSet = statement.executeQuery(sql);
+                        if (resultSet.next()) {
+                            long daysLastMailSent = SLibTimeUtils.getDaysDiff(dateStart, resultSet.getDate("ts_exe"));
+                            if (daysLastMailSent >= daysToSendMail) {
+                                Statement statementAux = session.getDatabase().getConnection().createStatement();
+                                ResultSet resultSetAux;
+                                sql = "SELECT * FROM s_cli_umn_log WHERE b_data ORDER BY id DESC LIMIT 1;";
+                                resultSetAux = statementAux.executeQuery(sql);
+                                Date lastReception = null;
+                                if (resultSetAux.next()) {
+                                    lastReception = resultSetAux.getDate("ts_exe");
+                                }
+                                Calendar c = Calendar.getInstance();
+                                c.setTime(lastReception);
+                                String dayOfWeek = getDayOfWeek(c.get(Calendar.DAY_OF_WEEK)); 
+                                long daysLastReception = SLibTimeUtils.getDaysDiff(dateStart, lastReception);
+                                message = "(" + (daysLastReception == 1 ? "Va 1 día" : "Van " + daysLastReception + " días") + " sin recepciones de semillas, desde el " + dayOfWeek + " " + SLibUtils.DateFormatDate.format(lastReception) + ".)";
+                                count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
+                                sent = true;
                             }
-                            Calendar c = Calendar.getInstance();
-                            c.setTime(lastReception);
-                            String dayOfWeek = getDayOfWeek(c.get(Calendar.DAY_OF_WEEK)); 
-                            long daysLastReception = SLibTimeUtils.getDaysDiff(dateStart, lastReception);
-                            message = "(" + (daysLastReception == 1 ? "Va 1 día" : "Van " + daysLastReception + " días") + " sin recepciones de semillas, desde el " + dayOfWeek + " " + SLibUtils.DateFormatDate.format(lastReception) + ".)";
+                        }
+                        else {
                             count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
                             sent = true;
                         }
-                        sql = "SELECT max(id) FROM s_cli_umn_log";
-                        try (ResultSet id = statement.executeQuery(sql)) {
-                            if (id.next()) {
-                                maxId = id.getInt(1);
-                            }
-                        }
                     }
-                    else {
-                        count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
-                        sent = true;
+                    sql = "SELECT MAX(id) FROM s_cli_umn_log";
+                    try (ResultSet id = statement.executeQuery(sql)) {
+                        if (id.next()) {
+                            maxId = id.getInt(1);
+                        }
                     }
                     
                     sql = "INSERT INTO s_cli_umn_log (id, b_data, b_sent, ts_exe) VALUES (" + (maxId + 1) + ", false, " + sent + ", NOW());";
@@ -1135,7 +1139,7 @@ public class SSomMailUtils {
                 sent = true;
                 count++;
                 if (isMailer) {
-                    sql = "SELECT max(id) FROM s_cli_umn_log";
+                    sql = "SELECT MAX(id) FROM s_cli_umn_log";
                     try (ResultSet id = statement.executeQuery(sql)) {
                         if (id.next()) {
                             maxId = id.getInt(1);

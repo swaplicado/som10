@@ -26,6 +26,12 @@ public class SDbSeason extends SDbRegistryUser {
     protected String msName;
     protected Date mtDateStart;
     protected Date mtDateEnd;
+    protected int mnReceptPeriodMonthStart;
+    protected int mnReceptPeriodMonthEnd;
+    protected String msSysMailNotificationReception;
+    protected String msSysMailNotificationNoReception;
+    protected int mnSysMailNotificationNoReceptionIntIn;
+    protected int mnSysMailNotificationNoReceptionIntOut;
     protected boolean mbClosed;
     /*
     protected boolean mbUpdatable;
@@ -114,6 +120,12 @@ public class SDbSeason extends SDbRegistryUser {
     public void setName(String s) { msName = s; }
     public void setDateStart(Date t) { mtDateStart = t; }
     public void setDateEnd(Date t) { mtDateEnd = t; }
+    public void setReceptPeriodMonthStart(int n) { mnReceptPeriodMonthStart = n; }
+    public void setReceptPeriodMonthEnd(int n) { mnReceptPeriodMonthEnd = n; }
+    public void setSysMailNotificationReception(String s) { msSysMailNotificationReception = s; }
+    public void setSysMailNotificationNoReception(String s) { msSysMailNotificationNoReception = s; }
+    public void setSysMailNotificationNoReceptionIntIn(int n) { mnSysMailNotificationNoReceptionIntIn = n; }
+    public void setSysMailNotificationNoReceptionIntOut(int n) { mnSysMailNotificationNoReceptionIntOut = n; }
     public void setClosed(boolean b) { mbClosed = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
@@ -131,6 +143,12 @@ public class SDbSeason extends SDbRegistryUser {
     public String getName() { return msName; }
     public Date getDateStart() { return mtDateStart; }
     public Date getDateEnd() { return mtDateEnd; }
+    public int getReceptPeriodMonthStart() { return mnReceptPeriodMonthStart; }
+    public int getReceptPeriodMonthEnd() { return mnReceptPeriodMonthEnd; }
+    public String getSysMailNotificationReception() { return msSysMailNotificationReception; }
+    public String getSysMailNotificationNoReception() { return msSysMailNotificationNoReception; }
+    public int getSysMailNotificationNoReceptionIntIn() { return mnSysMailNotificationNoReceptionIntIn; }
+    public int getSysMailNotificationNoReceptionIntOut() { return mnSysMailNotificationNoReceptionIntOut; }
     public boolean isClosed() { return mbClosed; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
@@ -162,6 +180,12 @@ public class SDbSeason extends SDbRegistryUser {
         msName = "";
         mtDateStart = null;
         mtDateEnd = null;
+        mnReceptPeriodMonthStart = 0;
+        mnReceptPeriodMonthEnd = 0;
+        msSysMailNotificationReception = "";
+        msSysMailNotificationNoReception = "";
+        mnSysMailNotificationNoReceptionIntIn = 0;
+        mnSysMailNotificationNoReceptionIntOut = 0;
         mbClosed = false;
         mbUpdatable = false;
         mbDisableable = false;
@@ -222,6 +246,12 @@ public class SDbSeason extends SDbRegistryUser {
             msName = resultSet.getString("name");
             mtDateStart = resultSet.getDate("dt_sta");
             mtDateEnd = resultSet.getDate("dt_end");
+            mnReceptPeriodMonthStart = resultSet.getInt("rec_per_month_sta");
+            mnReceptPeriodMonthEnd = resultSet.getInt("rec_per_month_end");
+            msSysMailNotificationReception = resultSet.getString("smn_rec");
+            msSysMailNotificationNoReception = resultSet.getString("smn_no_rec");
+            mnSysMailNotificationNoReceptionIntIn = resultSet.getInt("smn_no_rec_int_in");
+            mnSysMailNotificationNoReceptionIntOut = resultSet.getInt("smn_no_rec_int_out");
             mbClosed = resultSet.getBoolean("b_clo");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
@@ -264,6 +294,12 @@ public class SDbSeason extends SDbRegistryUser {
                     "'" + msName + "', " +
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDateStart) + "', " +
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDateEnd) + "', " +
+                    mnReceptPeriodMonthStart + ", " + 
+                    mnReceptPeriodMonthEnd + ", " + 
+                    "'" + msSysMailNotificationReception + "', " + 
+                    "'" + msSysMailNotificationNoReception + "', " + 
+                    mnSysMailNotificationNoReceptionIntIn + ", " + 
+                    mnSysMailNotificationNoReceptionIntOut + ", " + 
                     (mbClosed ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
@@ -286,6 +322,12 @@ public class SDbSeason extends SDbRegistryUser {
                     "name = '" + msName + "', " +
                     "dt_sta = '" + SLibUtils.DbmsDateFormatDate.format(mtDateStart) + "', " +
                     "dt_end = '" + SLibUtils.DbmsDateFormatDate.format(mtDateEnd) + "', " +
+                    "rec_per_month_sta = " + mnReceptPeriodMonthStart + ", " +
+                    "rec_per_month_end = " + mnReceptPeriodMonthEnd + ", " +
+                    "smn_rec = '" + msSysMailNotificationReception + "', " +
+                    "smn_no_rec = '" + msSysMailNotificationNoReception + "', " +
+                    "smn_no_rec_int_in = " + mnSysMailNotificationNoReceptionIntIn + ", " +
+                    "smn_no_rec_int_out = " + mnSysMailNotificationNoReceptionIntOut + ", " +
                     "b_clo = " + (mbClosed ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
@@ -317,6 +359,12 @@ public class SDbSeason extends SDbRegistryUser {
         registry.setName(this.getName());
         registry.setDateStart(this.getDateStart());
         registry.setDateEnd(this.getDateEnd());
+        registry.setReceptPeriodMonthStart(this.getReceptPeriodMonthStart());
+        registry.setReceptPeriodMonthEnd(this.getReceptPeriodMonthEnd());
+        registry.setSysMailNotificationReception(this.getSysMailNotificationReception());
+        registry.setSysMailNotificationNoReception(this.getSysMailNotificationNoReception());
+        registry.setSysMailNotificationNoReceptionIntIn(this.getSysMailNotificationNoReceptionIntIn());
+        registry.setSysMailNotificationNoReceptionIntOut(this.getSysMailNotificationNoReceptionIntOut());
         registry.setClosed(this.isClosed());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());

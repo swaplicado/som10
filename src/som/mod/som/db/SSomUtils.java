@@ -41,6 +41,7 @@ public abstract class SSomUtils {
      * @param itemId Item ID.
      * @param producerId Producer ID.
      * @return Proper season ID.
+     * @throws java.lang.Exception
      */
     public static int getProperSeasonId(SGuiSession session, Date date, int itemId, int producerId) throws Exception {
         int seasonId = 0;
