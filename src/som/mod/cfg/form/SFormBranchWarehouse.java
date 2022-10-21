@@ -13,6 +13,7 @@ import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
+import som.mod.SModSysConsts;
 import som.mod.cfg.db.SDbBranchWarehouse;
 
 /**
@@ -24,7 +25,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private SDbBranchWarehouse moRegistry;
 
     /**
-     * Creates new form SFormCompany
+     * Creates new registry SFormBranchWarehouse
      */
     public SFormBranchWarehouse(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.CU_WAH, SLibConsts.UNDEFINED, title);
@@ -42,6 +43,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private void initComponents() {
 
         jPanel3 = new javax.swing.JPanel();
+        buttonGroupOrientation = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
@@ -78,6 +80,17 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         jlAdjust = new javax.swing.JLabel();
         moDecAdjust = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlAdjustlLiterUnit = new javax.swing.JLabel();
+        jPanel14 = new javax.swing.JPanel();
+        jlOrientation = new javax.swing.JLabel();
+        moRadVertical = new sa.lib.gui.bean.SBeanFieldRadio();
+        moRadHorizontal = new sa.lib.gui.bean.SBeanFieldRadio();
+        jPanel15 = new javax.swing.JPanel();
+        jlVolCalcType = new javax.swing.JLabel();
+        moKeyVolCalcType = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel16 = new javax.swing.JPanel();
+        jlName1 = new javax.swing.JLabel();
+        moBoolMobile = new sa.lib.gui.bean.SBeanFieldBoolean();
+        moBoolPremise = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel6 = new javax.swing.JPanel();
         jlNote = new javax.swing.JLabel();
         moTextNote = new sa.lib.gui.bean.SBeanFieldText();
@@ -86,7 +99,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         jPanel1.setPreferredSize(new java.awt.Dimension(560, 350));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(10, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(15, 1, 0, 5));
 
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -206,6 +219,46 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
         jPanel2.add(jPanel13);
 
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlOrientation.setText("Orientación:*");
+        jlOrientation.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel14.add(jlOrientation);
+
+        buttonGroupOrientation.add(moRadVertical);
+        moRadVertical.setText("Vertical");
+        jPanel14.add(moRadVertical);
+
+        buttonGroupOrientation.add(moRadHorizontal);
+        moRadHorizontal.setText("Horizontal");
+        jPanel14.add(moRadHorizontal);
+
+        jPanel2.add(jPanel14);
+
+        jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlVolCalcType.setText("Tipo cálculo vol.:*");
+        jlVolCalcType.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel15.add(jlVolCalcType);
+
+        moKeyVolCalcType.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel15.add(moKeyVolCalcType);
+
+        jPanel2.add(jPanel15);
+
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlName1.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel16.add(jlName1);
+
+        moBoolMobile.setText("Móvil");
+        jPanel16.add(moBoolMobile);
+
+        moBoolPremise.setText("En planta");
+        jPanel16.add(moBoolPremise);
+
+        jPanel2.add(jPanel16);
+
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlNote.setText("Nota:");
@@ -223,11 +276,15 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroupOrientation;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -249,9 +306,14 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JLabel jlDimensionHeight;
     private javax.swing.JLabel jlDimensionHeightUnit;
     private javax.swing.JLabel jlName;
+    private javax.swing.JLabel jlName1;
     private javax.swing.JLabel jlNote;
+    private javax.swing.JLabel jlOrientation;
     private javax.swing.JLabel jlProductionLine;
+    private javax.swing.JLabel jlVolCalcType;
     private javax.swing.JLabel jlWarehouseType;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolMobile;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolPremise;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecAcidity;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecAdjust;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecCapacityRealLiter;
@@ -259,14 +321,17 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDimensionHeight;
     private sa.lib.gui.bean.SBeanFieldKey moKeyBranch;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProductionLine;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyVolCalcType;
     private sa.lib.gui.bean.SBeanFieldKey moKeyWarehouseType;
+    private sa.lib.gui.bean.SBeanFieldRadio moRadHorizontal;
+    private sa.lib.gui.bean.SBeanFieldRadio moRadVertical;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
     private sa.lib.gui.bean.SBeanFieldText moTextNote;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 640, 400);
+        SGuiUtils.setWindowBounds(this, 720, 450);
 
         moKeyBranch.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranch.getText()), true);
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode.getText()), 5);
@@ -278,6 +343,10 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         moDecCapacityRealLiter.setDecimalSettings(SGuiUtils.getLabelName(jlCapacityRealLiter.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecAdjust.setDecimalSettings(SGuiUtils.getLabelName(jlAdjust.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecAcidity.setDecimalSettings(SGuiUtils.getLabelName(jlCapacityRealLiter.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moRadVertical.setBooleanSettings(moRadVertical.getText(), false);
+        moRadHorizontal.setBooleanSettings(moRadHorizontal.getText(), false);
+        moKeyVolCalcType.setKeySettings(miClient, SGuiUtils.getLabelName(jlVolCalcType.getText()), true);
+        moBoolMobile.setBooleanSettings(moBoolMobile.getText(), false);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 250, 0);
 
         moFields.addField(moKeyBranch);
@@ -289,6 +358,10 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         moFields.addField(moDecDimensionHeight);
         moFields.addField(moDecCapacityRealLiter);
         moFields.addField(moDecAcidity);
+        moFields.addField(moRadVertical);
+        moFields.addField(moRadHorizontal);
+        moFields.addField(moKeyVolCalcType);
+        moFields.addField(moBoolMobile);
         moFields.addField(moTextNote);
 
         moFields.setFormButton(jbSave);
@@ -308,6 +381,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     public void reloadCatalogues() {
         miClient.getSession().populateCatalogue(moKeyBranch, SModConsts.CU_COB, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyWarehouseType, SModConsts.CS_WAH_TP, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyVolCalcType, SModConsts.CS_WAH_CALC_TP, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyProductionLine, SModConsts.CU_PROD_LINES, SLibConsts.UNDEFINED, null);
     }
 
@@ -315,6 +389,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
     public void setRegistry(SDbRegistry registry) throws Exception {
         int idCompany = SLibConsts.UNDEFINED;
         int idBranch = SLibConsts.UNDEFINED;
+        int orientation = SLibConsts.UNDEFINED;
 
         moRegistry = (SDbBranchWarehouse) registry;
 
@@ -327,10 +402,12 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         if (moRegistry.isRegistryNew()) {
             idCompany = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getPkCompanyId();
             idBranch = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getChildBranches().get(0).getPkBranchId();
+            orientation = SModSysConsts.SS_WHS_OR_VERTICAL;
         }
         else {
             idCompany = moRegistry.getPkCompanyId();
             idBranch = moRegistry.getPkBranchId();
+            orientation = moRegistry.getFkOrientationId();
         }
         
         if (moRegistry.isRegistryNew()) {
@@ -349,9 +426,19 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         moDecCapacityRealLiter.setValue(moRegistry.getCapacityRealLiter());
         moDecAdjust.setValue(moRegistry.getVolumeAdjustLiter());
         moDecAcidity.setValue(moRegistry.getAcidity());
-        moKeyWarehouseType.setValue(new int[] { moRegistry.getFkWarehouseTypeId() });
-        moKeyProductionLine.setValue(new int[] { moRegistry.getFkProductionLineId() });
         moTextNote.setValue(moRegistry.getNote());
+        moBoolMobile.setValue(moRegistry.isMobile());
+        moKeyWarehouseType.setValue(new int[] { moRegistry.getFkWarehouseTypeId() });
+        
+        if (orientation == SModSysConsts.SS_WHS_OR_VERTICAL) {
+            moRadVertical.setSelected(true);
+        }
+        else {
+            moRadHorizontal.setSelected(true);
+        }
+        
+        moKeyVolCalcType.setValue(new int[] { moRegistry.getFkVolumeCalculationId() });
+        moKeyProductionLine.setValue(new int[] { moRegistry.getFkProductionLineId() });
 
         setFormEditable(true);
 
@@ -377,9 +464,19 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         registry.setCapacityRealLiter(moDecCapacityRealLiter.getValue());
         registry.setVolumeAdjustLiter(moDecAdjust.getValue());
         registry.setAcidity(moDecAcidity.getValue());
-        registry.setFkWarehouseTypeId(moKeyWarehouseType.getValue()[0]);
-        registry.setFkProductionLineId(moKeyProductionLine.getValue()[0]);
         registry.setNote(moTextNote.getValue());
+        registry.setMobile(moBoolMobile.getValue());
+        registry.setFkWarehouseTypeId(moKeyWarehouseType.getValue()[0]);
+        
+        if (moRadVertical.isSelected()) {
+            registry.setFkOrientationId(SModSysConsts.SS_WHS_OR_VERTICAL);
+        }
+        else {
+            registry.setFkOrientationId(SModSysConsts.SS_WHS_OR_HORIZONTAL);
+        }
+        
+        registry.setFkVolumeCalculationId(moKeyVolCalcType.getValue()[0]);
+        registry.setFkProductionLineId(moKeyProductionLine.getValue()[0]);
 
         return registry;
     }

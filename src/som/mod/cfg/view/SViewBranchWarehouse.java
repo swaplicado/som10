@@ -59,6 +59,8 @@ public class SViewBranchWarehouse extends SGridPaneView {
                 + "vt.id_wah_tp, "
                 + "vt.name, "
                 + "pl.name AS pl_name, "
+                + "wo.name AS orientation, "
+                + "wct.name AS calc_type, "
                 + "@cap := PI() * POW(dim_base / 2.0, 2.0) * dim_heig * 1000.0 AS _cap_theo, "
                 + "@cap - cap_real_lt AS _cap_diff, "
                 + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
@@ -82,6 +84,10 @@ public class SViewBranchWarehouse extends SGridPaneView {
                 + "v.id_co = cob.id_co AND v.id_cob = cob.id_cob "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CS_WAH_TP) + " AS vt ON "
                 + "v.fk_wah_tp = vt.id_wah_tp "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CS_WAH_ORI) + " AS wo ON "
+                + "v.fk_orient = wo.id_wah_ori "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CS_WAH_CALC_TP) + " AS wct ON "
+                + "v.fk_vol_cal_tp = wct.id_wah_calc_tp "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -93,7 +99,7 @@ public class SViewBranchWarehouse extends SGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[20];
+        SGridColumnView[] columns = new SGridColumnView[22];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
@@ -108,6 +114,8 @@ public class SViewBranchWarehouse extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "_cap_theo", "Capacidad teórica (" + SSomConsts.L + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "_cap_diff", "Diferencia capacidad (" + SSomConsts.L + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_QTY, "v.acidity", "Acidez (%)");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "orientation", "Orientación");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "calc_type", "Tipo cálculo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);

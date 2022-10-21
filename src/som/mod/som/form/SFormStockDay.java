@@ -4,18 +4,24 @@
  */
 package som.mod.som.form;
 
+import java.awt.BorderLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import org.joda.time.DateTime;
 import sa.lib.SLibConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
+import sa.lib.grid.SGridColumnForm;
+import sa.lib.grid.SGridConsts;
+import sa.lib.grid.SGridPaneForm;
 import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
@@ -28,6 +34,8 @@ import som.gui.SGuiClientUtils;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.cfg.db.SDbBranchWarehouse;
+import som.mod.som.data.SDailyStockUtils;
+import som.mod.som.data.SMobileWarehouseRow;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbStockDay;
 import som.mod.som.db.SSomConsts;
@@ -67,10 +75,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel3 = new javax.swing.JPanel();
-        sBeanFieldKey1 = new sa.lib.gui.bean.SBeanFieldKey();
-        sBeanFieldText1 = new sa.lib.gui.bean.SBeanFieldText();
-        jPanel2 = new javax.swing.JPanel();
+        jpDailyStock = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -85,11 +90,31 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         jPanel8 = new javax.swing.JPanel();
         jlItem = new javax.swing.JLabel();
         moKeyItem = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel28 = new javax.swing.JPanel();
+        jlNote2 = new javax.swing.JLabel();
+        moKeyOrientation = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel18 = new javax.swing.JPanel();
+        jlNote1 = new javax.swing.JLabel();
+        moKeyCalcType = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel9 = new javax.swing.JPanel();
-        jlEmptiness = new javax.swing.JLabel();
+        moTextUnitName = new sa.lib.gui.bean.SBeanFieldText();
         moDecEmptiness = new sa.lib.gui.bean.SBeanFieldDecimal();
-        jlEmptinessUnit = new javax.swing.JLabel();
+        moTxtEmptinessUnit = new sa.lib.gui.bean.SBeanFieldText();
         moBoolEmpty = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel31 = new javax.swing.JPanel();
+        jlPhisicalInventoryCaptured = new javax.swing.JLabel();
+        moDecPhisicalInventoryCaptured = new sa.lib.gui.bean.SBeanFieldDecimal();
+        moTxtEmptinessUnit1 = new sa.lib.gui.bean.SBeanFieldText();
+        moBoolWahPremise = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel34 = new javax.swing.JPanel();
+        jlOilClass = new javax.swing.JLabel();
+        moKeyOilClass = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel35 = new javax.swing.JPanel();
+        jlOilType = new javax.swing.JLabel();
+        moKeyOilType = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel32 = new javax.swing.JPanel();
+        jlOilOwner = new javax.swing.JLabel();
+        moKeyOilOwner = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel10 = new javax.swing.JPanel();
         jlNote = new javax.swing.JLabel();
         moTextNote = new sa.lib.gui.bean.SBeanFieldText();
@@ -154,14 +179,12 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         moDecItemDensity = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlItemDensityUnit = new javax.swing.JLabel();
 
-        sBeanFieldText1.setText("sBeanFieldText1");
-
-        jPanel2.setLayout(new java.awt.BorderLayout());
+        jpDailyStock.setLayout(new java.awt.BorderLayout());
 
         jPanel11.setLayout(new java.awt.BorderLayout());
 
         jPanel14.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
-        jPanel14.setLayout(new java.awt.GridLayout(6, 0, 0, 5));
+        jPanel14.setLayout(new java.awt.GridLayout(12, 0, 0, 5));
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -211,21 +234,96 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
 
         jPanel14.add(jPanel8);
 
+        jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlNote2.setText("Orientación:");
+        jlNote2.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel28.add(jlNote2);
+
+        moKeyOrientation.setEditable(true);
+        moKeyOrientation.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel28.add(moKeyOrientation);
+
+        jPanel14.add(jPanel28);
+
+        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlNote1.setText("Tipo de cálculo:");
+        jlNote1.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel18.add(jlNote1);
+
+        moKeyCalcType.setEditable(true);
+        moKeyCalcType.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel18.add(moKeyCalcType);
+
+        jPanel14.add(jPanel18);
+
         jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlEmptiness.setText("Vacío:*");
-        jlEmptiness.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel9.add(jlEmptiness);
+        moTextUnitName.setEditable(false);
+        jPanel9.add(moTextUnitName);
         jPanel9.add(moDecEmptiness);
 
-        jlEmptinessUnit.setText("m");
-        jlEmptinessUnit.setPreferredSize(new java.awt.Dimension(25, 23));
-        jPanel9.add(jlEmptinessUnit);
+        moTxtEmptinessUnit.setEnabled(false);
+        moTxtEmptinessUnit.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel9.add(moTxtEmptinessUnit);
 
         moBoolEmpty.setText("Tanque vacío");
         jPanel9.add(moBoolEmpty);
 
         jPanel14.add(jPanel9);
+
+        jPanel31.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlPhisicalInventoryCaptured.setText("Existencia:");
+        jlPhisicalInventoryCaptured.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel31.add(jlPhisicalInventoryCaptured);
+        jPanel31.add(moDecPhisicalInventoryCaptured);
+
+        moTxtEmptinessUnit1.setEnabled(false);
+        moTxtEmptinessUnit1.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel31.add(moTxtEmptinessUnit1);
+
+        moBoolWahPremise.setText("Está en planta");
+        jPanel31.add(moBoolWahPremise);
+
+        jPanel14.add(jPanel31);
+
+        jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlOilClass.setText("Clase aceite:");
+        jlOilClass.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel34.add(jlOilClass);
+
+        moKeyOilClass.setEditable(true);
+        moKeyOilClass.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel34.add(moKeyOilClass);
+
+        jPanel14.add(jPanel34);
+
+        jPanel35.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlOilType.setText("Tipo aceite:");
+        jlOilType.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel35.add(jlOilType);
+
+        moKeyOilType.setEditable(true);
+        moKeyOilType.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel35.add(moKeyOilType);
+
+        jPanel14.add(jPanel35);
+
+        jPanel32.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlOilOwner.setText("Propietario:");
+        jlOilOwner.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel32.add(jlOilOwner);
+
+        moKeyOilOwner.setEditable(true);
+        moKeyOilOwner.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel32.add(moKeyOilOwner);
+
+        jPanel14.add(jPanel32);
 
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -242,7 +340,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         jPanel11.add(jPanel14, java.awt.BorderLayout.NORTH);
 
         jPanel15.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del inventario físico:"));
-        jPanel15.setLayout(new java.awt.GridLayout(7, 0, 0, 5));
+        jPanel15.setLayout(new java.awt.GridLayout(6, 0, 0, 5));
 
         jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 5, 0));
 
@@ -334,7 +432,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
 
         jPanel11.add(jPanel15, java.awt.BorderLayout.CENTER);
 
-        jPanel2.add(jPanel11, java.awt.BorderLayout.WEST);
+        jpDailyStock.add(jPanel11, java.awt.BorderLayout.WEST);
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del tanque e ítem:"));
         jPanel5.setLayout(new java.awt.BorderLayout());
@@ -484,9 +582,9 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
 
         jPanel5.add(jPanel17, java.awt.BorderLayout.NORTH);
 
-        jPanel2.add(jPanel5, java.awt.BorderLayout.CENTER);
+        jpDailyStock.add(jPanel5, java.awt.BorderLayout.CENTER);
 
-        getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jpDailyStock, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -498,8 +596,8 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel22;
@@ -508,9 +606,13 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     private javax.swing.JPanel jPanel25;
     private javax.swing.JPanel jPanel26;
     private javax.swing.JPanel jPanel27;
+    private javax.swing.JPanel jPanel28;
     private javax.swing.JPanel jPanel29;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel30;
+    private javax.swing.JPanel jPanel31;
+    private javax.swing.JPanel jPanel32;
+    private javax.swing.JPanel jPanel34;
+    private javax.swing.JPanel jPanel35;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -521,13 +623,17 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     private javax.swing.JLabel jlDate;
     private javax.swing.JLabel jlDiference;
     private javax.swing.JLabel jlDiferenceUnit;
-    private javax.swing.JLabel jlEmptiness;
-    private javax.swing.JLabel jlEmptinessUnit;
     private javax.swing.JLabel jlItem;
     private javax.swing.JLabel jlItemDensity;
     private javax.swing.JLabel jlItemDensityUnit;
     private javax.swing.JLabel jlNote;
+    private javax.swing.JLabel jlNote1;
+    private javax.swing.JLabel jlNote2;
+    private javax.swing.JLabel jlOilClass;
+    private javax.swing.JLabel jlOilOwner;
+    private javax.swing.JLabel jlOilType;
     private javax.swing.JLabel jlPhisicalInventory;
+    private javax.swing.JLabel jlPhisicalInventoryCaptured;
     private javax.swing.JLabel jlPhisicalInventoryHeight;
     private javax.swing.JLabel jlPhisicalInventoryHeightUnit;
     private javax.swing.JLabel jlPhisicalInventoryUnit;
@@ -552,13 +658,16 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     private javax.swing.JLabel jlWarehouseVolumeCull;
     private javax.swing.JLabel jlWarehouseVolumeCullUnit;
     private javax.swing.JLabel jlWarehouseVolumeUnit;
+    private javax.swing.JPanel jpDailyStock;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolEmpty;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolStockDifferenceSkipped;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolWahPremise;
     private sa.lib.gui.bean.SBeanFieldDate moDateDate;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecDiference;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecEmptiness;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecItemDensity;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecPhisicalInventory;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecPhisicalInventoryCaptured;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecPhisicalInventoryHeight;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecPhisicalInventoryVolume;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecStockBefore;
@@ -571,11 +680,17 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWarehouseVolumeAvailable;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWarehouseVolumeCull;
     private sa.lib.gui.bean.SBeanFieldKey moKeyBranch;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyCalcType;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyOilClass;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyOilOwner;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyOilType;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyOrientation;
     private sa.lib.gui.bean.SBeanFieldKey moKeyWarehouse;
     private sa.lib.gui.bean.SBeanFieldText moTextNote;
-    private sa.lib.gui.bean.SBeanFieldKey sBeanFieldKey1;
-    private sa.lib.gui.bean.SBeanFieldText sBeanFieldText1;
+    private sa.lib.gui.bean.SBeanFieldText moTextUnitName;
+    private sa.lib.gui.bean.SBeanFieldText moTxtEmptinessUnit;
+    private sa.lib.gui.bean.SBeanFieldText moTxtEmptinessUnit1;
     // End of variables declaration//GEN-END:variables
 
     /*
@@ -589,16 +704,22 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         moItem = new SDbItem();
         moFieldKeyGroup = new SGuiFieldKeyGroup(miClient);
 
-        SGuiUtils.setWindowBounds(this, 800, 500);
+        SGuiUtils.setWindowBounds(this, 960, 600);
 
         moDateDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlDate.getText()), true);
         moKeyBranch.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranch.getText()), true);
         moKeyWarehouse.setKeySettings(miClient, SGuiUtils.getLabelName(jlWarehouse.getText()), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
-        moDecEmptiness.setDecimalSettings(SGuiUtils.getLabelName(jlEmptiness.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moBoolEmpty.setBooleanSettings("Tanque vacio", false);
+        moDecEmptiness.setDecimalSettings(SGuiUtils.getLabelName(moTextUnitName.getValue()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moBoolEmpty.setBooleanSettings("Tanque vacío", false);
+        moDecPhisicalInventoryCaptured.setDecimalSettings(SGuiUtils.getLabelName(jlPhisicalInventoryCaptured), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moBoolWahPremise.setBooleanSettings("Está en planta", false);
         moBoolStockDifferenceSkipped.setBooleanSettings("Omitir en estimación de la producción", false);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 50, 0);
+        
+        moKeyOilClass.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilClass.getText()), false);
+        moKeyOilType.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilType.getText()), false);
+        moKeyOilOwner.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilOwner.getText()), false);
 
         moDecWarehouseHeight.setDecimalSettings(SGuiUtils.getLabelName(jlWarehouseHeight.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
         moDecWarehouseHeightCull.setDecimalSettings(SGuiUtils.getLabelName(jlWarehouseHeightCull.getText()), SGuiConsts.GUI_TYPE_DEC_AMT, false);
@@ -620,6 +741,8 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         moFields.addField(moKeyWarehouse);
         moFields.addField(moKeyItem);
         moFields.addField(moDecEmptiness);
+        moFields.addField(moDecPhisicalInventoryCaptured);
+        moFields.addField(moBoolWahPremise);
         moFields.addField(moTextNote);
 
         moFields.addField(moBoolStockDifferenceSkipped);
@@ -644,12 +767,49 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         if (moKeyWarehouse.getSelectedIndex() <= 0) {
             moDecWarehouseHeight.setValue(0d);
             moDecWarehouseVolume.setValue(0d);
+            moKeyOrientation.setValue(new int[] { SModSysConsts.CS_WAH_ORI_VER });
+            moKeyCalcType.setValue(new int[] { SModSysConsts.CS_WAH_CALC_TP_EMPTY_MSRE });
         }
         else {
             try {
                 moBranchWarehouse.read(miClient.getSession(), moKeyWarehouse.getValue());
                 moDecWarehouseHeight.setValue(moBranchWarehouse.getDimensionHeight());
                 moDecWarehouseVolume.setValue(moBranchWarehouse.getCapacityRealLiter());
+                moKeyOrientation.setValue(new int[] { moBranchWarehouse.getFkOrientationId() });
+                moKeyCalcType.setValue(new int[] { moBranchWarehouse.getFkVolumeCalculationId() });
+                
+                switch (moBranchWarehouse.getFkVolumeCalculationId()) {
+                    case SModSysConsts.CS_WAH_CALC_TP_EMPTY_MSRE:
+                        moTxtEmptinessUnit.setValue("m");
+                        moTextUnitName.setValue("Vacío*:");
+                        break;
+                    case SModSysConsts.CS_WAH_CALC_TP_FULL_MSRE:
+                        moTxtEmptinessUnit.setValue("m");
+                        moTextUnitName.setValue("Lleno*:");
+                        break;
+                    case SModSysConsts.CS_WAH_CALC_TP_EMPTY_PERC:
+                        moTxtEmptinessUnit.setValue("%");
+                        moTextUnitName.setValue("% vacío*:");
+                        break;
+                    case SModSysConsts.CS_WAH_CALC_TP_FULL_PERC:
+                        moTxtEmptinessUnit.setValue("%");
+                        moTextUnitName.setValue("% lleno*:");
+                        break;
+                    case SModSysConsts.CS_WAH_CALC_TP_DIR_DATA:
+                        moTxtEmptinessUnit.setValue("m");
+                        moTextUnitName.setValue("Vacío*:");
+                        break;
+                    default:
+                        moTxtEmptinessUnit.setValue("m");
+                }
+                
+                if (! moBranchWarehouse.isMobile()) {
+                    moBoolWahPremise.setValue(false);
+                    moBoolWahPremise.setEnabled(false);
+                }
+                else {
+                    moBoolWahPremise.setEnabled(true);
+                }
             }
             catch (Exception e) {
                 SLibUtils.showException(this, e);
@@ -661,14 +821,23 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     private void actionStateEmpty() {
         if (moBoolEmpty.isSelected()) {
             moDecEmptiness.setEnabled(false);
+            moDecPhisicalInventoryCaptured.setEnabled(false);
             moDecPhisicalInventoryHeight.setValue(0d);
             moDecPhisicalInventoryVolume.setValue(0d);
             moDecPhisicalInventory.setValue(0d);
+            moDecPhisicalInventoryCaptured.setValue(0d);
 
             setStockDifferenceSkipped();
         }
         else {
-            moDecEmptiness.setEnabled(true);
+            if (moBranchWarehouse.getFkVolumeCalculationId() == SModSysConsts.CS_WAH_CALC_TP_DIR_DATA) {
+                moDecEmptiness.setEnabled(false);
+                moDecPhisicalInventoryCaptured.setEnabled(true);
+            }
+            else {
+                moDecEmptiness.setEnabled(true);
+                moDecPhisicalInventoryCaptured.setEnabled(false);
+            }
             actionEmptinessFocusLost();
         }
     }
@@ -682,28 +851,143 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         double volNet = 0;
         double qtyByUnit = 0;
 
-        if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > moDecWarehouseHeightAvailable.getValue()) {
-            miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(jlEmptiness.getText()) + "' no puede ser mayor al del campo '" +
-                    SGuiUtils.getLabelName(jlWarehouseHeightAvailable.getText()) + "'.");
-            moDecEmptiness.getComponent().requestFocus();
+        switch (moBranchWarehouse.getFkVolumeCalculationId()) {
+            case SModSysConsts.CS_WAH_CALC_TP_EMPTY_MSRE:
+                if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > moDecWarehouseHeightAvailable.getValue()) {
+                    miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor al del campo '" +
+                            SGuiUtils.getLabelName(jlWarehouseHeightAvailable.getText()) + "'.");
+                    moDecEmptiness.getComponent().requestFocus();
+                }
+                else {
+                    wahHeightNet = SLibUtils.round(
+                            moDecWarehouseHeightAvailable.getValue() - moDecEmptiness.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    volNet = SLibUtils.round(moDecWarehouseHeightAvailable.getValue() > 0 ?
+                            wahHeightNet / moDecWarehouseHeightAvailable.getValue() : 0, SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    qtyByUnit = SLibUtils.round(
+                            volNet * moDecWarehouseVolumeAvailable.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    moDecPhisicalInventoryHeight.setValue(SLibUtils.round(
+                        (moDecWarehouseHeight.getValue() - moDecWarehouseHeightCull.getValue() - moDecEmptiness.getValue() - (moDecWarehouseHeightAdjust.getValue() * -1)),
+                        SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+                }
+                break;
+                
+            case SModSysConsts.CS_WAH_CALC_TP_FULL_MSRE:
+                if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > moDecWarehouseHeightAvailable.getValue()) {
+                    miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor al del campo '" +
+                            SGuiUtils.getLabelName(jlWarehouseHeightAvailable.getText()) + "'.");
+                    moDecEmptiness.getComponent().requestFocus();
+                }
+                else {
+                    wahHeightNet = SLibUtils.round(moDecEmptiness.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    volNet = SLibUtils.round(moDecWarehouseHeightAvailable.getValue() > 0 ?
+                            wahHeightNet / moDecWarehouseHeightAvailable.getValue() : 0, SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    qtyByUnit = SLibUtils.round(
+                            volNet * moDecWarehouseVolumeAvailable.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    moDecPhisicalInventoryHeight.setValue(SLibUtils.round(
+                        (moDecEmptiness.getValue() - moDecWarehouseHeightCull.getValue() - (moDecWarehouseHeightAdjust.getValue() * -1)),
+                        SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+                }
+                break;
+                
+            case SModSysConsts.CS_WAH_CALC_TP_EMPTY_PERC:
+                if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > 100d) {
+                    miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor a 100%.");
+                    moDecEmptiness.getComponent().requestFocus();
+                }
+                else {
+                    double emptiness = SLibUtils.round(moDecWarehouseHeightAvailable.getValue() * moDecEmptiness.getValue() / 100d, SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+                    wahHeightNet = SLibUtils.round(
+                            moDecWarehouseHeightAvailable.getValue() - emptiness, SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    volNet = SLibUtils.round(moDecWarehouseHeightAvailable.getValue() > 0 ?
+                            wahHeightNet / moDecWarehouseHeightAvailable.getValue() : 0, SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    qtyByUnit = SLibUtils.round(
+                            volNet * moDecWarehouseVolumeAvailable.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    moDecPhisicalInventoryHeight.setValue(SLibUtils.round(
+                        (moDecWarehouseHeight.getValue() - moDecWarehouseHeightCull.getValue() - emptiness - (moDecWarehouseHeightAdjust.getValue() * -1)),
+                        SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+                }
+                break;
+                
+            case SModSysConsts.CS_WAH_CALC_TP_FULL_PERC:
+                if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > 100d) {
+                    miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor a 100%.");
+                    moDecEmptiness.getComponent().requestFocus();
+                }
+                else {
+                    double emptiness = SLibUtils.round(
+                            moDecWarehouseHeightAvailable.getValue() - (moDecWarehouseHeightAvailable.getValue() * moDecEmptiness.getValue() / 100), 
+                            SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+                    wahHeightNet = SLibUtils.round(
+                            moDecWarehouseHeightAvailable.getValue() - emptiness, SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    volNet = SLibUtils.round(moDecWarehouseHeightAvailable.getValue() > 0 ?
+                            wahHeightNet / moDecWarehouseHeightAvailable.getValue() : 0, SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    qtyByUnit = SLibUtils.round(
+                            volNet * moDecWarehouseVolumeAvailable.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    moDecPhisicalInventoryHeight.setValue(SLibUtils.round(
+                        (moDecWarehouseHeight.getValue() - moDecWarehouseHeightCull.getValue() - emptiness - (moDecWarehouseHeightAdjust.getValue() * -1)),
+                        SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+                }
+                break;
+                
+            case SModSysConsts.CS_WAH_CALC_TP_DIR_DATA:
+                qtyByUnit = SLibUtils.round(moDecPhisicalInventoryCaptured.getValue() / moItem.getDensity(), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits());
+                volNet = SLibUtils.round(qtyByUnit / moDecWarehouseVolumeAvailable.getValue(), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits());
+                wahHeightNet = SLibUtils.round(volNet * moDecWarehouseHeightAvailable.getValue(), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits());
+                double emptiness = SLibUtils.round(moDecWarehouseHeightAvailable.getValue() - wahHeightNet, SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits());
+                double heightNet = SLibUtils.round(moDecWarehouseHeightAvailable.getValue() - moDecWarehouseHeightCull.getValue() - emptiness - (moDecWarehouseHeightAdjust.getValue() * -1), 
+                        SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits());
+                /**
+                 * Validación
+                 */
+                if (heightNet > moDecWarehouseHeightAvailable.getValue()) {
+                    miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(jlPhisicalInventoryHeight) + "' no puede ser mayor a la altura disponible.");
+                    moDecPhisicalInventoryCaptured.getComponent().requestFocus();
+                    return;
+                }
+                
+                moDecEmptiness.setValue(emptiness);
+                moDecPhisicalInventoryHeight.setValue(heightNet);
+                moDecPhisicalInventory.setValue(SLibUtils.round(moDecPhisicalInventoryCaptured.getValue(), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+                break;
+                
+            default:
+                if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > moDecWarehouseHeightAvailable.getValue()) {
+                    miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor al del campo '" +
+                            SGuiUtils.getLabelName(jlWarehouseHeightAvailable.getText()) + "'.");
+                    moDecEmptiness.getComponent().requestFocus();
+                }
+                else {
+                    wahHeightNet = SLibUtils.round(
+                            moDecWarehouseHeightAvailable.getValue() - moDecEmptiness.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    volNet = SLibUtils.round(moDecWarehouseHeightAvailable.getValue() > 0 ?
+                            wahHeightNet / moDecWarehouseHeightAvailable.getValue() : 0, SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    qtyByUnit = SLibUtils.round(
+                            volNet * moDecWarehouseVolumeAvailable.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
+
+                    moDecPhisicalInventoryHeight.setValue(SLibUtils.round(
+                        (moDecWarehouseHeight.getValue() - moDecWarehouseHeightCull.getValue() - moDecEmptiness.getValue() - (moDecWarehouseHeightAdjust.getValue() * -1)),
+                        SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+                }
         }
-        else {
-            wahHeightNet = SLibUtils.round(
-                    moDecWarehouseHeightAvailable.getValue() - moDecEmptiness.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
-
-            volNet = SLibUtils.round(moDecWarehouseHeightAvailable.getValue() > 0 ?
-                    wahHeightNet / moDecWarehouseHeightAvailable.getValue() : 0, SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
-
-            qtyByUnit = SLibUtils.round(
-                    volNet * moDecWarehouseVolumeAvailable.getValue(), SLibUtils.DecimalFormatValue8D.getMaximumFractionDigits());
-
-            moDecPhisicalInventoryHeight.setValue(SLibUtils.round(
-                (moDecWarehouseHeight.getValue() - moDecWarehouseHeightCull.getValue() - moDecEmptiness.getValue() - (moDecWarehouseHeightAdjust.getValue() * -1)),
-                SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
-
-            moDecPhisicalInventoryVolume.setValue(SLibUtils.round(qtyByUnit, SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+        
+        moDecPhisicalInventoryVolume.setValue(SLibUtils.round(qtyByUnit, SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+        if (moBranchWarehouse.getFkVolumeCalculationId() != SModSysConsts.CS_WAH_CALC_TP_DIR_DATA) {
             moDecPhisicalInventory.setValue(SLibUtils.round(
-                moDecPhisicalInventoryVolume.getValue() * moItem.getDensity(), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
+                    moDecPhisicalInventoryVolume.getValue() * moItem.getDensity(), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
         }
         setStockDifferenceSkipped();
     }
@@ -732,6 +1016,19 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
             jlStockUnitBefore.setText("");
             jlDiferenceUnit.setText("");
         }
+    }
+    
+    private void actionOilClassChanged() {
+        SGuiParams params = new SGuiParams();
+        
+        if (moKeyOilClass.getSelectedIndex() > 0) {
+            params.getParamsMap().put(SModConsts.SX_EXT_OIL_CL, moKeyOilClass.getValue());
+        }
+        else {
+            params.getParamsMap().put(SModConsts.SX_EXT_OIL_CL, new int [] { 0 });
+        }
+        
+        miClient.getSession().populateCatalogue(moKeyOilType, SModConsts.SU_OIL_TP, SLibConsts.UNDEFINED, params);
     }
 
     private void obtainStockByVolume() {
@@ -836,8 +1133,10 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     public void addAllListeners() {
         moDateDate.getComponent().addFocusListener(this);
         moDecEmptiness.getComponent().addFocusListener(this);
+        moDecPhisicalInventoryCaptured.getComponent().addFocusListener(this);
         moKeyWarehouse.addItemListener(this);
         moKeyItem.addItemListener(this);
+        moKeyOilClass.addItemListener(this);
         moBoolEmpty.addItemListener(this);
     }
 
@@ -845,8 +1144,10 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
     public void removeAllListeners() {
         moDateDate.getComponent().removeFocusListener(this);
         moDecEmptiness.getComponent().removeFocusListener(this);
+        moDecPhisicalInventoryCaptured.getComponent().removeFocusListener(this);
         moKeyWarehouse.removeItemListener(this);
         moKeyItem.removeItemListener(this);
+        moKeyOilClass.removeItemListener(this);
         moBoolEmpty.removeItemListener(this);
     }
 
@@ -864,6 +1165,11 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         params.setKey(null);
         params.getParamsMap().put(SModConsts.SU_UNIT, new int[] { mnParamUnitId });
         miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SModSysConsts.SS_ITEM_TP_FG, params);
+        miClient.getSession().populateCatalogue(moKeyOrientation, SModConsts.CS_WAH_ORI, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyCalcType, SModConsts.CS_WAH_CALC_TP, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyOilClass, SModConsts.SU_OIL_CL, SLibConsts.UNDEFINED, null);
+//        miClient.getSession().populateCatalogue(moKeyOilType, SModConsts.SU_OIL_TP, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyOilOwner, SModConsts.SU_OIL_OWN, SLibConsts.UNDEFINED, null);
     }
 
     @Override
@@ -915,6 +1221,29 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         moDecWarehouseHeightCull.setValue(moRegistry.getCull());
         moBoolEmpty.setValue(moRegistry.isEmpty());
         moBoolStockDifferenceSkipped.setValue(moRegistry.isStockDifferenceSkipped());
+        
+        if (moRegistry.getFkOilClassId_n() == 0 && moRegistry.isRegistryNew()) {
+            DateTime dateTime = new DateTime(moDateDate.getValue());
+            dateTime = dateTime.minusDays(1);
+            int[] oilClassKey = SDailyStockUtils.getOilAndClassItemConfiguration(miClient.getSession(), 
+                                                            moRegistry.getPkItemId(), 
+                                                            moKeyItem.getSelectedItem().getForeignKey()[0],
+                                                            new int[] { moRegistry.getPkCompanyId(), moRegistry.getPkBranchId(), moRegistry.getPkWarehouseId() },
+                                                            dateTime.toDate()
+                                                        );
+            if (oilClassKey[0] > 0 && oilClassKey[0] > 0) {
+                moRegistry.setFkOilClassId_n(oilClassKey[0]);
+                moRegistry.setFkOilTypeId_n(oilClassKey[1]);
+            }
+        }
+        
+        moKeyOilClass.setValue(new int [] { moRegistry.getFkOilClassId_n() });
+        
+        actionOilClassChanged();
+        
+        moKeyOilType.setValue(new int [] { moRegistry.getFkOilClassId_n(), moRegistry.getFkOilTypeId_n() });
+        moKeyOilOwner.setValue(new int [] { moRegistry.getFkOilOwnerId_n() });
+        
         moTextNote.setValue(moRegistry.getNote());
 
         setFormEditable(true);
@@ -932,6 +1261,9 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
             moKeyItem.setEnabled(moRegistry.isEmpty());
             
             moKeyWarehouse.setEnabled(false);
+            moKeyOrientation.setEnabled(false);
+            moKeyCalcType.setEnabled(false);
+            
             actionKeyWarehouseStateChanged();
         }
         moBoolStockDifferenceSkipped.setEnabled(false);
@@ -962,6 +1294,9 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         registry.setCull(moDecWarehouseHeightCull.getValue());
         registry.setStockDay(moDecPhisicalInventory.getValue());
         //registry.setStockSystem(...);
+        registry.setFkOilClassId_n(moKeyOilClass.getValue().length > 0 ? moKeyOilClass.getValue()[0] : 0);
+        registry.setFkOilTypeId_n(moKeyOilType.getValue().length > 0 ? moKeyOilType.getValue()[1] : 0);
+        registry.setFkOilOwnerId_n(moKeyOilOwner.getValue().length > 0 ? moKeyOilOwner.getValue()[0] : 0);
         registry.setNote(moTextNote.getValue());
         registry.setEmpty(moBoolEmpty.getValue());
         registry.setStockDifferenceSkipped(!moBoolStockDifferenceSkipped.isEnabled() ? false : moBoolStockDifferenceSkipped.getValue());
@@ -987,10 +1322,41 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         }
 
         if (validation.isValid()) {
-            if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > moDecWarehouseHeightAvailable.getValue()) {
-                validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(jlEmptiness.getText()) + "' no puede ser mayor al del campo '" +
-                        SGuiUtils.getLabelName(jlWarehouseHeightAvailable.getText()) + "'.");
-                validation.setComponent(moDecEmptiness.getComponent());
+            switch (moBranchWarehouse.getFkVolumeCalculationId()) {
+                case SModSysConsts.CS_WAH_CALC_TP_EMPTY_MSRE:
+                    if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > moDecWarehouseHeightAvailable.getValue()) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor al del campo '" +
+                                SGuiUtils.getLabelName(jlWarehouseHeightAvailable.getText()) + "'.");
+                        validation.setComponent(moDecEmptiness.getComponent());
+                    }
+                    break;
+                case SModSysConsts.CS_WAH_CALC_TP_FULL_MSRE:
+                    if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > moDecWarehouseHeightAvailable.getValue()) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor al del campo '" +
+                                SGuiUtils.getLabelName(jlWarehouseHeightAvailable.getText()) + "'.");
+                        validation.setComponent(moDecEmptiness.getComponent());
+                    }
+                    break;
+                case SModSysConsts.CS_WAH_CALC_TP_EMPTY_PERC:
+                    if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > 100d) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor a 100%.");
+                        validation.setComponent(moDecEmptiness.getComponent());
+                    }
+                    break;
+                case SModSysConsts.CS_WAH_CALC_TP_FULL_PERC:
+                    if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > 100d) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor a 100%.");
+                        validation.setComponent(moDecEmptiness.getComponent());
+                    }
+                    break;
+                case SModSysConsts.CS_WAH_CALC_TP_DIR_DATA:
+                    break;
+                default:
+                    if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > moDecWarehouseHeightAvailable.getValue()) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor al del campo '" +
+                                SGuiUtils.getLabelName(jlWarehouseHeightAvailable.getText()) + "'.");
+                        validation.setComponent(moDecEmptiness.getComponent());
+                    }
             }
         }
 
@@ -1043,6 +1409,13 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
                 validation.setComponent(moDecEmptiness.getComponent());
             }
         }
+        
+        if (validation.isValid()) {
+            if (moKeyOilClass.getValue().length > 0 && moKeyOilClass.getValue()[0] > 0 && moKeyOilType.getValue()[0] == 0) {
+                validation.setMessage("Si seleccionó '" + SGuiUtils.getLabelName(jlOilClass.getText()) + "', debe seleccionar una opción de '" + SGuiUtils.getLabelName(jlOilType.getText()) + "'.");
+                validation.setComponent(moKeyOilType);
+            }
+        }
 
         return validation;
     }
@@ -1057,6 +1430,9 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
                 }
                 else if (comboBox == moKeyItem) {
                     actionItemChangedFkItemId();
+                }
+                else if (comboBox == moKeyOilClass) {
+                    actionOilClassChanged();
                 }
             }
         }
@@ -1083,6 +1459,9 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
                 actionDateFocusLost();
             }
             else if (textField == moDecEmptiness.getComponent()) {
+                actionEmptinessFocusLost();
+            }
+            else if (textField == moDecPhisicalInventoryCaptured.getComponent()) {
                 actionEmptinessFocusLost();
             }
         }

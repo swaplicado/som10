@@ -265,6 +265,16 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 sql = "SELECT id_wah_tp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
+            case SModConsts.CS_WAH_ORI:
+                settings = new SGuiCatalogueSettings("Orientación almacén", 1);
+                sql = "SELECT id_wah_ori AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
+                break;
+            case SModConsts.CS_WAH_CALC_TP:
+                settings = new SGuiCatalogueSettings("Tipo cálculo almacén", 1);
+                sql = "SELECT id_wah_calc_tp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
+                break;
             case SModConsts.CS_PLA_TP:
                 settings = new SGuiCatalogueSettings("Tipo planta", 1);
                 sql = "SELECT id_pla_tp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
@@ -398,6 +408,18 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 settings.setCodeApplying(true);
                 sql = "SELECT id_parameter AS " + SDbConsts.FIELD_ID + "1, parameter AS " + SDbConsts.FIELD_ITEM + ", param_code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY parameter, id_parameter ";
+                break;
+            case SModConsts.SU_OIL_TP:
+                settings = new SGuiCatalogueSettings("Tipo de aceite", 1);
+                settings.setCodeApplying(true);
+                sql = "SELECT id_oil_tp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY name ASC ";
+                break;
+            case SModConsts.SU_OIL_OWN:
+                settings = new SGuiCatalogueSettings("Origen de aceite", 1);
+                settings.setCodeApplying(true);
+                sql = "SELECT id_oil_own AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY name ASC ";
                 break;
             case SModConsts.SS_LINK_CFG_ITEMS:
                 settings = new SGuiCatalogueSettings("Ítems configurados", 1);

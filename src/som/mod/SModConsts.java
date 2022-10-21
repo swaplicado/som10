@@ -22,6 +22,8 @@ public abstract class SModConsts {
     public static final int SU_CO = 110002;
 
     public static final int CS_WAH_TP = 210001;
+    public static final int CS_WAH_ORI = 210005;
+    public static final int CS_WAH_CALC_TP = 210006;
     public static final int CS_PLA_TP = 210002;
     public static final int CS_USR_TP = 210003;
     public static final int CS_RIG = 210004;
@@ -77,6 +79,7 @@ public abstract class SModConsts {
     public static final int SU_INP_SRC = 320021;
     public static final int SU_BY_PRODUCT = 320022;
     public static final int SU_VEH_CONT_TYPE = 320023;
+    public static final int SU_WAH_FILL_LEVEL = 320024;
     public static final int SU_OIL_CL = 320025;
     public static final int SU_OIL_TP = 320026;
     public static final int SU_OIL_OWN = 320027;
@@ -94,6 +97,7 @@ public abstract class SModConsts {
     public static final int S_TIC_NOTE = 330012;
     public static final int S_WAH_LAB = 330016;
     public static final int S_WAH_LAB_TEST = 330017;
+    public static final int S_WAH_PREMISE = 330018;
     public static final int S_IOG = 330021;
     public static final int S_IOG_NOTE = 330022;
     public static final int S_IOG_REF = 330023;
@@ -102,6 +106,7 @@ public abstract class SModConsts {
     public static final int S_DPS_ASS = 330031;
     public static final int S_STK_DAY = 330051;
     public static final int S_STK = 330052;
+    public static final int S_STK_RECORD = 330053;
     public static final int S_MFG_EST = 330061;
     public static final int S_MFG_EST_ETY = 330062;
     public static final int S_MFG_EST_RM_CON = 330063;
@@ -167,6 +172,7 @@ public abstract class SModConsts {
     public static final int SX_WIZ_DPS_ADJ = 340106;
     public static final int SX_TIC_DPS_PAY = 340107;
     public static final int SX_DAY_MAIL = 340108;
+    public static final int SX_EXT_OIL_CL = 340108;
     public static final int SX_QA_OIL_MOI_POND = 340082;
 
     public static final int SR_TIC = 350001;
@@ -197,6 +203,8 @@ public abstract class SModConsts {
         TablesMap.put(SU_CO, "su_co");
 
         TablesMap.put(CS_WAH_TP, "cs_wah_tp");
+        TablesMap.put(CS_WAH_ORI, "cs_wah_ori");
+        TablesMap.put(CS_WAH_CALC_TP, "cs_wah_calc_tp");
         TablesMap.put(CS_PLA_TP, "cs_pla_tp");
         TablesMap.put(CS_USR_TP, "cs_usr_tp");
         TablesMap.put(CS_RIG, "cs_rig");
@@ -247,6 +255,8 @@ public abstract class SModConsts {
         TablesMap.put(SU_INP_SRC, "su_inp_src");
         TablesMap.put(SU_BY_PRODUCT, "su_by_product");
         TablesMap.put(SU_VEH_CONT_TYPE, "su_veh_cont_type");
+        TablesMap.put(SU_OIL_TP, "su_oil_tp");
+        TablesMap.put(SU_WAH_FILL_LEVEL, "su_wah_fill_level");
         TablesMap.put(SU_OIL_CL, "su_oil_cl");
         TablesMap.put(SU_OIL_TP, "su_oil_tp");
         TablesMap.put(SU_OIL_OWN, "su_oil_own");
@@ -263,6 +273,7 @@ public abstract class SModConsts {
         TablesMap.put(S_LAB_TEST, "s_lab_test");
         TablesMap.put(S_TIC, "s_tic");
         TablesMap.put(S_TIC_NOTE, "s_tic_note");
+        TablesMap.put(S_WAH_PREMISE, "s_wah_premise");
         TablesMap.put(S_IOG, "s_iog");
         TablesMap.put(S_IOG_NOTE, "s_iog_note");
         TablesMap.put(S_IOG_REF, "s_iog_ref");
@@ -271,6 +282,7 @@ public abstract class SModConsts {
         TablesMap.put(S_DPS_ASS, "s_dps_ass");
         TablesMap.put(S_STK_DAY, "s_stk_day");
         TablesMap.put(S_STK, "s_stk");
+        TablesMap.put(S_STK_RECORD, "s_stk_record");
         TablesMap.put(S_MFG_EST, "s_mfg_est");
         TablesMap.put(S_MFG_EST_ETY, "s_mfg_est_ety");
         TablesMap.put(S_MFG_EST_RM_CON, "s_mfg_est_rm_con");

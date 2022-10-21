@@ -58,6 +58,7 @@ import som.mod.som.form.SFormOilClass;
 import som.mod.som.form.SFormOilGroupFamily;
 import som.mod.som.form.SFormOilOwner;
 import som.mod.som.form.SFormOilType;
+import som.mod.som.form.SFormOilAcidityRow;
 import som.mod.som.form.SFormProductionEstimate;
 import som.mod.som.form.SFormStockDay;
 import som.mod.som.form.SFormStockDays;
@@ -99,6 +100,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjCatInputClass;
     private JMenuItem mjCatInputCategory;
     private JMenuItem mjCatIodineValueRank;
+    private JMenuItem mjCatAcidityRank;
     private JMenuItem mjCatExternalWarehouses;
     private JMenuItem mjCatByProduct;
     private JMenuItem mjCatOilClass; 
@@ -183,6 +185,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private SFormOilGroupFamily moFormOilGroupFamily;
     private SFormClosingCalendar moFormClosingCalendar;
     
+    private SFormOilAcidity SFormOilAcidity;
+    private SFormOilAcidityRow SFormOilAcidityEntry;
+
     public SModuleSomOs(SGuiClient client) {
         super(client, SModConsts.MOD_SOM_OS, SLibConsts.UNDEFINED);
         initComponents();
@@ -197,6 +202,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCatInputClass = new JMenuItem("Clases de insumo");
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
         mjCatIodineValueRank = new JMenuItem("Rangos de yodo");
+        mjCatAcidityRank = new JMenuItem("Rangos de acidez");
         mjCatExternalWarehouses = new JMenuItem("Almacenes sistema externo");
         mjCatByProduct = new JMenuItem("Procesos");
         mjCatOilType = new JMenuItem("Tipos de aceite");
@@ -215,6 +221,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCat.add(mjCatInputClass);
         mjCat.add(mjCatInputCategory);
         mjCat.add(mjCatIodineValueRank);
+        mjCat.add(mjCatAcidityRank);
         mjCat.add(mjCatExternalWarehouses);
         mjCat.add(mjCatByProduct);
         mjCat.addSeparator();
@@ -236,6 +243,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCatInputClass.addActionListener(this);
         mjCatInputCategory.addActionListener(this);
         mjCatIodineValueRank.addActionListener(this);
+        mjCatAcidityRank.addActionListener(this);
         mjCatExternalWarehouses.addActionListener(this);
         mjCatByProduct.addActionListener(this);
         mjCatOilType.addActionListener(this); 
@@ -571,6 +579,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         String sDatabaseErpName = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getExtDatabase().getDbName();
         String sDatabaseCoName = ((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getExtDatabaseCo().getDbName();
         SGuiCatalogueSettings settings = null;
+        Object value = null;
+        String aux = "";
 
         switch (type) {
             case SModConsts.SS_IOG_CT:
@@ -613,9 +623,23 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                         + "code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name;";
                 break;
-            case SModConsts.SU_OIL_ACI: 
-                settings = new SGuiCatalogueSettings("Vigencia acidez aceite", 1);
-                sql = "SELECT id_oil_aci AS " + SDbConsts.FIELD_ID + "1, CONCAT(name, ' - (', dt_start, ')') AS " + SDbConsts.FIELD_ITEM + ", "
+            case SModConsts.SU_OIL_TP:
+                settings = new SGuiCatalogueSettings("Tipo de aceite", 2);
+                
+                if (params != null) {
+                    value = params.getParamsMap().get(SModConsts.SX_EXT_OIL_CL);
+                    if (value != null) {
+                        aux += "AND id_oil_cl = " + ((int[]) value)[0] + " ";
+                    }
+                }
+                
+                sql = "SELECT id_oil_cl AS " + SDbConsts.FIELD_ID + "1, id_oil_tp AS " + SDbConsts.FIELD_ID + "2, name AS " + SDbConsts.FIELD_ITEM + ", " 
+                        + "code AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis " + aux + " ORDER BY name;";
+                break;
+            case SModConsts.SU_OIL_OWN:
+                settings = new SGuiCatalogueSettings("Origen de aceite", 1);
+                sql = "SELECT id_oil_own AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", " 
                         + "code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name;";
                 break;
@@ -993,6 +1017,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatIodineValueRank) {
                 miClient.getSession().showView(SModConsts.SU_IOD_VAL_RANK, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatAcidityRank) {
+                miClient.getSession().showView(SModConsts.SU_OIL_ACI, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatExternalWarehouses) {
                 miClient.getSession().showView(SModConsts.SU_EXT_WAH, SLibConsts.UNDEFINED, null);

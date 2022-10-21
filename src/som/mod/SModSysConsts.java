@@ -6,7 +6,7 @@ package som.mod;
 
 /**
  *
- * @author Sergio Flores, Isabel Servín
+ * @author Sergio Flores, Isabel Servín, Edwin Carmona
  */
 public abstract class SModSysConsts {
 
@@ -14,6 +14,15 @@ public abstract class SModSysConsts {
     public static final int CS_WAH_TP_SIL = 2;
     public static final int CS_WAH_TP_TAN = 3;
     public static final int CS_WAH_TP_TAN_MFG = 4;
+    
+    public static final int CS_WAH_ORI_VER = 1;
+    public static final int CS_WAH_ORI_HOR = 2;
+    
+    public static final int CS_WAH_CALC_TP_EMPTY_MSRE = 1;
+    public static final int CS_WAH_CALC_TP_FULL_MSRE = 2;
+    public static final int CS_WAH_CALC_TP_EMPTY_PERC = 3;
+    public static final int CS_WAH_CALC_TP_FULL_PERC = 4;
+    public static final int CS_WAH_CALC_TP_DIR_DATA = 5;
 
     public static final int CS_PLA_TP_PLA = 1;
 
@@ -115,6 +124,18 @@ public abstract class SModSysConsts {
     public static final int SS_ITEM_TP_FG = 3;
     public static final int SS_ITEM_TP_BP = 4;
     public static final int SS_ITEM_TP_CU = 5;
+    
+    /**
+     * Warehouse attributes
+     */
+    public static final int SS_WHS_OR_VERTICAL = 1;
+    public static final int SS_WHS_OR_HORIZONTAL = 2;
+    
+    public static final int SS_WHS_TP_CALC_EMPTY_MEASURE = 1;
+    public static final int SS_WHS_TP_CALC_FULL_MEASURE = 2;
+    public static final int SS_WHS_TP_CALC_EMPTY_PERCENT = 3;
+    public static final int SS_WHS_TP_CALC_FULL_PERCENT = 4;
+    public static final int SS_WHS_TP_CALC_DIRECT_DATA = 5;
     
     public static final int SX_ITEM_TP_FRUIT = 6;
 

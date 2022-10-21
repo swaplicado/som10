@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -31,6 +32,8 @@ import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanForm;
 import som.gui.SGuiClientUtils;
 import som.mod.SModConsts;
+import som.mod.som.data.SDailyStockUtils;
+import som.mod.som.db.SDbMobileWarehousePremise;
 import som.mod.som.db.SDbStockDay;
 import som.mod.som.db.SSomConsts;
 import som.mod.som.db.SSomStockDays;
@@ -44,6 +47,7 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
     private SSomStockDays moRegistry;
     private SFormStockDay moFormStockDay;
     private SGridPaneForm moGridStockDays;
+    private SGridPaneForm moGridMobileWhsRows;
 
     private JButton jbSaveNextStep;
 
@@ -75,9 +79,13 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
         jPanel29 = new javax.swing.JPanel();
         jlUnit = new javax.swing.JLabel();
         moKeyUnit = new sa.lib.gui.bean.SBeanFieldKey();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel4 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jpWarehouses = new javax.swing.JPanel();
         jbAddLastEmptyRows = new javax.swing.JButton();
+        jpMobilWahs = new javax.swing.JPanel();
+        jpMobileWarehouses = new javax.swing.JPanel();
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
@@ -108,6 +116,8 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
         jPanel6.setLayout(new java.awt.GridLayout(1, 2));
 
         jpWarehouses.setBorder(javax.swing.BorderFactory.createTitledBorder("Almacenes:"));
@@ -121,7 +131,18 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
 
         jPanel6.add(jpWarehouses);
 
-        jPanel1.add(jPanel6, java.awt.BorderLayout.CENTER);
+        jPanel4.add(jPanel6, java.awt.BorderLayout.CENTER);
+
+        jTabbedPane1.addTab("Inventario físico diario", jPanel4);
+
+        jpMobilWahs.setLayout(new java.awt.BorderLayout());
+
+        jpMobileWarehouses.setLayout(new java.awt.BorderLayout());
+        jpMobilWahs.add(jpMobileWarehouses, java.awt.BorderLayout.CENTER);
+
+        jTabbedPane1.addTab("Captura de tanques móviles", jpMobilWahs);
+
+        jPanel1.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -131,10 +152,14 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton jbAddLastEmptyRows;
     private javax.swing.JLabel jlDate;
     private javax.swing.JLabel jlUnit;
+    private javax.swing.JPanel jpMobilWahs;
+    private javax.swing.JPanel jpMobileWarehouses;
     private javax.swing.JPanel jpWarehouses;
     private sa.lib.gui.bean.SBeanFieldDate moDateDate;
     private sa.lib.gui.bean.SBeanFieldKey moKeyUnit;
@@ -282,6 +307,50 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
         mvFormGrids.add(moGridUserRights);
         mvFormGrids.add(moGridUserScales);
         */
+        moGridMobileWhsRows = new SGridPaneForm(miClient, SModConsts.CU_WAH, SLibConsts.UNDEFINED, "Eventos durante molienda") {
+            @Override
+            public void initGrid() {
+                setRowButtonsEnabled(false);
+            }
+
+            @Override
+            public void createGridColumns() {
+                int col = 0;
+                SGridColumnForm[] columns = new SGridColumnForm[3];
+
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "Código almacén");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "Almacén");
+                int colEditable = col++;
+                columns[colEditable] = new SGridColumnForm(SGridConsts.COL_TYPE_BOOL_M, "En planta");
+                columns[colEditable].setEditable(true);
+
+                for (col = 0; col < columns.length; col++) {
+                    moModel.getGridColumns().add(columns[col]);
+                }
+            }
+        };
+
+        jpMobileWarehouses.add(moGridMobileWhsRows, BorderLayout.CENTER);
+    }
+    
+    private void showWarehouses() {
+        if (moDateDate.getValue() == null) {
+            return;
+        }
+        
+        ArrayList<SDbMobileWarehousePremise> mobileWhsRows;
+        if (moRegistry.getMobileWarehouses().isEmpty()) {
+            mobileWhsRows = SDailyStockUtils.getMobileWarehousesRows(miClient.getSession(), moDateDate.getValue());
+        }
+        else {
+            mobileWhsRows = moRegistry.getMobileWarehouses();
+        }
+        
+        Vector<SGridRow> rows = new Vector<>();
+        rows.addAll(mobileWhsRows);
+        
+        moGridMobileWhsRows.clearGridRows();
+        moGridMobileWhsRows.populateGrid(rows);
     }
 
     private void populateStockDays(boolean bLastEmpty) throws SQLException {
@@ -349,6 +418,8 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
         disabledGridPaneFormHeader();
 
         actionDisabledFields();
+        
+        showWarehouses();
     }
 
     private void actionAddLastEmptyRows() {
@@ -559,6 +630,7 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
             moKeyUnit.setEnabled(moRegistry.isRegistryNew() ? true : false);
         }
 
+        showWarehouses();
         addAllListeners();
     }
 
@@ -605,6 +677,10 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
             if (stockDay.getPkDayId() == 0) {
                 registry.getStockDays().add(stockDay);
             }
+        }
+        
+        for (SGridRow gridRow : moGridMobileWhsRows.getModel().getGridRows()) {
+            registry.getMobileWarehouses().add((SDbMobileWarehousePremise) gridRow);
         }
 
         return registry;
