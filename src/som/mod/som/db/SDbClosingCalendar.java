@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import sa.gui.util.SUtilConsts;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
@@ -18,12 +19,12 @@ import som.mod.SModConsts;
  *
  * @author Isabel Servín
  */
-public class SDbVehicleContainerType extends SDbRegistryUser {
-
-    protected int mnPkVehicleContainerTypeId;
-    protected String msCode;
-    protected String msVehicleType;
-    protected String msContainerType;
+public class SDbClosingCalendar extends SDbRegistryUser {
+    
+    protected int mnPkClosingCalendarId;
+    protected int mnCalendarYear;
+    protected int mnCalendarMonth;
+    protected Date mtClosingDate;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -31,46 +32,52 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    protected int mnFkInputCategoryId;
+    protected int mnFkInputClassId;
+    protected int mnFkInputTypeId;
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
-    
-    public SDbVehicleContainerType() {
-        super(SModConsts.SU_VEH_CONT_TYPE);
-        initRegistry();
+
+    public SDbClosingCalendar() {
+        super(SModConsts.SU_CLOSING_CAL);
     }
     
-    /*
-     * Public methods:
-     */
-
-    public void setPkVehicleContainerTypeId(int n) { mnPkVehicleContainerTypeId = n; }
-    public void setCode(String s) { msCode = s; }
-    public void setVehicleType(String s) { msVehicleType = s; }
-    public void setContainerType(String s) { msContainerType = s; }
+    public void setPkClosingCalendarId(int n) { mnPkClosingCalendarId = n; }
+    public void setCalendarYear(int n) { mnCalendarYear = n; }
+    public void setCalendarMonth(int n) { mnCalendarMonth = n; }
+    public void setClosingDate(Date t) { mtClosingDate = t; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
     public void setDisabled(boolean b) { mbDisabled = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
+    public void setFkInputCategoryId(int n) { mnFkInputCategoryId = n; }
+    public void setFkInputClassId(int n) { mnFkInputClassId = n; }
+    public void setFkInputTypeId(int n) { mnFkInputTypeId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
-    
-    public int getPkVehicleContainerTypeId() { return mnPkVehicleContainerTypeId; }
-    public String getCode() { return msCode; }
-    public String getVehicleType() { return msVehicleType; }
-    public String getContainerType() { return msContainerType; }
+
+    public int getPkClosingCalendarId() { return mnPkClosingCalendarId; }
+    public int getCalendarYear() { return mnCalendarYear; }
+    public int getCalendarMonth() { return mnCalendarMonth; }
+    public Date getClosingDate() { return mtClosingDate; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
     public boolean isDisabled() { return mbDisabled; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
+    public int getFkInputCategoryId() { return mnFkInputCategoryId; }
+    public int getFkInputClassId() { return mnFkInputClassId; }
+    public int getFkInputTypeId() { return mnFkInputTypeId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -78,28 +85,31 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkVehicleContainerTypeId = pk[0];
+        mnPkClosingCalendarId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkVehicleContainerTypeId };
+        return new int[] { mnPkClosingCalendarId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
         
-        mnPkVehicleContainerTypeId = 0;
-        msCode = "";
-        msVehicleType = "";
-        msContainerType = "";
+        mnPkClosingCalendarId = 0;
+        mnCalendarYear = 0;
+        mnCalendarMonth = 0;
+        mtClosingDate = null;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
         mbDisabled = false;
         mbDeleted = false;
         mbSystem = false;
+        mnFkInputCategoryId = 0;
+        mnFkInputClassId = 0;
+        mnFkInputTypeId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -113,24 +123,24 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_veh_cont_type = " + mnPkVehicleContainerTypeId + " ";
+        return "WHERE id_closing_cal = " + mnPkClosingCalendarId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_veh_cont_type = " + pk[0] + " ";
+        return "WHERE id_closing_cal = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet;
         
-        mnPkVehicleContainerTypeId = 0;
+        mnPkClosingCalendarId = 0;
         
-        msSql = "SELECT COALESCE(MAX(id_veh_cont_type), 0) + 1 FROM " + getSqlTable();
+        msSql = "SELECT COALESCE(MAX(id_closing_cal), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkVehicleContainerTypeId = resultSet.getInt(1);
+            mnPkClosingCalendarId = resultSet.getInt(1);
         }
     }
 
@@ -148,16 +158,19 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkVehicleContainerTypeId = resultSet.getInt("id_veh_cont_type");
-            msCode = resultSet.getString("code");
-            msVehicleType = resultSet.getString("vehicle_type");
-            msContainerType = resultSet.getString("container_type");
+            mnPkClosingCalendarId = resultSet.getInt("id_closing_cal");
+            mnCalendarYear = resultSet.getInt("cal_year");
+            mnCalendarMonth = resultSet.getInt("cal_month");
+            mtClosingDate = resultSet.getDate("closing_dt");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
+            mnFkInputCategoryId = resultSet.getInt("fk_inp_ct");
+            mnFkInputClassId = resultSet.getInt("fk_inp_cl");
+            mnFkInputTypeId = resultSet.getInt("fk_inp_tp");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -177,25 +190,25 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
         if (mbRegistryNew) {
             computePrimaryKey(session);
             mbUpdatable = true;
-            mbDisableable = true;
+            mbDisableable = false;
             mbDeletable = true;
-            mbDisabled = false;
-            mbDeleted = false;
-            mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
-            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" + 
-                    mnPkVehicleContainerTypeId + ", " + 
-                    "'" + msCode + "', " + 
-                    "'" + msVehicleType + "', " + 
-                    "'" + msContainerType + "', " + 
+            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
+                    mnPkClosingCalendarId + ", " + 
+                    mnCalendarYear + ", " + 
+                    mnCalendarMonth + ", " + 
+                    "'" + SLibUtils.DbmsDateFormatDate.format(mtClosingDate) + "', " + 
                     (mbUpdatable ? 1 : 0) + ", " + 
                     (mbDisableable ? 1 : 0) + ", " + 
                     (mbDeletable ? 1 : 0) + ", " + 
                     (mbDisabled ? 1 : 0) + ", " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
+                    mnFkInputCategoryId + ", " + 
+                    mnFkInputClassId + ", " + 
+                    mnFkInputTypeId + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -206,43 +219,48 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
             
             msSql = "UPDATE " + getSqlTable() + " SET " + 
-                    //"id_veh_cont_type = " + mnPkVehicleContainerTypeId + ", " +
-                    "code = '" + msCode + "', " +
-                    "vehicle_type = '" + msVehicleType + "', " +
-                    "container_type = '" + msContainerType + "', " +
+                    //"id_closing_cal = " + mnPkClosingCalendarId + ", " +
+                    "cal_year = " + mnCalendarYear + ", " +
+                    "cal_month = " + mnCalendarMonth + ", " +
+                    "closing_dt = '" + SLibUtils.DbmsDateFormatDate.format(mtClosingDate) + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
+                    "fk_inp_ct = " + mnFkInputCategoryId + ", " +
+                    "fk_inp_cl = " + mnFkInputClassId + ", " +
+                    "fk_inp_tp = " + mnFkInputTypeId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
-                    "ts_usr_upd = " + "NOW()" + " " +
+                    "ts_usr_upd = " + "NOW()" + ", " +
                     getSqlWhere();
         }
         
         session.getStatement().execute(msSql);
-        
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
-    public SDbVehicleContainerType clone() throws CloneNotSupportedException {
-        SDbVehicleContainerType registry = new SDbVehicleContainerType();
+    public SDbClosingCalendar clone() throws CloneNotSupportedException {
+        SDbClosingCalendar registry = new SDbClosingCalendar();
         
-        registry.setPkVehicleContainerTypeId(this.getPkVehicleContainerTypeId());
-        registry.setCode(this.getCode());
-        registry.setVehicleType(this.getVehicleType());
-        registry.setContainerType(this.getContainerType());
+        registry.setPkClosingCalendarId(this.getPkClosingCalendarId());
+        registry.setCalendarYear(this.getCalendarYear());
+        registry.setCalendarMonth(this.getCalendarMonth());
+        registry.setClosingDate(this.getClosingDate());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
         registry.setDisabled(this.isDisabled());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
+        registry.setFkInputCategoryId(this.getFkInputCategoryId());
+        registry.setFkInputClassId(this.getFkInputClassId());
+        registry.setFkInputTypeId(this.getFkInputTypeId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

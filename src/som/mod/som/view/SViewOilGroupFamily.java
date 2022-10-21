@@ -1,5 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package som.mod.som.view;
@@ -16,12 +17,12 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Isabel
  */
-public class SViewRegion extends SGridPaneView {
+public class SViewOilGroupFamily extends SGridPaneView {
 
-    public SViewRegion(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SU_REG, SLibConsts.UNDEFINED, title);
+    public SViewOilGroupFamily(SGuiClient client,  String title) {
+            super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SU_OIL_GRP_FAM, SLibConsts.UNDEFINED, title);
     }
 
     @Override
@@ -43,35 +44,29 @@ public class SViewRegion extends SGridPaneView {
         }
 
         msSql = "SELECT "
-                + "v.id_reg AS " + SDbConsts.FIELD_ID + "1, "
+                + "v.id_oil_grp_fam AS " + SDbConsts.FIELD_ID + "1, "
                 + "v.code AS " + SDbConsts.FIELD_CODE + ", "
                 + "v.name AS " + SDbConsts.FIELD_NAME + ", "
+                + "v.b_mandatory, "
                 + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
                 + "v.b_can_dis AS " + SDbConsts.FIELD_CAN_DIS + ", "
                 + "v.b_can_del AS " + SDbConsts.FIELD_CAN_DEL + ", "
                 + "v.b_dis AS " + SDbConsts.FIELD_IS_DIS + ", "
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
                 + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
-                + "sr.code, "
                 + "v.fk_usr_ins AS " + SDbConsts.FIELD_USER_INS_ID + ", "
                 + "v.fk_usr_upd AS " + SDbConsts.FIELD_USER_UPD_ID + ", "
                 + "v.ts_usr_ins AS " + SDbConsts.FIELD_USER_INS_TS + ", "
                 + "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", "
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_REG) + " AS v "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SUP_REG) + " AS sr ON "
-                + "v.fk_sup_reg = sr.id_sup_reg "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_OIL_GRP_FAM) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
                 + "v.fk_usr_upd = uu.id_usr "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)
-                + "ORDER BY v.name, v.id_reg ";
-
-        // espacio, supra mas grande
-
-        // total 4 supraregiones del ,
+                + "ORDER BY v.name, v.id_oil_grp_fam ";
     }
 
     @Override
@@ -81,7 +76,7 @@ public class SViewRegion extends SGridPaneView {
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sr.code", "Supraregión");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "b_mandatory", "Reporte obligatorio");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
@@ -96,7 +91,6 @@ public class SViewRegion extends SGridPaneView {
     @Override
     public void defineSuscriptions() {
         moSuscriptionsSet.add(mnGridType);
-        moSuscriptionsSet.add(SModConsts.SU_SUP_REG);
         moSuscriptionsSet.add(SModConsts.CU_USR);
     }
 }

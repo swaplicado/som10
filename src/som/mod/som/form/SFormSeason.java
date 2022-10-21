@@ -353,8 +353,8 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
             jtfRegistryKey.setText("");
         }
         else {
-            moMonthRecMonthStart.setValue(moRegistry.getReceptPeriodMonthStart());
-            moMonthRecMonthEnd.setValue(moRegistry.getReceptPeriodMonthEnd());
+            moMonthRecMonthStart.setValue(moRegistry.getReceptPeriodMonthStart() == 0 ? 1 : moRegistry.getReceptPeriodMonthStart());
+            moMonthRecMonthEnd.setValue(moRegistry.getReceptPeriodMonthEnd() == 0 ? 1 : moRegistry.getReceptPeriodMonthEnd());
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
         }
 

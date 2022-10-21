@@ -7,8 +7,11 @@ package som.mod.som.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import sa.gui.util.SUtilConsts;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
@@ -18,12 +21,12 @@ import som.mod.SModConsts;
  *
  * @author Isabel Servín
  */
-public class SDbVehicleContainerType extends SDbRegistryUser {
-
-    protected int mnPkVehicleContainerTypeId;
+public class SDbOilAcidity extends SDbRegistryUser {
+    
+    protected int mnPkOilAcidityId;
     protected String msCode;
-    protected String msVehicleType;
-    protected String msContainerType;
+    protected String msName;
+    protected Date mtDateStart;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -36,20 +39,20 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
+
+
+    protected ArrayList<SDbOilAcidityEntry> maChildEntries;
     
-    public SDbVehicleContainerType() {
-        super(SModConsts.SU_VEH_CONT_TYPE);
+    public SDbOilAcidity() {
+        super(SModConsts.SU_OIL_ACI);
+        maChildEntries = new ArrayList<>();
         initRegistry();
     }
     
-    /*
-     * Public methods:
-     */
-
-    public void setPkVehicleContainerTypeId(int n) { mnPkVehicleContainerTypeId = n; }
+    public void setPkOilAcidityId(int n) { mnPkOilAcidityId = n; }
     public void setCode(String s) { msCode = s; }
-    public void setVehicleType(String s) { msVehicleType = s; }
-    public void setContainerType(String s) { msContainerType = s; }
+    public void setName(String s) { msName = s; }
+    public void setDateStart(Date t) { mtDateStart = t; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -60,11 +63,12 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
-    
-    public int getPkVehicleContainerTypeId() { return mnPkVehicleContainerTypeId; }
+
+
+    public int getPkOilAcidityId() { return mnPkOilAcidityId; }
     public String getCode() { return msCode; }
-    public String getVehicleType() { return msVehicleType; }
-    public String getContainerType() { return msContainerType; }
+    public String getName() { return msName; }
+    public Date getDateStart() { return mtDateStart; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -75,25 +79,28 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
+
+
+    public ArrayList<SDbOilAcidityEntry> getChildEntries() { return maChildEntries; }
     
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkVehicleContainerTypeId = pk[0];
+        mnPkOilAcidityId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkVehicleContainerTypeId };
+        return new int[] { mnPkOilAcidityId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
         
-        mnPkVehicleContainerTypeId = 0;
+        mnPkOilAcidityId = 0;
         msCode = "";
-        msVehicleType = "";
-        msContainerType = "";
+        msName = "";
+        mtDateStart = null;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -104,6 +111,8 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
+
+        maChildEntries.clear();
     }
 
     @Override
@@ -113,30 +122,31 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_veh_cont_type = " + mnPkVehicleContainerTypeId + " ";
+        return "WHERE id_oil_aci = " + mnPkOilAcidityId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_veh_cont_type = " + pk[0] + " ";
+        return "WHERE id_oil_aci = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet;
         
-        mnPkVehicleContainerTypeId = 0;
+        mnPkOilAcidityId = 0;
         
-        msSql = "SELECT COALESCE(MAX(id_veh_cont_type), 0) + 1 FROM " + getSqlTable();
+        msSql = "SELECT COALESCE(MAX(id_oil_aci), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkVehicleContainerTypeId = resultSet.getInt(1);
+            mnPkOilAcidityId = resultSet.getInt(1);
         }
     }
 
     @Override
     public void read(SGuiSession session, int[] pk) throws SQLException, Exception {
         ResultSet resultSet;
+        Statement statement;
         
         initRegistry();
         initQueryMembers();
@@ -148,10 +158,10 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkVehicleContainerTypeId = resultSet.getInt("id_veh_cont_type");
+            mnPkOilAcidityId = resultSet.getInt("id_oil_aci");
             msCode = resultSet.getString("code");
-            msVehicleType = resultSet.getString("vehicle_type");
-            msContainerType = resultSet.getString("container_type");
+            msName = resultSet.getString("name");
+            mtDateStart = resultSet.getDate("dt_start");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -162,6 +172,18 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
+
+            // Read aswell child registries:
+            
+            statement = session.getStatement().getConnection().createStatement();
+            
+            msSql = "SELECT id_ety FROM " + SModConsts.TablesMap.get(SModConsts.SU_OIL_ACI_ETY) + " " + getSqlWhere();
+            resultSet = statement.executeQuery(msSql);
+            while (resultSet.next()) {
+                SDbOilAcidityEntry entry = new SDbOilAcidityEntry();
+                entry.read(session, new int[] { mnPkOilAcidityId , resultSet.getInt(1) } );
+                maChildEntries.add(entry);
+            }
 
             mbRegistryNew = false;
         }
@@ -177,19 +199,16 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
         if (mbRegistryNew) {
             computePrimaryKey(session);
             mbUpdatable = true;
-            mbDisableable = true;
+            mbDisableable = false;
             mbDeletable = true;
-            mbDisabled = false;
-            mbDeleted = false;
-            mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
-            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" + 
-                    mnPkVehicleContainerTypeId + ", " + 
+            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
+                    mnPkOilAcidityId + ", " + 
                     "'" + msCode + "', " + 
-                    "'" + msVehicleType + "', " + 
-                    "'" + msContainerType + "', " + 
+                    "'" + msName + "', " + 
+                    "'" + SLibUtils.DbmsDateFormatDate.format(mtDateStart) + "', " + 
                     (mbUpdatable ? 1 : 0) + ", " + 
                     (mbDisableable ? 1 : 0) + ", " + 
                     (mbDeletable ? 1 : 0) + ", " + 
@@ -206,10 +225,10 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
             
             msSql = "UPDATE " + getSqlTable() + " SET " + 
-                    //"id_veh_cont_type = " + mnPkVehicleContainerTypeId + ", " +
+                    //"id_oil_aci = " + mnPkOilAcidityId + ", " +
                     "code = '" + msCode + "', " +
-                    "vehicle_type = '" + msVehicleType + "', " +
-                    "container_type = '" + msContainerType + "', " +
+                    "name = '" + msName + "', " +
+                    "dt_start = '" + SLibUtils.DbmsDateFormatDate.format(mtDateStart) + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -225,18 +244,29 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
         
         session.getStatement().execute(msSql);
         
+        // Save aswell child registries:
+
+        msSql = "DELETE FROM " + SModConsts.TablesMap.get(SModConsts.SU_OIL_ACI_ETY) + " " + getSqlWhere();
+        session.getStatement().execute(msSql);
+
+        for (SDbOilAcidityEntry entry : maChildEntries) {
+            entry.setPkOilAcidityId(mnPkOilAcidityId);
+            entry.setRegistryNew(true);
+            entry.save(session);
+        }
+        
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
-    public SDbVehicleContainerType clone() throws CloneNotSupportedException {
-        SDbVehicleContainerType registry = new SDbVehicleContainerType();
+    public SDbOilAcidity clone() throws CloneNotSupportedException {
+        SDbOilAcidity registry = new SDbOilAcidity();
         
-        registry.setPkVehicleContainerTypeId(this.getPkVehicleContainerTypeId());
+        registry.setPkOilAcidityId(this.getPkOilAcidityId());
         registry.setCode(this.getCode());
-        registry.setVehicleType(this.getVehicleType());
-        registry.setContainerType(this.getContainerType());
+        registry.setName(this.getName());
+        registry.setDateStart(this.getDateStart());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
@@ -247,6 +277,10 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
+        
+        for (SDbOilAcidityEntry entry : maChildEntries) {
+            registry.getChildEntries().add(entry.clone());
+        }
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;

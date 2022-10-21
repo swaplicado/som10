@@ -77,6 +77,13 @@ public abstract class SModConsts {
     public static final int SU_INP_SRC = 320021;
     public static final int SU_BY_PRODUCT = 320022;
     public static final int SU_VEH_CONT_TYPE = 320023;
+    public static final int SU_OIL_CL = 320025;
+    public static final int SU_OIL_TP = 320026;
+    public static final int SU_OIL_OWN = 320027;
+    public static final int SU_OIL_ACI = 320028;
+    public static final int SU_OIL_ACI_ETY = 320029;
+    public static final int SU_OIL_GRP_FAM = 320030;
+    public static final int SU_CLOSING_CAL = 320031;
     public static final int SU_INP_CL_ALL = 320101;
     public static final int SU_INP_TP_ALL = 320102;
 
@@ -85,6 +92,8 @@ public abstract class SModConsts {
     public static final int S_LAB_TEST = 330003;
     public static final int S_TIC = 330011;
     public static final int S_TIC_NOTE = 330012;
+    public static final int S_WAH_LAB = 330016;
+    public static final int S_WAH_LAB_TEST = 330017;
     public static final int S_IOG = 330021;
     public static final int S_IOG_NOTE = 330022;
     public static final int S_IOG_REF = 330023;
@@ -238,6 +247,13 @@ public abstract class SModConsts {
         TablesMap.put(SU_INP_SRC, "su_inp_src");
         TablesMap.put(SU_BY_PRODUCT, "su_by_product");
         TablesMap.put(SU_VEH_CONT_TYPE, "su_veh_cont_type");
+        TablesMap.put(SU_OIL_CL, "su_oil_cl");
+        TablesMap.put(SU_OIL_TP, "su_oil_tp");
+        TablesMap.put(SU_OIL_OWN, "su_oil_own");
+        TablesMap.put(SU_OIL_ACI, "su_oil_aci");
+        TablesMap.put(SU_OIL_ACI_ETY, "su_oil_aci_ety");
+        TablesMap.put(SU_OIL_GRP_FAM, "su_oil_grp_fam");
+        TablesMap.put(SU_CLOSING_CAL, "su_closing_cal");
         TablesMap.put(SU_GRINDING_EVENT, "su_grin_events");
         TablesMap.put(SU_GRINDING_RESULTS, "su_grin_res");
         TablesMap.put(SU_GRINDINGS, "su_grinding");

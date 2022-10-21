@@ -18,12 +18,12 @@ import som.mod.SModConsts;
  *
  * @author Isabel Servín
  */
-public class SDbVehicleContainerType extends SDbRegistryUser {
-
-    protected int mnPkVehicleContainerTypeId;
+public class SDbOilType extends SDbRegistryUser{
+    
+    protected int mnPkOilClassId;
+    protected int mnPkOilTypeId;
     protected String msCode;
-    protected String msVehicleType;
-    protected String msContainerType;
+    protected String msName;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -36,20 +36,16 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
-    
-    public SDbVehicleContainerType() {
-        super(SModConsts.SU_VEH_CONT_TYPE);
+
+    public SDbOilType() {
+        super(SModConsts.SU_OIL_TP);
         initRegistry();
     }
     
-    /*
-     * Public methods:
-     */
-
-    public void setPkVehicleContainerTypeId(int n) { mnPkVehicleContainerTypeId = n; }
+    public void setPkOilClassId(int n) { mnPkOilClassId = n; }
+    public void setPkOilTypeId(int n) { mnPkOilTypeId = n; }
     public void setCode(String s) { msCode = s; }
-    public void setVehicleType(String s) { msVehicleType = s; }
-    public void setContainerType(String s) { msContainerType = s; }
+    public void setName(String s) { msName = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -61,10 +57,10 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
     
-    public int getPkVehicleContainerTypeId() { return mnPkVehicleContainerTypeId; }
+    public int getPkOilClassId() { return mnPkOilClassId; }
+    public int getPkOilTypeId() { return mnPkOilTypeId; }
     public String getCode() { return msCode; }
-    public String getVehicleType() { return msVehicleType; }
-    public String getContainerType() { return msContainerType; }
+    public String getName() { return msName; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -75,25 +71,26 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
-    
+
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkVehicleContainerTypeId = pk[0];
+        mnPkOilClassId = pk[0];
+        mnPkOilTypeId = pk[1];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkVehicleContainerTypeId };
+        return new int[] { mnPkOilClassId, mnPkOilTypeId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
         
-        mnPkVehicleContainerTypeId = 0;
+        mnPkOilClassId = 0;
+        mnPkOilTypeId = 0;
         msCode = "";
-        msVehicleType = "";
-        msContainerType = "";
+        msName = "";
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -113,24 +110,24 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_veh_cont_type = " + mnPkVehicleContainerTypeId + " ";
+        return "WHERE id_oil_cl = " + mnPkOilClassId + " AND id_oil_tp = " + mnPkOilTypeId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_veh_cont_type = " + pk[0] + " ";
+        return "WHERE id_oil_cl = " + pk[0] + " AND id_oil_tp = " + pk[1] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet;
         
-        mnPkVehicleContainerTypeId = 0;
+        mnPkOilTypeId = 0;
         
-        msSql = "SELECT COALESCE(MAX(id_veh_cont_type), 0) + 1 FROM " + getSqlTable();
+        msSql = "SELECT COALESCE(MAX(id_oil_tp), 0) + 1 FROM " + getSqlTable() + " WHERE id_oil_cl = " + mnPkOilClassId + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkVehicleContainerTypeId = resultSet.getInt(1);
+            mnPkOilTypeId = resultSet.getInt(1);
         }
     }
 
@@ -148,10 +145,10 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkVehicleContainerTypeId = resultSet.getInt("id_veh_cont_type");
+            mnPkOilClassId = resultSet.getInt("id_oil_cl");
+            mnPkOilTypeId = resultSet.getInt("id_oil_tp");
             msCode = resultSet.getString("code");
-            msVehicleType = resultSet.getString("vehicle_type");
-            msContainerType = resultSet.getString("container_type");
+            msName = resultSet.getString("name");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -177,19 +174,16 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
         if (mbRegistryNew) {
             computePrimaryKey(session);
             mbUpdatable = true;
-            mbDisableable = true;
+            mbDisableable = false;
             mbDeletable = true;
-            mbDisabled = false;
-            mbDeleted = false;
-            mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
-            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" + 
-                    mnPkVehicleContainerTypeId + ", " + 
+            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
+                    mnPkOilClassId + ", " + 
+                    mnPkOilTypeId + ", " + 
                     "'" + msCode + "', " + 
-                    "'" + msVehicleType + "', " + 
-                    "'" + msContainerType + "', " + 
+                    "'" + msName + "', " + 
                     (mbUpdatable ? 1 : 0) + ", " + 
                     (mbDisableable ? 1 : 0) + ", " + 
                     (mbDeletable ? 1 : 0) + ", " + 
@@ -206,10 +200,10 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
             
             msSql = "UPDATE " + getSqlTable() + " SET " + 
-                    //"id_veh_cont_type = " + mnPkVehicleContainerTypeId + ", " +
+                    //"id_oil_cl = " + mnPkOilClassId + ", " +
+                    //"id_oil_tp = " + mnPkOilTypeId + ", " +
                     "code = '" + msCode + "', " +
-                    "vehicle_type = '" + msVehicleType + "', " +
-                    "container_type = '" + msContainerType + "', " +
+                    "name = '" + msName + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -224,19 +218,18 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
         }
         
         session.getStatement().execute(msSql);
-        
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
-    public SDbVehicleContainerType clone() throws CloneNotSupportedException {
-        SDbVehicleContainerType registry = new SDbVehicleContainerType();
+    public SDbOilType clone() throws CloneNotSupportedException {
+        SDbOilType registry = new SDbOilType();
         
-        registry.setPkVehicleContainerTypeId(this.getPkVehicleContainerTypeId());
+        registry.setPkOilClassId(this.getPkOilClassId());
+        registry.setPkOilTypeId(this.getPkOilTypeId());
         registry.setCode(this.getCode());
-        registry.setVehicleType(this.getVehicleType());
-        registry.setContainerType(this.getContainerType());
+        registry.setName(this.getName());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
