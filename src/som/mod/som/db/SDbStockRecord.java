@@ -50,7 +50,7 @@ public class SDbStockRecord extends SDbRegistryUser {
     * */
 
     public SDbStockRecord() {
-        super(SModConsts.S_STK);
+        super(SModConsts.S_STK_RECORD);
         initRegistry();
     }
 

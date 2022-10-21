@@ -1,4 +1,16 @@
 ================================================================================
+2022-10-22, 1.0 081.0
+Edwin Omar CARMONA FIGUEROA
+--------------------------------------------------------------------------------
+1) Creación del catálogo de Clases de aceite.
+2) Creación del catálogo de Tipos de aceite.
+3) Creación del propietarios de aceite.
+4) Manejo de versiones del catálogo de Rangos de acidez de aceite.
+5) Catálogo de Grupos de familia de aceite.
+6) Catálogo de Fechas de cierre de mes.
+7) Se agrega a la tabla de almacenes los campos de orientación y tipo de cálculo de almacén, así como la bandera de si es móvil o no.
+
+================================================================================
 2022-10-10, 1.0 080.0
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
