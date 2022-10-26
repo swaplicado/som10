@@ -97,6 +97,7 @@ public abstract class SModConsts {
     public static final int S_TIC_NOTE = 330012;
     public static final int S_WAH_LAB = 330016;
     public static final int S_WAH_LAB_TEST = 330017;
+    public static final int S_WAH_LAB_TEST_ALL = 330019;
     public static final int S_WAH_PREMISE = 330018;
     public static final int S_IOG = 330021;
     public static final int S_IOG_NOTE = 330022;
@@ -274,6 +275,8 @@ public abstract class SModConsts {
         TablesMap.put(S_TIC, "s_tic");
         TablesMap.put(S_TIC_NOTE, "s_tic_note");
         TablesMap.put(S_WAH_PREMISE, "s_wah_premise");
+        TablesMap.put(S_WAH_LAB, "s_wah_lab");
+        TablesMap.put(S_WAH_LAB_TEST, "s_wah_lab_test");
         TablesMap.put(S_IOG, "s_iog");
         TablesMap.put(S_IOG_NOTE, "s_iog_note");
         TablesMap.put(S_IOG_REF, "s_iog_ref");

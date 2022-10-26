@@ -15,6 +15,7 @@ import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistry;
 import sa.lib.db.SDbRegistryUser;
+import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
 
@@ -24,7 +25,7 @@ import som.mod.SModConsts;
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
-public class SDbItem extends SDbRegistryUser {
+public class SDbItem extends SDbRegistryUser implements SGridRow {
 
     public static final int FIELD_EXTERNAL_CODE = SDbRegistry.FIELD_BASE + 1;
     public static final int FIELD_EXTERNAL_NAME = SDbRegistry.FIELD_BASE + 2;
@@ -817,5 +818,59 @@ public class SDbItem extends SDbRegistryUser {
         }
 
         return nPkItemId;
+    }
+
+    @Override
+    public int[] getRowPrimaryKey() {
+        return new int[] { mnPkItemId };
+    }
+
+    @Override
+    public String getRowCode() {
+        return "";
+    }
+
+    @Override
+    public String getRowName() {
+        return "";
+    }
+
+    @Override
+    public boolean isRowSystem() {
+        return false;
+    }
+
+    @Override
+    public boolean isRowDeletable() {
+        return true;
+    }
+
+    @Override
+    public boolean isRowEdited() {
+        return isRowEdited();
+    }
+
+    @Override
+    public void setRowEdited(boolean edited) {
+        setRowEdited(edited);
+    }
+
+    @Override
+    public Object getRowValueAt(int row) {
+        Object value = null;
+        
+        switch (row) {
+            case 0:
+                value = msName;
+                break;
+            default:
+        }
+        
+        return value;
+    }
+
+    @Override
+    public void setRowValueAt(Object o, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

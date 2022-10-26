@@ -38,6 +38,8 @@ import som.mod.som.db.SDbOilOwner;
 import som.mod.som.db.SDbOilType;
 import som.mod.som.db.SDbStock;
 import som.mod.som.db.SDbStockDay;
+import som.mod.som.db.SDbWahLab;
+import som.mod.som.db.SDbWahLabTest;
 import som.mod.som.db.SSomStockDays;
 import som.mod.som.form.SDialogDailyStockReport;
 import som.mod.som.form.SDialogRepIogList;
@@ -54,14 +56,16 @@ import som.mod.som.form.SFormIog;
 import som.mod.som.form.SFormMix;
 import som.mod.som.form.SFormOilAcidity;
 import som.mod.som.form.SFormOilAcidityEntry;
+import som.mod.som.form.SFormOilAcidityRow;
 import som.mod.som.form.SFormOilClass;
 import som.mod.som.form.SFormOilGroupFamily;
 import som.mod.som.form.SFormOilOwner;
 import som.mod.som.form.SFormOilType;
-import som.mod.som.form.SFormOilAcidityRow;
 import som.mod.som.form.SFormProductionEstimate;
 import som.mod.som.form.SFormStockDay;
 import som.mod.som.form.SFormStockDays;
+import som.mod.som.form.SFormWahLab;
+import som.mod.som.form.SFormWahLabTest;
 import som.mod.som.view.SViewByProduct;
 import som.mod.som.view.SViewClosingCalendar;
 import som.mod.som.view.SViewExternalDpsReturn;
@@ -86,6 +90,7 @@ import som.mod.som.view.SViewStockDaysLog;
 import som.mod.som.view.SViewStockMoves;
 import som.mod.som.view.SViewTicketSupply;
 import som.mod.som.view.SViewTicketSupplyDps;
+import som.mod.som.view.SViewWahLab;
 
 /**
  * 
@@ -151,6 +156,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjOilProdEstLogCons;
     private JMenuItem mjOilIogExpProc;
     private JMenuItem mjOilIogExpLog;
+    private JMenuItem mjOilWahLab;
     private JMenu mjStk;
     private JMenuItem mjStkStock;
     private JMenuItem mjStkStockDiv;
@@ -184,6 +190,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private SFormOilAcidityEntry moFormOilAcidityEntry;
     private SFormOilGroupFamily moFormOilGroupFamily;
     private SFormClosingCalendar moFormClosingCalendar;
+    private SFormWahLab moFormWahLabWithLastTest;
+    private SFormWahLab moFormWahLabWithoutLastTest;
+    private SFormWahLabTest moFormWahLabTest;
     
     private SFormOilAcidity SFormOilAcidity;
     private SFormOilAcidityRow SFormOilAcidityEntry;
@@ -363,6 +372,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilProdEstLogCons = new JMenuItem("Bitácora estimación de consumo por ítem");
         mjOilIogExpProc = new JMenuItem("Exportación de documentos de inventarios...");
         mjOilIogExpLog = new JMenuItem("Bitácora exportación de documentos de inventarios");
+        mjOilWahLab = new JMenuItem("Análisis de laboratorio");
 
         mjOil.add(mjOilStockDays);
         mjOil.add(mjOilStockDaysLog);
@@ -379,6 +389,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOil.addSeparator();
         mjOil.add(mjOilIogExpProc);
         mjOil.add(mjOilIogExpLog);
+        mjOil.addSeparator();
+        mjOil.add(mjOilWahLab);
 
         mjOilStockDays.addActionListener(this);
         mjOilProdEstProc.addActionListener(this);
@@ -390,6 +402,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilWizardDps.addActionListener(this);
         mjOilIogExpProc.addActionListener(this);
         mjOilIogExpLog.addActionListener(this);
+        mjOilWahLab.addActionListener(this);
 
         mjStk = new JMenu("Existencias");
         mjStkStock = new JMenuItem("Existencias");
@@ -476,6 +489,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilWizardDps.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_WHS_OM }));
         mjOilIogExpProc.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OM));
         mjOilIogExpLog.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OM));
+        mjOilWahLab.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OM));
 
         mjStk.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_WHS_OM, SModSysConsts.CS_RIG_REP_OM }));
 
@@ -536,6 +550,12 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.S_MIX:
                 registry = new SDbMix();
+                break;
+            case SModConsts.S_WAH_LAB:
+                registry = new SDbWahLab();
+                break;
+            case SModConsts.S_WAH_LAB_TEST:
+                registry = new SDbWahLabTest();
                 break;
             case SModConsts.SX_EXT_DPS:
                 //registry = new SRowSupplyDpsTicket();
@@ -762,6 +782,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                         break;
                 }
                 break;
+            case SModConsts.S_WAH_LAB:
+                view = new SViewWahLab(miClient, "Análisis laboratorio aceite");
+                break;
             case SModConsts.SX_IOG_PROD:
                 switch (subtype) {
                     case SModConsts.SX_INV_IN_FG:
@@ -926,6 +949,23 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             case SModConsts.S_MIX:
                 if (moFormMix == null) { moFormMix = new SFormMix(miClient, "Documento mezcla"); }
                 form = moFormMix;
+                break;
+            case SModConsts.S_WAH_LAB:
+                switch (subtype) {
+                    case 0:
+                        if (moFormWahLabWithoutLastTest == null) { moFormWahLabWithoutLastTest = new SFormWahLab(miClient, "Análisis laboratorio aceites", false); }
+                        form = moFormWahLabWithoutLastTest;
+                        break;
+                    case 1:
+                        if (moFormWahLabWithLastTest == null) { moFormWahLabWithLastTest = new SFormWahLab(miClient, "Análisis laboratorio aceites", true); }
+                        form = moFormWahLabWithLastTest;
+                        break;
+                    default:
+                }
+                break;
+            case SModConsts.S_WAH_LAB_TEST:
+                if (moFormWahLabTest == null) { moFormWahLabTest = new SFormWahLabTest(miClient, "Almacenes e ítems"); }
+                form = moFormWahLabTest;
                 break;
             case SModConsts.SX_WIZ_DPS:
                 if (moFormDialogWizardDps == null) { moFormDialogWizardDps = new SFormDialogWizardDps(miClient, "Movimientos externos"); }
@@ -1152,6 +1192,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjOilIogExpLog) {
                 showView(SModConsts.S_IOG_EXP, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjOilWahLab) {
+                showView(SModConsts.S_WAH_LAB, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjStkStock) {
                 showView(SModConsts.S_STK, SModConsts.SX_STK_STK, null);

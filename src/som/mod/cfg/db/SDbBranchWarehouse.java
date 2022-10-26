@@ -11,14 +11,15 @@ import java.util.Date;
 import sa.gui.util.SUtilConsts;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
+import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
 
 /**
  *
- * @author Sergio Flores, Edwin Carmona
+ * @author Sergio Flores, Edwin Carmona, Isabel Servín
  */
-public class SDbBranchWarehouse extends SDbRegistryUser {
+public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
 
     protected int mnPkCompanyId;
     protected int mnPkBranchId;
@@ -352,5 +353,62 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
+    }
+
+    @Override
+    public int[] getRowPrimaryKey() {
+        return new int[] { mnPkCompanyId, mnPkBranchId, mnPkWarehouseId };
+    }
+
+    @Override
+    public String getRowCode() {
+        return "";
+    }
+
+    @Override
+    public String getRowName() {
+        return "";
+    }
+
+    @Override
+    public boolean isRowSystem() {
+        return false;
+    }
+
+    @Override
+    public boolean isRowDeletable() {
+        return true;
+    }
+
+    @Override
+    public boolean isRowEdited() {
+        return isRowEdited();
+    }
+
+    @Override
+    public void setRowEdited(boolean edited) {
+        setRowEdited(edited);
+    }
+
+    @Override
+    public Object getRowValueAt(int row) {
+        Object value = null;
+        
+        switch (row) {
+            case 0:
+                value = msCode;
+                break;
+            case 1: 
+                value = msName;
+                break;
+            default:
+        }
+        
+        return value;
+    }
+
+    @Override
+    public void setRowValueAt(Object o, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
