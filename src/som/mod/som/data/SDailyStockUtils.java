@@ -440,7 +440,7 @@ public class SDailyStockUtils {
                     row.read(session, new Object[] { res.getInt("id_co"), res.getInt("id_cob"), res.getInt("id_wah"), dtStk });
                 }
                 catch (Exception ex) {
-                    Logger.getLogger(SDailyStockUtils.class.getName()).log(Level.SEVERE, null, ex);
+//                    Logger.getLogger(SDailyStockUtils.class.getName()).log(Level.SEVERE, null, ex);
                     
                     row.setPrimaryKey(new Object[] { res.getInt("id_co"), res.getInt("id_cob"), res.getInt("id_wah"), dtStk });
                     row.setAuxWarehouseCode(res.getString("code"));

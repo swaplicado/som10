@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import sa.gui.util.SUtilConsts;
+import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
@@ -191,7 +192,6 @@ public class SDbStockRecord extends SDbRegistryUser {
         mnQueryResultId = SDbConsts.SAVE_ERROR;
 
         if (mbRegistryNew) {
-            computePrimaryKey(session);
             mbUpdatable = true;
             mbDisableable = false;
             mbDeletable = true;
@@ -210,11 +210,11 @@ public class SDbStockRecord extends SDbRegistryUser {
                     (mbSystem ? 1 : 0) + ", " + 
                     mnFkItemId + ", " + 
                     mnFkUnit + ", " + 
-                    mnFkOilClassId_n + ", " + 
-                    mnFkOilTypeId_n + ", " + 
-                    mnFkOilOwnerId_n + ", " + 
-                    mnFkOilAcidity_n + ", " + 
-                    mnFkOilAcidityEntry_n + ", " + 
+                    (mnFkOilClassId_n == SLibConsts.UNDEFINED ? null : mnFkOilClassId_n) + ", " + 
+                    (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? null : mnFkOilTypeId_n) + ", " + 
+                    (mnFkOilOwnerId_n == SLibConsts.UNDEFINED ? null : mnFkOilOwnerId_n) + ", " + 
+                    (mnFkOilAcidity_n == SLibConsts.UNDEFINED ? null : mnFkOilAcidity_n) + ", " + 
+                    (mnFkOilAcidityEntry_n == SLibConsts.UNDEFINED ? null : mnFkOilAcidityEntry_n) + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -236,11 +236,11 @@ public class SDbStockRecord extends SDbRegistryUser {
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_item = " + mnFkItemId + ", " +
                     "fk_unit = " + mnFkUnit + ", " +
-                    "fk_oil_cl_n = " + mnFkOilClassId_n + ", " +
-                    "fk_oil_tp_n = " + mnFkOilTypeId_n + ", " +
-                    "fk_oil_own_n = " + mnFkOilOwnerId_n + ", " +
-                    "fk_oil_aci_n = " + mnFkOilAcidity_n + ", " +
-                    "fk_oil_aci_ety_n = " + mnFkOilAcidityEntry_n + ", " +
+                    "fk_oil_cl_n = " + (mnFkOilClassId_n == SLibConsts.UNDEFINED ? null : mnFkOilClassId_n) + ", " +
+                    "fk_oil_tp_n = " + (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? null : mnFkOilTypeId_n) + ", " +
+                    "fk_oil_own_n = " + (mnFkOilOwnerId_n == SLibConsts.UNDEFINED ? null : mnFkOilOwnerId_n) + ", " +
+                    "fk_oil_aci_n = " + (mnFkOilAcidity_n == SLibConsts.UNDEFINED ? null : mnFkOilAcidity_n) + ", " +
+                    "fk_oil_aci_ety_n = " + (mnFkOilAcidityEntry_n == SLibConsts.UNDEFINED ? null : mnFkOilAcidityEntry_n) + ", " +
 //                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
 //                    "ts_usr_ins = " + "NOW()" + ", " +
@@ -248,7 +248,7 @@ public class SDbStockRecord extends SDbRegistryUser {
                     getSqlWhere();
         }
 
-        session.getStatement().execute(msSql);
+        session.getStatement().getConnection().createStatement().execute(msSql);
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
