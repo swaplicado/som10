@@ -34,6 +34,7 @@ import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanForm;
 import som.mod.SModConsts;
+import som.mod.SModSysConsts;
 import som.mod.som.db.SDbWahLab;
 import som.mod.som.db.SDbWahLabTest;
 
@@ -74,47 +75,49 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel13 = new javax.swing.JPanel();
-        jlCurDateTest = new javax.swing.JLabel();
-        jlLastDateTest = new javax.swing.JLabel();
+        jpAllForm = new javax.swing.JPanel();
+        jpDates = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         jPanel18 = new javax.swing.JPanel();
         jlCaptureDate = new javax.swing.JLabel();
         moDateCaptureDate = new sa.lib.gui.bean.SBeanFieldDate();
         moBoolDone = new sa.lib.gui.bean.SBeanFieldBoolean();
+        moBoolValidate = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel19 = new javax.swing.JPanel();
         jlCurYearTest = new javax.swing.JLabel();
         moYearCurYearTest = new sa.lib.gui.bean.SBeanFieldCalendarYear();
         jlCurWeekTest = new javax.swing.JLabel();
         moWeekCurWeekTest = new sa.lib.gui.bean.SBeanFieldCalendarWeek();
-        jlSpace = new javax.swing.JLabel();
-        jlLastYearTest = new javax.swing.JLabel();
-        moYearLastYearTest = new sa.lib.gui.bean.SBeanFieldCalendarYear();
-        jlLastWeekTest = new javax.swing.JLabel();
-        moWeekLastWeekTest = new sa.lib.gui.bean.SBeanFieldCalendarWeek();
         jPanel20 = new javax.swing.JPanel();
         jlCurStartDateTest = new javax.swing.JLabel();
         moDateCurStartDateTest = new sa.lib.gui.bean.SBeanFieldDate();
         jlCurEndDateTest = new javax.swing.JLabel();
         moDateCurEndDateTest = new sa.lib.gui.bean.SBeanFieldDate();
-        jlSpace2 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jlLastYearTest = new javax.swing.JLabel();
+        moYearLastYearTest = new sa.lib.gui.bean.SBeanFieldCalendarYear();
+        jlLastWeekTest = new javax.swing.JLabel();
+        moWeekLastWeekTest = new sa.lib.gui.bean.SBeanFieldCalendarWeek();
+        jPanel7 = new javax.swing.JPanel();
         jlLastStartDateTest = new javax.swing.JLabel();
         moDateLastStartDateTest = new sa.lib.gui.bean.SBeanFieldDate();
         jlLastEndDateTest = new javax.swing.JLabel();
         moDateLastEndDateTest = new sa.lib.gui.bean.SBeanFieldDate();
-        jPanel30 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
         jbContinue = new javax.swing.JButton();
         jbRestart = new javax.swing.JButton();
-        jPanel6 = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
+        jbAllTest = new javax.swing.JButton();
+        jpGrid = new javax.swing.JPanel();
         jpTest = new javax.swing.JPanel();
         jPanel31 = new javax.swing.JPanel();
         jbUp = new javax.swing.JButton();
         jbDown = new javax.swing.JButton();
-        jPanel17 = new javax.swing.JPanel();
-        jPanel14 = new javax.swing.JPanel();
-        jlTypeTest = new javax.swing.JLabel();
-        jlOutOfRange = new javax.swing.JLabel();
+        jpAllResults = new javax.swing.JPanel();
+        jpCurResults = new javax.swing.JPanel();
+        jpCurPhysiochemical = new javax.swing.JPanel();
         jPanel21 = new javax.swing.JPanel();
         jlCurAciPer = new javax.swing.JLabel();
         moTextCurAciPer = new sa.lib.gui.bean.SBeanFieldText();
@@ -128,8 +131,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jlCurSolPer = new javax.swing.JLabel();
         moTextCurSolPer = new sa.lib.gui.bean.SBeanFieldText();
         moBoolCurSolPerOverange = new sa.lib.gui.bean.SBeanFieldBoolean();
-        jPanel15 = new javax.swing.JPanel();
-        jlScale16 = new javax.swing.JLabel();
+        jpCurChromatography = new javax.swing.JPanel();
         jPanel22 = new javax.swing.JPanel();
         jlCurLinPer = new javax.swing.JLabel();
         moTextCurLinPer = new sa.lib.gui.bean.SBeanFieldText();
@@ -147,6 +149,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jlCurPalPer = new javax.swing.JLabel();
         moTextCurPalPer = new sa.lib.gui.bean.SBeanFieldText();
         moBoolCurPalPerOverange = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jpNotes = new javax.swing.JPanel();
         jPanel24 = new javax.swing.JPanel();
         jlCurNotes = new javax.swing.JLabel();
         moTextCurNotes = new sa.lib.gui.bean.SBeanFieldText();
@@ -154,8 +157,8 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jbSaveAndNextRow = new javax.swing.JButton();
         jbEditTest = new javax.swing.JButton();
         jbErase = new javax.swing.JButton();
-        jPanel16 = new javax.swing.JPanel();
-        jlLastTestResults = new javax.swing.JLabel();
+        jpLastResults = new javax.swing.JPanel();
+        jpLastPhysiochemical = new javax.swing.JPanel();
         jPanel25 = new javax.swing.JPanel();
         jlLastAciPer = new javax.swing.JLabel();
         moTextLastAciPer = new sa.lib.gui.bean.SBeanFieldText();
@@ -169,6 +172,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jlLastSolPer = new javax.swing.JLabel();
         moTextLastSolPer = new sa.lib.gui.bean.SBeanFieldText();
         moBoolLastSolPerOverange = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jpLastChromatography = new javax.swing.JPanel();
         jPanel26 = new javax.swing.JPanel();
         jlLastLinPer = new javax.swing.JLabel();
         moTextLastLinPer = new sa.lib.gui.bean.SBeanFieldText();
@@ -186,31 +190,19 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jlLastPalPer = new javax.swing.JLabel();
         moTextLastPalPer = new sa.lib.gui.bean.SBeanFieldText();
         moBoolLastPalPerOverange = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jpLastNotes = new javax.swing.JPanel();
         jPanel28 = new javax.swing.JPanel();
         jlLastNotes = new javax.swing.JLabel();
         moTextLastNotes = new sa.lib.gui.bean.SBeanFieldText();
-        jPanel29 = new javax.swing.JPanel();
-        jbAllTest = new javax.swing.JButton();
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jpAllForm.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
+        jpAllForm.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Fechas de ánalisis:"));
-        jPanel2.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jpDates.setLayout(new java.awt.BorderLayout());
 
-        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlCurDateTest.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
-        jlCurDateTest.setText("Análisis actual");
-        jlCurDateTest.setPreferredSize(new java.awt.Dimension(435, 23));
-        jPanel13.add(jlCurDateTest);
-
-        jlLastDateTest.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
-        jlLastDateTest.setText("Análisis anterior");
-        jlLastDateTest.setPreferredSize(new java.awt.Dimension(465, 23));
-        jPanel13.add(jlLastDateTest);
-
-        jPanel2.add(jPanel13);
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Análisis actual:"));
+        jPanel3.setPreferredSize(new java.awt.Dimension(531, 102));
+        jPanel3.setLayout(new java.awt.GridLayout(3, 0, 5, 5));
 
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -220,10 +212,14 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jPanel18.add(moDateCaptureDate);
 
         moBoolDone.setText("Terminado");
-        moBoolDone.setPreferredSize(new java.awt.Dimension(150, 23));
+        moBoolDone.setPreferredSize(new java.awt.Dimension(120, 23));
         jPanel18.add(moBoolDone);
 
-        jPanel2.add(jPanel18);
+        moBoolValidate.setText("Validado");
+        moBoolValidate.setPreferredSize(new java.awt.Dimension(120, 23));
+        jPanel18.add(moBoolValidate);
+
+        jPanel3.add(jPanel18);
 
         jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -243,26 +239,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moWeekCurWeekTest.setPreferredSize(new java.awt.Dimension(103, 23));
         jPanel19.add(moWeekCurWeekTest);
 
-        jlSpace.setPreferredSize(new java.awt.Dimension(20, 23));
-        jPanel19.add(jlSpace);
-
-        jlLastYearTest.setText("Año:");
-        jlLastYearTest.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel19.add(jlLastYearTest);
-
-        moYearLastYearTest.setEditable(false);
-        moYearLastYearTest.setPreferredSize(new java.awt.Dimension(103, 23));
-        jPanel19.add(moYearLastYearTest);
-
-        jlLastWeekTest.setText("Semana:");
-        jlLastWeekTest.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel19.add(jlLastWeekTest);
-
-        moWeekLastWeekTest.setEditable(false);
-        moWeekLastWeekTest.setPreferredSize(new java.awt.Dimension(103, 23));
-        jPanel19.add(moWeekLastWeekTest);
-
-        jPanel2.add(jPanel19);
+        jPanel3.add(jPanel19);
 
         jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -282,78 +259,122 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moDateCurEndDateTest.setEnabled(false);
         jPanel20.add(moDateCurEndDateTest);
 
-        jlSpace2.setPreferredSize(new java.awt.Dimension(20, 23));
-        jPanel20.add(jlSpace2);
+        jPanel3.add(jPanel20);
+
+        jpDates.add(jPanel3, java.awt.BorderLayout.WEST);
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Análisis anterior:"));
+        jPanel4.setPreferredSize(new java.awt.Dimension(300, 102));
+        jPanel4.setLayout(new java.awt.GridLayout(2, 0));
+
+        jPanel5.setPreferredSize(new java.awt.Dimension(381, 23));
+        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        jlLastYearTest.setText("Año:");
+        jlLastYearTest.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel5.add(jlLastYearTest);
+
+        moYearLastYearTest.setEditable(false);
+        moYearLastYearTest.setPreferredSize(new java.awt.Dimension(103, 23));
+        jPanel5.add(moYearLastYearTest);
+
+        jlLastWeekTest.setText("Semana:");
+        jlLastWeekTest.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel5.add(jlLastWeekTest);
+
+        moWeekLastWeekTest.setEditable(false);
+        moWeekLastWeekTest.setPreferredSize(new java.awt.Dimension(103, 23));
+        jPanel5.add(moWeekLastWeekTest);
+
+        jPanel4.add(jPanel5);
+
+        jPanel7.setPreferredSize(new java.awt.Dimension(381, 23));
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         jlLastStartDateTest.setText("Del:");
         jlLastStartDateTest.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel20.add(jlLastStartDateTest);
+        jPanel7.add(jlLastStartDateTest);
 
         moDateLastStartDateTest.setEditable(false);
         moDateLastStartDateTest.setEnabled(false);
-        jPanel20.add(moDateLastStartDateTest);
+        jPanel7.add(moDateLastStartDateTest);
 
         jlLastEndDateTest.setText("Al:");
         jlLastEndDateTest.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel20.add(jlLastEndDateTest);
+        jPanel7.add(jlLastEndDateTest);
 
         moDateLastEndDateTest.setEditable(false);
         moDateLastEndDateTest.setEnabled(false);
-        jPanel20.add(moDateLastEndDateTest);
+        jPanel7.add(moDateLastEndDateTest);
 
-        jPanel2.add(jPanel20);
+        jPanel4.add(jPanel7);
 
-        jPanel30.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jpDates.add(jPanel4, java.awt.BorderLayout.CENTER);
+
+        jPanel8.setLayout(new java.awt.GridLayout(2, 0));
+
+        jPanel9.setPreferredSize(new java.awt.Dimension(110, 23));
+        jPanel9.setLayout(new java.awt.BorderLayout());
 
         jbContinue.setText("Continuar");
+        jbContinue.setMargin(new java.awt.Insets(2, 2, 2, 2));
         jbContinue.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel30.add(jbContinue);
+        jPanel9.add(jbContinue, java.awt.BorderLayout.SOUTH);
 
         jbRestart.setText("Reiniciar");
+        jbRestart.setMargin(new java.awt.Insets(2, 2, 2, 2));
         jbRestart.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel30.add(jbRestart);
+        jPanel9.add(jbRestart, java.awt.BorderLayout.PAGE_START);
 
-        jPanel2.add(jPanel30);
+        jPanel8.add(jPanel9);
 
-        jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
+        jPanel10.setPreferredSize(new java.awt.Dimension(110, 23));
+        jPanel10.setLayout(new java.awt.BorderLayout());
 
-        jPanel6.setLayout(new java.awt.BorderLayout());
+        jbAllTest.setText("Ver captura");
+        jbAllTest.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel10.add(jbAllTest, java.awt.BorderLayout.SOUTH);
+        jbAllTest.getAccessibleContext().setAccessibleName("Mostrar captura");
+
+        jPanel8.add(jPanel10);
+
+        jpDates.add(jPanel8, java.awt.BorderLayout.LINE_END);
+
+        jpAllForm.add(jpDates, java.awt.BorderLayout.NORTH);
+
+        jpGrid.setLayout(new java.awt.BorderLayout());
 
         jpTest.setBorder(javax.swing.BorderFactory.createTitledBorder("Almacenes:"));
         jpTest.setLayout(new java.awt.BorderLayout());
-        jPanel6.add(jpTest, java.awt.BorderLayout.CENTER);
 
-        jPanel31.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel31.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel31.setMinimumSize(new java.awt.Dimension(95, 30));
+        jPanel31.setPreferredSize(new java.awt.Dimension(50, 23));
 
-        jbUp.setText("Subir");
-        jbUp.setPreferredSize(new java.awt.Dimension(75, 23));
+        jbUp.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jbUp.setText("˄");
+        jbUp.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jbUp.setPreferredSize(new java.awt.Dimension(45, 23));
         jPanel31.add(jbUp);
 
-        jbDown.setText("Bajar");
-        jbDown.setPreferredSize(new java.awt.Dimension(75, 23));
+        jbDown.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jbDown.setText("˅");
+        jbDown.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jbDown.setPreferredSize(new java.awt.Dimension(45, 23));
         jPanel31.add(jbDown);
 
-        jPanel6.add(jPanel31, java.awt.BorderLayout.EAST);
+        jpTest.add(jPanel31, java.awt.BorderLayout.EAST);
 
-        jPanel1.add(jPanel6, java.awt.BorderLayout.CENTER);
+        jpGrid.add(jpTest, java.awt.BorderLayout.CENTER);
 
-        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder("Captura de resultados:"));
-        jPanel17.setLayout(new java.awt.GridLayout(12, 1, 0, 1));
+        jpAllForm.add(jpGrid, java.awt.BorderLayout.CENTER);
 
-        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jpAllResults.setLayout(new java.awt.BorderLayout());
 
-        jlTypeTest.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
-        jlTypeTest.setText("Fisicoquímicos");
-        jlTypeTest.setPreferredSize(new java.awt.Dimension(475, 23));
-        jPanel14.add(jlTypeTest);
+        jpCurResults.setBorder(javax.swing.BorderFactory.createTitledBorder("Análisis actual:"));
+        jpCurResults.setLayout(new java.awt.BorderLayout());
 
-        jlOutOfRange.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jlOutOfRange.setText("FR = Fuera de rango*");
-        jlOutOfRange.setPreferredSize(new java.awt.Dimension(540, 23));
-        jPanel14.add(jlOutOfRange);
-
-        jPanel17.add(jPanel14);
+        jpCurPhysiochemical.setBorder(javax.swing.BorderFactory.createTitledBorder("Fisicoquímicos:"));
+        jpCurPhysiochemical.setLayout(new java.awt.BorderLayout());
 
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -393,16 +414,12 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moBoolCurSolPerOverange.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel21.add(moBoolCurSolPerOverange);
 
-        jPanel17.add(jPanel21);
+        jpCurPhysiochemical.add(jPanel21, java.awt.BorderLayout.NORTH);
 
-        jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jpCurResults.add(jpCurPhysiochemical, java.awt.BorderLayout.PAGE_START);
 
-        jlScale16.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
-        jlScale16.setText("Cromatografía");
-        jlScale16.setPreferredSize(new java.awt.Dimension(475, 23));
-        jPanel15.add(jlScale16);
-
-        jPanel17.add(jPanel15);
+        jpCurChromatography.setBorder(javax.swing.BorderFactory.createTitledBorder("Cromatografía:"));
+        jpCurChromatography.setLayout(new java.awt.GridLayout(2, 0, 5, 5));
 
         jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -433,7 +450,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moBoolCurLlcPerOverange.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel22.add(moBoolCurLlcPerOverange);
 
-        jPanel17.add(jPanel22);
+        jpCurChromatography.add(jPanel22);
 
         jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -455,7 +472,11 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moBoolCurPalPerOverange.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel23.add(moBoolCurPalPerOverange);
 
-        jPanel17.add(jPanel23);
+        jpCurChromatography.add(jPanel23);
+
+        jpCurResults.add(jpCurChromatography, java.awt.BorderLayout.CENTER);
+
+        jpNotes.setLayout(new java.awt.GridLayout(1, 0, 5, 0));
 
         jPanel24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -467,31 +488,36 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jPanel24.add(moTextCurNotes);
 
         jbSaveRow.setText("Guardar");
-        jbSaveRow.setPreferredSize(new java.awt.Dimension(75, 23));
+        jbSaveRow.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jbSaveRow.setPreferredSize(new java.awt.Dimension(70, 23));
         jPanel24.add(jbSaveRow);
 
         jbSaveAndNextRow.setText("Guardar y siguiente");
+        jbSaveAndNextRow.setMargin(new java.awt.Insets(2, 2, 2, 2));
         jbSaveAndNextRow.setPreferredSize(new java.awt.Dimension(130, 23));
         jPanel24.add(jbSaveAndNextRow);
 
-        jbEditTest.setText("Editar");
-        jbEditTest.setPreferredSize(new java.awt.Dimension(65, 23));
+        jbEditTest.setText("Modificar");
+        jbEditTest.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jbEditTest.setPreferredSize(new java.awt.Dimension(70, 23));
         jPanel24.add(jbEditTest);
 
         jbErase.setText("Borrar");
-        jbErase.setPreferredSize(new java.awt.Dimension(67, 23));
+        jbErase.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jbErase.setPreferredSize(new java.awt.Dimension(70, 23));
         jPanel24.add(jbErase);
 
-        jPanel17.add(jPanel24);
+        jpNotes.add(jPanel24);
 
-        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jpCurResults.add(jpNotes, java.awt.BorderLayout.PAGE_END);
 
-        jlLastTestResults.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
-        jlLastTestResults.setText("Resultados análisis anterior");
-        jlLastTestResults.setPreferredSize(new java.awt.Dimension(475, 23));
-        jPanel16.add(jlLastTestResults);
+        jpAllResults.add(jpCurResults, java.awt.BorderLayout.NORTH);
 
-        jPanel17.add(jPanel16);
+        jpLastResults.setBorder(javax.swing.BorderFactory.createTitledBorder("Análisis anterior:"));
+        jpLastResults.setLayout(new java.awt.BorderLayout());
+
+        jpLastPhysiochemical.setBorder(javax.swing.BorderFactory.createTitledBorder("Fisicoquímicos:"));
+        jpLastPhysiochemical.setLayout(new java.awt.BorderLayout());
 
         jPanel25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -547,7 +573,12 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moBoolLastSolPerOverange.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel25.add(moBoolLastSolPerOverange);
 
-        jPanel17.add(jPanel25);
+        jpLastPhysiochemical.add(jPanel25, java.awt.BorderLayout.CENTER);
+
+        jpLastResults.add(jpLastPhysiochemical, java.awt.BorderLayout.PAGE_START);
+
+        jpLastChromatography.setBorder(javax.swing.BorderFactory.createTitledBorder("Cromatografía:"));
+        jpLastChromatography.setLayout(new java.awt.GridLayout(2, 0, 5, 5));
 
         jPanel26.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -590,7 +621,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moBoolLastLlcPerOverange.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel26.add(moBoolLastLlcPerOverange);
 
-        jPanel17.add(jPanel26);
+        jpLastChromatography.add(jPanel26);
 
         jPanel27.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -620,7 +651,11 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moBoolLastPalPerOverange.setPreferredSize(new java.awt.Dimension(50, 23));
         jPanel27.add(moBoolLastPalPerOverange);
 
-        jPanel17.add(jPanel27);
+        jpLastChromatography.add(jPanel27);
+
+        jpLastResults.add(jpLastChromatography, java.awt.BorderLayout.CENTER);
+
+        jpLastNotes.setLayout(new java.awt.GridLayout());
 
         jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -632,31 +667,21 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moTextLastNotes.setPreferredSize(new java.awt.Dimension(615, 23));
         jPanel28.add(moTextLastNotes);
 
-        jPanel17.add(jPanel28);
+        jpLastNotes.add(jPanel28);
 
-        jPanel29.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jpLastResults.add(jpLastNotes, java.awt.BorderLayout.PAGE_END);
 
-        jbAllTest.setText("Análisis capturados");
-        jbAllTest.setPreferredSize(new java.awt.Dimension(150, 23));
-        jPanel29.add(jbAllTest);
+        jpAllResults.add(jpLastResults, java.awt.BorderLayout.CENTER);
 
-        jPanel17.add(jPanel29);
+        jpAllForm.add(jpAllResults, java.awt.BorderLayout.SOUTH);
 
-        jPanel1.add(jPanel17, java.awt.BorderLayout.SOUTH);
-
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jpAllForm, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel15;
-    private javax.swing.JPanel jPanel16;
-    private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel22;
@@ -666,10 +691,13 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private javax.swing.JPanel jPanel26;
     private javax.swing.JPanel jPanel27;
     private javax.swing.JPanel jPanel28;
-    private javax.swing.JPanel jPanel29;
-    private javax.swing.JPanel jPanel30;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel31;
-    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JButton jbAllTest;
     private javax.swing.JButton jbContinue;
     private javax.swing.JButton jbDown;
@@ -681,7 +709,6 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private javax.swing.JButton jbUp;
     private javax.swing.JLabel jlCaptureDate;
     private javax.swing.JLabel jlCurAciPer;
-    private javax.swing.JLabel jlCurDateTest;
     private javax.swing.JLabel jlCurEndDateTest;
     private javax.swing.JLabel jlCurLinPer;
     private javax.swing.JLabel jlCurLlcPer;
@@ -696,7 +723,6 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private javax.swing.JLabel jlCurWeekTest;
     private javax.swing.JLabel jlCurYearTest;
     private javax.swing.JLabel jlLastAciPer;
-    private javax.swing.JLabel jlLastDateTest;
     private javax.swing.JLabel jlLastEndDateTest;
     private javax.swing.JLabel jlLastLinPer;
     private javax.swing.JLabel jlLastLlcPer;
@@ -708,14 +734,20 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private javax.swing.JLabel jlLastSolPer;
     private javax.swing.JLabel jlLastStartDateTest;
     private javax.swing.JLabel jlLastStePer;
-    private javax.swing.JLabel jlLastTestResults;
     private javax.swing.JLabel jlLastWeekTest;
     private javax.swing.JLabel jlLastYearTest;
-    private javax.swing.JLabel jlOutOfRange;
-    private javax.swing.JLabel jlScale16;
-    private javax.swing.JLabel jlSpace;
-    private javax.swing.JLabel jlSpace2;
-    private javax.swing.JLabel jlTypeTest;
+    private javax.swing.JPanel jpAllForm;
+    private javax.swing.JPanel jpAllResults;
+    private javax.swing.JPanel jpCurChromatography;
+    private javax.swing.JPanel jpCurPhysiochemical;
+    private javax.swing.JPanel jpCurResults;
+    private javax.swing.JPanel jpDates;
+    private javax.swing.JPanel jpGrid;
+    private javax.swing.JPanel jpLastChromatography;
+    private javax.swing.JPanel jpLastNotes;
+    private javax.swing.JPanel jpLastPhysiochemical;
+    private javax.swing.JPanel jpLastResults;
+    private javax.swing.JPanel jpNotes;
     private javax.swing.JPanel jpTest;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolCurAciPerOverange;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolCurLinPerOverange;
@@ -736,6 +768,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolLastPerIndOverange;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolLastSolPerOverange;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolLastStePerOverange;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolValidate;
     private sa.lib.gui.bean.SBeanFieldDate moDateCaptureDate;
     private sa.lib.gui.bean.SBeanFieldDate moDateCurEndDateTest;
     private sa.lib.gui.bean.SBeanFieldDate moDateCurStartDateTest;
@@ -772,6 +805,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
         moDateCaptureDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlCaptureDate), false);
         moBoolDone.setBooleanSettings(moBoolDone.getText(), false);
+        moBoolValidate.setBooleanSettings(moBoolValidate.getText(), false);
         moYearCurYearTest.setCalendarSettings(SGuiUtils.getLabelName(jlCurYearTest));
         moWeekCurWeekTest.setCalendarSettings(SGuiUtils.getLabelName(jlCurWeekTest));
         moYearLastYearTest.setCalendarSettings(SGuiUtils.getLabelName(jlLastYearTest));
@@ -821,6 +855,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         
         moFields.addField(moDateCaptureDate);
         moFields.addField(moBoolDone);
+        moFields.addField(moBoolValidate);
         moFields.addField(moYearCurYearTest);
         moFields.addField(moWeekCurWeekTest);
         moFields.addField(moYearLastYearTest);
@@ -902,12 +937,13 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jbRestart.setEnabled(false);
         jbEdit.setEnabled(false);
         jbReadInfo.setEnabled(false);
+        moBoolValidate.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_VLR));
     }
 
     private void setLaboratoryTestResults(SDbWahLabTest labTest) {
         if (labTest != null) {
             moTextCurAciPer.setValue(labTest.getAcidityPercentage_n() == null ? "" : labTest.getAcidityPercentage_n() * 100 + "");
-            moTextCurPerInd.setValue(labTest.getPeroxideIndex_n() == null ? "" : labTest.getPeroxideIndex_n() * 100 + "");
+            moTextCurPerInd.setValue(labTest.getPeroxideIndex_n() == null ? "" : labTest.getPeroxideIndex_n() + "");
             moTextCurMoiPer.setValue(labTest.getMoisturePercentage_n() == null ? "" : labTest.getMoisturePercentage_n() * 100 + "");
             moTextCurSolPer.setValue(labTest.getSolidPersentage_n() == null ? "" : labTest.getSolidPersentage_n() * 100 + "");
             moTextCurLinPer.setValue(labTest.getLinoleicAcidPercentage_n() == null ? "" : labTest.getLinoleicAcidPercentage_n() * 100 + "");
@@ -932,7 +968,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
                 SDbWahLabTest lastLabTest = labTest.getLastWahLabTest();
 
                 moTextLastAciPer.setValue(lastLabTest.getAcidityPercentage_n() == null ? "" : lastLabTest.getAcidityPercentage_n() * 100  + "");
-                moTextLastPerInd.setValue(lastLabTest.getPeroxideIndex_n() == null ? "" : lastLabTest.getPeroxideIndex_n() * 100 + "");
+                moTextLastPerInd.setValue(lastLabTest.getPeroxideIndex_n() == null ? "" : lastLabTest.getPeroxideIndex_n() + "");
                 moTextLastMoiPer.setValue(lastLabTest.getMoisturePercentage_n() == null ? "" : lastLabTest.getMoisturePercentage_n() * 100 + "");
                 moTextLastSolPer.setValue(lastLabTest.getSolidPersentage_n() == null ? "" : lastLabTest.getSolidPersentage_n() * 100 + "");
                 moTextLastLinPer.setValue(lastLabTest.getLinoleicAcidPercentage_n() == null ? "" : lastLabTest.getLinoleicAcidPercentage_n() * 100 + "");
@@ -1293,7 +1329,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         SDbWahLabTest test = (SDbWahLabTest) moGridWahList.getSelectedGridRow();
         try {
             test.setAcidityPercentage_n(moTextCurAciPer.getValue().equals("") ? null : Double.parseDouble(moTextCurAciPer.getValue()) / 100);
-            test.setPeroxideIndex_n(moTextCurPerInd.getValue().equals("") ? null : Double.parseDouble(moTextCurPerInd.getValue()) / 100);
+            test.setPeroxideIndex_n(moTextCurPerInd.getValue().equals("") ? null : Double.parseDouble(moTextCurPerInd.getValue()));
             test.setMoisturePercentage_n(moTextCurMoiPer.getValue().equals("") ? null : Double.parseDouble(moTextCurMoiPer.getValue()) / 100);
             test.setSolidPersentage_n(moTextCurSolPer.getValue().equals("") ? null : Double.parseDouble(moTextCurSolPer.getValue()) / 100);
             test.setLinoleicAcidPercentage_n(moTextCurLinPer.getValue().equals("") ? null : Double.parseDouble(moTextCurLinPer.getValue()) / 100);
@@ -1372,6 +1408,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     public void reloadCatalogues() {
         moDialogAllWahLabTest = null;
         moBoolDone.setValue(false);
+        moBoolValidate.setValue(false);
         moDateCaptureDate.setEnabled(true);
         moYearCurYearTest.setValue(0);
         moWeekCurWeekTest.setValue(0);
@@ -1418,6 +1455,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         else {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
             moBoolDone.setValue(moRegistry.isDone());
+            moBoolValidate.setValue(moRegistry.isValidate());
             moYearCurYearTest.setValue(moRegistry.getYear());
             moWeekCurWeekTest.setValue(moRegistry.getWeek());
             moDateCurStartDateTest.setValue(moRegistry.getDateStart());
@@ -1449,6 +1487,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         if (registry.isRegistryNew()) { }
 
         registry.setDone(moBoolDone.getValue());
+        registry.setValidate(moBoolValidate.getValue());
         registry.setYear(moYearCurYearTest.getValue());
         registry.setWeek(moWeekCurWeekTest.getValue());
         registry.setDateStart(moDateCurStartDateTest.getValue());
@@ -1489,6 +1528,12 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
                         != JOptionPane.OK_OPTION) {
                     validation.setMessage("Elimine o capture resultados en los tanques sin captura.");
                 }
+            }
+        }
+        
+        if (validation.isValid()) {
+            if (moBoolValidate.getValue() && !moBoolDone.getValue()) {
+                validation.setMessage("No se puede marcar como validado ya que la captura de resultados no esta terminada.");
             }
         }
 

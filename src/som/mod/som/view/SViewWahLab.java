@@ -17,11 +17,14 @@ import sa.lib.grid.SGridConsts;
 import sa.lib.grid.SGridFilterDatePeriod;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
+import sa.lib.grid.SGridRowView;
 import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiDate;
 import som.mod.SModConsts;
+import som.mod.som.db.SSomWahLabTestReport;
+import som.mod.som.form.SDialogWahLabTestMails;
 
 /**
  *
@@ -31,6 +34,7 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
     
     private SGridFilterDatePeriod moFilterDatePeriod;
     private JButton mjNewWithLastTest;
+    private JButton mjSendReport;
     
     public SViewWahLab(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_WAH_LAB, SLibConsts.UNDEFINED, title);
@@ -42,14 +46,39 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
         moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
         
-        mjNewWithLastTest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_lab.gif")), "Analisis nuevo con resultados de análisis anterior", this);
+        mjNewWithLastTest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_new_main.gif")), "Analisis nuevo con resultados de análisis anterior", this);
+        mjSendReport = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mail.gif")), "Enviar registro de resultados", this);
         
         getPanelCommandsSys(SGuiConsts.PANEL_LEFT).add(mjNewWithLastTest, 1);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjSendReport);
     }
     
     private void actionNewWithLastTest() {
-        miClient.getSession().getModule(SModConsts.MOD_SOM_OS).showForm(SModConsts.S_WAH_LAB, 1, null);
+        miClient.getSession().getModule(SModConsts.MOD_SOM_OS).showForm(SModConsts.S_WAH_LAB, SModConsts.S_WAH_LAB_W_LAST_TEST, null);
     }
+    
+    
+    private void actionSendReport() {
+        if (jtTable.getSelectedRowCount() != 1) {
+            miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
+        }
+        else {
+            SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
+            
+            if (gridRow.getRowType() != SGridConsts.ROW_TYPE_DATA) {
+                miClient.showMsgBoxWarning(SGridConsts.ERR_MSG_ROW_TYPE_DATA);
+            }
+            else {
+                SDialogWahLabTestMails testMails = new SDialogWahLabTestMails(miClient);
+                testMails.setVisible(true);
+                if (testMails.getFormResult() == SGuiConsts.FORM_RESULT_OK) {
+                    SSomWahLabTestReport testReport = new SSomWahLabTestReport(miClient);
+                    testReport.sendReport(testMails.getMails(), gridRow.getRowPrimaryKey());
+                }
+            }
+        }
+    }
+
 
     @Override
     public void prepareSqlQuery() {
@@ -81,6 +110,7 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
                 + "v.dt_start, "
                 + "v.dt_end, "
                 + "v.b_done, "
+                + "v.b_validate, "
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
                 + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
                 + "v.fk_usr_ins AS " + SDbConsts.FIELD_USER_INS_ID + ", "
@@ -101,13 +131,14 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[11];
+        SGridColumnView[] columns = new SGridColumnView[12];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_0D, SDbConsts.FIELD_CODE, "Año");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_0D, SDbConsts.FIELD_NAME, "Semana");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "dt_start", "Fecha inicial");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "dt_end", "Fecha final");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "v.b_done", "Terminado");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "v.b_validate", "Validado");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
@@ -131,6 +162,9 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
             
             if (button == mjNewWithLastTest) {
                 actionNewWithLastTest();
+            }
+            else if (button == mjSendReport) {
+                actionSendReport();
             }
         }
     }

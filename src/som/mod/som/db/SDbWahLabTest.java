@@ -180,6 +180,7 @@ public class SDbWahLabTest extends SDbRegistryUser implements SGridRow, Serializ
                     "AND v.id_co = " + mnFkWarehouseCompanyId + " " + 
                     "AND v.id_cob = " + mnFkWarehouseBranchId + " " + 
                     "AND v.id_wah = " + mnFkWarehouseWarehouseId + " " + 
+                    "AND v.id_item = " + mnFkItem + " " +
                     "GROUP BY v.id_item, v.id_unit, v.id_cob, v.id_wah, vc.code, vw.name, vi.code, vi.name, vu.code " +
                     "HAVING SUM(v.mov_in - v.mov_out) <> 0 " +
                     "ORDER BY vw.code, vi.name;" ;

@@ -29,6 +29,7 @@ public class SDbWahLab extends SDbRegistryUser{
     protected Date mtDateStart;
     protected Date mtDateEnd;
     protected boolean mbDone;
+    protected boolean mbValidate;
     /*
     protected boolean mbDeleted;
     protected boolean mbSystem;
@@ -54,6 +55,7 @@ public class SDbWahLab extends SDbRegistryUser{
     public void setDateStart(Date t) { mtDateStart = t; }
     public void setDateEnd(Date t) { mtDateEnd = t; }
     public void setDone(boolean b) { mbDone = b; }
+    public void setValidate(boolean b) { mbValidate = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
@@ -67,6 +69,7 @@ public class SDbWahLab extends SDbRegistryUser{
     public Date getDateStart() { return mtDateStart; }
     public Date getDateEnd() { return mtDateEnd; }
     public boolean isDone() { return mbDone; }
+    public boolean isValidate() { return mbValidate; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
@@ -127,6 +130,7 @@ public class SDbWahLab extends SDbRegistryUser{
         mtDateStart = null;
         mtDateEnd = null;
         mbDone = false;
+        mbValidate = false;
         mbDeleted = false;
         mbSystem = false;
         mnFkUserInsertId = 0;
@@ -188,6 +192,7 @@ public class SDbWahLab extends SDbRegistryUser{
             mtDateStart = resultSet.getDate("dt_start");
             mtDateEnd = resultSet.getDate("dt_end");
             mbDone = resultSet.getBoolean("b_done");
+            mbValidate = resultSet.getBoolean("b_validate");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
@@ -235,6 +240,7 @@ public class SDbWahLab extends SDbRegistryUser{
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDateStart) + "', " + 
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDateEnd) + "', " + 
                     (mbDone ? 1 : 0) + ", " + 
+                    (mbValidate ? 1 : 0) + ", " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
                     mnFkUserInsertId + ", " + 
@@ -253,6 +259,7 @@ public class SDbWahLab extends SDbRegistryUser{
                     "dt_start = '" + SLibUtils.DbmsDateFormatDate.format(mtDateStart) + "', " +
                     "dt_end = '" + SLibUtils.DbmsDateFormatDate.format(mtDateEnd) + "', " +
                     "b_done = " + (mbDone ? 1 : 0) + ", " +
+                    "b_validate = " + (mbValidate ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_usr_ins = " + mnFkUserInsertId + ", " +
@@ -289,6 +296,7 @@ public class SDbWahLab extends SDbRegistryUser{
         registry.setDateStart(this.getDateStart());
         registry.setDateEnd(this.getDateEnd());
         registry.setDone(this.isDone());
+        registry.setValidate(this.isValidate());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
         registry.setFkUserInsertId(this.getFkUserInsertId());

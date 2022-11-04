@@ -94,7 +94,7 @@ import som.mod.som.view.SViewWahLab;
 
 /**
  * 
- * @author Néstor Ávalos, Sergio Flores
+ * @author Néstor Ávalos, Sergio Flores, Isabel Servín
  */
 public class SModuleSomOs extends SGuiModule implements ActionListener {
 
@@ -156,7 +156,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjOilProdEstLogCons;
     private JMenuItem mjOilIogExpProc;
     private JMenuItem mjOilIogExpLog;
-    private JMenuItem mjOilWahLab;
+    private JMenu mjQuality;
+    private JMenuItem mjQualityWahLab;
     private JMenu mjStk;
     private JMenuItem mjStkStock;
     private JMenuItem mjStkStockDiv;
@@ -372,8 +373,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilProdEstLogCons = new JMenuItem("Bitácora estimación de consumo por ítem");
         mjOilIogExpProc = new JMenuItem("Exportación de documentos de inventarios...");
         mjOilIogExpLog = new JMenuItem("Bitácora exportación de documentos de inventarios");
-        mjOilWahLab = new JMenuItem("Análisis de laboratorio");
-
+        
         mjOil.add(mjOilStockDays);
         mjOil.add(mjOilStockDaysLog);
         mjOil.addSeparator();
@@ -389,8 +389,6 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOil.addSeparator();
         mjOil.add(mjOilIogExpProc);
         mjOil.add(mjOilIogExpLog);
-        mjOil.addSeparator();
-        mjOil.add(mjOilWahLab);
 
         mjOilStockDays.addActionListener(this);
         mjOilProdEstProc.addActionListener(this);
@@ -402,7 +400,13 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilWizardDps.addActionListener(this);
         mjOilIogExpProc.addActionListener(this);
         mjOilIogExpLog.addActionListener(this);
-        mjOilWahLab.addActionListener(this);
+        
+        mjQuality = new JMenu("Control calidad");
+        mjQualityWahLab = new JMenuItem("Análisis de laboratorio");
+        
+        mjQuality.add(mjQualityWahLab);
+
+        mjQualityWahLab.addActionListener(this);
 
         mjStk = new JMenu("Existencias");
         mjStkStock = new JMenuItem("Existencias");
@@ -489,7 +493,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilWizardDps.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_WHS_OM }));
         mjOilIogExpProc.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OM));
         mjOilIogExpLog.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OM));
-        mjOilWahLab.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_OM));
+        
+        mjQuality.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_LAB }));
+        mjQualityWahLab.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_LAB));
 
         mjStk.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_WHS_OM, SModSysConsts.CS_RIG_REP_OM }));
 
@@ -498,7 +504,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
 
     @Override
     public JMenu[] getMenus() {
-        return new JMenu[] { mjCat, mjTic, mjDpsSupplyPur, mjDpsSupplySal, mjDocInv, mjDocMix, mjOil, mjStk, mjRep };
+        return new JMenu[] { mjCat, mjTic, mjDpsSupplyPur, mjDpsSupplySal, mjDocInv, mjDocMix, mjOil, mjQuality, mjStk, mjRep };
     }
 
     @Override
@@ -952,11 +958,11 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.S_WAH_LAB:
                 switch (subtype) {
-                    case 0:
+                    case SModConsts.S_WAH_LAB_WO_LAST_TEST:
                         if (moFormWahLabWithoutLastTest == null) { moFormWahLabWithoutLastTest = new SFormWahLab(miClient, "Análisis laboratorio aceites", false); }
                         form = moFormWahLabWithoutLastTest;
                         break;
-                    case 1:
+                    case SModConsts.S_WAH_LAB_W_LAST_TEST:
                         if (moFormWahLabWithLastTest == null) { moFormWahLabWithLastTest = new SFormWahLab(miClient, "Análisis laboratorio aceites", true); }
                         form = moFormWahLabWithLastTest;
                         break;
@@ -1193,7 +1199,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             else if (menuItem == mjOilIogExpLog) {
                 showView(SModConsts.S_IOG_EXP, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == mjOilWahLab) {
+            else if (menuItem == mjQualityWahLab) {
                 showView(SModConsts.S_WAH_LAB, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjStkStock) {

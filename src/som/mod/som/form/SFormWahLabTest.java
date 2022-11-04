@@ -100,7 +100,7 @@ public class SFormWahLabTest extends SBeanForm implements ActionListener {
 
         getContentPane().add(jpControls, java.awt.BorderLayout.SOUTH);
 
-        setSize(new java.awt.Dimension(736, 439));
+        setSize(new java.awt.Dimension(816, 539));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -109,7 +109,7 @@ public class SFormWahLabTest extends SBeanForm implements ActionListener {
     }//GEN-LAST:event_formWindowActivated
 
     private void initComponentsExtra() {
-        SGuiUtils.setWindowBounds(this, 720, 450);
+        SGuiUtils.setWindowBounds(this, 800, 500);
 
         moGridWah = new SGridPaneForm(miClient, SModConsts.CU_WAH, SLibConsts.UNDEFINED, "Almacenes") {
             @Override
@@ -123,7 +123,7 @@ public class SFormWahLabTest extends SBeanForm implements ActionListener {
                 SGridColumnForm[] columns = new SGridColumnForm[2];
 
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "Almacen");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "Nombre");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "Nombre", 150);
                 
                 for (col = 0; col < columns.length; col++) {
                     moModel.getGridColumns().add(columns[col]);
@@ -144,7 +144,7 @@ public class SFormWahLabTest extends SBeanForm implements ActionListener {
                 int col = 0;
                 SGridColumnForm[] columns = new SGridColumnForm[1];
 
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "Ítem");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "Ítem", 450);
                 
                 for (col = 0; col < columns.length; col++) {
                     moModel.getGridColumns().add(columns[col]);

@@ -17,6 +17,9 @@ public abstract class SModConsts {
     public static final int MOD_SOM_RM = 3;
     public static final int MOD_SOM_OS = 4;
     public static final int MOD_SOM_LOG = 5;
+    
+    public static final int S_WAH_LAB_WO_LAST_TEST = 0;
+    public static final int S_WAH_LAB_W_LAST_TEST = 1;
 
     public static final int SU_SYS = 110001;
     public static final int SU_CO = 110002;

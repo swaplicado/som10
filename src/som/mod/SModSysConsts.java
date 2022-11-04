@@ -43,6 +43,7 @@ public abstract class SModSysConsts {
     public static final int CS_RIG_PER_OC = 11; // periods opening and closing
     public static final int CS_RIG_DIS_RM = 12; // discharge raw materials
     public static final int CS_RIG_LOG = 13;    // logistics
+    public static final int CS_RIG_VLR = 14;    // validation laboratory results
 
     public static final int CU_LAN_SPA = 1;
     public static final int CU_LAN_ENG = 2;
