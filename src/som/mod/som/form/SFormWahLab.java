@@ -655,7 +655,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
         jpLastResults.add(jpLastChromatography, java.awt.BorderLayout.CENTER);
 
-        jpLastNotes.setLayout(new java.awt.GridLayout());
+        jpLastNotes.setLayout(new java.awt.GridLayout(1, 0));
 
         jPanel28.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -814,42 +814,42 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moDateCurEndDateTest.setDateSettings(miClient, SGuiUtils.getLabelName(jlCurEndDateTest), false);
         moDateLastStartDateTest.setDateSettings(miClient, SGuiUtils.getLabelName(jlLastStartDateTest), false);
         moDateLastEndDateTest.setDateSettings(miClient, SGuiUtils.getLabelName(jlLastEndDateTest), false);
-        moTextCurAciPer.setTextSettings(SGuiUtils.getLabelName(jlCurAciPer), 9);
+        moTextCurAciPer.setTextSettings(SGuiUtils.getLabelName(jlCurAciPer), 9, 0);
         moBoolCurAciPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolCurAciPerOverange.getText()), false);
-        moTextCurPerInd.setTextSettings(SGuiUtils.getLabelName(jlCurPerInd), 9);
+        moTextCurPerInd.setTextSettings(SGuiUtils.getLabelName(jlCurPerInd), 9, 0);
         moBoolCurPerIndOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolCurPerIndOverange.getText()), false);
-        moTextCurMoiPer.setTextSettings(SGuiUtils.getLabelName(jlCurMoiPer), 9);
+        moTextCurMoiPer.setTextSettings(SGuiUtils.getLabelName(jlCurMoiPer), 9, 0);
         moBoolCurMoiPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolCurMoiPerOverange.getText()), false);
-        moTextCurSolPer.setTextSettings(SGuiUtils.getLabelName(jlCurSolPer), 9);
+        moTextCurSolPer.setTextSettings(SGuiUtils.getLabelName(jlCurSolPer), 9, 0);
         moBoolCurSolPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolCurSolPerOverange.getText()), false);
-        moTextCurLinPer.setTextSettings(SGuiUtils.getLabelName(jlCurLinPer), 9);
+        moTextCurLinPer.setTextSettings(SGuiUtils.getLabelName(jlCurLinPer), 9, 0);
         moBoolCurLinPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolCurLinPerOverange.getText()), false);
-        moTextCurOlePer.setTextSettings(SGuiUtils.getLabelName(jlCurOlePer), 9);
+        moTextCurOlePer.setTextSettings(SGuiUtils.getLabelName(jlCurOlePer), 9, 0);
         moBoolCurOlePerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolCurOlePerOverange.getText()), false);
-        moTextCurLlcPer.setTextSettings(SGuiUtils.getLabelName(jlCurLlcPer), 9);
+        moTextCurLlcPer.setTextSettings(SGuiUtils.getLabelName(jlCurLlcPer), 9, 0);
         moBoolCurLlcPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolCurLlcPerOverange.getText()), false);
-        moTextCurStePer.setTextSettings(SGuiUtils.getLabelName(jlCurStePer), 9);
+        moTextCurStePer.setTextSettings(SGuiUtils.getLabelName(jlCurStePer), 9, 0);
         moBoolCurStePerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolCurStePerOverange.getText()), false);
-        moTextCurPalPer.setTextSettings(SGuiUtils.getLabelName(jlCurPalPer), 9);
+        moTextCurPalPer.setTextSettings(SGuiUtils.getLabelName(jlCurPalPer), 9, 0);
         moBoolCurPalPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolCurPalPerOverange.getText()), false);
         moTextCurNotes.setTextSettings(SGuiUtils.getLabelName(jlCurNotes), 100);
-        moTextLastAciPer.setTextSettings(SGuiUtils.getLabelName(jlLastAciPer), 9);
+        moTextLastAciPer.setTextSettings(SGuiUtils.getLabelName(jlLastAciPer), 9, 0);
         moBoolLastAciPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolLastAciPerOverange.getText()), false);
-        moTextLastPerInd.setTextSettings(SGuiUtils.getLabelName(jlLastPerInd), 9);
+        moTextLastPerInd.setTextSettings(SGuiUtils.getLabelName(jlLastPerInd), 9, 0);
         moBoolLastPerIndOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolLastPerIndOverange.getText()), false);
-        moTextLastMoiPer.setTextSettings(SGuiUtils.getLabelName(jlLastMoiPer), 9);
+        moTextLastMoiPer.setTextSettings(SGuiUtils.getLabelName(jlLastMoiPer), 9, 0);
         moBoolLastMoiPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolLastMoiPerOverange.getText()), false);
-        moTextLastSolPer.setTextSettings(SGuiUtils.getLabelName(jlLastSolPer), 9);
+        moTextLastSolPer.setTextSettings(SGuiUtils.getLabelName(jlLastSolPer), 9, 0);
         moBoolLastSolPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolLastSolPerOverange.getText()), false);
-        moTextLastLinPer.setTextSettings(SGuiUtils.getLabelName(jlLastLinPer), 9);
+        moTextLastLinPer.setTextSettings(SGuiUtils.getLabelName(jlLastLinPer), 9, 0);
         moBoolLastLinPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolLastLinPerOverange.getText()), false);
-        moTextLastOlePer.setTextSettings(SGuiUtils.getLabelName(jlLastOlePer), 9);
+        moTextLastOlePer.setTextSettings(SGuiUtils.getLabelName(jlLastOlePer), 9, 0);
         moBoolLastOlePerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolLastOlePerOverange.getText()), false);
-        moTextLastLlcPer.setTextSettings(SGuiUtils.getLabelName(jlLastLlcPer), 9);
+        moTextLastLlcPer.setTextSettings(SGuiUtils.getLabelName(jlLastLlcPer), 9, 0);
         moBoolLastLlcPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolLastLlcPerOverange.getText()), false);
-        moTextLastStePer.setTextSettings(SGuiUtils.getLabelName(jlLastStePer), 9);
+        moTextLastStePer.setTextSettings(SGuiUtils.getLabelName(jlLastStePer), 9, 0);
         moBoolLastStePerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolLastStePerOverange.getText()), false);
-        moTextLastPalPer.setTextSettings(SGuiUtils.getLabelName(jlLastPalPer), 9);
+        moTextLastPalPer.setTextSettings(SGuiUtils.getLabelName(jlLastPalPer), 9, 0);
         moBoolLastPalPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolLastPalPerOverange.getText()), false);
         moTextLastNotes.setTextSettings(SGuiUtils.getLabelName(jlLastNotes), 100);
         
@@ -903,6 +903,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moFields.addField(moBoolLastPalPerOverange);
         moFields.addField(moTextLastNotes);
 
+        moFields.setFormButton(jbSaveAndNextRow);
         
         moGridWahList = new SGridPaneForm(miClient, SModConsts.S_WAH_LAB_TEST, SLibConsts.UNDEFINED, "Pruebas de laboratorio") {
             @Override
@@ -950,7 +951,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
             moTextCurOlePer.setValue(labTest.getOleicAcidPercentage_n() == null ? "" : labTest.getOleicAcidPercentage_n() * 100 + "");
             moTextCurLlcPer.setValue(labTest.getLinolenicAcidPercentage_n() == null ? "" : labTest.getLinolenicAcidPercentage_n() * 100 + "");
             moTextCurStePer.setValue(labTest.getStearicAcidPercentage_n() == null ? "" : labTest.getStearicAcidPercentage_n() * 100  + "");
-            moTextCurPalPer.setValue(labTest.getPalmiticAcidPercentage_n() == null ? "" : labTest.getPalmiticAcidPercentage_n()  * 100  + "");
+            moTextCurPalPer.setValue(labTest.getPalmiticAcidPercentage_n() == null ? "" : labTest.getPalmiticAcidPercentage_n() * 100  + "");
             moTextCurNotes.setValue(labTest.getNote());
             moBoolCurAciPerOverange.setValue(labTest.isAcidityPercentageOverange());
             moBoolCurPerIndOverange.setValue(labTest.isPeroxideIndexOverange());
@@ -967,14 +968,14 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
             if (labTest.getLastWahLabTest() != null) {
                 SDbWahLabTest lastLabTest = labTest.getLastWahLabTest();
 
-                moTextLastAciPer.setValue(lastLabTest.getAcidityPercentage_n() == null ? "" : lastLabTest.getAcidityPercentage_n() * 100  + "");
+                moTextLastAciPer.setValue(lastLabTest.getAcidityPercentage_n() == null ? "" : lastLabTest.getAcidityPercentage_n() * 100 + "");
                 moTextLastPerInd.setValue(lastLabTest.getPeroxideIndex_n() == null ? "" : lastLabTest.getPeroxideIndex_n() + "");
                 moTextLastMoiPer.setValue(lastLabTest.getMoisturePercentage_n() == null ? "" : lastLabTest.getMoisturePercentage_n() * 100 + "");
                 moTextLastSolPer.setValue(lastLabTest.getSolidPersentage_n() == null ? "" : lastLabTest.getSolidPersentage_n() * 100 + "");
                 moTextLastLinPer.setValue(lastLabTest.getLinoleicAcidPercentage_n() == null ? "" : lastLabTest.getLinoleicAcidPercentage_n() * 100 + "");
                 moTextLastOlePer.setValue(lastLabTest.getOleicAcidPercentage_n() == null ? "" : lastLabTest.getOleicAcidPercentage_n() * 100 + "");
                 moTextLastLlcPer.setValue(lastLabTest.getLinolenicAcidPercentage_n() == null ? "" : lastLabTest.getLinolenicAcidPercentage_n() * 100 + "");
-                moTextLastStePer.setValue(lastLabTest.getStearicAcidPercentage_n() == null ? "" : lastLabTest.getStearicAcidPercentage_n() * 100  + "");
+                moTextLastStePer.setValue(lastLabTest.getStearicAcidPercentage_n() == null ? "" : lastLabTest.getStearicAcidPercentage_n() * 100 + "");
                 moTextLastPalPer.setValue(lastLabTest.getPalmiticAcidPercentage_n() == null ? "" : lastLabTest.getPalmiticAcidPercentage_n() * 100  + "");
                 moTextLastNotes.setValue(lastLabTest.getNote());
                 moBoolLastAciPerOverange.setValue(lastLabTest.isAcidityPercentageOverange());
@@ -1035,7 +1036,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     
     private void verifyYearWeek(int year, int week) {
         try {
-            String sql = "SELECT * FROM s_wah_lab WHERE year = " + year + " AND week = " + week;
+            String sql = "SELECT * FROM s_wah_lab WHERE year = " + year + " AND week = " + week + " AND NOT b_del AND NOT b_dis";
             ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
             if (resultSet.next()) {
                 miClient.showMsgBoxInformation("Ya existe captura de resultados para la fecha inicial y final seleccionada.");
@@ -1328,15 +1329,15 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private void actionSaveRow() {
         SDbWahLabTest test = (SDbWahLabTest) moGridWahList.getSelectedGridRow();
         try {
-            test.setAcidityPercentage_n(moTextCurAciPer.getValue().equals("") ? null : Double.parseDouble(moTextCurAciPer.getValue()) / 100);
-            test.setPeroxideIndex_n(moTextCurPerInd.getValue().equals("") ? null : Double.parseDouble(moTextCurPerInd.getValue()));
-            test.setMoisturePercentage_n(moTextCurMoiPer.getValue().equals("") ? null : Double.parseDouble(moTextCurMoiPer.getValue()) / 100);
-            test.setSolidPersentage_n(moTextCurSolPer.getValue().equals("") ? null : Double.parseDouble(moTextCurSolPer.getValue()) / 100);
-            test.setLinoleicAcidPercentage_n(moTextCurLinPer.getValue().equals("") ? null : Double.parseDouble(moTextCurLinPer.getValue()) / 100);
-            test.setOleicAcidPercentage_n(moTextCurOlePer.getValue().equals("") ? null : Double.parseDouble(moTextCurOlePer.getValue()) / 100);
-            test.setLinolenicAcidPercentage_n(moTextCurLlcPer.getValue().equals("") ? null : Double.parseDouble(moTextCurLlcPer.getValue()) / 100);
-            test.setStearicAcidPercentage_n(moTextCurStePer.getValue().equals("") ? null : Double.parseDouble(moTextCurStePer.getValue()) / 100);
-            test.setPalmiticAcidPercentage_n(moTextCurPalPer.getValue().equals("") ? null : Double.parseDouble(moTextCurPalPer.getValue()) / 100);
+            test.setAcidityPercentage_n(moTextCurAciPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurAciPer.getValue()) / 100);
+            test.setPeroxideIndex_n(moTextCurPerInd.getValue().isEmpty() ? null : Double.parseDouble(moTextCurPerInd.getValue()));
+            test.setMoisturePercentage_n(moTextCurMoiPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurMoiPer.getValue()) / 100);
+            test.setSolidPersentage_n(moTextCurSolPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurSolPer.getValue()) / 100);
+            test.setLinoleicAcidPercentage_n(moTextCurLinPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurLinPer.getValue()) / 100);
+            test.setOleicAcidPercentage_n(moTextCurOlePer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurOlePer.getValue()) / 100);
+            test.setLinolenicAcidPercentage_n(moTextCurLlcPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurLlcPer.getValue()) / 100);
+            test.setStearicAcidPercentage_n(moTextCurStePer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurStePer.getValue()) / 100);
+            test.setPalmiticAcidPercentage_n(moTextCurPalPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurPalPer.getValue()) / 100);
             test.setNote(moTextCurNotes.getValue()); 
             test.setAcidityPercentageOverange(moBoolCurAciPerOverange.getValue());
             test.setPeroxideIndexOverange(moBoolCurPerIndOverange.getValue());

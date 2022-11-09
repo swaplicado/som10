@@ -85,8 +85,8 @@ public class SDbWahLab extends SDbRegistryUser{
         Statement statement = session.getStatement().getConnection().createStatement();
         
         String sqlWhere = "WHERE year = " + (curWeek == 1 ? curYear - 1 : curYear) + " "
-                + "AND week " + (curWeek == 1 ? "<= 52 " : " = " + (curWeek - 1));
-        
+                + "AND week " + (curWeek == 1 ? "<= 52 " : " = " + (curWeek - 1)) + " "
+                + "AND b_done AND NOT b_del";
         msSql = "SELECT id_wah_lab FROM " + getSqlTable() + " " + sqlWhere;
         ResultSet resultSet = statement.executeQuery(msSql);
         if (resultSet.next()) {
@@ -95,7 +95,8 @@ public class SDbWahLab extends SDbRegistryUser{
         }
         else {
             sqlWhere = "WHERE year = " + (curWeek == 1 ? curYear - 1 : curYear) + " "
-                    + "AND week " + (curWeek == 1 ? "= 51 " : " = " + (curWeek - 2));
+                    + "AND week " + (curWeek == 1 ? "= 51 " : " = " + (curWeek - 2)) + " " 
+                    + "AND b_done AND NOT b_del";
             msSql = "SELECT id_wah_lab FROM " + getSqlTable() + " " + sqlWhere;
             resultSet = statement.executeQuery(msSql);
             if (resultSet.next()) {
