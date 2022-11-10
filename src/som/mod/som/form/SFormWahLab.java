@@ -195,6 +195,13 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jlLastNotes = new javax.swing.JLabel();
         moTextLastNotes = new sa.lib.gui.bean.SBeanFieldText();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
+
         jpAllForm.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jpAllForm.setLayout(new java.awt.BorderLayout());
 
@@ -487,12 +494,12 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moTextCurNotes.setPreferredSize(new java.awt.Dimension(615, 23));
         jPanel24.add(moTextCurNotes);
 
-        jbSaveRow.setText("Guardar");
+        jbSaveRow.setText("Registrar");
         jbSaveRow.setMargin(new java.awt.Insets(2, 2, 2, 2));
         jbSaveRow.setPreferredSize(new java.awt.Dimension(70, 23));
         jPanel24.add(jbSaveRow);
 
-        jbSaveAndNextRow.setText("Guardar y siguiente");
+        jbSaveAndNextRow.setText("Registrar y siguiente");
         jbSaveAndNextRow.setMargin(new java.awt.Insets(2, 2, 2, 2));
         jbSaveAndNextRow.setPreferredSize(new java.awt.Dimension(130, 23));
         jPanel24.add(jbSaveAndNextRow);
@@ -677,6 +684,10 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
         getContentPane().add(jpAllForm, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        actionCancel();
+    }//GEN-LAST:event_formWindowClosing
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel10;
@@ -1375,6 +1386,13 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moWeekCurWeekTest.setValue(getWeekOfYear(moDateCaptureDate.getValue()));
         moDateCurStartDateTest.setValue(getDateStart(moDateCaptureDate.getValue()));
         moDateCurEndDateTest.setValue(getDateEnd(moDateCaptureDate.getValue()));
+    }
+    
+    @Override
+    public void actionCancel() {
+        if (miClient.showMsgBoxConfirm("¿Está seguro que desea cancelar la captura?") == JOptionPane.YES_OPTION) {
+            super.actionCancel();
+        }
     }
 
     @Override

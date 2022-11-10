@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.2" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="0"/>
+  </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="2"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -752,7 +758,7 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jbSaveRow">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Guardar"/>
+                            <Property name="text" type="java.lang.String" value="Registrar"/>
                             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                               <Insets value="[2, 2, 2, 2]"/>
                             </Property>
@@ -763,7 +769,7 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jbSaveAndNextRow">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Guardar y siguiente"/>
+                            <Property name="text" type="java.lang.String" value="Registrar y siguiente"/>
                             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                               <Insets value="[2, 2, 2, 2]"/>
                             </Property>
