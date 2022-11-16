@@ -80,6 +80,59 @@ public class SDbWahLab extends SDbRegistryUser{
     public ArrayList<SDbWahLabTest> getWahLabTests() { return maWahLabTests; }
     
     public SDbWahLab getLastWahLab() { return moLastWahLab; }
+    
+    
+    /**
+     * Copia del método read pero sin leer el análisis anterior
+     * @param session
+     * @param pk
+     * @throws java.sql.SQLException
+    */
+    public void readXta(SGuiSession session, int[] pk) throws SQLException, Exception {
+        ResultSet resultSet;
+        Statement statement;
+        
+        initRegistry();
+        initQueryMembers();
+        mnQueryResultId = SDbConsts.READ_ERROR;
+        
+        msSql = "SELECT * " + getSqlFromWhere(pk);
+        resultSet = session.getStatement().executeQuery(msSql);
+        if (!resultSet.next()) {
+            throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
+        }
+        else {
+            mnPkWarehouseLaboratoryId = resultSet.getInt("id_wah_lab");
+            mnYear = resultSet.getInt("year");
+            mnWeek = resultSet.getInt("week");
+            mtDateStart = resultSet.getDate("dt_start");
+            mtDateEnd = resultSet.getDate("dt_end");
+            mbDone = resultSet.getBoolean("b_done");
+            mbValidate = resultSet.getBoolean("b_validate");
+            mbDeleted = resultSet.getBoolean("b_del");
+            mbSystem = resultSet.getBoolean("b_sys");
+            mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
+            mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
+            mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
+            mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
+            
+            // Read aswell child registries:
+            
+            statement = session.getStatement().getConnection().createStatement();
+            
+            msSql = "SELECT id_test FROM " + SModConsts.TablesMap.get(SModConsts.S_WAH_LAB_TEST) + " " + getSqlWhere();
+            resultSet = statement.executeQuery(msSql);
+            while (resultSet.next()) {
+                SDbWahLabTest labTest = new SDbWahLabTest();
+                labTest.read(session, new int[] { mnPkWarehouseLaboratoryId, resultSet.getInt(1) });
+                maWahLabTests.add(labTest);
+            }
+            
+            mbRegistryNew = false;
+        }
+        
+        mnQueryResultId = SDbConsts.READ_OK;
+    }
 
     public void readLastWahLab(SGuiSession session, int curYear, int curWeek, boolean showMessage) throws Exception {
         Statement statement = session.getStatement().getConnection().createStatement();
@@ -91,7 +144,7 @@ public class SDbWahLab extends SDbRegistryUser{
         ResultSet resultSet = statement.executeQuery(msSql);
         if (resultSet.next()) {
             moLastWahLab = new SDbWahLab();
-            moLastWahLab.read(session, new int[] { resultSet.getInt(1) });
+            moLastWahLab.readXta(session, new int[] { resultSet.getInt(1) });
         }
         else {
             sqlWhere = "WHERE year = " + (curWeek == 1 ? curYear - 1 : curYear) + " "
@@ -101,7 +154,7 @@ public class SDbWahLab extends SDbRegistryUser{
             resultSet = statement.executeQuery(msSql);
             if (resultSet.next()) {
                 moLastWahLab = new SDbWahLab();
-                moLastWahLab.read(session, new int[] { resultSet.getInt(1) });
+                moLastWahLab.readXta(session, new int[] { resultSet.getInt(1) });
             }
             else {
                 if (showMessage){
