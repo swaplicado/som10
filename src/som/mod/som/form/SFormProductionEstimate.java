@@ -380,7 +380,9 @@ public class SFormProductionEstimate extends SBeanForm implements ItemListener, 
             moRegistry.validateProductionEstimateByProduct(miClient.getSession());
             
             if (moRegistry.getQueryResultId() != SDbConsts.READ_OK) {
-                throw new Exception(SSomConsts.ERR_MSG_PROD_EST + (moRegistry.getQueryResult().isEmpty() ? "" : "\n" + moRegistry.getQueryResult()));
+                throw new Exception(SSomConsts.ERR_MSG_PROD_EST + 
+                        (moRegistry.getQueryResult().isEmpty() ? " No se ha capturado el inventario físico diario." : 
+                        "\n" + moRegistry.getQueryResult()));
             }
             else {
                 moRegistry.computeProductionEstimate(miClient.getSession());

@@ -27,11 +27,11 @@ import som.mod.som.db.SDbSeason;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  */
 public class SViewSeason extends SGridPaneView implements ActionListener {
 
-    private JButton jbCloseSeason;
+    private final JButton jbCloseSeason;
 
     public SViewSeason(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SU_SEAS, SLibConsts.UNDEFINED, title);
@@ -42,7 +42,7 @@ public class SViewSeason extends SGridPaneView implements ActionListener {
     }
 
     private void actionCloseSeason() {
-        SDbSeason season = null;
+        SDbSeason season;
 
         if (jbCloseSeason.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
@@ -79,7 +79,7 @@ public class SViewSeason extends SGridPaneView implements ActionListener {
     @Override
     public void prepareSqlQuery() {
         String sql = "";
-        Object filter = null;
+        Object filter;
 
         moPaneSettings = new SGridPaneSettings(1);
         moPaneSettings.setUpdatableApplying(true);
@@ -100,6 +100,12 @@ public class SViewSeason extends SGridPaneView implements ActionListener {
                 + "v.name AS " + SDbConsts.FIELD_NAME + ", "
                 + "v.dt_sta AS " + SDbConsts.FIELD_DATE + ", "
                 + "v.dt_end AS " + SDbConsts.FIELD_DATE + "1, "
+                + "v.rec_per_month_sta, "
+                + "v.rec_per_month_end, "
+                + "IF(v.smn_rec = '', '', IF(v.smn_rec = '0', 'No', 'Si')) AS smn_rec, "
+                + "IF(v.smn_no_rec = '', '', IF(v.smn_no_rec = '0', 'No', IF(v.smn_no_rec = '1', 'En perdiodo ordinario', 'Toda la temporada'))) AS smn_no_rec, "
+                + "v.smn_no_rec_int_in, "
+                + "v.smn_no_rec_int_out, "
                 + "v.b_clo, "
                 + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
                 + "v.b_can_dis AS " + SDbConsts.FIELD_CAN_DIS + ", "
@@ -125,12 +131,18 @@ public class SViewSeason extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[12];
-
+        SGridColumnView[] columns = new SGridColumnView[18];
+        
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, SDbConsts.FIELD_DATE, "Fecha inicial");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, SDbConsts.FIELD_DATE + "1", "Fecha final");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_1B, "v.rec_per_month_sta", "Mes inicial recepciones");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_1B, "v.rec_per_month_end", "Mes final recepciones");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "smn_rec", "Mail recepción");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "smn_no_rec", "Mail no recepción");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_1B, "v.smn_no_rec_int_in", "Intervalo dentro del periodo");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_1B, "v.smn_no_rec_int_out", "Intervalo fuera del periodo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_clo", "Cerrada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);

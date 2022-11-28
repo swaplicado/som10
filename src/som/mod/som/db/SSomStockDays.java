@@ -8,6 +8,7 @@ package som.mod.som.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 import sa.lib.SLibTimeUtils;
@@ -31,10 +32,12 @@ public class SSomStockDays extends SDbRegistry {
     protected int mnXtaFkUnitId;
 
     protected Vector<SDbStockDay> mvStockDays;
+    protected ArrayList<SDbMobileWarehousePremise> mlMobileWarehouses;
 
     public SSomStockDays() {
         super(SModConsts.S_STK_DAY);
-        mvStockDays = new Vector<SDbStockDay>();
+        mvStockDays = new Vector<>();
+        mlMobileWarehouses = new ArrayList<>();
         initRegistry();
     }
 
@@ -74,6 +77,8 @@ public class SSomStockDays extends SDbRegistry {
     public void setStockDays(Vector<SDbStockDay> v) { mvStockDays = v; }
 
     public Vector<SDbStockDay> getStockDays() { return mvStockDays; }
+    public ArrayList<SDbMobileWarehousePremise> getMobileWarehouses() { return mlMobileWarehouses; }
+    
 
     public void setXtaFkUnitId(int n) { mnXtaFkUnitId = n; }
 
@@ -187,7 +192,24 @@ public class SSomStockDays extends SDbRegistry {
         }
 
         mtDate = SLibTimeUtils.createDate(pk[0], pk[1], pk[2]);
+        
+        msSql = "SELECT "
+                    + "* "
+                + "FROM "
+                + "    " + SModConsts.TablesMap.get(SModConsts.S_WAH_PREMISE) + " AS wahp "
+                + "WHERE "
+                + " NOT wahp.b_del AND wahp.id_dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' ";
 
+        statement = session.getStatement().getConnection().createStatement();
+        resultSet = statement.executeQuery(msSql);
+        SDbMobileWarehousePremise whsMobile;
+        while (resultSet.next()) {
+            whsMobile = new SDbMobileWarehousePremise();
+            whsMobile.read(session, new Object[] { resultSet.getInt("id_co"), resultSet.getInt("id_cob"), resultSet.getInt("id_wah"), mtDate });
+            
+            mlMobileWarehouses.add(whsMobile);
+        }
+        
         mbRegistryNew = false;
 
         mnQueryResultId = SDbConsts.READ_OK;
@@ -203,6 +225,11 @@ public class SSomStockDays extends SDbRegistry {
         for (SDbStockDay stockDay : mvStockDays) {
             stockDay.setDate(mtDate);
             stockDay.save(session);
+        }
+        
+        for (SDbMobileWarehousePremise moMobileWarehouse : mlMobileWarehouses) {
+            moMobileWarehouse.setPkDate(mtDate);
+            moMobileWarehouse.save(session);
         }
 
         // Finish registry updating:
@@ -223,7 +250,6 @@ public class SSomStockDays extends SDbRegistry {
             b = false;
         }
         else {
-
             msSql = "SELECT id_co, id_cob, id_wah, code, name, b_dis, b_del " +
                     "FROM " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " " +
                     "WHERE fk_wah_tp IN (" + SModSysConsts.CS_WAH_TP_TAN  + ", " + SModSysConsts.CS_WAH_TP_TAN_MFG + ") " +

@@ -216,7 +216,7 @@ public class SViewStock extends SGridPaneView implements ActionListener {
         int col = 0;
         SGridColumnView[] columns = null;
         if (showWarehouses()) {
-            columns = new SGridColumnView[!showDivision() ? 8 : 9];
+            columns = new SGridColumnView[!showDivision() ? 9 : 10];
         }
         else {
             columns = new SGridColumnView[!showDivision() ? 6 : 7];
@@ -227,7 +227,8 @@ public class SViewStock extends SGridPaneView implements ActionListener {
 
         if (showWarehouses()) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, "vc.code", "Sucursal");
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, "vw.code", "Almacén");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, "vw.code", "Cod. almacén");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "vw.name", "Almacén");
         }
 
         if (showDivision()) {

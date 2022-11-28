@@ -26,26 +26,26 @@ public class SCliReportMailerSeedReceptions {
     
     private static SGuiSession moSession;
     
-    public static final int DAYS_TO_SEND_MAIL = 0;
+    //public static final int DAYS_TO_SEND_MAIL = 0;
     
-    private static final int ARG_DAYS_TO_SEND_MAIL = 0;
-    private static final int ARG_MAIL_TO = 1;
-    private static final int ARG_MAIL_BCC = 2;
+    //private static final int ARG_DAYS_TO_SEND_MAIL = 0;
+    private static final int ARG_MAIL_TO = 0;
+    private static final int ARG_MAIL_BCC = 1;
     
     public static void main(String[] args) {
         try {
             
-            int daysToSendMail = DAYS_TO_SEND_MAIL;
+            //int daysToSendMail = DAYS_TO_SEND_MAIL;
             String mailTo = "isabel.garcia@swaplicado.com.mx;sflores@swaplicado.com.mx";
             String mailBcc = "";
             
+//            if (args.length >= 1) {
+//                daysToSendMail = Integer.parseInt(args[ARG_DAYS_TO_SEND_MAIL]);
+//            }
             if (args.length >= 1) {
-                daysToSendMail = Integer.parseInt(args[ARG_DAYS_TO_SEND_MAIL]);
-            }
-            if (args.length >= 2) {
                 mailTo = args[ARG_MAIL_TO];
             }
-            if (args.length >= 3) {
+            if (args.length >= 2) {
                 mailBcc = args[ARG_MAIL_BCC];
             }
 
@@ -72,14 +72,15 @@ public class SCliReportMailerSeedReceptions {
             }
             
             moSession.setDatabase(database);
-            run(daysToSendMail, mailTo, mailBcc);
+            //run(daysToSendMail, mailTo, mailBcc);
+            run(mailTo, mailBcc);
         }
         catch (Exception e) {
             SLibUtils.printException(SCliReportMailerSeedReceptions.class.getName(), e);
         }
     }
     
-    public static void run(int daysToSendMail, String mailTo, String mailBcc) throws Exception {
+    public static void run(String mailTo, String mailBcc) throws Exception {
         SGuiClientSessionCustom csc = new SGuiClientSessionCustom(moSession.getClient(), 1);
         SDbCompany company = new SDbCompany();
         company.read(moSession, new int[] {1});
@@ -88,10 +89,43 @@ public class SCliReportMailerSeedReceptions {
         moSession.setSessionCustom(csc);
         
         Date date = null;
-        ResultSet resultSet = moSession.getStatement().executeQuery("SELECT CURDATE()");
+        
+        boolean ordinaryPeriod = false;
+        String receptionMail = "0";
+        String noReceptionMail = "0";
+        int noReceptionIn = 0;
+        int noReceptionOut = 0;
+        
+        String sql = "SELECT CURDATE(), "
+                + "IF(MONTH(CURDATE()) BETWEEN rec_per_month_sta AND rec_per_month_end, TRUE, FALSE) AS b_ord, "
+                + "smn_rec, smn_no_rec, smn_no_rec_int_in, smn_no_rec_int_out "
+                + "FROM su_seas WHERE CURDATE() BETWEEN dt_sta AND dt_end;";
+        
+        ResultSet resultSet = moSession.getStatement().executeQuery(sql);
         if (resultSet.next()) {
             date = resultSet.getDate(1);
+            ordinaryPeriod = resultSet.getBoolean(2);
+            receptionMail = resultSet.getString(3);
+            noReceptionMail = resultSet.getString(4);
+            noReceptionIn = resultSet.getInt(5);
+            noReceptionOut = resultSet.getInt(6);
         }
-        SSomMailUtils.computeMailReceptions(moSession, date, date, true, daysToSendMail, mailTo, mailBcc);
+        
+        if (receptionMail.equals("1")) {
+            int daysToSendMail = ordinaryPeriod ? noReceptionIn : noReceptionOut;
+            SSomMailUtils.computeMailReceptions(moSession, date, date, true, ordinaryPeriod, noReceptionMail, daysToSendMail, mailTo, mailBcc);
+        }
+        else {
+            int maxId = 0;
+            sql = "SELECT MAX(id) FROM s_cli_umn_log";
+            try (ResultSet id = moSession.getStatement().executeQuery(sql)) {
+                if (id.next()) {
+                    maxId = id.getInt(1);
+                }
+            }
+            
+            sql = "INSERT INTO s_cli_umn_log (id, b_data, b_sent, ts_exe) VALUES (" + (maxId + 1) + ", false, false, NOW());";
+            moSession.getStatement().execute(sql);
+        }
     }
 }

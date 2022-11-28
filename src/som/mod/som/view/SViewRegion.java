@@ -27,7 +27,7 @@ public class SViewRegion extends SGridPaneView {
     @Override
     public void prepareSqlQuery() {
         String sql = "";
-        Object filter = null;
+        Object filter;
 
         moPaneSettings = new SGridPaneSettings(1);
         moPaneSettings.setUpdatableApplying(true);

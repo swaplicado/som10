@@ -29,6 +29,7 @@ import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanFormDialog;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
+import som.mod.som.data.SStockRecordUtils;
 import som.mod.som.db.SDbIog;
 import som.mod.som.db.SDbMfgEstimation;
 import som.mod.som.db.SRowProductionByLine;
@@ -584,6 +585,11 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
                 moMfgEstimation.computeProductionEstimate(miClient.getSession());
                 maProductionProducts = moMfgEstimation.getChildMfgWarehouseProducts();
                 populatePaneGrid();
+            }
+            
+            if (bContinue) {
+                // guardar registros en el stock record después de realizar la entrega de la estimación
+                SStockRecordUtils.saveStockRecord(miClient, moDateDate.getValue());
             }
 
                 /*

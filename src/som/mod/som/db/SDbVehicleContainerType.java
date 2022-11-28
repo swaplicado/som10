@@ -20,7 +20,7 @@ import som.mod.SModConsts;
  */
 public class SDbVehicleContainerType extends SDbRegistryUser {
 
-    protected int mnPkVehicleContainerType;
+    protected int mnPkVehicleContainerTypeId;
     protected String msCode;
     protected String msVehicleType;
     protected String msContainerType;
@@ -46,7 +46,7 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
      * Public methods:
      */
 
-    public void setPkVehicleContainerType(int n) { mnPkVehicleContainerType = n; }
+    public void setPkVehicleContainerTypeId(int n) { mnPkVehicleContainerTypeId = n; }
     public void setCode(String s) { msCode = s; }
     public void setVehicleType(String s) { msVehicleType = s; }
     public void setContainerType(String s) { msContainerType = s; }
@@ -61,7 +61,7 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
     
-    public int getPkVehicleContainerType() { return mnPkVehicleContainerType; }
+    public int getPkVehicleContainerTypeId() { return mnPkVehicleContainerTypeId; }
     public String getCode() { return msCode; }
     public String getVehicleType() { return msVehicleType; }
     public String getContainerType() { return msContainerType; }
@@ -78,19 +78,19 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkVehicleContainerType = pk[0];
+        mnPkVehicleContainerTypeId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkVehicleContainerType };
+        return new int[] { mnPkVehicleContainerTypeId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
         
-        mnPkVehicleContainerType = 0;
+        mnPkVehicleContainerTypeId = 0;
         msCode = "";
         msVehicleType = "";
         msContainerType = "";
@@ -113,7 +113,7 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_veh_cont_type = " + mnPkVehicleContainerType + " ";
+        return "WHERE id_veh_cont_type = " + mnPkVehicleContainerTypeId + " ";
     }
 
     @Override
@@ -125,12 +125,12 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet;
         
-        mnPkVehicleContainerType = 0;
+        mnPkVehicleContainerTypeId = 0;
         
         msSql = "SELECT COALESCE(MAX(id_veh_cont_type), 0) + 1 FROM " + getSqlTable();
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkVehicleContainerType = resultSet.getInt(1);
+            mnPkVehicleContainerTypeId = resultSet.getInt(1);
         }
     }
 
@@ -148,7 +148,7 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkVehicleContainerType = resultSet.getInt("id_veh_cont_type");
+            mnPkVehicleContainerTypeId = resultSet.getInt("id_veh_cont_type");
             msCode = resultSet.getString("code");
             msVehicleType = resultSet.getString("vehicle_type");
             msContainerType = resultSet.getString("container_type");
@@ -186,7 +186,7 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" + 
-                    mnPkVehicleContainerType + ", " + 
+                    mnPkVehicleContainerTypeId + ", " + 
                     "'" + msCode + "', " + 
                     "'" + msVehicleType + "', " + 
                     "'" + msContainerType + "', " + 
@@ -206,7 +206,7 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
             
             msSql = "UPDATE " + getSqlTable() + " SET " + 
-                    //"id_veh_cont_type = " + mnPkVehicleContainerType + ", " +
+                    //"id_veh_cont_type = " + mnPkVehicleContainerTypeId + ", " +
                     "code = '" + msCode + "', " +
                     "vehicle_type = '" + msVehicleType + "', " +
                     "container_type = '" + msContainerType + "', " +
@@ -233,7 +233,7 @@ public class SDbVehicleContainerType extends SDbRegistryUser {
     public SDbVehicleContainerType clone() throws CloneNotSupportedException {
         SDbVehicleContainerType registry = new SDbVehicleContainerType();
         
-        registry.setPkVehicleContainerType(this.getPkVehicleContainerType());
+        registry.setPkVehicleContainerTypeId(this.getPkVehicleContainerTypeId());
         registry.setCode(this.getCode());
         registry.setVehicleType(this.getVehicleType());
         registry.setContainerType(this.getContainerType());

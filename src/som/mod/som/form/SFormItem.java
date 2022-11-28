@@ -158,8 +158,15 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         jPanel11 = new javax.swing.JPanel();
         jlExternalWarehouse_n = new javax.swing.JLabel();
         moKeyExternalWarehouse_n = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel53 = new javax.swing.JPanel();
+        jlOilClass = new javax.swing.JLabel();
+        moKeyOilClass = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel34 = new javax.swing.JPanel();
+        jlOilType = new javax.swing.JLabel();
+        moKeyOilType = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel30 = new javax.swing.JPanel();
-        moBoolLaboratory = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jlOilFamilyGroup = new javax.swing.JLabel();
+        moKeyOilFamilyGroup = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel20 = new javax.swing.JPanel();
         moBoolImpuritiesPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
         moBoolOleicAcidPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
@@ -179,7 +186,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moBoolIodineValue = new sa.lib.gui.bean.SBeanFieldBoolean();
         moBoolProteinPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel48 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        moBoolLaboratory = new sa.lib.gui.bean.SBeanFieldBoolean();
         moBoolOilContentPercentage = new sa.lib.gui.bean.SBeanFieldBoolean();
         jlOilYieldAdjustmentPercentage = new javax.swing.JLabel();
         moDecOilYieldAdjustmentPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
@@ -200,7 +207,6 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         jlPackingWeight = new javax.swing.JLabel();
         moDecPackingWeight = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlPackingWeightUnit = new javax.swing.JLabel();
-        jPanel34 = new javax.swing.JPanel();
         moBoolAutoMailNotification = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel46 = new javax.swing.JPanel();
         jlAutoMailNotificationBoxes = new javax.swing.JLabel();
@@ -219,9 +225,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         jlRevueltaItemId = new javax.swing.JLabel();
         moTextRevueltaItemId = new sa.lib.gui.bean.SBeanFieldText();
         jLabel8 = new javax.swing.JLabel();
-        jPanel53 = new javax.swing.JPanel();
         moBoolPrintInputType = new sa.lib.gui.bean.SBeanFieldBoolean();
-        jPanel54 = new javax.swing.JPanel();
         jPanel55 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
 
@@ -560,11 +564,39 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel18.add(jPanel11);
 
+        jPanel53.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlOilClass.setText("Clase aceite:");
+        jlOilClass.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel53.add(jlOilClass);
+
+        moKeyOilClass.setEditable(true);
+        moKeyOilClass.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel53.add(moKeyOilClass);
+
+        jPanel18.add(jPanel53);
+
+        jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlOilType.setText("Tipo aceite:");
+        jlOilType.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel34.add(jlOilType);
+
+        moKeyOilType.setEditable(true);
+        moKeyOilType.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel34.add(moKeyOilType);
+
+        jPanel18.add(jPanel34);
+
         jPanel30.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolLaboratory.setText("Aplica análisis de laboratorio");
-        moBoolLaboratory.setPreferredSize(new java.awt.Dimension(175, 23));
-        jPanel30.add(moBoolLaboratory);
+        jlOilFamilyGroup.setText("Tipo aceite:");
+        jlOilFamilyGroup.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel30.add(jlOilFamilyGroup);
+
+        moKeyOilFamilyGroup.setEditable(true);
+        moKeyOilFamilyGroup.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel30.add(moKeyOilFamilyGroup);
 
         jPanel18.add(jPanel30);
 
@@ -646,8 +678,9 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel48.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jLabel3.setPreferredSize(new java.awt.Dimension(175, 23));
-        jPanel48.add(jLabel3);
+        moBoolLaboratory.setText("Aplica análisis de laboratorio");
+        moBoolLaboratory.setPreferredSize(new java.awt.Dimension(175, 23));
+        jPanel48.add(moBoolLaboratory);
 
         moBoolOilContentPercentage.setText("Aplica aceite (%)");
         moBoolOilContentPercentage.setPreferredSize(new java.awt.Dimension(175, 23));
@@ -720,18 +753,14 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         jPanel33.add(moDecPackingWeight);
 
         jlPackingWeightUnit.setText("UNIT");
-        jlPackingWeightUnit.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlPackingWeightUnit.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel33.add(jlPackingWeightUnit);
 
-        jPanel18.add(jPanel33);
-
-        jPanel34.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
         moBoolAutoMailNotification.setText("Aplica envío automático de mail (al tararse boleto en báscula)");
-        moBoolAutoMailNotification.setPreferredSize(new java.awt.Dimension(400, 23));
-        jPanel34.add(moBoolAutoMailNotification);
+        moBoolAutoMailNotification.setPreferredSize(new java.awt.Dimension(325, 23));
+        jPanel33.add(moBoolAutoMailNotification);
 
-        jPanel18.add(jPanel34);
+        jPanel18.add(jPanel33);
 
         jPanel46.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -795,21 +824,14 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jLabel8.setForeground(java.awt.Color.gray);
         jLabel8.setText("clave ítem en BD Revuelta");
-        jLabel8.setPreferredSize(new java.awt.Dimension(200, 23));
+        jLabel8.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel42.add(jLabel8);
 
-        jPanel18.add(jPanel42);
-
-        jPanel53.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
         moBoolPrintInputType.setText("Mostrar tipo insumo en impresión boleto");
-        moBoolPrintInputType.setPreferredSize(new java.awt.Dimension(250, 23));
-        jPanel53.add(moBoolPrintInputType);
+        moBoolPrintInputType.setPreferredSize(new java.awt.Dimension(225, 23));
+        jPanel42.add(moBoolPrintInputType);
 
-        jPanel54.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-        jPanel53.add(jPanel54);
-
-        jPanel18.add(jPanel53);
+        jPanel18.add(jPanel42);
 
         jPanel55.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -847,7 +869,6 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -900,7 +921,6 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JPanel jPanel51;
     private javax.swing.JPanel jPanel52;
     private javax.swing.JPanel jPanel53;
-    private javax.swing.JPanel jPanel54;
     private javax.swing.JPanel jPanel55;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -931,6 +951,9 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JLabel jlMfgWastePercentage;
     private javax.swing.JLabel jlName;
     private javax.swing.JLabel jlNameShort;
+    private javax.swing.JLabel jlOilClass;
+    private javax.swing.JLabel jlOilFamilyGroup;
+    private javax.swing.JLabel jlOilType;
     private javax.swing.JLabel jlOilYieldAdjustmentPercentage;
     private javax.swing.JLabel jlPackagingHint;
     private javax.swing.JLabel jlPackingName;
@@ -987,6 +1010,9 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private sa.lib.gui.bean.SBeanFieldKey moKeyItemProductSource_2_n;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItemRowMaterial_n;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItemType;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyOilClass;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyOilFamilyGroup;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyOilType;
     private sa.lib.gui.bean.SBeanFieldKey moKeyUnit;
     private sa.lib.gui.bean.SBeanFieldKey moKeyWarehouse;
     private sa.lib.gui.bean.SBeanFieldText moTextAutoMailNotificationBoxes;
@@ -1020,6 +1046,8 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moIntStartingSeasonMonth.setIntegerSettings(SGuiUtils.getLabelName(jlStartingSeasonMonth), SGuiConsts.GUI_TYPE_INT_CAL_MONTH, false);
         moIntStartingSeasonMonth.setMaxInteger(SLibTimeConsts.MONTH_MAX);
 
+        moKeyOilClass.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilClass.getText()), false);
+        moKeyOilType.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilType.getText()), false);
         moKeyItemType.setKeySettings(miClient, SGuiUtils.getLabelName(jlItemType), true);
         moKeyInputCategory.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputCategory), true);
         moKeyInputClass.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputClass), true);
@@ -1254,6 +1282,19 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         }
     }
     
+    private void actionOilClassChanged() {
+        SGuiParams params = new SGuiParams();
+        
+        if (moKeyOilClass.getSelectedIndex() > 0) {
+            params.getParamsMap().put(SModConsts.SX_EXT_OIL_CL, moKeyOilClass.getValue());
+        }
+        else {
+            params.getParamsMap().put(SModConsts.SX_EXT_OIL_CL, new int [] { 0 });
+        }
+        
+        miClient.getSession().populateCatalogue(moKeyOilType, SModConsts.SU_OIL_TP, SLibConsts.UNDEFINED, params);
+    }
+    
     private void updateStartingSeasonMonthTip() {
         int month = moIntStartingSeasonMonth.getValue();
         
@@ -1294,6 +1335,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moBoolOilContentPercentage.addItemListener(this);
         moBoolPacking.addItemListener(this);
         moKeyUnit.addItemListener(this);
+        moKeyOilClass.addItemListener(this);
         moBoolUserMailNotificationOnlyWhenMoves.addItemListener(this);
         moBoolAcidityAvgPercentage.addItemListener(this);
         moIntStartingSeasonMonth.addFocusListener(this);
@@ -1310,6 +1352,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moBoolOilContentPercentage.removeItemListener(this);
         moBoolPacking.removeItemListener(this);
         moKeyUnit.removeItemListener(this);
+        moKeyOilClass.removeItemListener(this);
         moBoolUserMailNotificationOnlyWhenMoves.removeItemListener(this);
         moBoolAcidityAvgPercentage.removeItemListener(this);
         moIntStartingSeasonMonth.removeFocusListener(this);
@@ -1328,6 +1371,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         SExtUtils.populateCataloguesItems(miClient, moKeyExternalItem);
         miClient.getSession().populateCatalogue(moKeyExternalWarehouse_n, SModConsts.SU_EXT_WAH, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyOilClass, SModConsts.SU_OIL_CL, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyItemType, SModConsts.SS_ITEM_TP, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyItemRowMaterial_n, SModConsts.SU_ITEM, SModSysConsts.SS_ITEM_TP_RM, null);
         miClient.getSession().populateCatalogue(moKeyItemProductSource_1_n, SModConsts.SU_ITEM, SModSysConsts.SS_ITEM_TP_FG, null);
@@ -1393,6 +1437,9 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moDecFruitYieldAdjustmentPercentage.setValue(moRegistry.getFruitYieldAdjustmentPercentage());
         moBoolPacking.setValue(moRegistry.isPacking());
         moBoolLaboratory.setValue(moRegistry.isLaboratory());
+        moKeyOilClass.setValue(new int [] { moRegistry.getFkOilClassId_n() });
+        actionOilClassChanged();
+        moKeyOilType.setValue(new int [] { moRegistry.getFkOilClassId_n(), moRegistry.getFkOilTypeId_n() });
         moKeyItemType.setValue(new int[] { moRegistry.getFkItemTypeId() });
         moKeyInputCategory.setValue(new int[] { moRegistry.getFkInputCategoryId() });
         moKeyInputClass.setValue(new int[] { moRegistry.getFkInputCategoryId(), moRegistry.getFkInputClassId() });
@@ -1523,6 +1570,8 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         registry.setPrintInputType(moBoolPrintInputType.getValue());
         registry.setFkItemTypeId(moKeyItemType.getValue()[0]);
+        registry.setFkOilClassId_n(moKeyOilClass.getValue()[0]);
+        registry.setFkOilTypeId_n(moKeyOilType.getValue()[1]);
 
         if (isRowMaterial) {
             registry.setFkInputCategoryId(moKeyInputType.getValue()[0]);
@@ -1599,6 +1648,10 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
                 validation.setMessage("La suma de los campos '" + SGuiUtils.getLabelName(jlMfgFinishedGoodPercentage.getText()) + "', '" + SGuiUtils.getLabelName(jlMfgByproductPercentage.getText()) + "' y '" + SGuiUtils.getLabelName(jlMfgWastePercentage.getText()) + "' es diferente del 100%.");
                 validation.setComponent(moDecMfgFinishedGoodPercentage);
             }
+            else if (moKeyOilClass.getValue()[0] > 0 && moKeyOilType.getValue()[0] == 0) {
+                validation.setMessage("Si seleccionó '" + SGuiUtils.getLabelName(jlOilClass.getText()) + "', debe seleccionar una opción de '" + SGuiUtils.getLabelName(jlOilType.getText()) + "'.");
+                validation.setComponent(moKeyOilType);
+            }
             else if (moKeyItemProductSource_1_n.getSelectedIndex() > 0 &&
                     moKeyItemProductSource_2_n.getSelectedIndex() > 0 &&
                     moKeyItemProductSource_1_n.getValue()[0] == moKeyItemProductSource_2_n.getValue()[0]) {
@@ -1663,6 +1716,9 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
             }
             else if (comboBox == moKeyItemType) {
                 itemStateKeyItemTypeId();
+            }
+            else if (comboBox == moKeyOilClass) {
+                actionOilClassChanged();
             }
         }
         else if (e.getSource() instanceof JCheckBox) {

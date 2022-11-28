@@ -11,14 +11,15 @@ import java.util.Date;
 import sa.gui.util.SUtilConsts;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
+import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
 
 /**
  *
- * @author Sergio Flores, Edwin Carmona
+ * @author Sergio Flores, Edwin Carmona, Isabel Servín
  */
-public class SDbBranchWarehouse extends SDbRegistryUser {
+public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
 
     protected int mnPkCompanyId;
     protected int mnPkBranchId;
@@ -31,6 +32,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     protected double mdVolumeAdjustLiter;
     protected double mdAcidity;
     protected String msNote;
+    protected boolean mbMobile;
+
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -40,6 +43,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     protected boolean mbSystem;
     */
     protected int mnFkWarehouseTypeId;
+    protected int mnFkOrientationId;
+    protected int mnFkVolumeCalculationId;
     protected int mnFkProductionLineId;
     /*
     protected int mnFkUserInsertId;
@@ -64,6 +69,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     public void setVolumeAdjustLiter(double d) { mdVolumeAdjustLiter = d; }
     public void setAcidity(double d) { mdAcidity = d; }
     public void setNote(String s) { msNote = s; }
+    public void setMobile(boolean b) { mbMobile = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -71,6 +77,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkWarehouseTypeId(int n) { mnFkWarehouseTypeId = n; }
+    public void setFkOrientationId(int n) { mnFkOrientationId = n; }
+    public void setFkVolumeCalculationId(int n) { mnFkVolumeCalculationId = n; }
     public void setFkProductionLineId(int n) { mnFkProductionLineId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
@@ -88,6 +96,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     public double getVolumeAdjustLiter() { return mdVolumeAdjustLiter; }
     public double getAcidity() { return mdAcidity; }
     public String getNote() { return msNote; }
+    public boolean isMobile() { return mbMobile; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -95,6 +104,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
     public int getFkWarehouseTypeId() { return mnFkWarehouseTypeId; }
+    public int getFkOrientationId() { return mnFkOrientationId; }
+    public int getFkVolumeCalculationId() { return mnFkVolumeCalculationId; }
     public int getFkProductionLineId() { return mnFkProductionLineId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
@@ -128,6 +139,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
         mdVolumeAdjustLiter = 0;
         mdAcidity = 0;
         msNote = "";
+        mbMobile = false;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -135,6 +147,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
         mbDeleted = false;
         mbSystem = false;
         mnFkWarehouseTypeId = 0;
+        mnFkOrientationId = 0;
+        mnFkVolumeCalculationId = 0;
         mnFkProductionLineId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -201,6 +215,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
             mdVolumeAdjustLiter = resultSet.getDouble("vol_adj_lt");
             mdAcidity = resultSet.getDouble("acidity");
             msNote = resultSet.getString("note");
+            mbMobile = resultSet.getBoolean("b_mobile");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -208,6 +223,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkWarehouseTypeId = resultSet.getInt("fk_wah_tp");
+            mnFkOrientationId = resultSet.getInt("fk_orient");
+            mnFkVolumeCalculationId = resultSet.getInt("fk_vol_cal_tp");
             mnFkProductionLineId = resultSet.getInt("fk_line");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
@@ -248,6 +265,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
                     mdVolumeAdjustLiter + ", " +
                     mdAcidity + ", " +
                     (msNote.equals("") ? "'-'" : msNote) + ", " +
+                    (mbMobile ? 1 : 0) + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -255,6 +273,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
                     mnFkWarehouseTypeId + ", " +
+                    mnFkOrientationId + ", " + 
+                    mnFkVolumeCalculationId + ", " + 
                     mnFkProductionLineId + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
@@ -277,6 +297,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
                     "vol_adj_lt = " + mdVolumeAdjustLiter + ", " +
                     "acidity = " + mdAcidity + ", " +
                     "note = " + (msNote.equals("") ? "'-'" : "'" + msNote + "'") + ", " +
+                    "b_mobile = " + (mbMobile ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -284,6 +305,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_wah_tp = " + mnFkWarehouseTypeId + ", " +
+                    "fk_orient = " + mnFkOrientationId + ", " +
+                    "fk_vol_cal_tp = " + mnFkVolumeCalculationId + ", " +
                     "fk_line = " + mnFkProductionLineId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
@@ -312,6 +335,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
         registry.setVolumeAdjustLiter(this.getVolumeAdjustLiter());
         registry.setAcidity(this.getAcidity());
         registry.setNote(this.getNote());
+        registry.setMobile(this.isMobile());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
@@ -319,6 +343,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
         registry.setFkWarehouseTypeId(this.getFkWarehouseTypeId());
+        registry.setFkOrientationId(this.getFkOrientationId());
+        registry.setFkVolumeCalculationId(this.getFkVolumeCalculationId());
         registry.setFkProductionLineId(this.getFkProductionLineId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
@@ -327,5 +353,62 @@ public class SDbBranchWarehouse extends SDbRegistryUser {
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
+    }
+
+    @Override
+    public int[] getRowPrimaryKey() {
+        return new int[] { mnPkCompanyId, mnPkBranchId, mnPkWarehouseId };
+    }
+
+    @Override
+    public String getRowCode() {
+        return "";
+    }
+
+    @Override
+    public String getRowName() {
+        return "";
+    }
+
+    @Override
+    public boolean isRowSystem() {
+        return false;
+    }
+
+    @Override
+    public boolean isRowDeletable() {
+        return true;
+    }
+
+    @Override
+    public boolean isRowEdited() {
+        return isRowEdited();
+    }
+
+    @Override
+    public void setRowEdited(boolean edited) {
+        setRowEdited(edited);
+    }
+
+    @Override
+    public Object getRowValueAt(int row) {
+        Object value = null;
+        
+        switch (row) {
+            case 0:
+                value = msCode;
+                break;
+            case 1: 
+                value = msName;
+                break;
+            default:
+        }
+        
+        return value;
+    }
+
+    @Override
+    public void setRowValueAt(Object o, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

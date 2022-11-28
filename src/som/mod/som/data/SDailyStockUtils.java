@@ -18,12 +18,16 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.MessagingException;
+import org.joda.time.DateTime;
+import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiSession;
 import sa.lib.mail.SMail;
 import sa.lib.mail.SMailConsts;
 import sa.lib.mail.SMailSender;
 import sa.lib.mail.SMailUtils;
+import som.mod.SModConsts;
 import som.mod.SModSysConsts;
+import som.mod.som.db.SDbMobileWarehousePremise;
 
 /**
  *
@@ -337,5 +341,151 @@ public class SDailyStockUtils {
         return stock;
     }
     
+    /**
+     * 
+     * @param session
+     * @param idItem
+     * @param idUnit
+     * @param pkWarehouse
+     * @param stkDay
+     * @return 
+     */
+    public static int[] getOilAndClassItemConfiguration(SGuiSession session, final int idItem, final int idUnit, final int [] pkWarehouse, final Date stkDay) {
+        int[] classKey = new int [] { 0, 0 };
+        
+        try {
+            String sqlStk = "SELECT "
+                    + "fk_oil_cl_n, "
+                    + "fk_oil_tp_n "
+                + "FROM "
+                    + "s_stk_day "
+                + "WHERE "
+                    + "NOT b_del AND dt = '" + SLibUtils.DbmsDateFormatDate.format(stkDay) + "' "
+                    + "AND id_wah = " + pkWarehouse[2] + " "
+                    + "AND id_co = " + pkWarehouse[1] + " "
+                    + "AND id_cob = " + pkWarehouse[0] + " "
+                    + "AND id_unit = " + idUnit + " "
+                    + "AND id_item = " + idItem + " "
+                + "ORDER BY ts_usr_upd DESC "
+                + "LIMIT 1;";
+        
+            ResultSet res = session.getDatabase().getConnection().createStatement().executeQuery(sqlStk);
+            
+            if (res.next()) {
+                classKey = new int[] { res.getInt("fk_oil_cl_n"), res.getInt("fk_oil_tp_n") };
+            }
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(SDailyStockUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        if (classKey[0] > 0) {
+            return classKey;
+        }
+        
+        try {
+            String sql = "SELECT "
+                    + "fk_oil_cl_n, "
+                    + "fk_oil_tp_n "
+                    + "FROM su_item "
+                    + "WHERE "
+                    + "id_item = " + idItem;
+
+            ResultSet res = session.getDatabase().getConnection().createStatement().executeQuery(sql);
+
+            if (res.next()) {
+                classKey = new int[] { res.getInt("fk_oil_cl_n"), res.getInt("fk_oil_tp_n") };
+            }
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(SDailyStockUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return classKey;
+    }
     
+    /**
+     * 
+     * @param session
+     * @param dtStk
+     * @return 
+     */
+    public static ArrayList<SDbMobileWarehousePremise> getMobileWarehousesRows(SGuiSession session, Date dtStk) {
+        String sql = "SELECT id_co, id_cob, id_wah, code, name "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " "
+                + "WHERE "
+                + "NOT b_del AND b_mobile;";
+
+        String sqlWarehousePremise = "SELECT "
+                + "b_premises "
+                + "FROM "
+                + SModConsts.TablesMap.get(SModConsts.S_WAH_PREMISE) + " "
+                + "WHERE "
+                + "NOT b_del ";
+        
+        String sqlToday = "AND id_dt = '" + SLibUtils.DbmsDateFormatDate.format(dtStk) + "' ";
+        DateTime today = new DateTime(dtStk);
+        DateTime yesterday = today.minusDays(1);
+        String sqlYesterday = "AND id_dt = '" + SLibUtils.DbmsDateFormatDate.format(yesterday.toDate()) + "' ";
+                
+        try {
+            ResultSet res = session.getDatabase().getConnection().createStatement().executeQuery(sql);
+            
+            ArrayList<SDbMobileWarehousePremise> rows = new ArrayList<>();
+            SDbMobileWarehousePremise row;
+            while (res.next()) {
+                row = new SDbMobileWarehousePremise();
+                
+                try {
+                    row.read(session, new Object[] { res.getInt("id_co"), res.getInt("id_cob"), res.getInt("id_wah"), dtStk });
+                }
+                catch (Exception ex) {
+//                    Logger.getLogger(SDailyStockUtils.class.getName()).log(Level.SEVERE, null, ex);
+                    
+                    row.setPrimaryKey(new Object[] { res.getInt("id_co"), res.getInt("id_cob"), res.getInt("id_wah"), dtStk });
+                    row.setAuxWarehouseCode(res.getString("code"));
+                    row.setAuxWarehouseName(res.getString("name"));
+                }
+                
+                rows.add(row);
+            }
+            
+            ResultSet resToday;
+            ResultSet resYesterday;
+            String whsQuery = "";
+            for (SDbMobileWarehousePremise row1 : rows) {
+                if (! row1.isRegistryNew()) {
+                    continue;
+                }
+                
+                whsQuery = sqlWarehousePremise + sqlToday + " AND id_co = " + row1.getRowPrimaryKey()[0] + 
+                                        " AND id_cob = " + row1.getRowPrimaryKey()[1] + 
+                                        " AND id_wah = " + row1.getRowPrimaryKey()[2] + " ";
+                
+                resToday = session.getDatabase().getConnection().createStatement().executeQuery(whsQuery);
+                
+                if (resToday.next()) {
+                    row1.setPremises(resToday.getBoolean("b_premises"));
+                }
+                else {
+                    whsQuery = sqlWarehousePremise + sqlYesterday + " AND id_co = " + row1.getRowPrimaryKey()[0] + 
+                                        " AND id_cob = " + row1.getRowPrimaryKey()[1] + 
+                                        " AND id_wah = " + row1.getRowPrimaryKey()[2] + " ";
+                    
+                    resYesterday = session.getDatabase().getConnection().createStatement().executeQuery(whsQuery);
+                    
+                    if (resYesterday.next()) {
+                        row1.setPremises(resYesterday.getBoolean("b_premises"));
+                    }
+                }
+            }
+            
+            return rows;
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(SDailyStockUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return new ArrayList<>();
+    }
 }

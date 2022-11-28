@@ -4,12 +4,20 @@
  */
 package som.mod.som.form;
 
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import javax.swing.SpinnerModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import sa.lib.SLibConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
+import sa.lib.gui.SGuiItem;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanForm;
@@ -18,19 +26,32 @@ import som.mod.som.db.SDbSeason;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Isabel Servín
  */
-public class SFormSeason extends SBeanForm {
+public class SFormSeason extends SBeanForm implements ChangeListener {
 
     private SDbSeason moRegistry;
 
+    public static final HashMap<Integer, String> maSmnRec = new HashMap<>();
+    public static final HashMap<Integer, String> maSmnNoRec = new HashMap<>();
+    
     /**
      * Creates new form SFormSeason
+     * @param client
+     * @param title
      */
     public SFormSeason(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_SEAS, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
+    }
+    
+    private void actionRecMonthStart() {
+        jlMonthStart.setText(SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[moMonthRecMonthStart.getValue() - 1]);
+    }
+    
+    private void actionRecMonthEnd() {
+        jlMonthEnd.setText(SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[moMonthRecMonthEnd.getValue() - 1]);
     }
 
     /**
@@ -56,16 +77,40 @@ public class SFormSeason extends SBeanForm {
         jPanel12 = new javax.swing.JPanel();
         jlDateEnd = new javax.swing.JLabel();
         moDateDateEnd = new sa.lib.gui.bean.SBeanFieldDate();
+        jPanel13 = new javax.swing.JPanel();
+        jlRecPeriod = new javax.swing.JLabel();
+        jPanel14 = new javax.swing.JPanel();
+        jlRecMonthStart = new javax.swing.JLabel();
+        moMonthRecMonthStart = new sa.lib.gui.bean.SBeanFieldCalendarMonth();
+        jlMonthStart = new javax.swing.JLabel();
+        jPanel15 = new javax.swing.JPanel();
+        jlRecMonthEnd = new javax.swing.JLabel();
+        moMonthRecMonthEnd = new sa.lib.gui.bean.SBeanFieldCalendarMonth();
+        jlMonthEnd = new javax.swing.JLabel();
+        jPanel16 = new javax.swing.JPanel();
+        jlSmnRec = new javax.swing.JLabel();
+        moKeySmnRec = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel17 = new javax.swing.JPanel();
+        jlSmnNoRec = new javax.swing.JLabel();
+        moKeySmnNoRec = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel18 = new javax.swing.JPanel();
+        jlIntervale = new javax.swing.JLabel();
+        jPanel19 = new javax.swing.JPanel();
+        jlSmnNoRecIn = new javax.swing.JLabel();
+        moIntSmnNoRecIn = new sa.lib.gui.bean.SBeanFieldInteger();
+        jPanel20 = new javax.swing.JPanel();
+        jlSmnNoRecOut = new javax.swing.JLabel();
+        moIntSmnNoRecOut = new sa.lib.gui.bean.SBeanFieldInteger();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(12, 1, 0, 5));
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCode.setText("Código:*");
-        jlCode.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlCode.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel6.add(jlCode);
 
         moTextCode.setText("sBeanFieldText2");
@@ -76,7 +121,7 @@ public class SFormSeason extends SBeanForm {
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlName.setText("Nombre:*");
-        jlName.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlName.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel4.add(jlName);
 
         moTextName.setText("sBeanFieldText1");
@@ -88,7 +133,7 @@ public class SFormSeason extends SBeanForm {
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateStart.setText("Fecha inicial:*");
-        jlDateStart.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateStart.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel11.add(jlDateStart);
         jPanel11.add(moDateDateStart);
 
@@ -97,11 +142,97 @@ public class SFormSeason extends SBeanForm {
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateEnd.setText("Fecha final:*");
-        jlDateEnd.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateEnd.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel12.add(jlDateEnd);
         jPanel12.add(moDateDateEnd);
 
         jPanel2.add(jPanel12);
+
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlRecPeriod.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
+        jlRecPeriod.setText("Periodo de recepciones");
+        jlRecPeriod.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel13.add(jlRecPeriod);
+
+        jPanel2.add(jPanel13);
+
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlRecMonthStart.setText("Mes inicial*:");
+        jlRecMonthStart.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel14.add(jlRecMonthStart);
+        jPanel14.add(moMonthRecMonthStart);
+
+        jlMonthStart.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel14.add(jlMonthStart);
+
+        jPanel2.add(jPanel14);
+
+        jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlRecMonthEnd.setText("Mes final:*");
+        jlRecMonthEnd.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel15.add(jlRecMonthEnd);
+        jPanel15.add(moMonthRecMonthEnd);
+
+        jlMonthEnd.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel15.add(jlMonthEnd);
+
+        jPanel2.add(jPanel15);
+
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlSmnRec.setText("Mail recepción:*");
+        jlSmnRec.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel16.add(jlSmnRec);
+
+        moKeySmnRec.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel16.add(moKeySmnRec);
+
+        jPanel2.add(jPanel16);
+
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlSmnNoRec.setText("Mail no recepción:*");
+        jlSmnNoRec.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel17.add(jlSmnNoRec);
+
+        moKeySmnNoRec.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel17.add(moKeySmnNoRec);
+
+        jPanel2.add(jPanel17);
+
+        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlIntervale.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
+        jlIntervale.setText("Intervalo en días mail no recepción");
+        jlIntervale.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel18.add(jlIntervale);
+
+        jPanel2.add(jPanel18);
+
+        jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlSmnNoRecIn.setText("Dentro del período:*");
+        jlSmnNoRecIn.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel19.add(jlSmnNoRecIn);
+
+        moIntSmnNoRecIn.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel19.add(moIntSmnNoRecIn);
+
+        jPanel2.add(jPanel19);
+
+        jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlSmnNoRecOut.setText("Fuera del período:*");
+        jlSmnNoRecOut.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel20.add(jlSmnNoRecOut);
+
+        moIntSmnNoRecOut.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel20.add(moIntSmnNoRecOut);
+
+        jPanel2.add(jPanel20);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -112,47 +243,95 @@ public class SFormSeason extends SBeanForm {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
+    private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlDateEnd;
     private javax.swing.JLabel jlDateStart;
+    private javax.swing.JLabel jlIntervale;
+    private javax.swing.JLabel jlMonthEnd;
+    private javax.swing.JLabel jlMonthStart;
     private javax.swing.JLabel jlName;
+    private javax.swing.JLabel jlRecMonthEnd;
+    private javax.swing.JLabel jlRecMonthStart;
+    private javax.swing.JLabel jlRecPeriod;
+    private javax.swing.JLabel jlSmnNoRec;
+    private javax.swing.JLabel jlSmnNoRecIn;
+    private javax.swing.JLabel jlSmnNoRecOut;
+    private javax.swing.JLabel jlSmnRec;
     private sa.lib.gui.bean.SBeanFieldDate moDateDateEnd;
     private sa.lib.gui.bean.SBeanFieldDate moDateDateStart;
+    private sa.lib.gui.bean.SBeanFieldInteger moIntSmnNoRecIn;
+    private sa.lib.gui.bean.SBeanFieldInteger moIntSmnNoRecOut;
+    private sa.lib.gui.bean.SBeanFieldKey moKeySmnNoRec;
+    private sa.lib.gui.bean.SBeanFieldKey moKeySmnRec;
+    private sa.lib.gui.bean.SBeanFieldCalendarMonth moMonthRecMonthEnd;
+    private sa.lib.gui.bean.SBeanFieldCalendarMonth moMonthRecMonthStart;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 400, 250);
+        SGuiUtils.setWindowBounds(this, 720, 450);
 
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode.getText()), 5);
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName.getText()), 50);
         moDateDateStart.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateStart.getText()), true);
         moDateDateEnd.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateEnd.getText()), true);
+        moMonthRecMonthStart.setCalendarSettings(SGuiUtils.getLabelName(jlRecMonthStart)); 
+        moMonthRecMonthEnd.setCalendarSettings(SGuiUtils.getLabelName(jlRecMonthEnd)); 
+        moKeySmnRec.setKeySettings(miClient, SGuiUtils.getLabelName(jlSmnRec.getText()), true);
+        moKeySmnNoRec.setKeySettings(miClient, SGuiUtils.getLabelName(jlSmnNoRec.getText()), true);
+        moIntSmnNoRecIn.setIntegerSettings(SGuiUtils.getLabelName(jlSmnNoRecIn.getText()), SGuiConsts.GUI_TYPE_INT, true);
+        moIntSmnNoRecOut.setIntegerSettings(SGuiUtils.getLabelName(jlSmnNoRecOut.getText()), SGuiConsts.GUI_TYPE_INT, true);
 
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
         moFields.addField(moDateDateStart);
         moFields.addField(moDateDateEnd);
+        moFields.addField(moMonthRecMonthStart);
+        moFields.addField(moMonthRecMonthEnd);
+        moFields.addField(moKeySmnRec);
+        moFields.addField(moKeySmnNoRec);
+        moFields.addField(moIntSmnNoRecIn);
+        moFields.addField(moIntSmnNoRecOut);
         moFields.setFormButton(jbSave);
     }
 
     @Override
     public void addAllListeners() {
-
+        moMonthRecMonthStart.getModel().addChangeListener(this);
+        moMonthRecMonthEnd.getModel().addChangeListener(this);
     }
 
     @Override
     public void removeAllListeners() {
-
+        moMonthRecMonthStart.getModel().removeChangeListener(this);
+        moMonthRecMonthEnd.getModel().removeChangeListener(this);
     }
 
     @Override
     public void reloadCatalogues() {
-
+        Iterator it = maSmnRec.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Integer,String> entry = (Map.Entry)it.next();
+            moKeySmnRec.addItem(new SGuiItem(new int[] { entry.getKey() }, entry.getValue()));
+        }
+        
+        it = maSmnNoRec.entrySet().iterator();
+        while (it.hasNext()){
+            Map.Entry<Integer,String> entry = (Map.Entry)it.next();
+            moKeySmnNoRec.addItem(new SGuiItem(new int[] { entry.getKey() }, entry.getValue()));
+        }
     }
 
     @Override
@@ -169,9 +348,13 @@ public class SFormSeason extends SBeanForm {
             moRegistry.initPrimaryKey();
             moRegistry.setDateStart(SLibTimeUtils.getBeginOfYear(miClient.getSession().getWorkingDate()));
             moRegistry.setDateEnd(SLibTimeUtils.getEndOfYear(miClient.getSession().getWorkingDate()));
+            moMonthRecMonthStart.setValue(SLibTimeUtils.digestMonth(miClient.getSession().getWorkingDate())[1]);
+            moMonthRecMonthEnd.setValue(SLibTimeUtils.digestMonth(miClient.getSession().getWorkingDate())[1]);
             jtfRegistryKey.setText("");
         }
         else {
+            moMonthRecMonthStart.setValue(moRegistry.getReceptPeriodMonthStart() == 0 ? 1 : moRegistry.getReceptPeriodMonthStart());
+            moMonthRecMonthEnd.setValue(moRegistry.getReceptPeriodMonthEnd() == 0 ? 1 : moRegistry.getReceptPeriodMonthEnd());
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
         }
 
@@ -179,9 +362,16 @@ public class SFormSeason extends SBeanForm {
         moTextName.setValue(moRegistry.getName());
         moDateDateStart.setValue(moRegistry.getDateStart());
         moDateDateEnd.setValue(moRegistry.getDateEnd());
+        moKeySmnRec.setValue(new int[] { SLibUtils.parseInt(moRegistry.getSysMailNotificationReception()) });
+        moKeySmnNoRec.setValue(new int[] { SLibUtils.parseInt(moRegistry.getSysMailNotificationNoReception()) });
+        moIntSmnNoRecIn.setValue(moRegistry.getSysMailNotificationNoReceptionIntIn());
+        moIntSmnNoRecOut.setValue(moRegistry.getSysMailNotificationNoReceptionIntOut());
 
         setFormEditable(true);
 
+        actionRecMonthStart();
+        actionRecMonthEnd();
+        
         addAllListeners();
     }
 
@@ -195,7 +385,13 @@ public class SFormSeason extends SBeanForm {
         registry.setName(moTextName.getValue());
         registry.setDateStart(moDateDateStart.getValue());
         registry.setDateEnd(moDateDateEnd.getValue());
-
+        registry.setReceptPeriodMonthStart(moMonthRecMonthStart.getValue());
+        registry.setReceptPeriodMonthEnd(moMonthRecMonthEnd.getValue());
+        registry.setSysMailNotificationReception(moKeySmnRec.getValue()[0] + "");
+        registry.setSysMailNotificationNoReception(moKeySmnNoRec.getValue()[0] + "");
+        registry.setSysMailNotificationNoReceptionIntIn(moIntSmnNoRecIn.getValue());
+        registry.setSysMailNotificationNoReceptionIntOut(moIntSmnNoRecOut.getValue());
+        
         return registry;
     }
 
@@ -208,5 +404,25 @@ public class SFormSeason extends SBeanForm {
         }
 
         return validation;
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (e.getSource() instanceof SpinnerModel) {
+            if ((SpinnerModel) e.getSource() == moMonthRecMonthStart.getModel()) {
+                actionRecMonthStart();
+            }
+            else if ((SpinnerModel) e.getSource() == moMonthRecMonthEnd.getModel()) {
+                actionRecMonthEnd();
+            }
+        }
+    }
+    
+    static {
+        maSmnRec.put(0, "No");
+        maSmnRec.put(1, "Sí");
+        maSmnNoRec.put(0, "No");
+        maSmnNoRec.put(1, "En periodo ordinario");
+        maSmnNoRec.put(2, "Toda la temporada");
     }
 }

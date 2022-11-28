@@ -15,6 +15,7 @@ import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistry;
 import sa.lib.db.SDbRegistryUser;
+import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
 
@@ -24,7 +25,7 @@ import som.mod.SModConsts;
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
-public class SDbItem extends SDbRegistryUser {
+public class SDbItem extends SDbRegistryUser implements SGridRow {
 
     public static final int FIELD_EXTERNAL_CODE = SDbRegistry.FIELD_BASE + 1;
     public static final int FIELD_EXTERNAL_NAME = SDbRegistry.FIELD_BASE + 2;
@@ -77,6 +78,9 @@ public class SDbItem extends SDbRegistryUser {
     protected boolean mbDeleted;
     protected boolean mbSystem;
     */
+    protected int mnFkOilClassId_n;
+    protected int mnFkOilTypeId_n;
+    protected int mnFkOilGroupFamily_n;
     protected int mnFkItemTypeId;
     protected int mnFkInputCategoryId;
     protected int mnFkInputClassId;
@@ -195,6 +199,9 @@ public class SDbItem extends SDbRegistryUser {
     public void setDisabled(boolean b) { mbDisabled = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
+    public void setFkOilClassId_n(int n) { mnFkOilClassId_n = n; }
+    public void setFkOilTypeId_n(int n) { mnFkOilTypeId_n = n; }
+    public void setFkOilGroupFamily_n(int n) { mnFkOilGroupFamily_n = n; }
     public void setFkItemTypeId(int n) { mnFkItemTypeId = n; }
     public void setFkInputCategoryId(int n) { mnFkInputCategoryId = n; }
     public void setFkInputClassId(int n) { mnFkInputClassId = n; }
@@ -261,6 +268,9 @@ public class SDbItem extends SDbRegistryUser {
     public boolean isDisabled() { return mbDisabled; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
+    public int getFkOilClassId_n() { return mnFkOilClassId_n; }
+    public int getFkOilTypeId_n() { return mnFkOilTypeId_n; }
+    public int getFkOilGroupFamily_n() { return mnFkOilGroupFamily_n; }
     public int getFkItemTypeId() { return mnFkItemTypeId; }
     public int getFkInputCategoryId() { return mnFkInputCategoryId; }
     public int getFkInputClassId() { return mnFkInputClassId; }
@@ -345,6 +355,9 @@ public class SDbItem extends SDbRegistryUser {
         mbDisabled = false;
         mbDeleted = false;
         mbSystem = false;
+        mnFkOilClassId_n = 0;
+        mnFkOilTypeId_n = 0;
+        mnFkOilGroupFamily_n = 0;
         mnFkItemTypeId = 0;
         mnFkInputCategoryId = 0;
         mnFkInputClassId = 0;
@@ -456,6 +469,9 @@ public class SDbItem extends SDbRegistryUser {
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
+            mnFkOilClassId_n = resultSet.getInt("fk_oil_cl_n");
+            mnFkOilTypeId_n = resultSet.getInt("fk_oil_tp_n");
+            mnFkOilGroupFamily_n = resultSet.getInt("fk_oil_grp_family_n");
             mnFkItemTypeId = resultSet.getInt("fk_item_tp");
             mnFkInputCategoryId = resultSet.getInt("fk_inp_ct");
             mnFkInputClassId = resultSet.getInt("fk_inp_cl");
@@ -547,6 +563,9 @@ public class SDbItem extends SDbRegistryUser {
                     (mbDisabled ? 1 : 0) + ", " +
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
+                    (mnFkOilClassId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilClassId_n) + ", " +
+                    (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilTypeId_n) + ", " +
+                    (mnFkOilGroupFamily_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilGroupFamily_n) + ", " +
                     mnFkItemTypeId + ", " +
                     mnFkInputCategoryId + ", " + 
                     mnFkInputClassId + ", " +
@@ -618,6 +637,9 @@ public class SDbItem extends SDbRegistryUser {
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
+                    "fk_oil_cl_n = " + (mnFkOilClassId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilClassId_n) + ", " +
+                    "fk_oil_tp_n = " + (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilTypeId_n) + ", " +
+                    "fk_oil_grp_family_n = " + (mnFkOilGroupFamily_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilGroupFamily_n) + ", " +
                     "fk_item_tp = " + mnFkItemTypeId + ", " +
                     "fk_inp_ct = " + mnFkInputCategoryId + ", " +
                     "fk_inp_cl = " + mnFkInputClassId + ", " +
@@ -697,6 +719,9 @@ public class SDbItem extends SDbRegistryUser {
         registry.setDisabled(this.isDisabled());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
+        registry.setFkOilClassId_n(this.getFkOilClassId_n());
+        registry.setFkOilTypeId_n(this.getFkOilTypeId_n());
+        registry.setFkOilGroupFamily_n(this.getFkOilGroupFamily_n());
         registry.setFkItemTypeId(this.getFkItemTypeId());
         registry.setFkInputCategoryId(this.getFkInputCategoryId());
         registry.setFkInputClassId(this.getFkInputClassId());
@@ -793,5 +818,59 @@ public class SDbItem extends SDbRegistryUser {
         }
 
         return nPkItemId;
+    }
+
+    @Override
+    public int[] getRowPrimaryKey() {
+        return new int[] { mnPkItemId };
+    }
+
+    @Override
+    public String getRowCode() {
+        return "";
+    }
+
+    @Override
+    public String getRowName() {
+        return "";
+    }
+
+    @Override
+    public boolean isRowSystem() {
+        return false;
+    }
+
+    @Override
+    public boolean isRowDeletable() {
+        return true;
+    }
+
+    @Override
+    public boolean isRowEdited() {
+        return isRowEdited();
+    }
+
+    @Override
+    public void setRowEdited(boolean edited) {
+        setRowEdited(edited);
+    }
+
+    @Override
+    public Object getRowValueAt(int row) {
+        Object value = null;
+        
+        switch (row) {
+            case 0:
+                value = msName;
+                break;
+            default:
+        }
+        
+        return value;
+    }
+
+    @Override
+    public void setRowValueAt(Object o, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

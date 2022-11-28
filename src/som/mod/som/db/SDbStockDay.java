@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import sa.gui.util.SUtilConsts;
+import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
@@ -18,7 +19,7 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Néstor Ávalos, Sergio Flores
+ * @author Néstor Ávalos, Sergio Flores, Edwin Carmona
  */
 public class SDbStockDay extends SDbRegistryUser implements SGridRow {
 
@@ -40,6 +41,13 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
     /*
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    
+    protected int mnFkOilClassId_n;
+    protected int mnFkOilTypeId_n;
+    protected int mnFkOilOwnerId_n;
+
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
@@ -104,6 +112,9 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
     public void setStockDifferenceSkipped(boolean b) { mbStockDifferenceSkipped = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
+    public void setFkOilClassId_n(int n) { mnFkOilClassId_n = n; }
+    public void setFkOilTypeId_n(int n) { mnFkOilTypeId_n = n; }
+    public void setFkOilOwnerId_n(int n) { mnFkOilOwnerId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -126,6 +137,9 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
     public boolean isStockDifferenceSkipped() { return mbStockDifferenceSkipped; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
+    public int getFkOilClassId_n() { return mnFkOilClassId_n; }
+    public int getFkOilTypeId_n() { return mnFkOilTypeId_n; }
+    public int getFkOilOwnerId_n() { return mnFkOilOwnerId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -233,6 +247,9 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
         mbStockDifferenceSkipped = false;
         mbDeleted = false;
         mbSystem = false;
+        mnFkOilClassId_n = 0;
+        mnFkOilTypeId_n = 0;
+        mnFkOilOwnerId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -344,6 +361,9 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
             mbStockDifferenceSkipped = resultSet.getBoolean("s.b_stk_dif_skp");
             mbDeleted = resultSet.getBoolean("s.b_del");
             mbSystem = resultSet.getBoolean("s.b_sys");
+            mnFkOilClassId_n = resultSet.getInt("fk_oil_cl_n");
+            mnFkOilTypeId_n = resultSet.getInt("fk_oil_tp_n");
+            mnFkOilOwnerId_n = resultSet.getInt("fk_oil_own_n");
             mnFkUserInsertId = resultSet.getInt("s.fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("s.fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("s.ts_usr_ins");
@@ -401,6 +421,9 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
                 (mbStockDifferenceSkipped ? 1 : 0) + ", " +
                 (mbDeleted ? 1 : 0) + ", " +
                 (mbSystem ? 1 : 0) + ", " +
+                (mnFkOilClassId_n == SLibConsts.UNDEFINED ? null : mnFkOilClassId_n) + ", " +
+                (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? null : mnFkOilTypeId_n) + ", " +
+                (mnFkOilOwnerId_n == SLibConsts.UNDEFINED ? null : mnFkOilOwnerId_n) + ", " +
                 mnFkUserInsertId + ", " +
                 mnFkUserUpdateId + ", " +
                 "NOW()" + ", " +
@@ -428,6 +451,9 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
                 "s.b_stk_dif_skp = " + (mbStockDifferenceSkipped ? 1 : 0) + ", " +
                 "s.b_del = " + (mbDeleted ? 1 : 0) + ", " +
                 "s.b_sys = " + (mbSystem ? 1 : 0) + ", " +
+                "fk_oil_cl_n = " + (mnFkOilClassId_n == SLibConsts.UNDEFINED ? null : mnFkOilClassId_n) + ", " +
+                "fk_oil_tp_n = " + (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? null : mnFkOilTypeId_n) + ", " +
+                "fk_oil_own_n = " + (mnFkOilOwnerId_n == SLibConsts.UNDEFINED ? null : mnFkOilOwnerId_n) + ", " +
                 //"s.fk_usr_ins = " + mnFkUserInsertId + ", " +
                 "s.fk_usr_upd = " + mnFkUserUpdateId + ", " +
                 //"s.ts_usr_ins = " + "NOW()" + ", " +
@@ -474,6 +500,9 @@ public class SDbStockDay extends SDbRegistryUser implements SGridRow {
         registry.setStockDifferenceSkipped(this.isStockDifferenceSkipped());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
+        registry.setFkOilClassId_n(this.getFkOilClassId_n());
+        registry.setFkOilTypeId_n(this.getFkOilTypeId_n());
+        registry.setFkOilOwnerId_n(this.getFkOilOwnerId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
