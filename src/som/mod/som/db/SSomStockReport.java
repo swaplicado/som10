@@ -366,7 +366,9 @@ public class SSomStockReport {
                     "w.id_wah, " +
                     "w.code, " +
                     "w.cap_real_lt * i.den AS cap_kg, " +
-                    "i.name, i.id_item, sr.stock AS ext_kg, " +
+                    "i.name, " +
+                    "i.id_item, " +
+                    "sr.stock AS ext_kg, " +
                     "sr.stock / (w.cap_real_lt * i.den) AS per_oc, " +
                     "(w.cap_real_lt * i.den) - sr.stock AS esp_disp, " +
                     "COALESCE(oae.name, 'S/R') AS aci_lvl " +
@@ -378,12 +380,18 @@ public class SSomStockReport {
                     "LEFT JOIN su_oil_aci_ety AS oae ON oa.id_oil_aci = oae.id_oil_aci AND wt.aci_per_n BETWEEN oae.val_min AND oae.val_max " +
                     "WHERE sr.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
                     "AND i.fk_item_rm_n = " + SModSysConsts.SU_ITEM_RM_AVO + " " +
-                    "AND NOT sr.b_del AND NOT w.b_del;";
+                    "AND sr.stock <> 0 " + 
+                    "AND NOT w.b_mobile " +
+                    "AND NOT sr.b_del AND NOT w.b_del" +
+                    "ORDER BY w.code, i.name;";
 
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 SDbWahLabTest test = new SDbWahLabTest();
-                test.read(session, new int[] { resultSet.getInt("id_wah_lab"), resultSet.getInt("id_test") });
+                try {
+                    test.read(session, new int[] { resultSet.getInt("id_wah_lab"), resultSet.getInt("id_test") });
+                }
+                catch(Exception e){}
 
                 sql = "SELECT color FROM su_wah_fill_level WHERE " + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("per_oc")) + " BETWEEN val_min AND val_max";
                 ResultSet resultSetColor = session.getDatabase().getConnection().createStatement().executeQuery(sql);
