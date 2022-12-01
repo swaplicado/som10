@@ -98,7 +98,7 @@ public class SStockRecordUtils {
         try {
             String deleteSql = "DELETE FROM " + 
                                 SModConsts.TablesMap.get(SModConsts.S_STK_RECORD) + 
-                            " WHERE id_dt = '" + SLibUtils.DbmsDateFormatDate.format(dtStock) + "';";
+                            " WHERE dt = '" + SLibUtils.DbmsDateFormatDate.format(dtStock) + "';";
             client.getSession().getStatement().getConnection().createStatement().executeUpdate(deleteSql);
             
             ArrayList<String> warehouses = new ArrayList<>();
@@ -106,26 +106,25 @@ public class SStockRecordUtils {
             while (stkResult.next()) {
                 oStkRecord = new SDbStockRecord();
 
+                oStkRecord.setPkItemId(stkResult.getInt("id_item"));
+                oStkRecord.setPkUnitId(stkResult.getInt("id_unit"));
                 oStkRecord.setPkCompanyId(stkResult.getInt("id_co"));
                 oStkRecord.setPkBranchId(stkResult.getInt("id_cob"));
                 oStkRecord.setPkWarehouseId(stkResult.getInt("id_wah"));
-                oStkRecord.setPkDate(dtStock);
+                oStkRecord.setDate(dtStock);
+                oStkRecord.setStock(stkResult.getDouble("f_stk"));
                 
                 whsKey = oStkRecord.getPkCompanyId() + "_" + oStkRecord.getPkBranchId() + "_" + oStkRecord.getPkWarehouseId() + "_" + SLibUtils.DbmsDateFormatDate.format(dtStock);
-                if (! warehouses.contains(whsKey)) {
+                if (oStkRecord.getStock() >= 0d && ! warehouses.contains(whsKey)) {
                     warehouses.add(whsKey);
                 }
-                else {
+                else if (oStkRecord.getStock() == 0d && warehouses.contains(whsKey)) {
                     continue;
                 }
                 
-                oStkRecord.setStock(stkResult.getDouble("f_stk"));
-                oStkRecord.setAcidityPercentage(0d);
                 oStkRecord.setPremises(stkResult.getBoolean("b_premises"));
                 oStkRecord.setDeleted(false);
                 oStkRecord.setSystem(true);
-                oStkRecord.setFkItemId(stkResult.getInt("id_item"));
-                oStkRecord.setFkUnit(stkResult.getInt("id_unit"));
                 oStkRecord.setFkOilClassId_n(stkResult.getInt("fk_oil_cl_n"));
                 oStkRecord.setFkOilTypeId_n(stkResult.getInt("fk_oil_tp_n"));
                 oStkRecord.setFkOilOwnerId_n(stkResult.getInt("fk_oil_own_n"));
