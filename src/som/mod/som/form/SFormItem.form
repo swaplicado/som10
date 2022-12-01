@@ -815,7 +815,7 @@
                       <SubComponents>
                         <Component class="javax.swing.JLabel" name="jlOilFamilyGroup">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Tipo aceite:"/>
+                            <Property name="text" type="java.lang.String" value="Familia aceite:"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[125, 23]"/>
                             </Property>

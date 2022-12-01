@@ -69,7 +69,7 @@ public class SRowAllWahLabTest implements SGridRow {
                 value = moWahLabTest.getDbmsItem().getName();
                 break;
             case 3: 
-                value = moWahLabTest.getAcidityPercentage_n() == null ? null : moWahLabTest.getAcidityPercentage_n() * 100;
+                value = moWahLabTest.getAcidityPercentage_n() == null ? null : moWahLabTest.getAcidityPercentage_n() * 10 * 10;
                 break;
             case 4: 
                 value = moWahLabTest.isAcidityPercentageOverange();
@@ -81,43 +81,43 @@ public class SRowAllWahLabTest implements SGridRow {
                 value = moWahLabTest.isPeroxideIndexOverange();
                 break;
             case 7: 
-                value = moWahLabTest.getMoisturePercentage_n() == null ? null : moWahLabTest.getMoisturePercentage_n() * 100;
+                value = moWahLabTest.getMoisturePercentage_n() == null ? null : moWahLabTest.getMoisturePercentage_n() * 10 * 10;
                 break;
             case 8: 
                 value = moWahLabTest.isMoisturePercentageOverange();
                 break;
             case 9: 
-                value = moWahLabTest.getSolidPersentage_n() == null ? null : moWahLabTest.getSolidPersentage_n() * 100;
+                value = moWahLabTest.getSolidPersentage_n() == null ? null : moWahLabTest.getSolidPersentage_n() * 10 * 10;
                 break;
             case 10:
                 value = moWahLabTest.isSolidPersentageOverange();
                 break;
             case 11:
-                value = moWahLabTest.getLinoleicAcidPercentage_n() == null ? null : moWahLabTest.getLinoleicAcidPercentage_n()* 100;
+                value = moWahLabTest.getLinoleicAcidPercentage_n() == null ? null : moWahLabTest.getLinoleicAcidPercentage_n()* 10 * 10;
                 break;
             case 12:
                 value = moWahLabTest.isLinoleicAcidPercentageOverange();
                 break;
             case 13:
-                value = moWahLabTest.getOleicAcidPercentage_n() == null ? null : moWahLabTest.getOleicAcidPercentage_n() * 100;
+                value = moWahLabTest.getOleicAcidPercentage_n() == null ? null : moWahLabTest.getOleicAcidPercentage_n() * 10 * 10;
                 break;
             case 14:
                 value = moWahLabTest.isOleicAcidPercentageOverange();
                 break;
             case 15:
-                value = moWahLabTest.getLinolenicAcidPercentage_n() == null ? null : moWahLabTest.getLinolenicAcidPercentage_n() * 100;
+                value = moWahLabTest.getLinolenicAcidPercentage_n() == null ? null : moWahLabTest.getLinolenicAcidPercentage_n() * 10 * 10;
                 break;
             case 16:
                 value = moWahLabTest.isLinolenicAcidPercentageOverange();
                 break;
             case 17:
-                value = moWahLabTest.getStearicAcidPercentage_n() == null ? null : moWahLabTest.getStearicAcidPercentage_n() * 100;
+                value = moWahLabTest.getStearicAcidPercentage_n() == null ? null : moWahLabTest.getStearicAcidPercentage_n() * 10 * 10;
                 break;
             case 18:
                 value = moWahLabTest.isStearicAcidPercentageOverange();
                 break;
             case 19:
-                value = moWahLabTest.getPalmiticAcidPercentage_n() == null ? null : moWahLabTest.getPalmiticAcidPercentage_n() * 100;
+                value = moWahLabTest.getPalmiticAcidPercentage_n() == null ? null : moWahLabTest.getPalmiticAcidPercentage_n() * 10 * 10;
                 break;
             case 20:
                 value = moWahLabTest.isPalmiticAcidPercentageOverange();

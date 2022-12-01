@@ -4,6 +4,8 @@
  */
 package som.mod;
 
+import java.util.HashMap;
+
 /**
  *
  * @author Sergio Flores, Isabel Servín, Edwin Carmona
@@ -147,6 +149,16 @@ public abstract class SModSysConsts {
     public static final int[] SU_INP_CL_NA = new int[] { 1, 1 };
 
     public static final int[] SU_INP_TP_NA = new int[] { 1, 1, 1 };
+    
+    public static final int SU_FUNC_AREA_PRE_EXT = 2;
+    public static final int SU_FUNC_AREA_REF = 4;
+    
+    public static final String SU_FUNC_AREA_TP_ADM = "A";
+    public static final String SU_FUNC_AREA_TP_PLA = "P";
+    public static final String SU_FUNC_AREA_TP_LAB = "L";
+    
+    public static final int SU_ITEM_RM_AVO = 6;
+    public static final int SU_ITEM_OIL_AVO = 16;
 
     public static final int SU_UNIT_NA = 1;
     public static final int SU_UNIT_MT_TON = 2;
@@ -155,6 +167,20 @@ public abstract class SModSysConsts {
     public static final int SU_INP_SRC_NA = 1;
     
     public static final int SU_BY_PRODUCT_NA = 1;
+    
+    public static final int SU_OIL_CL_AVO = 1;
+    public static final int SU_OIL_CL_PRE_EXT = 2;
+    
+    public static final int SU_OIL_TP_CRU = 1;
+    public static final int SU_OIL_TP_REF = 2;
+    public static final int SU_OIL_TP_REP = 3;
+    
+    public static final HashMap<Integer, String> SU_OIL_TP_DESC;
+    
+    public static final int SU_OIL_GRP_FAM_SEEDS = 1;
+    public static final int SU_OIL_GRP_FAM_AVO = 2; 
+    public static final int SU_OIL_GRP_FAM_OTHER_SEEDS = 3;
+    public static final int SU_OIL_GRP_FAM_OTHER_AVO = 4;
     
     public static final int SX_DEN = 1;
     public static final int SX_IOD_VAL = 2;
@@ -212,4 +238,11 @@ public abstract class SModSysConsts {
     public static final int REP_LAB_TEST_OLE = 2;
     public static final int REP_LAB_TEST_LIN = 3;
     public static final int REP_LAB_TEST_LLC = 4;
+    
+    static {
+        SU_OIL_TP_DESC = new HashMap<>();
+        SU_OIL_TP_DESC.put(1, "CRUDO");
+        SU_OIL_TP_DESC.put(2, "REFINADO");
+        SU_OIL_TP_DESC.put(3, "REPROCESO");
+    }
 }

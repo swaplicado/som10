@@ -33,9 +33,7 @@ public class SDbClosingCalendar extends SDbRegistryUser {
     protected boolean mbDeleted;
     protected boolean mbSystem;
     */
-    protected int mnFkInputCategoryId;
-    protected int mnFkInputClassId;
-    protected int mnFkInputTypeId;
+    protected int mnFkFunctionalAreaId;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -57,9 +55,7 @@ public class SDbClosingCalendar extends SDbRegistryUser {
     public void setDisabled(boolean b) { mbDisabled = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
-    public void setFkInputCategoryId(int n) { mnFkInputCategoryId = n; }
-    public void setFkInputClassId(int n) { mnFkInputClassId = n; }
-    public void setFkInputTypeId(int n) { mnFkInputTypeId = n; }
+    public void setFkFunctionalAreaId(int n) { mnFkFunctionalAreaId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -75,9 +71,7 @@ public class SDbClosingCalendar extends SDbRegistryUser {
     public boolean isDisabled() { return mbDisabled; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
-    public int getFkInputCategoryId() { return mnFkInputCategoryId; }
-    public int getFkInputClassId() { return mnFkInputClassId; }
-    public int getFkInputTypeId() { return mnFkInputTypeId; }
+    public int getFkFunctionalAreaId() { return mnFkFunctionalAreaId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -107,9 +101,7 @@ public class SDbClosingCalendar extends SDbRegistryUser {
         mbDisabled = false;
         mbDeleted = false;
         mbSystem = false;
-        mnFkInputCategoryId = 0;
-        mnFkInputClassId = 0;
-        mnFkInputTypeId = 0;
+        mnFkFunctionalAreaId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -168,9 +160,7 @@ public class SDbClosingCalendar extends SDbRegistryUser {
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkInputCategoryId = resultSet.getInt("fk_inp_ct");
-            mnFkInputClassId = resultSet.getInt("fk_inp_cl");
-            mnFkInputTypeId = resultSet.getInt("fk_inp_tp");
+            mnFkFunctionalAreaId = resultSet.getInt("fk_func_area");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -206,9 +196,7 @@ public class SDbClosingCalendar extends SDbRegistryUser {
                     (mbDisabled ? 1 : 0) + ", " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
-                    mnFkInputCategoryId + ", " + 
-                    mnFkInputClassId + ", " + 
-                    mnFkInputTypeId + ", " + 
+                    mnFkFunctionalAreaId + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -229,9 +217,7 @@ public class SDbClosingCalendar extends SDbRegistryUser {
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_inp_ct = " + mnFkInputCategoryId + ", " +
-                    "fk_inp_cl = " + mnFkInputClassId + ", " +
-                    "fk_inp_tp = " + mnFkInputTypeId + ", " +
+                    "fk_func_area = " + mnFkFunctionalAreaId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -258,9 +244,7 @@ public class SDbClosingCalendar extends SDbRegistryUser {
         registry.setDisabled(this.isDisabled());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
-        registry.setFkInputCategoryId(this.getFkInputCategoryId());
-        registry.setFkInputClassId(this.getFkInputClassId());
-        registry.setFkInputTypeId(this.getFkInputTypeId());
+        registry.setFkFunctionalAreaId(this.getFkFunctionalAreaId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

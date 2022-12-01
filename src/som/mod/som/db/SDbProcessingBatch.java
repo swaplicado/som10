@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import sa.gui.util.SUtilConsts;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
@@ -18,56 +19,45 @@ import som.mod.SModConsts;
  *
  * @author Isabel Servín
  */
-public class SDbOilGroupFamily extends SDbRegistryUser {
-
-    protected int mnPkOilGroupFamilyId;
-    protected String msCode;
-    protected String msName;
-    protected boolean mbMandatory;
+public class SDbProcessingBatch extends SDbRegistryUser {
+    
+    protected int mnPkProcessingBatchId;
+    protected Date mtDate;
+    protected String msProcessingBatch;
     /*
-    protected boolean mbUpdatable;
-    protected boolean mbDisableable;
-    protected boolean mbDeletable;
-    protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    protected int mnFkItemId;
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
 
-    
-    public SDbOilGroupFamily() {
-        super(SModConsts.SU_OIL_GRP_FAM);
+    public SDbProcessingBatch() {
+        super(SModConsts.S_PRC_BATCH);
         initRegistry();
     }
-
-    public void setPkOilGroupFamilyId(int n) { mnPkOilGroupFamilyId = n; }
-    public void setCode(String s) { msCode = s; }
-    public void setName(String s) { msName = s; }
-    public void setMandatory(boolean b) { mbMandatory = b; }
-    public void setUpdatable(boolean b) { mbUpdatable = b; }
-    public void setDisableable(boolean b) { mbDisableable = b; }
-    public void setDeletable(boolean b) { mbDeletable = b; }
-    public void setDisabled(boolean b) { mbDisabled = b; }
+    
+    public void setPkProcessingBatchId(int n) { mnPkProcessingBatchId = n; }
+    public void setDate(Date t) { mtDate = t; }
+    public void setProcessingBatch(String s) { msProcessingBatch = s; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
+    public void setFkItemId(int n) { mnFkItemId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkOilGroupFamilyId() { return mnPkOilGroupFamilyId; }
-    public String getCode() { return msCode; }
-    public String getName() { return msName; }
-    public boolean isMandatory() { return mbMandatory; }
-    public boolean isUpdatable() { return mbUpdatable; }
-    public boolean isDisableable() { return mbDisableable; }
-    public boolean isDeletable() { return mbDeletable; }
-    public boolean isDisabled() { return mbDisabled; }
+    public int getPkProcessingBatchId() { return mnPkProcessingBatchId; }
+    public Date getDate() { return mtDate; }
+    public String getProcessingBatch() { return msProcessingBatch; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
+    public int getFkItemId() { return mnFkItemId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -75,28 +65,24 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkOilGroupFamilyId = pk[0];
+        mnPkProcessingBatchId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkOilGroupFamilyId };
+        return new int[] { mnPkProcessingBatchId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
         
-        mnPkOilGroupFamilyId = 0;
-        msCode = "";
-        msName = "";
-        mbMandatory = false;
-        mbUpdatable = false;
-        mbDisableable = false;
-        mbDeletable = false;
-        mbDisabled = false;
+        mnPkProcessingBatchId = 0;
+        mtDate = null;
+        msProcessingBatch = "";
         mbDeleted = false;
         mbSystem = false;
+        mnFkItemId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -110,24 +96,24 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_oil_grp_fam = " + mnPkOilGroupFamilyId + " ";
+        return "WHERE id_prc_batch = " + mnPkProcessingBatchId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_oil_grp_fam = " + pk[0] + " ";
+        return "WHERE id_prc_batch = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet;
         
-        mnPkOilGroupFamilyId = 0;
+        mnPkProcessingBatchId = 0;
         
-        msSql = "SELECT COALESCE(MAX(id_oil_grp_fam), 0) + 1 FROM " + getSqlTable() + " ";
+        msSql = "SELECT COALESCE(MAX(id_prc_batch), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkOilGroupFamilyId = resultSet.getInt(1);
+            mnPkProcessingBatchId = resultSet.getInt(1);
         }
     }
 
@@ -145,21 +131,17 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkOilGroupFamilyId = resultSet.getInt("id_oil_grp_fam");
-            msCode = resultSet.getString("code");
-            msName = resultSet.getString("name");
-            mbMandatory = resultSet.getBoolean("b_mandatory");
-            mbUpdatable = resultSet.getBoolean("b_can_upd");
-            mbDisableable = resultSet.getBoolean("b_can_dis");
-            mbDeletable = resultSet.getBoolean("b_can_del");
-            mbDisabled = resultSet.getBoolean("b_dis");
+            mnPkProcessingBatchId = resultSet.getInt("id_prc_batch");
+            mtDate = resultSet.getDate("dt");
+            msProcessingBatch = resultSet.getString("prc_batch");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
+            mnFkItemId = resultSet.getInt("fk_item");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
-            
+
             mbRegistryNew = false;
         }
         
@@ -172,7 +154,6 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
         mnQueryResultId = SDbConsts.SAVE_ERROR;
         
         if (mbRegistryNew) {
-           
             computePrimaryKey(session);
             mbUpdatable = true;
             mbDisableable = false;
@@ -180,17 +161,13 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
-            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkOilGroupFamilyId + ", " + 
-                    "'" + msCode + "', " + 
-                    "'" + msName + "', " + 
-                    (mbMandatory ? 1 : 0) + ", " + 
-                    (mbUpdatable ? 1 : 0) + ", " + 
-                    (mbDisableable ? 1 : 0) + ", " + 
-                    (mbDeletable ? 1 : 0) + ", " + 
-                    (mbDisabled ? 1 : 0) + ", " + 
+            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" + 
+                    mnPkProcessingBatchId + ", " + 
+                    "'" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " + 
+                    "'" + msProcessingBatch + "', " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
+                    mnFkItemId + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -201,16 +178,12 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
             
             msSql = "UPDATE " + getSqlTable() + " SET " + 
-                    //"id_oil_grp_fam = " + mnPkOilGroupFamilyId + ", " +
-                    "code = '" + msCode + "', " +
-                    "name = '" + msName + "', " +
-                    "b_mandatory = " + (mbMandatory ? 1 : 0) + ", " +
-                    "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
-                    "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
-                    "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
-                    "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
+                    //"id_prc_batch = " + mnPkProcessingBatchId + ", " +
+                    "dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " +
+                    "prc_batch = '" + msProcessingBatch + "', " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
+                    "fk_item = " + mnFkItemId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -219,31 +192,28 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
         }
         
         session.getStatement().execute(msSql);
+        
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
-    public SDbOilGroupFamily clone() throws CloneNotSupportedException {
-        SDbOilGroupFamily registry = new SDbOilGroupFamily();
+    public SDbProcessingBatch clone() throws CloneNotSupportedException {
+        SDbProcessingBatch registry = new SDbProcessingBatch();
         
-        registry.setPkOilGroupFamilyId(this.getPkOilGroupFamilyId());
-        registry.setCode(this.getCode());
-        registry.setName(this.getName());
-        registry.setMandatory(this.isMandatory());
-        registry.setUpdatable(this.isUpdatable());
-        registry.setDisableable(this.isDisableable());
-        registry.setDeletable(this.isDeletable());
-        registry.setDisabled(this.isDisabled());
+        registry.setPkProcessingBatchId(this.getPkProcessingBatchId());
+        registry.setDate(this.getDate());
+        registry.setProcessingBatch(this.getProcessingBatch());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
+        registry.setFkItemId(this.getFkItemId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
-        
-        registry.setRegistryNew(this.isRegistryNew());
 
+        registry.setRegistryNew(this.isRegistryNew());
+        
         return registry;
-    }
+    }  
 }

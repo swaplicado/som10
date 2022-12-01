@@ -28,7 +28,7 @@ public class SFormOilGroupFamily extends sa.lib.gui.bean.SBeanForm {
      * @param title
      */
     public SFormOilGroupFamily(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_OIL_CL, SLibConsts.UNDEFINED, title);
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_OIL_GRP_FAM, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }

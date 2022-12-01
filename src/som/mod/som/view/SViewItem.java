@@ -17,7 +17,7 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Adrián Avilés, Sergio Flores
+ * @author Juan Barajas, Alfredo Pérez, Adrián Avilés, Sergio Flores, Isabel Servín
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */
@@ -100,6 +100,9 @@ public class SViewItem extends SGridPaneView {
                 + "io.name AS f_item_name_1, "
                 + "ir.code AS f_item_code_2, "
                 + "ir.name AS f_item_name_2, "
+                + "ocl.code AS oil_cl, "
+                + "oct.code AS oil_tp, "
+                + "grpf.code AS grp_fam, "
                 + "v.fk_usr_ins AS " + SDbConsts.FIELD_USER_INS_ID + ", "
                 + "v.fk_usr_upd AS " + SDbConsts.FIELD_USER_UPD_ID + ", "
                 + "v.ts_usr_ins AS " + SDbConsts.FIELD_USER_INS_TS + ", "
@@ -125,6 +128,12 @@ public class SViewItem extends SGridPaneView {
                 + "v.fk_item_src_1_n = io.id_item "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS ir ON "
                 + "v.fk_item_src_2_n = ir.id_item "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_OIL_CL) + " AS ocl ON "
+                + "v.fk_oil_cl_n = ocl.id_oil_cl "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_OIL_TP) + " AS oct ON "
+                + "v.fk_oil_cl_n = oct.id_oil_cl AND v.fk_oil_tp_n = oct.id_oil_tp "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_OIL_GRP_FAM) + " AS grpf ON "
+                + "v.fk_oil_grp_family_n = grpf.id_oil_grp_fam "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)
                 + "ORDER BY v.name, v.id_item ";
     }
@@ -134,7 +143,7 @@ public class SViewItem extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[52];
+        columns = new SGridColumnView[55];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
@@ -146,6 +155,9 @@ public class SViewItem extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "ict.code", "Categoría insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "icl.code", "Clase insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "it.code", "Tipo insumo");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "oil_cl", "Clase aceite");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "oil_tp", "Tipo aceite");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "grp_fam", "Agrupador familia");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_UNT, "un.code", "Unidad");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.unit_wei", "Peso unitario (" + SSomConsts.KG + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.den", "Densidad (" + SSomConsts.DEN + ")");

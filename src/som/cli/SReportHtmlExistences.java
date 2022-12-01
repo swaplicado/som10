@@ -24,13 +24,13 @@ public class SReportHtmlExistences {
         String html = "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
                 "<font size='" + FONT_SIZE_TBL + "'>" + 
                 "<tr>" +
-                "<td style='width:200px' align='center'><b>" + SLibUtils.textToHtml("ÍTEM") + "</b></td>" + 
-                "<td align='center'><b>" + SLibUtils.textToHtml("ÍTEM CÓDIGO") + "</b></td>" + 
-                "<td align='center'><b>" + SLibUtils.textToHtml("ALMACEN") + "</b></td>" +
-                "<td align='center'><b>" + SLibUtils.textToHtml("TIPO") + "</b></td>" +
-                "<td align='center'><b>" + SLibUtils.textToHtml("LÍNEA") + "</b></td>" +
-                "<td align='center'><b>" + SLibUtils.textToHtml("CANTIDAD PRODUCIDA") + "</b></td>" +
-                "<td align='center'><b>" + SLibUtils.textToHtml("UNIDAD") + "</b></td>" +
+                "<th style='width:200px' align='center'><b>" + SLibUtils.textToHtml("ÍTEM") + "</b></th>" + 
+                "<th align='center'><b>" + SLibUtils.textToHtml("ÍTEM CÓDIGO") + "</b></th>" + 
+                "<th align='center'><b>" + SLibUtils.textToHtml("ALMACEN") + "</b></th>" +
+                "<th align='center'><b>" + SLibUtils.textToHtml("TIPO") + "</b></th>" +
+                "<th align='center'><b>" + SLibUtils.textToHtml("LÍNEA") + "</b></th>" +
+                "<th align='center'><b>" + SLibUtils.textToHtml("CANTIDAD PRODUCIDA") + "</b></th>" +
+                "<th align='center'><b>" + SLibUtils.textToHtml("UNIDAD") + "</b></th>" +
                 "</tr>";
         
         String sql = "SELECT " +

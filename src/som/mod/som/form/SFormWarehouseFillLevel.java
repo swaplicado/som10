@@ -12,23 +12,23 @@ import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import som.mod.SModConsts;
-import som.mod.som.db.SDbOilAcidity;
+import som.mod.som.db.SDbWarehouseFillLevel;
 
 /**
  *
  * @author Isabel Servín
  */
-public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
+public class SFormWarehouseFillLevel extends sa.lib.gui.bean.SBeanForm {
 
-    private SDbOilAcidity moRegistry;
+    private SDbWarehouseFillLevel moRegistry;
 
     /**
-     * Creates new form SFormOilAcidity
+     * Creates new form SFormInputClass
      * @param client
      * @param title
      */
-    public SFormOilAcidity(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_OIL_ACI, SLibConsts.UNDEFINED, title);
+    public SFormWarehouseFillLevel(SGuiClient client, String title) {
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_WAH_FILL_LEVEL, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -52,21 +52,28 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
         jlName = new javax.swing.JLabel();
         moTextName = new sa.lib.gui.bean.SBeanFieldText();
         jPanel6 = new javax.swing.JPanel();
-        jlDate = new javax.swing.JLabel();
-        moDateStart = new sa.lib.gui.bean.SBeanFieldDate();
+        jlColor = new javax.swing.JLabel();
+        moTextColor = new sa.lib.gui.bean.SBeanFieldText();
+        jlColorNote = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        jlValMin = new javax.swing.JLabel();
+        moDecimalValMin = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlValMinNote = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jlValMax = new javax.swing.JLabel();
+        moDecimalValMax = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlValMaxNote = new javax.swing.JLabel();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCode.setText("Código:*");
         jlCode.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel4.add(jlCode);
-
-        moTextCode.setText("sBeanFieldText1");
         jPanel4.add(moTextCode);
 
         jPanel2.add(jPanel4);
@@ -77,7 +84,6 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
         jlName.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel5.add(jlName);
 
-        moTextName.setText("sBeanFieldText1");
         moTextName.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel5.add(moTextName);
 
@@ -85,12 +91,42 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlDate.setText("Inicio de vigencia*:");
-        jlDate.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel6.add(jlDate);
-        jPanel6.add(moDateStart);
+        jlColor.setText("Color:*");
+        jlColor.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel6.add(jlColor);
+        jPanel6.add(moTextColor);
+
+        jlColorNote.setText("(Hexadecimal (#0A0A0A) o nombre HTML)");
+        jlColorNote.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel6.add(jlColorNote);
 
         jPanel2.add(jPanel6);
+
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlValMin.setText("Valór minimo:*");
+        jlValMin.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel7.add(jlValMin);
+        jPanel7.add(moDecimalValMin);
+
+        jlValMinNote.setText("(A partir de)");
+        jlValMinNote.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel7.add(jlValMinNote);
+
+        jPanel2.add(jPanel7);
+
+        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlValMax.setText("Valór máximo:*");
+        jlValMax.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel8.add(jlValMax);
+        jPanel8.add(moDecimalValMax);
+
+        jlValMaxNote.setText("(Menor que)");
+        jlValMaxNote.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel8.add(jlValMaxNote);
+
+        jPanel2.add(jPanel8);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
@@ -103,11 +139,20 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JLabel jlCode;
-    private javax.swing.JLabel jlDate;
+    private javax.swing.JLabel jlColor;
+    private javax.swing.JLabel jlColorNote;
     private javax.swing.JLabel jlName;
-    private sa.lib.gui.bean.SBeanFieldDate moDateStart;
+    private javax.swing.JLabel jlValMax;
+    private javax.swing.JLabel jlValMaxNote;
+    private javax.swing.JLabel jlValMin;
+    private javax.swing.JLabel jlValMinNote;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecimalValMax;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecimalValMin;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
+    private sa.lib.gui.bean.SBeanFieldText moTextColor;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
     // End of variables declaration//GEN-END:variables
 
@@ -116,12 +161,16 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
 
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode), 5);
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName), 50);
-        moDateStart.setDateSettings(miClient, SGuiUtils.getLabelName(jlDate), true);
+        moTextColor.setTextSettings(SGuiUtils.getLabelName(jlColor), 50);
+        moDecimalValMin.setDecimalSettings(SGuiUtils.getLabelName(jlValMin), SGuiConsts.GUI_TYPE_DEC_AMT, true);
+        moDecimalValMax.setDecimalSettings(SGuiUtils.getLabelName(jlValMax), SGuiConsts.GUI_TYPE_DEC_AMT, true);
 
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
-        moFields.addField(moDateStart);
-
+        moFields.addField(moTextColor);
+        moFields.addField(moDecimalValMin);
+        moFields.addField(moDecimalValMax);
+        
         moFields.setFormButton(jbSave);
     }
 
@@ -142,7 +191,7 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
 
     @Override
     public void setRegistry(SDbRegistry registry) throws Exception {
-        moRegistry = (SDbOilAcidity) registry;
+        moRegistry = (SDbWarehouseFillLevel) registry;
 
         mnFormResult = SLibConsts.UNDEFINED;
         mbFirstActivation = true;
@@ -153,15 +202,16 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
             jtfRegistryKey.setText("");
-            moDateStart.setValue(miClient.getSession().getSystemDate());
         }
         else {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
-            moDateStart.setValue(moRegistry.getDateStart());
         }
 
         moTextName.setValue(moRegistry.getName());
         moTextCode.setValue(moRegistry.getCode());
+        moTextColor.setValue(moRegistry.getColor());
+        moDecimalValMin.setValue(moRegistry.getValueMin());
+        moDecimalValMax.setValue(moRegistry.getValueMax());
         
         setFormEditable(true);
 
@@ -170,13 +220,15 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
 
     @Override
     public SDbRegistry getRegistry() throws Exception {
-        SDbOilAcidity registry = moRegistry.clone();
+        SDbWarehouseFillLevel registry = moRegistry.clone();
 
         if (registry.isRegistryNew()) { }
 
         registry.setName(moTextName.getValue());
         registry.setCode(moTextCode.getValue());
-        registry.setDateStart(moDateStart.getValue());
+        registry.setColor(moTextColor.getValue());
+        registry.setValueMin(moDecimalValMin.getValue());
+        registry.setValueMax(moDecimalValMax.getValue());
         
         return registry;
     }

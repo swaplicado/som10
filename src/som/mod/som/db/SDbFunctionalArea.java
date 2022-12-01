@@ -18,12 +18,16 @@ import som.mod.SModConsts;
  *
  * @author Isabel Servín
  */
-public class SDbOilGroupFamily extends SDbRegistryUser {
-
-    protected int mnPkOilGroupFamilyId;
+public class SDbFunctionalArea extends SDbRegistryUser {
+    
+    protected int mnPkFunctionalAreaId;
     protected String msCode;
     protected String msName;
-    protected boolean mbMandatory;
+    protected String msFunctionalAreaType;
+    protected String msStockReportMails;
+    protected String msProcessingUnitName;
+    protected double mdProcessingKgFactor;
+    protected int mnPlant;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -31,43 +35,56 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
     protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    protected int mnFkInputCategoryId_n;
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
 
-    
-    public SDbOilGroupFamily() {
-        super(SModConsts.SU_OIL_GRP_FAM);
+
+    public SDbFunctionalArea() {
+        super(SModConsts.SU_FUNC_AREA);
         initRegistry();
     }
-
-    public void setPkOilGroupFamilyId(int n) { mnPkOilGroupFamilyId = n; }
+    
+    public void setPkFunctionalAreaId(int n) { mnPkFunctionalAreaId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
-    public void setMandatory(boolean b) { mbMandatory = b; }
+    public void setFunctionalAreaType(String s) { msFunctionalAreaType = s; }
+    public void setStockReportMails(String s) { msStockReportMails = s; }
+    public void setProcessingUnitName(String s) { msProcessingUnitName = s; }
+    public void setProcessingKgFactor(double d) { mdProcessingKgFactor = d; }
+    public void setPlant(int n) { mnPlant = n; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
     public void setDisabled(boolean b) { mbDisabled = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
+    public void setFkInputCategoryId_n(int n) { mnFkInputCategoryId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkOilGroupFamilyId() { return mnPkOilGroupFamilyId; }
+    public int getPkFunctionalAreaId() { return mnPkFunctionalAreaId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
-    public boolean isMandatory() { return mbMandatory; }
+    public String getFunctionalAreaType() { return msFunctionalAreaType; }
+    public String getStockReportMails() { return msStockReportMails; }
+    public String getProcessingUnitName() { return msProcessingUnitName; }
+    public double getProcessingKgFactor() { return mdProcessingKgFactor; }
+    public int getPlant() { return mnPlant; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
     public boolean isDisabled() { return mbDisabled; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
+    public int getFkInputCategoryId_n() { return mnFkInputCategoryId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -75,28 +92,33 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkOilGroupFamilyId = pk[0];
+        mnPkFunctionalAreaId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkOilGroupFamilyId };
+        return new int[] { mnPkFunctionalAreaId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
         
-        mnPkOilGroupFamilyId = 0;
+        mnPkFunctionalAreaId = 0;
         msCode = "";
         msName = "";
-        mbMandatory = false;
+        msFunctionalAreaType = "";
+        msStockReportMails = "";
+        msProcessingUnitName = "";
+        mdProcessingKgFactor = 0;
+        mnPlant = 0;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
         mbDisabled = false;
         mbDeleted = false;
         mbSystem = false;
+        mnFkInputCategoryId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -110,24 +132,24 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_oil_grp_fam = " + mnPkOilGroupFamilyId + " ";
+        return "WHERE id_func_area = " + mnPkFunctionalAreaId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_oil_grp_fam = " + pk[0] + " ";
+        return "WHERE id_func_area = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet;
         
-        mnPkOilGroupFamilyId = 0;
+        mnPkFunctionalAreaId = 0;
         
-        msSql = "SELECT COALESCE(MAX(id_oil_grp_fam), 0) + 1 FROM " + getSqlTable() + " ";
+        msSql = "SELECT COALESCE(MAX(id_func_area), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkOilGroupFamilyId = resultSet.getInt(1);
+            mnPkFunctionalAreaId = resultSet.getInt(1);
         }
     }
 
@@ -141,20 +163,25 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
         
         msSql = "SELECT * " + getSqlFromWhere(pk);
         resultSet = session.getStatement().executeQuery(msSql);
-        if (!resultSet.next()) {
+        if(!resultSet.next()) {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkOilGroupFamilyId = resultSet.getInt("id_oil_grp_fam");
+            mnPkFunctionalAreaId = resultSet.getInt("id_func_area");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
-            mbMandatory = resultSet.getBoolean("b_mandatory");
+            msFunctionalAreaType = resultSet.getString("func_area_type");
+            msStockReportMails = resultSet.getString("stk_report_mails");
+            msProcessingUnitName = resultSet.getString("prc_unit_name");
+            mdProcessingKgFactor = resultSet.getDouble("prc_kg_factor");
+            mnPlant = resultSet.getInt("plant");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
+            mnFkInputCategoryId_n = resultSet.getInt("fk_inp_ct_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -172,7 +199,6 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
         mnQueryResultId = SDbConsts.SAVE_ERROR;
         
         if (mbRegistryNew) {
-           
             computePrimaryKey(session);
             mbUpdatable = true;
             mbDisableable = false;
@@ -181,16 +207,21 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkOilGroupFamilyId + ", " + 
+                    mnPkFunctionalAreaId + ", " + 
                     "'" + msCode + "', " + 
                     "'" + msName + "', " + 
-                    (mbMandatory ? 1 : 0) + ", " + 
+                    "'" + msFunctionalAreaType + "', " + 
+                    "'" + msStockReportMails + "', " + 
+                    "'" + msProcessingUnitName + "', " + 
+                    mdProcessingKgFactor + ", " + 
+                    mnPlant + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " + 
                     (mbDisableable ? 1 : 0) + ", " + 
                     (mbDeletable ? 1 : 0) + ", " + 
                     (mbDisabled ? 1 : 0) + ", " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
+                    (mnFkInputCategoryId_n == 0 ? "NULL" : mnFkInputCategoryId_n) + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -201,16 +232,21 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
             
             msSql = "UPDATE " + getSqlTable() + " SET " + 
-                    //"id_oil_grp_fam = " + mnPkOilGroupFamilyId + ", " +
+                    //"id_func_area = " + mnPkFunctionalAreaId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
-                    "b_mandatory = " + (mbMandatory ? 1 : 0) + ", " +
+                    "func_area_type = '" + msFunctionalAreaType + "', " +
+                    "stk_report_mails = '" + msStockReportMails + "', " +
+                    "prc_unit_name = '" + msProcessingUnitName + "', " +
+                    "prc_kg_factor = " + mdProcessingKgFactor + ", " +
+                    "plant = " + mnPlant + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
+                    "fk_inp_ct_n = " + (mnFkInputCategoryId_n == 0 ? "NULL" : mnFkInputCategoryId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -219,29 +255,35 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
         }
         
         session.getStatement().execute(msSql);
+        
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
-    public SDbOilGroupFamily clone() throws CloneNotSupportedException {
-        SDbOilGroupFamily registry = new SDbOilGroupFamily();
+    public SDbFunctionalArea clone() throws CloneNotSupportedException {
+        SDbFunctionalArea registry = new SDbFunctionalArea();
         
-        registry.setPkOilGroupFamilyId(this.getPkOilGroupFamilyId());
+        registry.setPkFunctionalAreaId(this.getPkFunctionalAreaId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
-        registry.setMandatory(this.isMandatory());
+        registry.setFunctionalAreaType(this.getFunctionalAreaType());
+        registry.setStockReportMails(this.getStockReportMails());
+        registry.setProcessingUnitName(this.getProcessingUnitName());
+        registry.setProcessingKgFactor(this.getProcessingKgFactor());
+        registry.setPlant(this.getPlant());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
         registry.setDisabled(this.isDisabled());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
+        registry.setFkInputCategoryId_n(this.getFkInputCategoryId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
-        
+
         registry.setRegistryNew(this.isRegistryNew());
 
         return registry;
