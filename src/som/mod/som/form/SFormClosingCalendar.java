@@ -55,8 +55,8 @@ public class SFormClosingCalendar extends sa.lib.gui.bean.SBeanForm {
         jlClosingDate = new javax.swing.JLabel();
         moDateClosingDate = new sa.lib.gui.bean.SBeanFieldDate();
         jPanel7 = new javax.swing.JPanel();
-        jlInputTp = new javax.swing.JLabel();
-        moKeyInputTp = new sa.lib.gui.bean.SBeanFieldKey();
+        jlFuncArea = new javax.swing.JLabel();
+        moKeyFuncArea = new sa.lib.gui.bean.SBeanFieldKey();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -92,12 +92,12 @@ public class SFormClosingCalendar extends sa.lib.gui.bean.SBeanForm {
 
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlInputTp.setText("Tipo de insumo*:");
-        jlInputTp.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel7.add(jlInputTp);
+        jlFuncArea.setText("Área funcional*:");
+        jlFuncArea.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel7.add(jlFuncArea);
 
-        moKeyInputTp.setPreferredSize(new java.awt.Dimension(250, 23));
-        jPanel7.add(moKeyInputTp);
+        moKeyFuncArea.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel7.add(moKeyFuncArea);
 
         jPanel2.add(jPanel7);
 
@@ -114,13 +114,13 @@ public class SFormClosingCalendar extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JLabel jlClosingDate;
-    private javax.swing.JLabel jlInputTp;
+    private javax.swing.JLabel jlFuncArea;
     private javax.swing.JLabel jlMonth;
     private javax.swing.JLabel jlYear;
     private sa.lib.gui.bean.SBeanFieldDate moDateClosingDate;
     private sa.lib.gui.bean.SBeanFieldInteger moIntMonth;
     private sa.lib.gui.bean.SBeanFieldInteger moIntYear;
-    private sa.lib.gui.bean.SBeanFieldKey moKeyInputTp;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyFuncArea;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
@@ -133,12 +133,12 @@ public class SFormClosingCalendar extends sa.lib.gui.bean.SBeanForm {
         moIntMonth.setMinInteger(1);
         moIntMonth.setMaxInteger(12);
         moDateClosingDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlClosingDate), true);
-        moKeyInputTp.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputTp), true);
+        moKeyFuncArea.setKeySettings(miClient, SGuiUtils.getLabelName(jlFuncArea), true);
 
         moFields.addField(moIntYear);
         moFields.addField(moIntMonth);
         moFields.addField(moDateClosingDate);
-        moFields.addField(moKeyInputTp);
+        moFields.addField(moKeyFuncArea);
 
         moFields.setFormButton(jbSave);
     }
@@ -155,7 +155,7 @@ public class SFormClosingCalendar extends sa.lib.gui.bean.SBeanForm {
 
     @Override
     public void reloadCatalogues() {
-        miClient.getSession().populateCatalogue(moKeyInputTp, SModConsts.SU_INP_TP, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyFuncArea, SModConsts.SU_FUNC_AREA, SLibConsts.UNDEFINED, null);
     }
 
     @Override
@@ -180,7 +180,7 @@ public class SFormClosingCalendar extends sa.lib.gui.bean.SBeanForm {
         moIntYear.setValue(moRegistry.getCalendarYear());
         moIntMonth.setValue(moRegistry.getCalendarMonth());
         moDateClosingDate.setValue(moRegistry.getClosingDate());
-        moKeyInputTp.setValue(new int[] { moRegistry.getFkInputCategoryId(), moRegistry.getFkInputClassId(), moRegistry.getFkInputTypeId() });
+        moKeyFuncArea.setValue(new int[] { moRegistry.getFkFunctionalAreaId() });
         
         setFormEditable(true);
 

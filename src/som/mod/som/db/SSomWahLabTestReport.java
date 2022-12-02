@@ -8,6 +8,7 @@ package som.mod.som.db;
 import erp.lib.SLibUtilities;
 import java.util.ArrayList;
 import java.util.Arrays;
+import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiClient;
 import sa.lib.mail.SMail;
@@ -32,7 +33,7 @@ public class SSomWahLabTestReport {
     public void sendReport(String mailTo, int[] pk) {
         try {
             SDbWahLab lab = getWahLab(pk);
-            if (lab.isValidate()) {
+            if (lab.isValidation()) {
                 String mailBody = generateReportHtml(lab);
 
                 String mailSubject = "[SOM] Registro de resultados de tanques de proceso";
@@ -103,7 +104,7 @@ public class SSomWahLabTestReport {
         html += "</head>" +
                 "<body>" +
                 "<h1>REGISTRO DE RESULTADOS DE TANQUES DE PROCESO</h1>" +
-                "<h2>Semana del " + SLibUtils.dateFormatDatePeriodLong(lab.getDateStart(), lab.getDateEnd()) + "</h2>" +
+                "<h2>Semana del " + SLibTimeUtils.dateFormatDatePeriodLong(lab.getDateStart(), lab.getDateEnd()) + "</h2>" +
                 "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
                 "<font size='" + FONT_SIZE_TBL + "'>" + 
                 "<tr>" +

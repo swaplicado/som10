@@ -28,13 +28,13 @@ public class SStockRecordUtils {
      * del stock, del stock diario, y de los almacenes móviles.
      * 
      * @param client
-     * @param dtStock fecha de la estimación o de la toma física.
+     * @param dtEstimation fecha de la estimación.
      * 
      * @return if the process ends succesfully
      * 
      * @throws SQLException 
      */
-    public static boolean saveStockRecord(SGuiClient client, Date dtStock) throws SQLException {
+    public static boolean saveStockRecord(SGuiClient client, Date dtEstimation) throws SQLException {
 
         String sqlStock = "SELECT  "
                 + "    v.id_year, "
@@ -74,7 +74,7 @@ public class SStockRecordUtils {
                 + "    " + SModConsts.TablesMap.get(SModConsts.S_WAH_PREMISE) + " AS wp ON v.id_co = wp.id_co "
                 + "        AND v.id_cob = wp.id_cob "
                 + "        AND v.id_wah = wp.id_wah "
-                + "        AND wp.id_dt = '" + SLibUtils.DbmsDateFormatDate.format(dtStock) + "' "
+                + "        AND wp.id_dt = '" + SLibUtils.DbmsDateFormatDate.format(dtEstimation) + "' "
                 + "        LEFT JOIN "
                 + "    " + SModConsts.TablesMap.get(SModConsts.S_STK_DAY) + " AS sday ON v.id_year = sday.id_year "
                 + "        AND v.id_item = sday.id_item "
@@ -82,10 +82,10 @@ public class SStockRecordUtils {
                 + "        AND v.id_co = sday.id_co "
                 + "        AND v.id_cob = sday.id_cob "
                 + "        AND v.id_wah = sday.id_wah "
-                + "        AND sday.id_day = '" + SLibUtils.DbmsDateFormatDate.format(dtStock) + "' "
+                + "        AND sday.id_day = '" + SLibUtils.DbmsDateFormatDate.format(dtEstimation) + "' "
                 + "WHERE "
-                + "    v.b_del = 0 AND v.id_year = " + SLibTimeUtils.digestYear(dtStock)[0] + " "
-                + "        AND v.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dtStock) + "' AND vw.b_del = 0 "
+                + "    v.b_del = 0 AND v.id_year = " + SLibTimeUtils.digestYear(dtEstimation)[0] + " "
+                + "        AND v.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dtEstimation) + "' AND vw.b_del = 0 "
                 + "GROUP BY v.id_item , v.id_unit , v.id_cob , v.id_wah , vc.code , vw.name , vi.code , vi.name , vu.code "
                 + "HAVING f_stk >= 0 "
                 + "ORDER BY f_stk desc, vi.name , vi.code , v.id_item , vu.code , v.id_unit , vc.code , vw.name , v.id_cob , v.id_wah";
@@ -98,7 +98,7 @@ public class SStockRecordUtils {
         try {
             String deleteSql = "DELETE FROM " + 
                                 SModConsts.TablesMap.get(SModConsts.S_STK_RECORD) + 
-                            " WHERE id_dt = '" + SLibUtils.DbmsDateFormatDate.format(dtStock) + "';";
+                            " WHERE dt = '" + SLibUtils.DbmsDateFormatDate.format(dtEstimation) + "';";
             client.getSession().getStatement().getConnection().createStatement().executeUpdate(deleteSql);
             
             ArrayList<String> warehouses = new ArrayList<>();
@@ -106,26 +106,25 @@ public class SStockRecordUtils {
             while (stkResult.next()) {
                 oStkRecord = new SDbStockRecord();
 
+                oStkRecord.setPkItemId(stkResult.getInt("id_item"));
+                oStkRecord.setPkUnitId(stkResult.getInt("id_unit"));
                 oStkRecord.setPkCompanyId(stkResult.getInt("id_co"));
                 oStkRecord.setPkBranchId(stkResult.getInt("id_cob"));
                 oStkRecord.setPkWarehouseId(stkResult.getInt("id_wah"));
-                oStkRecord.setPkDate(dtStock);
+                oStkRecord.setDate(dtEstimation);
+                oStkRecord.setStock(stkResult.getDouble("f_stk"));
                 
-                whsKey = oStkRecord.getPkCompanyId() + "_" + oStkRecord.getPkBranchId() + "_" + oStkRecord.getPkWarehouseId() + "_" + SLibUtils.DbmsDateFormatDate.format(dtStock);
-                if (! warehouses.contains(whsKey)) {
+                whsKey = oStkRecord.getPkCompanyId() + "_" + oStkRecord.getPkBranchId() + "_" + oStkRecord.getPkWarehouseId() + "_" + SLibUtils.DbmsDateFormatDate.format(dtEstimation);
+                if (oStkRecord.getStock() >= 0d && ! warehouses.contains(whsKey)) {
                     warehouses.add(whsKey);
                 }
-                else {
+                else if (oStkRecord.getStock() == 0d && warehouses.contains(whsKey)) {
                     continue;
                 }
                 
-                oStkRecord.setStock(stkResult.getDouble("f_stk"));
-                oStkRecord.setAcidityPercentage(0d);
                 oStkRecord.setPremises(stkResult.getBoolean("b_premises"));
                 oStkRecord.setDeleted(false);
                 oStkRecord.setSystem(true);
-                oStkRecord.setFkItemId(stkResult.getInt("id_item"));
-                oStkRecord.setFkUnit(stkResult.getInt("id_unit"));
                 oStkRecord.setFkOilClassId_n(stkResult.getInt("fk_oil_cl_n"));
                 oStkRecord.setFkOilTypeId_n(stkResult.getInt("fk_oil_tp_n"));
                 oStkRecord.setFkOilOwnerId_n(stkResult.getInt("fk_oil_own_n"));

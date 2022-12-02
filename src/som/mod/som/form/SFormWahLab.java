@@ -954,15 +954,15 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
     private void setLaboratoryTestResults(SDbWahLabTest labTest) {
         if (labTest != null) {
-            moTextCurAciPer.setValue(labTest.getAcidityPercentage_n() == null ? "" : labTest.getAcidityPercentage_n() * 100 + "");
+            moTextCurAciPer.setValue(labTest.getAcidityPercentage_n() == null ? "" : labTest.getAcidityPercentage_n() * 10 * 10 + "");
             moTextCurPerInd.setValue(labTest.getPeroxideIndex_n() == null ? "" : labTest.getPeroxideIndex_n() + "");
-            moTextCurMoiPer.setValue(labTest.getMoisturePercentage_n() == null ? "" : labTest.getMoisturePercentage_n() * 100 + "");
-            moTextCurSolPer.setValue(labTest.getSolidPersentage_n() == null ? "" : labTest.getSolidPersentage_n() * 100 + "");
-            moTextCurLinPer.setValue(labTest.getLinoleicAcidPercentage_n() == null ? "" : labTest.getLinoleicAcidPercentage_n() * 100 + "");
-            moTextCurOlePer.setValue(labTest.getOleicAcidPercentage_n() == null ? "" : labTest.getOleicAcidPercentage_n() * 100 + "");
-            moTextCurLlcPer.setValue(labTest.getLinolenicAcidPercentage_n() == null ? "" : labTest.getLinolenicAcidPercentage_n() * 100 + "");
-            moTextCurStePer.setValue(labTest.getStearicAcidPercentage_n() == null ? "" : labTest.getStearicAcidPercentage_n() * 100  + "");
-            moTextCurPalPer.setValue(labTest.getPalmiticAcidPercentage_n() == null ? "" : labTest.getPalmiticAcidPercentage_n() * 100  + "");
+            moTextCurMoiPer.setValue(labTest.getMoisturePercentage_n() == null ? "" : labTest.getMoisturePercentage_n() * 10 * 10 + "");
+            moTextCurSolPer.setValue(labTest.getSolidPersentage_n() == null ? "" : labTest.getSolidPersentage_n() * 10 * 10 + "");
+            moTextCurLinPer.setValue(labTest.getLinoleicAcidPercentage_n() == null ? "" : labTest.getLinoleicAcidPercentage_n() * 10 * 10 + "");
+            moTextCurOlePer.setValue(labTest.getOleicAcidPercentage_n() == null ? "" : labTest.getOleicAcidPercentage_n() * 10 * 10 + "");
+            moTextCurLlcPer.setValue(labTest.getLinolenicAcidPercentage_n() == null ? "" : labTest.getLinolenicAcidPercentage_n() * 10 * 10 + "");
+            moTextCurStePer.setValue(labTest.getStearicAcidPercentage_n() == null ? "" : labTest.getStearicAcidPercentage_n() * 10 * 10  + "");
+            moTextCurPalPer.setValue(labTest.getPalmiticAcidPercentage_n() == null ? "" : labTest.getPalmiticAcidPercentage_n() * 10 * 10  + "");
             moTextCurNotes.setValue(labTest.getNote());
             moBoolCurAciPerOverange.setValue(labTest.isAcidityPercentageOverange());
             moBoolCurPerIndOverange.setValue(labTest.isPeroxideIndexOverange());
@@ -979,15 +979,15 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
             if (labTest.getLastWahLabTest() != null) {
                 SDbWahLabTest lastLabTest = labTest.getLastWahLabTest();
 
-                moTextLastAciPer.setValue(lastLabTest.getAcidityPercentage_n() == null ? "" : lastLabTest.getAcidityPercentage_n() * 100 + "");
+                moTextLastAciPer.setValue(lastLabTest.getAcidityPercentage_n() == null ? "" : lastLabTest.getAcidityPercentage_n() * 10 * 10 + "");
                 moTextLastPerInd.setValue(lastLabTest.getPeroxideIndex_n() == null ? "" : lastLabTest.getPeroxideIndex_n() + "");
-                moTextLastMoiPer.setValue(lastLabTest.getMoisturePercentage_n() == null ? "" : lastLabTest.getMoisturePercentage_n() * 100 + "");
-                moTextLastSolPer.setValue(lastLabTest.getSolidPersentage_n() == null ? "" : lastLabTest.getSolidPersentage_n() * 100 + "");
-                moTextLastLinPer.setValue(lastLabTest.getLinoleicAcidPercentage_n() == null ? "" : lastLabTest.getLinoleicAcidPercentage_n() * 100 + "");
-                moTextLastOlePer.setValue(lastLabTest.getOleicAcidPercentage_n() == null ? "" : lastLabTest.getOleicAcidPercentage_n() * 100 + "");
-                moTextLastLlcPer.setValue(lastLabTest.getLinolenicAcidPercentage_n() == null ? "" : lastLabTest.getLinolenicAcidPercentage_n() * 100 + "");
-                moTextLastStePer.setValue(lastLabTest.getStearicAcidPercentage_n() == null ? "" : lastLabTest.getStearicAcidPercentage_n() * 100 + "");
-                moTextLastPalPer.setValue(lastLabTest.getPalmiticAcidPercentage_n() == null ? "" : lastLabTest.getPalmiticAcidPercentage_n() * 100  + "");
+                moTextLastMoiPer.setValue(lastLabTest.getMoisturePercentage_n() == null ? "" : lastLabTest.getMoisturePercentage_n() * 10 * 10 + "");
+                moTextLastSolPer.setValue(lastLabTest.getSolidPersentage_n() == null ? "" : lastLabTest.getSolidPersentage_n() * 10 * 10 + "");
+                moTextLastLinPer.setValue(lastLabTest.getLinoleicAcidPercentage_n() == null ? "" : lastLabTest.getLinoleicAcidPercentage_n() * 10 * 10 + "");
+                moTextLastOlePer.setValue(lastLabTest.getOleicAcidPercentage_n() == null ? "" : lastLabTest.getOleicAcidPercentage_n() * 10 * 10 + "");
+                moTextLastLlcPer.setValue(lastLabTest.getLinolenicAcidPercentage_n() == null ? "" : lastLabTest.getLinolenicAcidPercentage_n() * 10 * 10 + "");
+                moTextLastStePer.setValue(lastLabTest.getStearicAcidPercentage_n() == null ? "" : lastLabTest.getStearicAcidPercentage_n() * 10 * 10 + "");
+                moTextLastPalPer.setValue(lastLabTest.getPalmiticAcidPercentage_n() == null ? "" : lastLabTest.getPalmiticAcidPercentage_n() * 10 * 10  + "");
                 moTextLastNotes.setValue(lastLabTest.getNote());
                 moBoolLastAciPerOverange.setValue(lastLabTest.isAcidityPercentageOverange());
                 moBoolLastPerIndOverange.setValue(lastLabTest.isPeroxideIndexOverange());
@@ -1340,15 +1340,15 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private void actionSaveRow() {
         SDbWahLabTest test = (SDbWahLabTest) moGridWahList.getSelectedGridRow();
         try {
-            test.setAcidityPercentage_n(moTextCurAciPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurAciPer.getValue()) / 100);
+            test.setAcidityPercentage_n(moTextCurAciPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurAciPer.getValue()) / 10 / 10);
             test.setPeroxideIndex_n(moTextCurPerInd.getValue().isEmpty() ? null : Double.parseDouble(moTextCurPerInd.getValue()));
-            test.setMoisturePercentage_n(moTextCurMoiPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurMoiPer.getValue()) / 100);
-            test.setSolidPersentage_n(moTextCurSolPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurSolPer.getValue()) / 100);
-            test.setLinoleicAcidPercentage_n(moTextCurLinPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurLinPer.getValue()) / 100);
-            test.setOleicAcidPercentage_n(moTextCurOlePer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurOlePer.getValue()) / 100);
-            test.setLinolenicAcidPercentage_n(moTextCurLlcPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurLlcPer.getValue()) / 100);
-            test.setStearicAcidPercentage_n(moTextCurStePer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurStePer.getValue()) / 100);
-            test.setPalmiticAcidPercentage_n(moTextCurPalPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurPalPer.getValue()) / 100);
+            test.setMoisturePercentage_n(moTextCurMoiPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurMoiPer.getValue()) / 10 / 10);
+            test.setSolidPersentage_n(moTextCurSolPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurSolPer.getValue()) / 10 / 10);
+            test.setLinoleicAcidPercentage_n(moTextCurLinPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurLinPer.getValue()) / 10 / 10);
+            test.setOleicAcidPercentage_n(moTextCurOlePer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurOlePer.getValue()) / 10 / 10);
+            test.setLinolenicAcidPercentage_n(moTextCurLlcPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurLlcPer.getValue()) / 10 / 10);
+            test.setStearicAcidPercentage_n(moTextCurStePer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurStePer.getValue()) / 10 / 10);
+            test.setPalmiticAcidPercentage_n(moTextCurPalPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurPalPer.getValue()) / 10 / 10);
             test.setNote(moTextCurNotes.getValue()); 
             test.setAcidityPercentageOverange(moBoolCurAciPerOverange.getValue());
             test.setPeroxideIndexOverange(moBoolCurPerIndOverange.getValue());
@@ -1474,7 +1474,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         else {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
             moBoolDone.setValue(moRegistry.isDone());
-            moBoolValidate.setValue(moRegistry.isValidate());
+            moBoolValidate.setValue(moRegistry.isValidation());
             moYearCurYearTest.setValue(moRegistry.getYear());
             moWeekCurWeekTest.setValue(moRegistry.getWeek());
             moDateCurStartDateTest.setValue(moRegistry.getDateStart());
@@ -1506,7 +1506,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         if (registry.isRegistryNew()) { }
 
         registry.setDone(moBoolDone.getValue());
-        registry.setValidate(moBoolValidate.getValue());
+        registry.setValidation(moBoolValidate.getValue());
         registry.setYear(moYearCurYearTest.getValue());
         registry.setWeek(moWeekCurWeekTest.getValue());
         registry.setDateStart(moDateCurStartDateTest.getValue());

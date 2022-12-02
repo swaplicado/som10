@@ -12,23 +12,23 @@ import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import som.mod.SModConsts;
-import som.mod.som.db.SDbOilAcidity;
+import som.mod.som.db.SDbProcessingBatch;
 
 /**
  *
  * @author Isabel Servín
  */
-public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
+public class SFormProcessingBatch extends sa.lib.gui.bean.SBeanForm {
 
-    private SDbOilAcidity moRegistry;
+    private SDbProcessingBatch moRegistry;
 
     /**
-     * Creates new form SFormOilAcidity
+     * Creates new form SFormProcessingBatch
      * @param client
      * @param title
      */
-    public SFormOilAcidity(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_OIL_ACI, SLibConsts.UNDEFINED, title);
+    public SFormProcessingBatch(SGuiClient client, String title) {
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.S_PRC_BATCH, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -46,14 +46,14 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jlCode = new javax.swing.JLabel();
-        moTextCode = new sa.lib.gui.bean.SBeanFieldText();
-        jPanel5 = new javax.swing.JPanel();
-        jlName = new javax.swing.JLabel();
-        moTextName = new sa.lib.gui.bean.SBeanFieldText();
-        jPanel6 = new javax.swing.JPanel();
         jlDate = new javax.swing.JLabel();
         moDateStart = new sa.lib.gui.bean.SBeanFieldDate();
+        jPanel5 = new javax.swing.JPanel();
+        jlBatch = new javax.swing.JLabel();
+        moTextBatch = new sa.lib.gui.bean.SBeanFieldText();
+        jPanel6 = new javax.swing.JPanel();
+        jlItem = new javax.swing.JLabel();
+        moKeyItem = new sa.lib.gui.bean.SBeanFieldKey();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -62,33 +62,32 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlCode.setText("Código:*");
-        jlCode.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel4.add(jlCode);
-
-        moTextCode.setText("sBeanFieldText1");
-        jPanel4.add(moTextCode);
+        jlDate.setText("Inicio de vigencia*:");
+        jlDate.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel4.add(jlDate);
+        jPanel4.add(moDateStart);
 
         jPanel2.add(jPanel4);
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlName.setText("Nombre:*");
-        jlName.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel5.add(jlName);
+        jlBatch.setText("Lote:*");
+        jlBatch.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel5.add(jlBatch);
 
-        moTextName.setText("sBeanFieldText1");
-        moTextName.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel5.add(moTextName);
+        moTextBatch.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel5.add(moTextBatch);
 
         jPanel2.add(jPanel5);
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlDate.setText("Inicio de vigencia*:");
-        jlDate.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel6.add(jlDate);
-        jPanel6.add(moDateStart);
+        jlItem.setText("Ítem:*");
+        jlItem.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel6.add(jlItem);
+
+        moKeyItem.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel6.add(moKeyItem);
 
         jPanel2.add(jPanel6);
 
@@ -103,24 +102,24 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JLabel jlCode;
+    private javax.swing.JLabel jlBatch;
     private javax.swing.JLabel jlDate;
-    private javax.swing.JLabel jlName;
+    private javax.swing.JLabel jlItem;
     private sa.lib.gui.bean.SBeanFieldDate moDateStart;
-    private sa.lib.gui.bean.SBeanFieldText moTextCode;
-    private sa.lib.gui.bean.SBeanFieldText moTextName;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
+    private sa.lib.gui.bean.SBeanFieldText moTextBatch;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 480, 300);
 
-        moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode), 5);
-        moTextName.setTextSettings(SGuiUtils.getLabelName(jlName), 50);
         moDateStart.setDateSettings(miClient, SGuiUtils.getLabelName(jlDate), true);
+        moTextBatch.setTextSettings(SGuiUtils.getLabelName(jlBatch), 50);
+        moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem), true);
 
-        moFields.addField(moTextCode);
-        moFields.addField(moTextName);
         moFields.addField(moDateStart);
+        moFields.addField(moTextBatch);
+        moFields.addField(moKeyItem);
 
         moFields.setFormButton(jbSave);
     }
@@ -137,12 +136,12 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
 
     @Override
     public void reloadCatalogues() {
-
+        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
     }
 
     @Override
     public void setRegistry(SDbRegistry registry) throws Exception {
-        moRegistry = (SDbOilAcidity) registry;
+        moRegistry = (SDbProcessingBatch) registry;
 
         mnFormResult = SLibConsts.UNDEFINED;
         mbFirstActivation = true;
@@ -157,11 +156,11 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
         }
         else {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
-            moDateStart.setValue(moRegistry.getDateStart());
+            moDateStart.setValue(moRegistry.getDate());
         }
 
-        moTextName.setValue(moRegistry.getName());
-        moTextCode.setValue(moRegistry.getCode());
+        moTextBatch.setValue(moRegistry.getProcessingBatch());
+        moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
         
         setFormEditable(true);
 
@@ -170,13 +169,13 @@ public class SFormOilAcidity extends sa.lib.gui.bean.SBeanForm {
 
     @Override
     public SDbRegistry getRegistry() throws Exception {
-        SDbOilAcidity registry = moRegistry.clone();
+        SDbProcessingBatch registry = moRegistry.clone();
 
         if (registry.isRegistryNew()) { }
 
-        registry.setName(moTextName.getValue());
-        registry.setCode(moTextCode.getValue());
-        registry.setDateStart(moDateStart.getValue());
+        registry.setDate(moDateStart.getValue());
+        registry.setProcessingBatch(moTextBatch.getValue());
+        registry.setFkItemId(moKeyItem.getValue()[0]);
         
         return registry;
     }

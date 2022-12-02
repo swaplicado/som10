@@ -67,7 +67,7 @@ public abstract class SModConsts {
     public static final int SU_SUP_REG = 320008;
     public static final int SU_REG = 320009;
     public static final int SU_PROD = 320010;
-    public static final int SX_PROD_LOG = 320024;
+    public static final int SX_PROD_LOG = 320103;
     public static final int SU_SEAS = 320011;
     public static final int SU_SEAS_REG = 320012;
     public static final int SU_SEAS_PROD = 320013;
@@ -90,6 +90,8 @@ public abstract class SModConsts {
     public static final int SU_OIL_ACI_ETY = 320029;
     public static final int SU_OIL_GRP_FAM = 320030;
     public static final int SU_CLOSING_CAL = 320031;
+    public static final int SU_FUNC_AREA = 320032;
+    public static final int SU_CONS_WAH = 320033;
     public static final int SU_INP_CL_ALL = 320101;
     public static final int SU_INP_TP_ALL = 320102;
 
@@ -115,6 +117,10 @@ public abstract class SModConsts {
     public static final int S_STK_DAY = 330051;
     public static final int S_STK = 330052;
     public static final int S_STK_RECORD = 330053;
+    public static final int S_PRC_BATCH = 330054;
+    public static final int S_STK_REPORT = 330055;
+    public static final int S_PRC_RAW_MAT = 330056;
+    public static final int S_CONS_RECORD = 330057;
     public static final int S_MFG_EST = 330061;
     public static final int S_MFG_EST_ETY = 330062;
     public static final int S_MFG_EST_RM_CON = 330063;
@@ -274,6 +280,8 @@ public abstract class SModConsts {
         TablesMap.put(SU_OIL_ACI_ETY, "su_oil_aci_ety");
         TablesMap.put(SU_OIL_GRP_FAM, "su_oil_grp_fam");
         TablesMap.put(SU_CLOSING_CAL, "su_closing_cal");
+        TablesMap.put(SU_FUNC_AREA, "su_func_area");
+        TablesMap.put(SU_CONS_WAH, "su_cons_wah");
         TablesMap.put(SU_GRINDING_EVENT, "su_grin_events");
         TablesMap.put(SU_GRINDING_RESULTS, "su_grin_res");
         TablesMap.put(SU_GRINDINGS, "su_grinding");
@@ -299,6 +307,10 @@ public abstract class SModConsts {
         TablesMap.put(S_STK_DAY, "s_stk_day");
         TablesMap.put(S_STK, "s_stk");
         TablesMap.put(S_STK_RECORD, "s_stk_record");
+        TablesMap.put(S_PRC_BATCH, "s_prc_batch");
+        TablesMap.put(S_STK_REPORT, "s_stk_report");
+        TablesMap.put(S_PRC_RAW_MAT, "s_prc_raw_mat");
+        TablesMap.put(S_CONS_RECORD, "s_cons_record");
         TablesMap.put(S_MFG_EST, "s_mfg_est");
         TablesMap.put(S_MFG_EST_ETY, "s_mfg_est_ety");
         TablesMap.put(S_MFG_EST_RM_CON, "s_mfg_est_rm_con");

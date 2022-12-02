@@ -21,7 +21,7 @@ import som.mod.SModConsts;
  *
  * @author Isabel Servín
  */
-public class SDbWahLab extends SDbRegistryUser{
+public class SDbWahLab extends SDbRegistryUser {
 
     protected int mnPkWarehouseLaboratoryId;
     protected int mnYear;
@@ -29,15 +29,26 @@ public class SDbWahLab extends SDbRegistryUser{
     protected Date mtDateStart;
     protected Date mtDateEnd;
     protected boolean mbDone;
-    protected boolean mbValidate;
+    protected boolean mbValidation;
     /*
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    protected int mnFkUserDoneId;
+    protected int mnFkUserValidationId;
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
+    */
+    protected Date mtTsUserDone;
+    protected Date mtTsUserValidation;
+    /*
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
+    
+    protected boolean mbOldDone;
+    protected boolean mbOldValidation;
     
     protected ArrayList<SDbWahLabTest> maWahLabTests;
     
@@ -55,11 +66,15 @@ public class SDbWahLab extends SDbRegistryUser{
     public void setDateStart(Date t) { mtDateStart = t; }
     public void setDateEnd(Date t) { mtDateEnd = t; }
     public void setDone(boolean b) { mbDone = b; }
-    public void setValidate(boolean b) { mbValidate = b; }
+    public void setValidation(boolean b) { mbValidation = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
+    public void setFkUserDoneId(int n) { mnFkUserDoneId = n; }
+    public void setFkUserValidationId(int n) { mnFkUserValidationId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
+    public void setTsUserDone(Date t) { mtTsUserDone = t; }
+    public void setTsUserValidation(Date t) { mtTsUserValidation = t; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
@@ -69,14 +84,24 @@ public class SDbWahLab extends SDbRegistryUser{
     public Date getDateStart() { return mtDateStart; }
     public Date getDateEnd() { return mtDateEnd; }
     public boolean isDone() { return mbDone; }
-    public boolean isValidate() { return mbValidate; }
+    public boolean isValidation() { return mbValidation; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
+    public int getFkUserDoneId() { return mnFkUserDoneId; }
+    public int getFkUserValidationId() { return mnFkUserValidationId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
+    public Date getTsUserDone() { return mtTsUserDone; }
+    public Date getTsUserValidation() { return mtTsUserValidation; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
     
+    public void setOldDone(boolean b) { mbOldDone = b; }
+    public void setOldValidation(boolean b) { mbOldValidation = b; }
+    
+    public boolean getOldDone() { return mbOldDone; }
+    public boolean getOldValidation() { return mbOldValidation; }
+
     public ArrayList<SDbWahLabTest> getWahLabTests() { return maWahLabTests; }
     
     public SDbWahLab getLastWahLab() { return moLastWahLab; }
@@ -108,7 +133,7 @@ public class SDbWahLab extends SDbRegistryUser{
             mtDateStart = resultSet.getDate("dt_start");
             mtDateEnd = resultSet.getDate("dt_end");
             mbDone = resultSet.getBoolean("b_done");
-            mbValidate = resultSet.getBoolean("b_validate");
+            mbValidation = resultSet.getBoolean("b_val");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
@@ -148,7 +173,7 @@ public class SDbWahLab extends SDbRegistryUser{
         }
         else {
             sqlWhere = "WHERE year = " + (curWeek == 1 ? curYear - 1 : curYear) + " "
-                    + "AND week " + (curWeek == 1 ? "= 51 " : " = " + (curWeek - 2)) + " " 
+                    + "AND week " + (curWeek == 1 ? "= 51 " : " = " + (curWeek - 2)) + " "
                     + "AND b_done AND NOT b_del";
             msSql = "SELECT id_wah_lab FROM " + getSqlTable() + " " + sqlWhere;
             resultSet = statement.executeQuery(msSql);
@@ -158,7 +183,7 @@ public class SDbWahLab extends SDbRegistryUser{
             }
             else {
                 if (showMessage){
-                    session.getClient().showMsgBoxInformation("No se encontraron analisis de laboratorio para las últimas 2 semanas.");
+                    session.getClient().showMsgBoxInformation("No se encontraron analisis de laboratorio terminados para las últimas 2 semanas.");
                 }
             }
         }
@@ -184,13 +209,20 @@ public class SDbWahLab extends SDbRegistryUser{
         mtDateStart = null;
         mtDateEnd = null;
         mbDone = false;
-        mbValidate = false;
+        mbValidation = false;
         mbDeleted = false;
         mbSystem = false;
+        mnFkUserDoneId = 0;
+        mnFkUserValidationId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
+        mtTsUserDone = null;
+        mtTsUserValidation = null;
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
+        
+        mbOldDone = false;
+        mbOldValidation = false;
         
         maWahLabTests.clear();
         
@@ -246,18 +278,26 @@ public class SDbWahLab extends SDbRegistryUser{
             mtDateStart = resultSet.getDate("dt_start");
             mtDateEnd = resultSet.getDate("dt_end");
             mbDone = resultSet.getBoolean("b_done");
-            mbValidate = resultSet.getBoolean("b_validate");
+            mbValidation = resultSet.getBoolean("b_val");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
+            mnFkUserDoneId = resultSet.getInt("fk_usr_done");
+            mnFkUserValidationId = resultSet.getInt("fk_usr_val");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
+            mtTsUserDone = resultSet.getTimestamp("ts_usr_done");
+            mtTsUserValidation = resultSet.getTimestamp("ts_usr_val");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
             
+            mbOldDone = mbDone;
+            mbOldValidation = mbValidation;
+
             // Read aswell child registries:
             
             statement = session.getStatement().getConnection().createStatement();
             
+            maWahLabTests = new ArrayList<>();
             msSql = "SELECT id_test FROM " + SModConsts.TablesMap.get(SModConsts.S_WAH_LAB_TEST) + " " + getSqlWhere();
             resultSet = statement.executeQuery(msSql);
             while (resultSet.next()) {
@@ -286,6 +326,8 @@ public class SDbWahLab extends SDbRegistryUser{
             mbDeletable = true;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
+            mnFkUserDoneId = mbDone && mbDone != mbOldDone ? session.getUser().getPkUserId() : SUtilConsts.USR_NA_ID;
+            mnFkUserValidationId = mbValidation && mbValidation != mbOldValidation ? session.getUser().getPkUserId() : SUtilConsts.USR_NA_ID;
             
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" + 
                     mnPkWarehouseLaboratoryId + ", " + 
@@ -294,17 +336,23 @@ public class SDbWahLab extends SDbRegistryUser{
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDateStart) + "', " + 
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDateEnd) + "', " + 
                     (mbDone ? 1 : 0) + ", " + 
-                    (mbValidate ? 1 : 0) + ", " + 
+                    (mbValidation ? 1 : 0) + ", " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
+                    mnFkUserDoneId + ", " + 
+                    mnFkUserValidationId + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
-                    "NOW()" + " " + 
+                    "NOW()" + ", " + 
+                    "NOW()" + ", " + 
+                    "NOW()" + " " +
                     ")";
         }
         else {
             mnFkUserUpdateId = session.getUser().getPkUserId();
+            mnFkUserDoneId = mbDone && mbDone != mbOldDone ? session.getUser().getPkUserId() : SUtilConsts.USR_NA_ID;
+            mnFkUserValidationId = mbValidation && mbValidation != mbOldValidation ? session.getUser().getPkUserId() : SUtilConsts.USR_NA_ID;
             
             msSql = "UPDATE " + getSqlTable() + " SET " + 
                     //"id_wah_lab = " + mnPkWarehouseLaboratoryId + ", " +
@@ -313,11 +361,15 @@ public class SDbWahLab extends SDbRegistryUser{
                     "dt_start = '" + SLibUtils.DbmsDateFormatDate.format(mtDateStart) + "', " +
                     "dt_end = '" + SLibUtils.DbmsDateFormatDate.format(mtDateEnd) + "', " +
                     "b_done = " + (mbDone ? 1 : 0) + ", " +
-                    "b_validate = " + (mbValidate ? 1 : 0) + ", " +
+                    "b_val = " + (mbValidation ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
+                    "fk_usr_done = " + mnFkUserDoneId + ", " +
+                    "fk_usr_val = " + mnFkUserValidationId + ", " +
+                    //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
+                    "ts_usr_done = " + "NOW()" + ", " +
+                    "ts_usr_val = " + "NOW()" + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
                     "ts_usr_upd = " + "NOW()" + " " +
                     getSqlWhere();
@@ -350,14 +402,21 @@ public class SDbWahLab extends SDbRegistryUser{
         registry.setDateStart(this.getDateStart());
         registry.setDateEnd(this.getDateEnd());
         registry.setDone(this.isDone());
-        registry.setValidate(this.isValidate());
+        registry.setValidation(this.isValidation());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
+        registry.setFkUserDoneId(this.getFkUserDoneId());
+        registry.setFkUserValidationId(this.getFkUserValidationId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
+        registry.setTsUserDone(this.getTsUserDone());
+        registry.setTsUserValidation(this.getTsUserValidation());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
         
+        registry.setOldDone(this.getOldDone());
+        registry.setOldValidation(this.getOldValidation());
+
         for (SDbWahLabTest labTest : maWahLabTests) {
             registry.getWahLabTests().add(labTest.clone());
         }

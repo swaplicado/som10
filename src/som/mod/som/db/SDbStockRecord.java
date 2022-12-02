@@ -22,12 +22,14 @@ import som.mod.SModConsts;
  */
 public class SDbStockRecord extends SDbRegistryUser {
 
+    protected int mnPkItemId;
+    protected int mnPkUnitId;
     protected int mnPkCompanyId;
     protected int mnPkBranchId;
     protected int mnPkWarehouseId;
-    protected Date mtPkDate;
+    protected int mnPkRecordId;
+    protected Date mtDate;
     protected double mdStock;
-    protected double mdAcidityPercentage;
     protected boolean mbPremises;
 
     /*
@@ -35,8 +37,6 @@ public class SDbStockRecord extends SDbRegistryUser {
     protected boolean mbSystem;
     */
     
-    protected int mnFkItemId;
-    protected int mnFkUnit;
     protected int mnFkOilClassId_n;
     protected int mnFkOilTypeId_n;
     protected int mnFkOilOwnerId_n;
@@ -55,17 +55,17 @@ public class SDbStockRecord extends SDbRegistryUser {
         initRegistry();
     }
 
+    public void setPkItemId(int n) { mnPkItemId = n; }
+    public void setPkUnitId(int n) { mnPkUnitId = n; }
     public void setPkCompanyId(int n) { mnPkCompanyId = n; }
     public void setPkBranchId(int n) { mnPkBranchId = n; }
     public void setPkWarehouseId(int n) { mnPkWarehouseId = n; }
-    public void setPkDate(Date t) { mtPkDate = t; }
+    public void setPkRecordId(int n) { mnPkRecordId = n; }
+    public void setDate(Date t) { mtDate = t; }
     public void setStock(double d) { mdStock = d; }
-    public void setAcidityPercentage(double d) { mdAcidityPercentage = d; }
     public void setPremises(boolean b) { mbPremises = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
-    public void setFkItemId(int n) { mnFkItemId = n; }
-    public void setFkUnit(int n) { mnFkUnit = n; }
     public void setFkOilClassId_n(int n) { mnFkOilClassId_n = n; }
     public void setFkOilTypeId_n(int n) { mnFkOilTypeId_n = n; }
     public void setFkOilOwnerId_n(int n) { mnFkOilOwnerId_n = n; }
@@ -76,17 +76,17 @@ public class SDbStockRecord extends SDbRegistryUser {
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
+    public int getPkItemId() { return mnPkItemId; }
+    public int getPkUnitId() { return mnPkUnitId; }
     public int getPkCompanyId() { return mnPkCompanyId; }
     public int getPkBranchId() { return mnPkBranchId; }
     public int getPkWarehouseId() { return mnPkWarehouseId; }
-    public Date getPkDate() { return mtPkDate; }
+    public int getPkRecordId() { return mnPkRecordId; }
+    public Date getDate() { return mtDate; }
     public double getStock() { return mdStock; }
-    public double getAcidityPercentage() { return mdAcidityPercentage; }
     public boolean isPremises() { return mbPremises; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
-    public int getFkItemId() { return mnFkItemId; }
-    public int getFkUnit() { return mnFkUnit; }
     public int getFkOilClassId_n() { return mnFkOilClassId_n; }
     public int getFkOilTypeId_n() { return mnFkOilTypeId_n; }
     public int getFkOilOwnerId_n() { return mnFkOilOwnerId_n; }
@@ -98,27 +98,29 @@ public class SDbStockRecord extends SDbRegistryUser {
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
     public void setPrimaryKey(Object[] pk) {
-        mnPkCompanyId = (Integer) pk[0];
-        mnPkBranchId =  (Integer)  pk[1];
-        mnPkWarehouseId = (Integer) pk[2];
-        mtPkDate = (Date) pk[3];
+        mnPkItemId = (Integer) pk[0];
+        mnPkUnitId = (Integer) pk[1];
+        mnPkCompanyId = (Integer) pk[2];
+        mnPkBranchId = (Integer) pk[3];
+        mnPkWarehouseId = (Integer) pk[4];
+        mnPkRecordId = (Integer) pk[5];
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
+        mnPkItemId = 0;
+        mnPkUnitId = 0;
         mnPkCompanyId = 0;
         mnPkBranchId = 0;
         mnPkWarehouseId = 0;
-        mtPkDate = null;
+        mnPkRecordId = 0;
+        mtDate = null;
         mdStock = 0;
-        mdAcidityPercentage = 0;
         mbPremises = false;
         mbDeleted = false;
         mbSystem = false;
-        mnFkItemId = 0;
-        mnFkUnit = 0;
         mnFkOilClassId_n = 0;
         mnFkOilTypeId_n = 0;
         mnFkOilOwnerId_n = 0;
@@ -129,6 +131,38 @@ public class SDbStockRecord extends SDbRegistryUser {
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
     }
+    
+    @Override
+    public void setPrimaryKey(int[] pk) {
+        mnPkItemId = pk[0];
+        mnPkUnitId = pk[1];
+        mnPkCompanyId = pk[2];
+        mnPkBranchId = pk[3];
+        mnPkWarehouseId = pk[5];
+        mnPkRecordId = pk[6];
+    }
+
+    @Override
+    public int[] getPrimaryKey() {
+        return new int[] { mnPkItemId, mnPkUnitId, mnPkCompanyId, mnPkBranchId, mnPkWarehouseId, mnPkRecordId };
+    }
+    
+    @Override
+    public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
+        ResultSet resultSet = null;
+
+        mnPkRecordId = 0;
+
+        msSql = "SELECT COALESCE(MAX(id_rec), 0) + 1 FROM " + getSqlTable() + " " +
+                "WHERE id_item = " + mnPkItemId + " AND id_unit =  " + mnPkUnitId + 
+                    " AND id_co = " + mnPkCompanyId + " AND id_cob = " + mnPkBranchId + 
+                    " AND id_wah = " + mnPkWarehouseId;
+        
+        resultSet = session.getStatement().executeQuery(msSql);
+        if (resultSet.next()) {
+            mnPkRecordId = resultSet.getInt(1);
+        }
+    }
 
     @Override
     public String getSqlTable() {
@@ -137,12 +171,16 @@ public class SDbStockRecord extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_co = " + mnPkCompanyId + " AND id_cob =  " + mnPkBranchId + " AND id_wah = " + mnPkWarehouseId + " AND id_dt = '" + SLibUtils.DbmsDateFormatDate.format(mtPkDate) + "' ";
+        return "WHERE id_item = " + mnPkItemId + " AND id_unit =  " + mnPkUnitId + 
+                    " AND id_co = " + mnPkCompanyId + " AND id_cob = " + mnPkBranchId + 
+                    " AND id_wah = " + mnPkWarehouseId + " AND id_rec = " + mnPkRecordId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_co = " + pk[0] + " AND id_cob =  " + pk[1] + " AND id_wah = " + pk[2] + " AND id_dt = '" + SLibUtils.DbmsDateFormatDate.format(pk[3]) + "' ";
+        return "WHERE id_item = " + pk[0] + " AND id_unit =  " + pk[1] + 
+                    " AND id_co = " + pk[2] + " AND id_cob = " + pk[3] + 
+                    " AND id_wah = " + pk[4] + " AND id_rec = " + pk[5] + " ";
     }
 
     @Override
@@ -159,17 +197,17 @@ public class SDbStockRecord extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
+            mnPkItemId = resultSet.getInt("id_item");
+            mnPkUnitId = resultSet.getInt("id_unit");
             mnPkCompanyId = resultSet.getInt("id_co");
             mnPkBranchId = resultSet.getInt("id_cob");
             mnPkWarehouseId = resultSet.getInt("id_wah");
-            mtPkDate = resultSet.getDate("id_dt");
+            mnPkRecordId = resultSet.getInt("id_rec");
+            mtDate = resultSet.getDate("dt");
             mdStock = resultSet.getDouble("stock");
-            mdAcidityPercentage = resultSet.getDouble("aci_per");
             mbPremises = resultSet.getBoolean("b_premises");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkItemId = resultSet.getInt("fk_item");
-            mnFkUnit = resultSet.getInt("fk_unit");
             mnFkOilClassId_n = resultSet.getInt("fk_oil_cl_n");
             mnFkOilTypeId_n = resultSet.getInt("fk_oil_tp_n");
             mnFkOilOwnerId_n = resultSet.getInt("fk_oil_own_n");
@@ -195,26 +233,29 @@ public class SDbStockRecord extends SDbRegistryUser {
             mbUpdatable = true;
             mbDisableable = false;
             mbDeletable = true;
+            computePrimaryKey(session);
+            mbDeleted = false;
+            mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
+                    mnPkItemId + ", " + 
+                    mnPkUnitId + ", " + 
                     mnPkCompanyId + ", " + 
                     mnPkBranchId + ", " + 
                     mnPkWarehouseId + ", " + 
-                    "'" + SLibUtils.DbmsDateFormatDate.format(mtPkDate) + "', " + 
+                    mnPkRecordId + ", " + 
+                    "'" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " + 
                     mdStock + ", " + 
-                    mdAcidityPercentage + ", " + 
                     (mbPremises ? 1 : 0) + ", " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
-                    mnFkItemId + ", " + 
-                    mnFkUnit + ", " + 
-                    (mnFkOilClassId_n == SLibConsts.UNDEFINED ? null : mnFkOilClassId_n) + ", " + 
-                    (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? null : mnFkOilTypeId_n) + ", " + 
-                    (mnFkOilOwnerId_n == SLibConsts.UNDEFINED ? null : mnFkOilOwnerId_n) + ", " + 
-                    (mnFkOilAcidity_n == SLibConsts.UNDEFINED ? null : mnFkOilAcidity_n) + ", " + 
-                    (mnFkOilAcidityEntry_n == SLibConsts.UNDEFINED ? null : mnFkOilAcidityEntry_n) + ", " + 
+                    (mnFkOilClassId_n == SLibConsts.UNDEFINED ? null : mnFkOilClassId_n) + ", " +
+                    (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? null : mnFkOilTypeId_n) + ", " +
+                    (mnFkOilOwnerId_n == SLibConsts.UNDEFINED ? null : mnFkOilOwnerId_n) + ", " +
+                    (mnFkOilAcidity_n == SLibConsts.UNDEFINED ? null : mnFkOilAcidity_n) + ", " +
+                    (mnFkOilAcidityEntry_n == SLibConsts.UNDEFINED ? null : mnFkOilAcidityEntry_n) + ", " +
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -225,25 +266,25 @@ public class SDbStockRecord extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
+//                    "id_item = " + mnPkItemId + ", " +
+//                    "id_unit = " + mnPkUnitId + ", " +
 //                    "id_co = " + mnPkCompanyId + ", " +
 //                    "id_cob = " + mnPkBranchId + ", " +
 //                    "id_wah = " + mnPkWarehouseId + ", " +
-//                    "id_dt = '" + SLibUtils.DbmsDateFormatDate.format(mtPkDate) + "', " +
+//                    "id_rec = " + mnPkRecordId + ", " +
+                    "dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " +
                     "stock = " + mdStock + ", " +
-                    "aci_per = " + mdAcidityPercentage + ", " +
                     "b_premises = " + (mbPremises ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_item = " + mnFkItemId + ", " +
-                    "fk_unit = " + mnFkUnit + ", " +
                     "fk_oil_cl_n = " + (mnFkOilClassId_n == SLibConsts.UNDEFINED ? null : mnFkOilClassId_n) + ", " +
                     "fk_oil_tp_n = " + (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? null : mnFkOilTypeId_n) + ", " +
                     "fk_oil_own_n = " + (mnFkOilOwnerId_n == SLibConsts.UNDEFINED ? null : mnFkOilOwnerId_n) + ", " +
                     "fk_oil_aci_n = " + (mnFkOilAcidity_n == SLibConsts.UNDEFINED ? null : mnFkOilAcidity_n) + ", " +
                     "fk_oil_aci_ety_n = " + (mnFkOilAcidityEntry_n == SLibConsts.UNDEFINED ? null : mnFkOilAcidityEntry_n) + ", " +
-//                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
+                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
-//                    "ts_usr_ins = " + "NOW()" + ", " +
+                    "ts_usr_ins = " + "NOW()" + ", " +
                     "ts_usr_upd = " + "NOW()" + " " +
                     getSqlWhere();
         }
@@ -257,17 +298,17 @@ public class SDbStockRecord extends SDbRegistryUser {
     public SDbStockRecord clone() throws CloneNotSupportedException {
         SDbStockRecord registry = new SDbStockRecord();
 
+        registry.setPkItemId(this.getPkItemId());
+        registry.setPkUnitId(this.getPkUnitId());
         registry.setPkCompanyId(this.getPkCompanyId());
         registry.setPkBranchId(this.getPkBranchId());
         registry.setPkWarehouseId(this.getPkWarehouseId());
-        registry.setPkDate(this.getPkDate());
+        registry.setPkRecordId(this.getPkRecordId());
+        registry.setDate(this.getDate());
         registry.setStock(this.getStock());
-        registry.setAcidityPercentage(this.getAcidityPercentage());
         registry.setPremises(this.isPremises());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
-        registry.setFkItemId(this.getFkItemId());
-        registry.setFkUnit(this.getFkUnit());
         registry.setFkOilClassId_n(this.getFkOilClassId_n());
         registry.setFkOilTypeId_n(this.getFkOilTypeId_n());
         registry.setFkOilOwnerId_n(this.getFkOilOwnerId_n());
@@ -280,20 +321,5 @@ public class SDbStockRecord extends SDbRegistryUser {
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
-    }
-
-    @Override
-    public void setPrimaryKey(int[] ints) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int[] getPrimaryKey() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void computePrimaryKey(SGuiSession sgs) throws SQLException, Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

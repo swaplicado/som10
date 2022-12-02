@@ -18,12 +18,12 @@ import som.mod.SModConsts;
  *
  * @author Isabel Servín
  */
-public class SDbOilGroupFamily extends SDbRegistryUser {
+public class SDbConsumableWarehouse extends SDbRegistryUser {
 
-    protected int mnPkOilGroupFamilyId;
+    protected int mnPkConsumableWarehouseId;
     protected String msCode;
     protected String msName;
-    protected boolean mbMandatory;
+    protected int mnVolumeFormula;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -37,16 +37,15 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-    
-    public SDbOilGroupFamily() {
-        super(SModConsts.SU_OIL_GRP_FAM);
+    public SDbConsumableWarehouse() {
+        super(SModConsts.SU_CONS_WAH);
         initRegistry();
     }
-
-    public void setPkOilGroupFamilyId(int n) { mnPkOilGroupFamilyId = n; }
+    
+    public void setPkConsumableWarehouseId(int n) { mnPkConsumableWarehouseId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
-    public void setMandatory(boolean b) { mbMandatory = b; }
+    public void setVolumeFormula(int n) { mnVolumeFormula = n; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -57,11 +56,11 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
-
-    public int getPkOilGroupFamilyId() { return mnPkOilGroupFamilyId; }
+    
+    public int getPkConsumableWarehouseId() { return mnPkConsumableWarehouseId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
-    public boolean isMandatory() { return mbMandatory; }
+    public int getVolumeFormula() { return mnVolumeFormula; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -75,22 +74,22 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkOilGroupFamilyId = pk[0];
+        mnPkConsumableWarehouseId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkOilGroupFamilyId };
+        return new int[] { mnPkConsumableWarehouseId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
         
-        mnPkOilGroupFamilyId = 0;
+        mnPkConsumableWarehouseId = 0;
         msCode = "";
         msName = "";
-        mbMandatory = false;
+        mnVolumeFormula = 0;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -110,24 +109,24 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_oil_grp_fam = " + mnPkOilGroupFamilyId + " ";
+        return "WHERE id_cons_wah = " + mnPkConsumableWarehouseId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_oil_grp_fam = " + pk[0] + " ";
+        return "WHERE id_cons_wah = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet;
         
-        mnPkOilGroupFamilyId = 0;
+        mnPkConsumableWarehouseId = 0;
         
-        msSql = "SELECT COALESCE(MAX(id_oil_grp_fam), 0) + 1 FROM " + getSqlTable() + " ";
+        msSql = "SELECT COALESCE(MAX(id_cons_wah), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkOilGroupFamilyId = resultSet.getInt(1);
+            mnPkConsumableWarehouseId = resultSet.getInt(1);
         }
     }
 
@@ -144,11 +143,11 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
         if (!resultSet.next()) {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
-        else {
-            mnPkOilGroupFamilyId = resultSet.getInt("id_oil_grp_fam");
+        else{
+            mnPkConsumableWarehouseId = resultSet.getInt("id_cons_wah");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
-            mbMandatory = resultSet.getBoolean("b_mandatory");
+            mnVolumeFormula = resultSet.getInt("volume_formula");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -172,7 +171,6 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
         mnQueryResultId = SDbConsts.SAVE_ERROR;
         
         if (mbRegistryNew) {
-           
             computePrimaryKey(session);
             mbUpdatable = true;
             mbDisableable = false;
@@ -181,10 +179,10 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkOilGroupFamilyId + ", " + 
+                    mnPkConsumableWarehouseId + ", " + 
                     "'" + msCode + "', " + 
                     "'" + msName + "', " + 
-                    (mbMandatory ? 1 : 0) + ", " + 
+                    mnVolumeFormula + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " + 
                     (mbDisableable ? 1 : 0) + ", " + 
                     (mbDeletable ? 1 : 0) + ", " + 
@@ -201,10 +199,10 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
             
             msSql = "UPDATE " + getSqlTable() + " SET " + 
-                    //"id_oil_grp_fam = " + mnPkOilGroupFamilyId + ", " +
+                    //"id_cons_wah = " + mnPkConsumableWarehouseId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
-                    "b_mandatory = " + (mbMandatory ? 1 : 0) + ", " +
+                    "formula_type = " + mnVolumeFormula + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -219,18 +217,19 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
         }
         
         session.getStatement().execute(msSql);
+        
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
-    public SDbOilGroupFamily clone() throws CloneNotSupportedException {
-        SDbOilGroupFamily registry = new SDbOilGroupFamily();
+    public SDbConsumableWarehouse clone() throws CloneNotSupportedException {
+        SDbConsumableWarehouse registry = new SDbConsumableWarehouse();
         
-        registry.setPkOilGroupFamilyId(this.getPkOilGroupFamilyId());
+        registry.setPkConsumableWarehouseId(this.getPkConsumableWarehouseId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
-        registry.setMandatory(this.isMandatory());
+        registry.setVolumeFormula(this.getVolumeFormula());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
@@ -245,5 +244,5 @@ public class SDbOilGroupFamily extends SDbRegistryUser {
         registry.setRegistryNew(this.isRegistryNew());
 
         return registry;
-    }
+    }    
 }

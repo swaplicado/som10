@@ -590,7 +590,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel30.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlOilFamilyGroup.setText("Tipo aceite:");
+        jlOilFamilyGroup.setText("Familia aceite:");
         jlOilFamilyGroup.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel30.add(jlOilFamilyGroup);
 
@@ -1048,6 +1048,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         moKeyOilClass.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilClass.getText()), false);
         moKeyOilType.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilType.getText()), false);
+        moKeyOilFamilyGroup.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilFamilyGroup.getText()), false);
         moKeyItemType.setKeySettings(miClient, SGuiUtils.getLabelName(jlItemType), true);
         moKeyInputCategory.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputCategory), true);
         moKeyInputClass.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputClass), true);
@@ -1107,6 +1108,9 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moFields.addField(moDecUnitaryWeight);
         moFields.addField(moDecDensity);
         moFields.addField(moIntStartingSeasonMonth);
+        moFields.addField(moKeyOilClass);
+        moFields.addField(moKeyOilType);
+        moFields.addField(moKeyOilFamilyGroup);
         moFields.addField(moKeyItemType);
         moFields.addField(moKeyInputCategory);
         moFields.addField(moKeyInputClass);
@@ -1372,6 +1376,8 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         SExtUtils.populateCataloguesItems(miClient, moKeyExternalItem);
         miClient.getSession().populateCatalogue(moKeyExternalWarehouse_n, SModConsts.SU_EXT_WAH, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyOilClass, SModConsts.SU_OIL_CL, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyOilType, SModConsts.SU_OIL_TP, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyOilFamilyGroup, SModConsts.SU_OIL_GRP_FAM, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyItemType, SModConsts.SS_ITEM_TP, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyItemRowMaterial_n, SModConsts.SU_ITEM, SModSysConsts.SS_ITEM_TP_RM, null);
         miClient.getSession().populateCatalogue(moKeyItemProductSource_1_n, SModConsts.SU_ITEM, SModSysConsts.SS_ITEM_TP_FG, null);
@@ -1437,9 +1443,10 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moDecFruitYieldAdjustmentPercentage.setValue(moRegistry.getFruitYieldAdjustmentPercentage());
         moBoolPacking.setValue(moRegistry.isPacking());
         moBoolLaboratory.setValue(moRegistry.isLaboratory());
-        moKeyOilClass.setValue(new int [] { moRegistry.getFkOilClassId_n() });
+        moKeyOilClass.setValue(new int[] { moRegistry.getFkOilClassId_n() });
         actionOilClassChanged();
-        moKeyOilType.setValue(new int [] { moRegistry.getFkOilClassId_n(), moRegistry.getFkOilTypeId_n() });
+        moKeyOilType.setValue(new int[] { moRegistry.getFkOilClassId_n(), moRegistry.getFkOilTypeId_n() });
+        moKeyOilFamilyGroup.setValue(new int[] { moRegistry.getFkOilGroupFamily_n() });
         moKeyItemType.setValue(new int[] { moRegistry.getFkItemTypeId() });
         moKeyInputCategory.setValue(new int[] { moRegistry.getFkInputCategoryId() });
         moKeyInputClass.setValue(new int[] { moRegistry.getFkInputCategoryId(), moRegistry.getFkInputClassId() });
@@ -1572,7 +1579,8 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         registry.setFkItemTypeId(moKeyItemType.getValue()[0]);
         registry.setFkOilClassId_n(moKeyOilClass.getValue()[0]);
         registry.setFkOilTypeId_n(moKeyOilType.getValue()[1]);
-
+        registry.setFkOilGroupFamily_n(moKeyOilFamilyGroup.getValue()[0]); 
+        
         if (isRowMaterial) {
             registry.setFkInputCategoryId(moKeyInputType.getValue()[0]);
             registry.setFkInputClassId(moKeyInputType.getValue()[1]);

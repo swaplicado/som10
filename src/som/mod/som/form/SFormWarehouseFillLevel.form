@@ -50,7 +50,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
             <Property name="columns" type="int" value="1"/>
-            <Property name="rows" type="int" value="4"/>
+            <Property name="rows" type="int" value="5"/>
             <Property name="verticalGap" type="int" value="5"/>
           </Layout>
           <SubComponents>
@@ -61,15 +61,15 @@
                 <Property name="verticalGap" type="int" value="0"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlYear">
+                <Component class="javax.swing.JLabel" name="jlCode">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="A&#xf1;o:*"/>
+                    <Property name="text" type="java.lang.String" value="C&#xf3;digo:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[100, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldInteger" name="moIntYear">
+                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCode">
                 </Component>
               </SubComponents>
             </Container>
@@ -80,15 +80,20 @@
                 <Property name="verticalGap" type="int" value="0"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlMonth">
+                <Component class="javax.swing.JLabel" name="jlName">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Mes:*"/>
+                    <Property name="text" type="java.lang.String" value="Nombre:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[100, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldInteger" name="moIntMonth">
+                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextName">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[200, 23]"/>
+                    </Property>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
@@ -99,15 +104,23 @@
                 <Property name="verticalGap" type="int" value="0"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlClosingDate">
+                <Component class="javax.swing.JLabel" name="jlColor">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Fecha de cierre*:"/>
+                    <Property name="text" type="java.lang.String" value="Color:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[100, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateClosingDate">
+                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextColor">
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlColorNote">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="(Hexadecimal (#0A0A0A) o nombre HTML)"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[250, 23]"/>
+                    </Property>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
@@ -118,16 +131,46 @@
                 <Property name="verticalGap" type="int" value="0"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlFuncArea">
+                <Component class="javax.swing.JLabel" name="jlValMin">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="&#xc1;rea funcional*:"/>
+                    <Property name="text" type="java.lang.String" value="Val&#xf3;r minimo:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[100, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyFuncArea">
+                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecimalValMin">
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlValMinNote">
                   <Properties>
+                    <Property name="text" type="java.lang.String" value="(A partir de)"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[250, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanel8">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlValMax">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Val&#xf3;r m&#xe1;ximo:*"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[100, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecimalValMax">
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlValMaxNote">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="(Menor que)"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[250, 23]"/>
                     </Property>

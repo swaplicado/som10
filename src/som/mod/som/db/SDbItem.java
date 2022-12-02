@@ -78,13 +78,13 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
     protected boolean mbDeleted;
     protected boolean mbSystem;
     */
-    protected int mnFkOilClassId_n;
-    protected int mnFkOilTypeId_n;
-    protected int mnFkOilGroupFamily_n;
     protected int mnFkItemTypeId;
     protected int mnFkInputCategoryId;
     protected int mnFkInputClassId;
     protected int mnFkInputTypeId;
+    protected int mnFkOilClassId_n;
+    protected int mnFkOilTypeId_n;
+    protected int mnFkOilGroupFamily_n;
     protected int mnFkUnitId;
     protected int mnFkItemSource1Id_n;
     protected int mnFkItemSource2Id_n;
@@ -199,13 +199,13 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
     public void setDisabled(boolean b) { mbDisabled = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
-    public void setFkOilClassId_n(int n) { mnFkOilClassId_n = n; }
-    public void setFkOilTypeId_n(int n) { mnFkOilTypeId_n = n; }
-    public void setFkOilGroupFamily_n(int n) { mnFkOilGroupFamily_n = n; }
     public void setFkItemTypeId(int n) { mnFkItemTypeId = n; }
     public void setFkInputCategoryId(int n) { mnFkInputCategoryId = n; }
     public void setFkInputClassId(int n) { mnFkInputClassId = n; }
     public void setFkInputTypeId(int n) { mnFkInputTypeId = n; }
+    public void setFkOilClassId_n(int n) { mnFkOilClassId_n = n; }
+    public void setFkOilTypeId_n(int n) { mnFkOilTypeId_n = n; }
+    public void setFkOilGroupFamily_n(int n) { mnFkOilGroupFamily_n = n; }
     public void setFkUnitId(int n) { mnFkUnitId = n; }
     public void setFkItemSource1Id_n(int n) { mnFkItemSource1Id_n = n; }
     public void setFkItemSource2Id_n(int n) { mnFkItemSource2Id_n = n; }
@@ -268,13 +268,13 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
     public boolean isDisabled() { return mbDisabled; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
-    public int getFkOilClassId_n() { return mnFkOilClassId_n; }
-    public int getFkOilTypeId_n() { return mnFkOilTypeId_n; }
-    public int getFkOilGroupFamily_n() { return mnFkOilGroupFamily_n; }
     public int getFkItemTypeId() { return mnFkItemTypeId; }
     public int getFkInputCategoryId() { return mnFkInputCategoryId; }
     public int getFkInputClassId() { return mnFkInputClassId; }
     public int getFkInputTypeId() { return mnFkInputTypeId; }
+    public int getFkOilClassId_n() { return mnFkOilClassId_n; }
+    public int getFkOilTypeId_n() { return mnFkOilTypeId_n; }
+    public int getFkOilGroupFamily_n() { return mnFkOilGroupFamily_n; }
     public int getFkUnitId() { return mnFkUnitId; }
     public int getFkItemSource1Id_n() { return mnFkItemSource1Id_n; }
     public int getFkItemSource2Id_n() { return mnFkItemSource2Id_n; }
@@ -355,13 +355,13 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
         mbDisabled = false;
         mbDeleted = false;
         mbSystem = false;
-        mnFkOilClassId_n = 0;
-        mnFkOilTypeId_n = 0;
-        mnFkOilGroupFamily_n = 0;
         mnFkItemTypeId = 0;
         mnFkInputCategoryId = 0;
         mnFkInputClassId = 0;
         mnFkInputTypeId = 0;
+        mnFkOilClassId_n = 0;
+        mnFkOilTypeId_n = 0;
+        mnFkOilGroupFamily_n = 0;
         mnFkUnitId = 0;
         mnFkItemSource1Id_n = 0;
         mnFkItemSource2Id_n = 0;
@@ -469,13 +469,13 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkOilClassId_n = resultSet.getInt("fk_oil_cl_n");
-            mnFkOilTypeId_n = resultSet.getInt("fk_oil_tp_n");
-            mnFkOilGroupFamily_n = resultSet.getInt("fk_oil_grp_family_n");
             mnFkItemTypeId = resultSet.getInt("fk_item_tp");
             mnFkInputCategoryId = resultSet.getInt("fk_inp_ct");
             mnFkInputClassId = resultSet.getInt("fk_inp_cl");
             mnFkInputTypeId = resultSet.getInt("fk_inp_tp");
+            mnFkOilClassId_n = resultSet.getInt("fk_oil_cl_n");
+            mnFkOilTypeId_n = resultSet.getInt("fk_oil_tp_n");
+            mnFkOilGroupFamily_n = resultSet.getInt("fk_oil_grp_family_n");
             mnFkUnitId = resultSet.getInt("fk_unit");
             mnFkItemSource1Id_n = resultSet.getInt("fk_item_src_1_n");
             mnFkItemSource2Id_n = resultSet.getInt("fk_item_src_2_n");
@@ -563,13 +563,13 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
                     (mbDisabled ? 1 : 0) + ", " +
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
-                    (mnFkOilClassId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilClassId_n) + ", " +
-                    (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilTypeId_n) + ", " +
-                    (mnFkOilGroupFamily_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilGroupFamily_n) + ", " +
                     mnFkItemTypeId + ", " +
                     mnFkInputCategoryId + ", " + 
                     mnFkInputClassId + ", " +
                     mnFkInputTypeId + ", " +
+                    (mnFkOilClassId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilClassId_n) + ", " +
+                    (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilTypeId_n) + ", " +
+                    (mnFkOilGroupFamily_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilGroupFamily_n) + ", " +
                     mnFkUnitId + ", " +
                     (mnFkItemSource1Id_n == SLibConsts.UNDEFINED ? "NULL" : mnFkItemSource1Id_n) + ", " +
                     (mnFkItemSource2Id_n == SLibConsts.UNDEFINED ? "NULL" : mnFkItemSource2Id_n) + ", " +
@@ -637,13 +637,13 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_oil_cl_n = " + (mnFkOilClassId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilClassId_n) + ", " +
-                    "fk_oil_tp_n = " + (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilTypeId_n) + ", " +
-                    "fk_oil_grp_family_n = " + (mnFkOilGroupFamily_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilGroupFamily_n) + ", " +
                     "fk_item_tp = " + mnFkItemTypeId + ", " +
                     "fk_inp_ct = " + mnFkInputCategoryId + ", " +
                     "fk_inp_cl = " + mnFkInputClassId + ", " +
                     "fk_inp_tp = " + mnFkInputTypeId + ", " +
+                    "fk_oil_cl_n = " + (mnFkOilClassId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilClassId_n) + ", " +
+                    "fk_oil_tp_n = " + (mnFkOilTypeId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilTypeId_n) + ", " +
+                    "fk_oil_grp_family_n = " + (mnFkOilGroupFamily_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOilGroupFamily_n) + ", " +
                     "fk_unit = " + mnFkUnitId + ", " +
                     "fk_item_src_1_n = " + (mnFkItemSource1Id_n == SLibConsts.UNDEFINED ? "NULL" : mnFkItemSource1Id_n) + ", " +
                     "fk_item_src_2_n = " + (mnFkItemSource2Id_n == SLibConsts.UNDEFINED ? "NULL" : mnFkItemSource2Id_n) + ", " +
@@ -719,13 +719,13 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
         registry.setDisabled(this.isDisabled());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
-        registry.setFkOilClassId_n(this.getFkOilClassId_n());
-        registry.setFkOilTypeId_n(this.getFkOilTypeId_n());
-        registry.setFkOilGroupFamily_n(this.getFkOilGroupFamily_n());
         registry.setFkItemTypeId(this.getFkItemTypeId());
         registry.setFkInputCategoryId(this.getFkInputCategoryId());
         registry.setFkInputClassId(this.getFkInputClassId());
         registry.setFkInputTypeId(this.getFkInputTypeId());
+        registry.setFkOilClassId_n(this.getFkOilClassId_n());
+        registry.setFkOilTypeId_n(this.getFkOilTypeId_n());
+        registry.setFkOilGroupFamily_n(this.getFkOilGroupFamily_n());
         registry.setFkUnitId(this.getFkUnitId());
         registry.setFkItemSource1Id_n(this.getFkItemSource1Id_n());
         registry.setFkItemSource2Id_n(this.getFkItemSource2Id_n());
