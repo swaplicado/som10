@@ -381,8 +381,8 @@ public class SSomStockReport {
                     "WHERE sr.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
                     "AND i.fk_item_rm_n = " + SModSysConsts.SU_ITEM_RM_AVO + " " +
                     "AND sr.stock <> 0 " + 
-                    "AND NOT w.b_mobile " +
-                    "AND NOT sr.b_del AND NOT w.b_del" +
+                    //"AND NOT w.b_mobile " +
+                    "AND NOT sr.b_del AND NOT w.b_del " +
                     "ORDER BY w.code, i.name;";
 
             resultSet = statement.executeQuery(sql);
