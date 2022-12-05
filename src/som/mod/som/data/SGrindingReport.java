@@ -884,7 +884,7 @@ public class SGrindingReport {
                 + "v.id_result, "
                 + "v.fk_param_id, "
                 + "gp.param_code, "
-                + "gp.param, "
+                + "gp.parameter, "
                 + "COALESCE(v.dt_capture, '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') AS dt_result, "
                 + "gp.b_text, "
                 + "gp.def_text_value, "
@@ -943,7 +943,7 @@ public class SGrindingReport {
                 + "@dg / " + 100 + " * @prom AS pond "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_PARAM) + " AS gp ON "
-                + "gp.id_param = v.fk_param_id AND NOT gp.b_del "
+                + "gp.id_parameter = v.fk_param_id AND NOT gp.b_del "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
                 + "v.fk_item_id = i.id_item "
                 + "WHERE v.dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' AND v.fk_item_id = " + idItem + " "
@@ -963,7 +963,7 @@ public class SGrindingReport {
                 
                 resultRow.parameterId = result.getInt("fk_param_id");
                 resultRow.parameterCode = result.getString("param_code");
-                resultRow.parameterName = result.getString("param");
+                resultRow.parameterName = result.getString("parameter");
                 resultRow.isText = result.getBoolean("b_text");
                 resultRow.defaultTextValue = result.getString("def_text_value");
                 
@@ -1005,9 +1005,9 @@ public class SGrindingReport {
                     "FROM " +
                     "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_FORMULA) + " f " +
                     "        INNER JOIN " +
-                    "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " l ON f.fk_link_id = l.id_link " +
+                    "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " l ON f.fk_link = l.id_link " +
                     "WHERE " +
-                    "    NOT f.b_del AND fk_link_id = " + idLink + " " +
+                    "    NOT f.b_del AND fk_link = " + idLink + " " +
                     "ORDER BY form_order ASC;";
         
         try {

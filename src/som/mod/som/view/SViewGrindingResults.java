@@ -225,7 +225,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 + "v.id_result AS " + SDbConsts.FIELD_ID + "1, "
                 + "v.fk_param_id AS " + SDbConsts.FIELD_ID + "2, "
                 + "gp.param_code AS " + SDbConsts.FIELD_CODE + ", "
-                + "gp.param AS " + SDbConsts.FIELD_NAME + ", "
+                + "gp.parameter AS " + SDbConsts.FIELD_NAME + ", "
                 + "COALESCE(v.dt_capture, '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "') AS " + SDbConsts.FIELD_DATE + ", "
                 + "v.fk_param_id AS " + SDbConsts.FIELD_COMP + "1, "
                 + "gp.b_text, "
@@ -296,7 +296,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 + "'' AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_PARAM) + " AS gp ON "
-                + "gp.id_param = v.fk_param_id AND NOT gp.b_del "
+                + "gp.id_parameter = v.fk_param_id AND NOT gp.b_del "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
                 + "v.fk_item_id = i.id_item "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)

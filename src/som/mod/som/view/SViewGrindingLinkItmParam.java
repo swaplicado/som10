@@ -46,7 +46,7 @@ public class SViewGrindingLinkItmParam extends SGridPaneView {
                 + "itm.code, "
                 + "itm.name, "
                 + "pms.param_code, "
-                + "pms.param, "
+                + "pms.parameter, "
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
                 + "v.fk_usr_ins AS " + SDbConsts.FIELD_USER_INS_ID + ", "
                 + "v.fk_usr_upd AS " + SDbConsts.FIELD_USER_UPD_ID + ", "
@@ -56,7 +56,7 @@ public class SViewGrindingLinkItmParam extends SGridPaneView {
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_PARAM) + " AS pms ON "
-                + "v.fk_param_id = pms.id_param "
+                + "v.fk_param_id = pms.id_parameter "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS itm ON "
                 + "v.fk_item_id = itm.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
@@ -75,7 +75,7 @@ public class SViewGrindingLinkItmParam extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "itm.code", "Código ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "itm.name", "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "pms.param_code", "Código parámetro");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "pms.param", "Parámetro");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "pms.parameter", "Parámetro");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.capture_order", "Orden captura");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);

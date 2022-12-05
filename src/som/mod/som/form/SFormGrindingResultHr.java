@@ -183,14 +183,14 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
     private ArrayList<SDbGrindingResult> createNewTableRows() {
         String sql = "SELECT  " +
                 "    res.id_result, " +
-                "    gp.param AS param_name, " +
+                "    gp.parameter AS param_name, " +
                 "    (SELECT capture_cfg FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + 
                 "        AS li where res.fk_item_id = li.fk_item_id " +
                 "        AND res.fk_param_id = li.fk_param_id ORDER BY ts_usr_ins ASC LIMIT 1) AS capture_cfg " +
                 "FROM " +
                 "    " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " AS res " +
                 "        INNER JOIN " +
-                "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_PARAM) + " AS gp ON res.fk_param_id = gp.id_param " +
+                "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_PARAM) + " AS gp ON res.fk_param_id = gp.id_parameter " +
                 "WHERE " +
                 "    res.b_del = FALSE " +
                 "    AND gp.b_del = FALSE " +

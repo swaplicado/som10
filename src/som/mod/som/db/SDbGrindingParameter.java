@@ -121,12 +121,12 @@ public class SDbGrindingParameter extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_param = " + mnPkParameterId + " ";
+        return "WHERE id_parameter = " + mnPkParameterId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_param = " + pk[0] + " ";
+        return "WHERE id_parameter = " + pk[0] + " ";
     }
 
     @Override
@@ -135,7 +135,7 @@ public class SDbGrindingParameter extends SDbRegistryUser {
 
         mnPkParameterId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_param), 0) + 1 FROM " + getSqlTable() + " ";
+        msSql = "SELECT COALESCE(MAX(id_parameter), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
             mnPkParameterId = resultSet.getInt(1);
@@ -156,9 +156,9 @@ public class SDbGrindingParameter extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkParameterId = resultSet.getInt("id_param");
+            mnPkParameterId = resultSet.getInt("id_parameter");
             msParameterCode = resultSet.getString("param_code");
-            msParameter = resultSet.getString("param");
+            msParameter = resultSet.getString("parameter");
             msDetails = resultSet.getString("details");
             msDefaultTextValue = resultSet.getString("def_text_value");
             mbText = resultSet.getBoolean("b_text");
@@ -219,7 +219,7 @@ public class SDbGrindingParameter extends SDbRegistryUser {
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
                     "param_code = '" + msParameterCode + "', " +
-                    "param = '" + msParameter + "', " +
+                    "parameter = '" + msParameter + "', " +
                     "details = '" + msDetails + "', " +
                     "def_text_value = '" + msDefaultTextValue + "', " +
                     "b_text = " + (mbText ? 1 : 0) + ", " +

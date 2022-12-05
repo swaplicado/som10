@@ -43,9 +43,9 @@ public class SViewGrindingParameters extends SGridPaneView {
         }
 
         msSql = "SELECT "
-                + "v.id_param AS " + SDbConsts.FIELD_ID + "1, "
+                + "v.id_parameter AS " + SDbConsts.FIELD_ID + "1, "
                 + "v.param_code AS " + SDbConsts.FIELD_CODE + ", "
-                + "v.param AS " + SDbConsts.FIELD_NAME + ", "
+                + "v.parameter AS " + SDbConsts.FIELD_NAME + ", "
                 + "v.details, "
                 + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
                 + "v.b_can_dis AS " + SDbConsts.FIELD_CAN_DIS + ", "
@@ -65,7 +65,7 @@ public class SViewGrindingParameters extends SGridPaneView {
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
                 + "v.fk_usr_upd = uu.id_usr "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)
-                + "ORDER BY v.param, v.id_param, v.param_code";
+                + "ORDER BY v.parameter, v.id_parameter, v.param_code";
     }
 
     @Override

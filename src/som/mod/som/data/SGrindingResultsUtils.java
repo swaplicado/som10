@@ -219,7 +219,7 @@ public class SGrindingResultsUtils {
         }
 
         String sql = "SELECT "
-                + "fk_grin_group "
+                + "fk_rep_group "
                 + "FROM "
                 + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_REP_ITEM_GROUP) + " "
                 + "WHERE "
@@ -232,7 +232,7 @@ public class SGrindingResultsUtils {
 
             int group = 0;
             if (itemIdRes.next()) {
-                group = itemIdRes.getInt("fk_grin_group");
+                group = itemIdRes.getInt("fk_rep_group");
             }
 
             if (group == 0) {
@@ -240,11 +240,11 @@ public class SGrindingResultsUtils {
             }
 
             String sqlGroup = "SELECT "
-                    + "id_link "
+                    + "id_item_group "
                     + "FROM "
                     + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_REP_ITEM_GROUP) + " "
                     + "WHERE "
-                    + "fk_grin_group = " + group + ";";
+                    + "fk_rep_group = " + group + ";";
 
             ArrayList<SDbGrindingReportItemGroup> links = new ArrayList<>();
             linkIdsRes = client.getSession().getStatement().getConnection().createStatement().executeQuery(sqlGroup);
@@ -252,7 +252,7 @@ public class SGrindingResultsUtils {
             SDbGrindingReportItemGroup itemGrp = null;
             while (linkIdsRes.next()) {
                 itemGrp = new SDbGrindingReportItemGroup();
-                itemGrp.read(client.getSession(), new int[]{linkIdsRes.getInt("id_link")});
+                itemGrp.read(client.getSession(), new int[] { linkIdsRes.getInt("id_item_group") });
                 links.add(itemGrp);
             }
 

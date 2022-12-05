@@ -183,8 +183,8 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkItemId = resultSet.getInt("fk_item_id");
-            mnFkReportGroupId = resultSet.getInt("fk_rep_group_id");
+            mnFkItemId = resultSet.getInt("fk_item");
+            mnFkReportGroupId = resultSet.getInt("fk_rep_group");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -242,8 +242,8 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_item_id = " + mnFkItemId + ", " +
-                    "fk_rep_group_id = " + mnFkReportGroupId + ", " +
+                    "fk_item = " + mnFkItemId + ", " +
+                    "fk_rep_group = " + mnFkReportGroupId + ", " +
                     "fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     "ts_usr_ins = " + "NOW()" + ", " +

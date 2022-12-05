@@ -132,7 +132,7 @@ public class SDbGrindingLinkFormula extends SDbRegistryUser {
             msRowText = resultSet.getString("row_text");
             mnFormOrder = resultSet.getInt("form_order");
             mbDeleted = resultSet.getBoolean("b_del");
-            mnFkLinkId = resultSet.getInt("fk_link_id");
+            mnFkLinkId = resultSet.getInt("fk_link");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -176,7 +176,7 @@ public class SDbGrindingLinkFormula extends SDbRegistryUser {
                     "row_text = '" + msRowText + "', " +
                     "form_order = " + mnFormOrder + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
-                    "fk_link_id = " + mnFkLinkId + ", " +
+                    "fk_link = " + mnFkLinkId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +

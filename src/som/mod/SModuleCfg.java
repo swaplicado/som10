@@ -406,8 +406,8 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.SU_GRINDING_PARAM:
                 settings = new SGuiCatalogueSettings("Parámetros", 1);
                 settings.setCodeApplying(true);
-                sql = "SELECT id_param AS " + SDbConsts.FIELD_ID + "1, param AS " + SDbConsts.FIELD_ITEM + ", param_code AS " + SDbConsts.FIELD_CODE + " "
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY param, id_param ";
+                sql = "SELECT id_parameter AS " + SDbConsts.FIELD_ID + "1, param AS " + SDbConsts.FIELD_ITEM + ", param_code AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY param, id_parameter ";
                 break;
             case SModConsts.SU_OIL_TP:
                 settings = new SGuiCatalogueSettings("Tipo de aceite", 1);
