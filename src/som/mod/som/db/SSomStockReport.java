@@ -52,8 +52,8 @@ public class SSomStockReport {
                 for (SDbFunctionalArea funcArea : funcAreas) {
                     String mailSubject = "[SOM] Existencias tanques " + SLibUtils.DateFormatDate.format(subtractDate(stkRp.getDate())) + " (" + funcArea.getName() + ")";
 
-                    //ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(funcArea.getStockReportMails().toLowerCase(), ";")));
-                    ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode("isabel.garcia@swaplicado.com.mx", ";")));
+                    ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(funcArea.getStockReportMails().toLowerCase(), ";")));
+                    //ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode("isabel.garcia@swaplicado.com.mx", ";")));
 
                     SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "Aeth2021*s.", "som@aeth.mx");
 
