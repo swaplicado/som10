@@ -91,6 +91,7 @@ public class SViewStockReport extends SGridPaneView implements ActionListener {
                 + "'code' AS " + SDbConsts.FIELD_CODE + ", "
                 + "'name' AS " + SDbConsts.FIELD_NAME + ", "
                 + "v.dt, "
+                + "ADDDATE(v.dt, -1) AS cutoff_dt, "
                 + "v.mix_per, "
                 + "v.b_done, "
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
@@ -116,11 +117,12 @@ public class SViewStockReport extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[9];
+        SGridColumnView[] columns = new SGridColumnView[10];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "dt", "Fecha");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "wah", "Tanque acidez mezcla");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_2D, "mix_per", "Porcentaje mezcla");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "cutoff_dt", "Fecha de corte");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);

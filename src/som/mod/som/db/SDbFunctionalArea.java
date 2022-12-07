@@ -44,7 +44,6 @@ public class SDbFunctionalArea extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-
     public SDbFunctionalArea() {
         super(SModConsts.SU_FUNC_AREA);
         initRegistry();

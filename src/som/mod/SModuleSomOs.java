@@ -26,6 +26,8 @@ import som.gui.SGuiClientSessionCustom;
 import som.mod.ext.db.SExtUtils;
 import som.mod.som.db.SDbByProduct;
 import som.mod.som.db.SDbClosingCalendar;
+import som.mod.som.db.SDbConsumableWarehouse;
+import som.mod.som.db.SDbFunctionalArea;
 import som.mod.som.db.SDbIog;
 import som.mod.som.db.SDbIogExportation;
 import som.mod.som.db.SDbMfgEstimation;
@@ -42,6 +44,7 @@ import som.mod.som.db.SDbStockDay;
 import som.mod.som.db.SDbStockReport;
 import som.mod.som.db.SDbWahLab;
 import som.mod.som.db.SDbWahLabTest;
+import som.mod.som.db.SDbWarehouseFillLevel;
 import som.mod.som.db.SSomStockDays;
 import som.mod.som.form.SDialogDailyStockReport;
 import som.mod.som.form.SDialogRepIogList;
@@ -51,14 +54,15 @@ import som.mod.som.form.SDialogRepStockDay;
 import som.mod.som.form.SDialogRepStockMoves;
 import som.mod.som.form.SFormByProduct;
 import som.mod.som.form.SFormClosingCalendar;
+import som.mod.som.form.SFormConsumableWarehouse;
 import som.mod.som.form.SFormDialogIogExportation;
 import som.mod.som.form.SFormDialogStockClosing;
 import som.mod.som.form.SFormDialogWizardDps;
+import som.mod.som.form.SFormFunctionalArea;
 import som.mod.som.form.SFormIog;
 import som.mod.som.form.SFormMix;
 import som.mod.som.form.SFormOilAcidity;
 import som.mod.som.form.SFormOilAcidityEntry;
-import som.mod.som.form.SFormOilAcidityRow;
 import som.mod.som.form.SFormOilClass;
 import som.mod.som.form.SFormOilGroupFamily;
 import som.mod.som.form.SFormOilOwner;
@@ -70,10 +74,13 @@ import som.mod.som.form.SFormStockDays;
 import som.mod.som.form.SFormStockReport;
 import som.mod.som.form.SFormWahLab;
 import som.mod.som.form.SFormWahLabTest;
+import som.mod.som.form.SFormWarehouseFillLevel;
 import som.mod.som.view.SViewByProduct;
 import som.mod.som.view.SViewClosingCalendar;
+import som.mod.som.view.SViewConsumableWarehouse;
 import som.mod.som.view.SViewExternalDpsReturn;
 import som.mod.som.view.SViewExternalDpsSupply;
+import som.mod.som.view.SViewFunctionalArea;
 import som.mod.som.view.SViewIog;
 import som.mod.som.view.SViewIogExportation;
 import som.mod.som.view.SViewIogProd;
@@ -109,21 +116,21 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjCatProducer;
     private JMenuItem mjCatItem;
     private JMenuItem mjCatItemBatch;
-    private JMenuItem mjCatFunctionalAreas;
-    private JMenuItem mjCatConsWah;
     private JMenuItem mjCatInputType;
     private JMenuItem mjCatInputClass;
     private JMenuItem mjCatInputCategory;
     private JMenuItem mjCatIodineValueRank;
-    private JMenuItem mjCatWahFillLevel;
     private JMenuItem mjCatExternalWarehouses;
     private JMenuItem mjCatByProduct;
-    private JMenuItem mjCatOilClass; 
     private JMenuItem mjCatOilType; 
+    private JMenuItem mjCatOilClass; 
+    private JMenuItem mjCatOilGrpFam; 
     private JMenuItem mjCatOilAci; 
     private JMenuItem mjCatOilAciEty; 
+    private JMenuItem mjCatFunctionalAreas;
+    private JMenuItem mjCatConsWah;
+    private JMenuItem mjCatWahFillLevel;
     private JMenuItem mjCatOilOwn;
-    private JMenuItem mjCatOilGrpFam; 
     private JMenuItem mjCatClosingCalendar;
     private JMenuItem mjCatUpdateCatalogues;
     private JMenu mjTic;
@@ -168,12 +175,12 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjOilIogExpLog;
     private JMenu mjQuality;
     private JMenuItem mjQualityWahLab;
-    private JMenuItem mjQualityStkReport;
     private JMenu mjStk;
     private JMenuItem mjStkStock;
     private JMenuItem mjStkStockDiv;
     private JMenuItem mjStkStockWh;
     private JMenuItem mjStkStockWhDiv;
+    private JMenuItem mjStkStockReport;
     private JMenu mjRep;
     private JMenuItem mjRepStock;
     private JMenuItem mjRepStockDiv;
@@ -202,14 +209,14 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private SFormOilAcidityEntry moFormOilAcidityEntry;
     private SFormOilGroupFamily moFormOilGroupFamily;
     private SFormClosingCalendar moFormClosingCalendar;
+    private SFormFunctionalArea moFormFunctionalArea;
     private SFormWahLab moFormWahLabWithLastTest;
     private SFormWahLab moFormWahLabWithoutLastTest;
     private SFormWahLabTest moFormWahLabTest;
     private SFormStockReport moFormStockReport;
     private SFormProcessingBatch moFormPrcBatch;
-    
-    private SFormOilAcidity SFormOilAcidity;
-    private SFormOilAcidityRow SFormOilAcidityEntry;
+    private SFormWarehouseFillLevel moFormWarehouseFillLevel;
+    private SFormConsumableWarehouse moFormConsumableWarehouse;
 
     public SModuleSomOs(SGuiClient client) {
         super(client, SModConsts.MOD_SOM_OS, SLibConsts.UNDEFINED);
@@ -221,21 +228,21 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCatProducer = new JMenuItem("Proveedores");
         mjCatItem = new JMenuItem("Ítems");
         mjCatItemBatch = new JMenuItem("Lotes de ítems");
-        mjCatFunctionalAreas = new JMenuItem("Áreas funcionales");
-        mjCatConsWah = new JMenuItem("Almacenes consumibles");
         mjCatInputType = new JMenuItem("Tipos de insumo");
         mjCatInputClass = new JMenuItem("Clases de insumo");
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
         mjCatIodineValueRank = new JMenuItem("Rangos de yodo");
-        mjCatWahFillLevel = new JMenuItem("Rangos de lleno almacenes");
         mjCatExternalWarehouses = new JMenuItem("Almacenes sistema externo");
         mjCatByProduct = new JMenuItem("Procesos");
         mjCatOilType = new JMenuItem("Tipos de aceite");
         mjCatOilClass = new JMenuItem("Clases de aceite");
+        mjCatOilGrpFam = new JMenuItem("Agrupadores familias de aceite");
         mjCatOilAci = new JMenuItem("Vigencias acidez aceite");
         mjCatOilAciEty = new JMenuItem("Rangos acidez de aceite");
+        mjCatFunctionalAreas = new JMenuItem("Áreas funcionales");
+        mjCatConsWah = new JMenuItem("Almacenes consumibles");
+        mjCatWahFillLevel = new JMenuItem("Niveles de lleno almacenes");
         mjCatOilOwn = new JMenuItem("Propietarios de aceite");
-        mjCatOilGrpFam = new JMenuItem("Agrupadores familias de aceite");
         mjCatClosingCalendar = new JMenuItem("Cierres de mes");
         mjCatUpdateCatalogues = new JMenuItem("Actualizar catálogos sistema externo...");
 
@@ -243,25 +250,24 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCat.add(mjCatItem);
         mjCat.add(mjCatItemBatch);
         mjCat.addSeparator();
-        mjCat.add(mjCatFunctionalAreas);
-        mjCat.add(mjCatConsWah);
-        mjCat.addSeparator();
         mjCat.add(mjCatInputType);
         mjCat.add(mjCatInputClass);
         mjCat.add(mjCatInputCategory);
         mjCat.add(mjCatIodineValueRank);
-        mjCat.add(mjCatWahFillLevel);
         mjCat.add(mjCatExternalWarehouses);
         mjCat.add(mjCatByProduct);
         mjCat.addSeparator();
         mjCat.add(mjCatOilType); 
         mjCat.add(mjCatOilClass); 
+        mjCat.add(mjCatOilGrpFam); 
         mjCat.addSeparator();
         mjCat.add(mjCatOilAci); 
         mjCat.add(mjCatOilAciEty); 
         mjCat.addSeparator();
+        mjCat.add(mjCatFunctionalAreas);
+        mjCat.add(mjCatConsWah);
+        mjCat.add(mjCatWahFillLevel);
         mjCat.add(mjCatOilOwn);
-        mjCat.add(mjCatOilGrpFam); 
         mjCat.add(mjCatClosingCalendar);
         mjCat.addSeparator();
         mjCat.add(mjCatUpdateCatalogues);
@@ -269,21 +275,21 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCatProducer.addActionListener(this);
         mjCatItem.addActionListener(this);
         mjCatItemBatch.addActionListener(this);
-        mjCatFunctionalAreas.addActionListener(this);
-        mjCatConsWah.addActionListener(this);
         mjCatInputType.addActionListener(this);
         mjCatInputClass.addActionListener(this);
         mjCatInputCategory.addActionListener(this);
         mjCatIodineValueRank.addActionListener(this);
-        mjCatWahFillLevel.addActionListener(this);
         mjCatExternalWarehouses.addActionListener(this);
         mjCatByProduct.addActionListener(this);
         mjCatOilType.addActionListener(this); 
         mjCatOilClass.addActionListener(this); 
+        mjCatOilGrpFam.addActionListener(this); 
         mjCatOilAci.addActionListener(this); 
         mjCatOilAciEty.addActionListener(this); 
+        mjCatFunctionalAreas.addActionListener(this);
+        mjCatConsWah.addActionListener(this);
+        mjCatWahFillLevel.addActionListener(this);
         mjCatOilOwn.addActionListener(this);
-        mjCatOilGrpFam.addActionListener(this); 
         mjCatClosingCalendar.addActionListener(this);
         mjCatUpdateCatalogues.addActionListener(this);
 
@@ -425,29 +431,30 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         
         mjQuality = new JMenu("Control calidad");
         mjQualityWahLab = new JMenuItem("Análisis de laboratorio");
-        mjQualityStkReport = new JMenuItem("Reporte de existencias");
         
         mjQuality.add(mjQualityWahLab);
-        mjQuality.add(mjQualityStkReport);
-
+        
         mjQualityWahLab.addActionListener(this);
-        mjQualityStkReport.addActionListener(this);
-
+        
         mjStk = new JMenu("Existencias");
         mjStkStock = new JMenuItem("Existencias");
         mjStkStockDiv = new JMenuItem("Existencias por división");
         mjStkStockWh = new JMenuItem("Existencias por almacén");
         mjStkStockWhDiv = new JMenuItem("Existencias por almacén, división");
-
+        mjStkStockReport = new JMenuItem("Reporte de existencias de tanques");
+        
         mjStk.add(mjStkStock);
         mjStk.add(mjStkStockDiv);
         mjStk.add(mjStkStockWh);
         mjStk.add(mjStkStockWhDiv);
+        mjStk.addSeparator();
+        mjStk.add(mjStkStockReport);
 
         mjStkStock.addActionListener(this);
         mjStkStockDiv.addActionListener(this);
         mjStkStockWh.addActionListener(this);
         mjStkStockWhDiv.addActionListener(this);
+        mjStkStockReport.addActionListener(this);
 
         mjRep = new JMenu("Reportes");
         mjRepStock = new JMenuItem("Existencias...");
@@ -521,8 +528,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         
         mjQuality.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_LAB }));
         mjQualityWahLab.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_LAB));
-        mjQualityStkReport.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_LAB));
-
+        
         mjStk.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_WHS_OM, SModSysConsts.CS_RIG_REP_OM }));
 
         mjRep.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_WHS_OM, SModSysConsts.CS_RIG_REP_OM }));
@@ -609,6 +615,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             case SModConsts.SU_OIL_CL:
                 registry = new SDbOilClass();
                 break;
+            case SModConsts.SU_OIL_GRP_FAM:
+                registry = new SDbOilGroupFamily();
+                break;
             case SModConsts.SU_OIL_OWN: 
                 registry = new SDbOilOwner();
                 break;
@@ -618,8 +627,14 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             case SModConsts.SU_OIL_ACI_ETY: 
                 registry = new SDbOilAcidityEntry();
                 break;
-            case SModConsts.SU_OIL_GRP_FAM:
-                registry = new SDbOilGroupFamily();
+            case SModConsts.SU_FUNC_AREA:
+                registry = new SDbFunctionalArea();
+                break;
+            case SModConsts.SU_CONS_WAH:
+                registry = new SDbConsumableWarehouse();
+                break;
+            case SModConsts.SU_WAH_FILL_LEVEL:
+                registry = new SDbWarehouseFillLevel();
                 break;
             case SModConsts.SU_CLOSING_CAL:
                 registry = new SDbClosingCalendar();
@@ -644,9 +659,19 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             case SModConsts.S_PRC_BATCH:
                 settings = new SGuiCatalogueSettings("Lote", 1);
                 settings.setCodeApplying(false);
+                
+                if (params != null) {
+                    value = params.getParamsMap().get(SModConsts.SU_ITEM);
+                    if (value != null) {
+                        aux += "AND fk_item = " + ((int[]) value)[0] + " ";
+                    }
+                }
+                
                 sql = "SELECT id_prc_batch AS " + SDbConsts.FIELD_ID + "1, "
                         + "prc_batch AS " + SDbConsts.FIELD_ITEM + " " 
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY fk_item, dt ";
+                        + "FROM " + SModConsts.TablesMap.get(type) + " "
+                        + "WHERE b_del = 0 " + aux 
+                        + "ORDER BY fk_item, dt ";
                 break;
             case SModConsts.SS_IOG_CT:
                 settings = new SGuiCatalogueSettings("Categoría mov. inv.", 1);
@@ -960,11 +985,11 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             case SModConsts.SU_OIL_TP:
                 view = new SViewOilType(miClient, "Tipos de aceite");
                 break;
-            case SModConsts.SU_WAH_FILL_LEVEL:
-                view = new SViewWarehouseFillLevel(miClient, "Niveles de lleno almacenes");
-                break;
             case SModConsts.SU_OIL_CL:
                 view = new SViewOilClass(miClient, "Clases de aceite");
+                break;
+            case SModConsts.SU_OIL_GRP_FAM:
+                view = new SViewOilGroupFamily(miClient, "Agrupadores familias de aceite");
                 break;
             case SModConsts.SU_OIL_OWN: 
                 view = new SViewOilOwner(miClient, "Propietarios de aceite");
@@ -975,17 +1000,17 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             case SModConsts.SU_OIL_ACI_ETY: 
                 view = new SViewOilAcidityEntry(miClient, "Acidez de aceite");
                 break;
-            case SModConsts.SU_OIL_GRP_FAM:
-                view = new SViewOilGroupFamily(miClient, "Agrupadores familias de aceite");
+            case SModConsts.SU_FUNC_AREA:
+                view = new SViewFunctionalArea(miClient, "Área funcional");
+                break;
+            case SModConsts.SU_CONS_WAH:
+                view = new SViewConsumableWarehouse(miClient, "Almacenes consumibles");
+                break;
+            case SModConsts.SU_WAH_FILL_LEVEL:
+                view = new SViewWarehouseFillLevel(miClient, "Niveles de lleno almacenes");
                 break;
             case SModConsts.SU_CLOSING_CAL:
                 view = new SViewClosingCalendar(miClient, "Cierres de mes");
-                break;
-            case SModConsts.SU_FUNC_AREA:
-                //view = new SViewFunctionalArea(miClient, "Área funcional");
-                break;
-            case SModConsts.SU_CONS_WAH:
-                //view = new SViewConsumableWarehouse(miClient, "Almacenes de consumibles");
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -1046,7 +1071,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 form = moFormWahLabTest;
                 break;
             case SModConsts.S_PRC_BATCH:
-                if (moFormPrcBatch == null) { moFormPrcBatch = new SFormProcessingBatch(miClient, "Lotes de ítems"); }
+                if (moFormPrcBatch == null) { moFormPrcBatch = new SFormProcessingBatch(miClient, "Lote de ítem"); }
                 form = moFormPrcBatch;
                 break;
             case SModConsts.S_STK_REPORT:
@@ -1062,15 +1087,19 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 form = moFormByProduct;
                 break;
             case SModConsts.SU_OIL_TP:
-                if (moFormOilType == null) { moFormOilType = new SFormOilType(miClient, "Tipos de aceite"); }
+                if (moFormOilType == null) { moFormOilType = new SFormOilType(miClient, "Tipo de aceite"); }
                 form = moFormOilType;
                 break;
             case SModConsts.SU_OIL_CL:
-                if (moFormOilClass == null) { moFormOilClass = new SFormOilClass(miClient, "Clases de aceite"); }
+                if (moFormOilClass == null) { moFormOilClass = new SFormOilClass(miClient, "Clase de aceite"); }
                 form = moFormOilClass;
                 break;
+            case SModConsts.SU_OIL_GRP_FAM:
+                if (moFormOilGroupFamily == null) { moFormOilGroupFamily = new SFormOilGroupFamily(miClient, "Agrupador familia de aceite"); }
+                form = moFormOilGroupFamily;
+                break;
             case SModConsts.SU_OIL_OWN: 
-                if (moFormOilOwner == null) { moFormOilOwner = new SFormOilOwner(miClient, "Propietarios de aceite"); }
+                if (moFormOilOwner == null) { moFormOilOwner = new SFormOilOwner(miClient, "Propietario de aceite"); }
                 form = moFormOilOwner;
                 break;
             case SModConsts.SU_OIL_ACI: 
@@ -1081,12 +1110,20 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 if (moFormOilAcidityEntry == null) { moFormOilAcidityEntry = new SFormOilAcidityEntry(miClient, "Acidez aceite"); }
                 form = moFormOilAcidityEntry;
                 break;
-            case SModConsts.SU_OIL_GRP_FAM:
-                if (moFormOilGroupFamily == null) { moFormOilGroupFamily = new SFormOilGroupFamily(miClient, "Agrupadores familias de aceite"); }
-                form = moFormOilGroupFamily;
+            case SModConsts.SU_FUNC_AREA:
+                if (moFormFunctionalArea == null) { moFormFunctionalArea = new SFormFunctionalArea(miClient, "Área funcional"); }
+                form = moFormFunctionalArea;
+                break;
+            case SModConsts.SU_CONS_WAH:
+                if (moFormConsumableWarehouse == null) { moFormConsumableWarehouse = new SFormConsumableWarehouse(miClient, "Almacen de consumibles"); }
+                form = moFormConsumableWarehouse;
+                break;
+            case SModConsts.SU_WAH_FILL_LEVEL:
+                if (moFormWarehouseFillLevel == null) { moFormWarehouseFillLevel = new SFormWarehouseFillLevel(miClient, "Nivel de lleno de almacen"); }
+                form = moFormWarehouseFillLevel;
                 break;
             case SModConsts.SU_CLOSING_CAL:
-                if (moFormClosingCalendar == null) { moFormClosingCalendar = new SFormClosingCalendar(miClient, "Cierres de mes"); }
+                if (moFormClosingCalendar == null) { moFormClosingCalendar = new SFormClosingCalendar(miClient, "Cierre de mes"); }
                 form = moFormClosingCalendar;
                 break;
             default:
@@ -1135,12 +1172,6 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             else if (menuItem == mjCatItemBatch) {
                 miClient.getSession().showView(SModConsts.S_PRC_BATCH, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == mjCatFunctionalAreas) {
-                miClient.getSession().showView(SModConsts.SU_FUNC_AREA, SLibConsts.UNDEFINED, null);
-            }
-            else if (menuItem == mjCatConsWah) {
-                miClient.getSession().showView(SModConsts.SU_CONS_WAH, SLibConsts.UNDEFINED, null);
-            }
             else if (menuItem == mjCatInputType) {
                 miClient.getSession().showView(SModConsts.SU_INP_TP, SLibConsts.UNDEFINED, null);
             }
@@ -1152,9 +1183,6 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatIodineValueRank) {
                 miClient.getSession().showView(SModConsts.SU_IOD_VAL_RANK, SLibConsts.UNDEFINED, null);
-            }
-            else if (menuItem == mjCatWahFillLevel) {
-                miClient.getSession().showView(SModConsts.SU_WAH_FILL_LEVEL, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatExternalWarehouses) {
                 miClient.getSession().showView(SModConsts.SU_EXT_WAH, SLibConsts.UNDEFINED, null);
@@ -1168,18 +1196,27 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             else if (menuItem == mjCatOilClass) {
                 miClient.getSession().showView(SModConsts.SU_OIL_CL, SLibConsts.UNDEFINED, null);
             } 
+            else if (menuItem == mjCatOilGrpFam) {
+                miClient.getSession().showView(SModConsts.SU_OIL_GRP_FAM, SLibConsts.UNDEFINED, null);
+            } 
             else if (menuItem == mjCatOilAci) {
                 miClient.getSession().showView(SModConsts.SU_OIL_ACI, SLibConsts.UNDEFINED, null);
             } 
             else if (menuItem == mjCatOilAciEty) {
                 miClient.getSession().showView(SModConsts.SU_OIL_ACI_ETY, SLibConsts.UNDEFINED, null);
             } 
+            else if (menuItem == mjCatFunctionalAreas) {
+                miClient.getSession().showView(SModConsts.SU_FUNC_AREA, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatConsWah) {
+                miClient.getSession().showView(SModConsts.SU_CONS_WAH, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatWahFillLevel) {
+                miClient.getSession().showView(SModConsts.SU_WAH_FILL_LEVEL, SLibConsts.UNDEFINED, null);
+            }
             else if (menuItem == mjCatOilOwn) {
                 miClient.getSession().showView(SModConsts.SU_OIL_OWN, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == mjCatOilGrpFam) {
-                miClient.getSession().showView(SModConsts.SU_OIL_GRP_FAM, SLibConsts.UNDEFINED, null);
-            } 
             else if (menuItem == mjCatClosingCalendar) {
                 miClient.getSession().showView(SModConsts.SU_CLOSING_CAL, SLibConsts.UNDEFINED, null);
             }
@@ -1291,14 +1328,14 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             else if (menuItem == mjQualityWahLab) {
                 showView(SModConsts.S_WAH_LAB, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == mjQualityStkReport) {
-                showView(SModConsts.S_STK_REPORT, SLibConsts.UNDEFINED, null);
-            }
             else if (menuItem == mjStkStock) {
                 showView(SModConsts.S_STK, SModConsts.SX_STK_STK, null);
             }
             else if (menuItem == mjStkStockDiv) {
                 showView(SModConsts.S_STK, SModConsts.SX_STK_DIV, null);
+            }
+            else if (menuItem == mjStkStockReport) {
+                showView(SModConsts.S_STK_REPORT, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjStkStockWh) {
                 showView(SModConsts.S_STK, SModConsts.SX_STK_WAH_WAH, null);

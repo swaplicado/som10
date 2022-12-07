@@ -41,6 +41,8 @@ public class SDbStockReport extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
     
+    protected boolean mbAuxSendMails;
+    
     protected ArrayList<SDbProcessingRawMaterials> maProcessingRawMaterials;
     protected ArrayList<SDbConsumableRecord> maConsumableRecords;
 
@@ -62,6 +64,8 @@ public class SDbStockReport extends SDbRegistryUser {
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
+    
+    public void setAuxSendMails(boolean b) { mbAuxSendMails = b; }
 
     public int getPkStockReportId() { return mnPkStockReportId; }
     public Date getDate() { return mtDate; }
@@ -76,6 +80,8 @@ public class SDbStockReport extends SDbRegistryUser {
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
+    
+    public boolean getAuxSendMails() { return mbAuxSendMails; }
     
     public ArrayList<SDbProcessingRawMaterials> getProcessingRawMaterials() { return maProcessingRawMaterials; }
     public ArrayList<SDbConsumableRecord> getConsumableRecords() { return maConsumableRecords; }
@@ -266,6 +272,11 @@ public class SDbStockReport extends SDbRegistryUser {
             consRec.setPkStockReportId(mnPkStockReportId);
             consRec.setRegistryNew(true);
             consRec.save(session);
+        }
+        
+        if (mbAuxSendMails) {
+            SSomStockReport report = new SSomStockReport(session.getClient());
+            report.sendReports(new int[] { mnPkStockReportId } );
         }
         
         mbRegistryNew = false;

@@ -202,7 +202,7 @@ public class SDbConsumableWarehouse extends SDbRegistryUser {
                     //"id_cons_wah = " + mnPkConsumableWarehouseId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
-                    "formula_type = " + mnVolumeFormula + ", " +
+                    "volume_formula = " + mnVolumeFormula + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +

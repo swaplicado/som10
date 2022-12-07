@@ -221,7 +221,7 @@ public class SDbClosingCalendar extends SDbRegistryUser {
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
-                    "ts_usr_upd = " + "NOW()" + ", " +
+                    "ts_usr_upd = " + "NOW()" + " " +
                     getSqlWhere();
         }
         

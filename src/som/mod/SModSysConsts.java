@@ -174,6 +174,7 @@ public abstract class SModSysConsts {
     public static final int SU_OIL_TP_CRU = 1;
     public static final int SU_OIL_TP_REF = 2;
     public static final int SU_OIL_TP_REP = 3;
+    public static final int SU_OIL_TP_RES = 4;
     
     public static final HashMap<Integer, String> SU_OIL_TP_DESC;
     
@@ -244,5 +245,6 @@ public abstract class SModSysConsts {
         SU_OIL_TP_DESC.put(1, "CRUDO");
         SU_OIL_TP_DESC.put(2, "REFINADO");
         SU_OIL_TP_DESC.put(3, "REPROCESO");
+        SU_OIL_TP_DESC.put(4, "RESIDUO");
     }
 }
