@@ -41,7 +41,7 @@ public class SDbWarehouseFillLevel extends SDbRegistryUser {
     */
     
     public SDbWarehouseFillLevel() {
-        super(SModConsts.SU_VEH_CONT_TYPE);
+        super(SModConsts.SU_WAH_FILL_LEVEL);
         initRegistry();
     }
     

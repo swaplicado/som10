@@ -196,6 +196,7 @@ public class SFormClosingCalendar extends sa.lib.gui.bean.SBeanForm {
         registry.setCalendarYear(moIntYear.getValue());
         registry.setCalendarMonth(moIntMonth.getValue());
         registry.setClosingDate(moDateClosingDate.getValue());
+        registry.setFkFunctionalAreaId(moKeyFuncArea.getValue()[0]);
         
         return registry;
     }

@@ -257,6 +257,8 @@ public class SDbOilAcidityEntry extends SDbRegistryUser {
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
+        
+         registry.setRegistryNew(this.isRegistryNew());
 
         return registry;
     }
