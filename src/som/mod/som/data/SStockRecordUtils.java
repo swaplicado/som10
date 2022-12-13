@@ -53,10 +53,7 @@ public class SStockRecordUtils {
                 + "    SUM(v.mov_out) AS f_mov_o, "
                 + "    SUM(v.mov_in - v.mov_out) AS f_stk, "
                 + "    vu.code, "
-                + "    wp.b_premises,"
-                + "    sday.fk_oil_cl_n, "
-                + "    sday.fk_oil_tp_n, "
-                + "    sday.fk_oil_own_n "
+                + "    wp.b_premises "
                 + "FROM "
                 + "    " + SModConsts.TablesMap.get(SModConsts.S_STK) + " AS v "
                 + "        INNER JOIN "
@@ -75,14 +72,6 @@ public class SStockRecordUtils {
                 + "        AND v.id_cob = wp.id_cob "
                 + "        AND v.id_wah = wp.id_wah "
                 + "        AND wp.id_dt = '" + SLibUtils.DbmsDateFormatDate.format(dtEstimation) + "' "
-                + "        LEFT JOIN "
-                + "    " + SModConsts.TablesMap.get(SModConsts.S_STK_DAY) + " AS sday ON v.id_year = sday.id_year "
-                + "        AND v.id_item = sday.id_item "
-                + "        AND v.id_unit = sday.id_unit "
-                + "        AND v.id_co = sday.id_co "
-                + "        AND v.id_cob = sday.id_cob "
-                + "        AND v.id_wah = sday.id_wah "
-                + "        AND sday.id_day = '" + SLibUtils.DbmsDateFormatDate.format(dtEstimation) + "' "
                 + "WHERE "
                 + "    v.b_del = 0 AND v.id_year = " + SLibTimeUtils.digestYear(dtEstimation)[0] + " "
                 + "        AND v.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dtEstimation) + "' AND vw.b_del = 0 "
@@ -92,6 +81,15 @@ public class SStockRecordUtils {
 
         ResultSet stkResult = client.getSession().getStatement().getConnection().createStatement().executeQuery(sqlStock);
 
+        // Consultar el stock day para determinar clase, tipo y propietario de aceite
+        String sqlClassTypeOwn = "SELECT "
+                + "    sday.fk_oil_cl_n, sday.fk_oil_tp_n, sday.fk_oil_own_n "
+                + "FROM "
+                + "    " + SModConsts.TablesMap.get(SModConsts.S_STK_DAY) + " AS sday "
+                + "WHERE ";
+        
+        String sqlTemp;
+        
         SDbStockRecord oStkRecord;
         client.getSession().getStatement().getConnection().setAutoCommit(false);
         
@@ -125,9 +123,30 @@ public class SStockRecordUtils {
                 oStkRecord.setPremises(stkResult.getBoolean("b_premises"));
                 oStkRecord.setDeleted(false);
                 oStkRecord.setSystem(true);
-                oStkRecord.setFkOilClassId_n(stkResult.getInt("fk_oil_cl_n"));
-                oStkRecord.setFkOilTypeId_n(stkResult.getInt("fk_oil_tp_n"));
-                oStkRecord.setFkOilOwnerId_n(stkResult.getInt("fk_oil_own_n"));
+                
+                // Consultar el stock day para determinar clase, tipo y propietario de aceite
+                sqlTemp = sqlClassTypeOwn + "sday.id_year = " + stkResult.getInt("id_year") + " "
+                        + "AND sday.id_item = " + oStkRecord.getPkItemId() + " "
+                        + "AND sday.id_unit = " + oStkRecord.getPkUnitId() + " "
+                        + "AND sday.id_co = " + oStkRecord.getPkCompanyId() + " "
+                        + "AND sday.id_cob = " + oStkRecord.getPkBranchId() + " "
+                        + "AND sday.id_wah = " + oStkRecord.getPkWarehouseId() + " "
+                        + "AND sday.dt = '" + SLibUtils.DbmsDateFormatDate.format(dtEstimation) + "' "
+                        + "AND sday.b_del = 0;";
+                
+                ResultSet stkDayResult = client.getSession().getStatement().getConnection().createStatement().executeQuery(sqlTemp);
+                
+                if (stkDayResult.next()) {
+                    oStkRecord.setFkOilClassId_n(stkDayResult.getInt("fk_oil_cl_n"));
+                    oStkRecord.setFkOilTypeId_n(stkDayResult.getInt("fk_oil_tp_n"));
+                    oStkRecord.setFkOilOwnerId_n(stkDayResult.getInt("fk_oil_own_n"));
+                }
+                else {
+                    oStkRecord.setFkOilClassId_n(0);
+                    oStkRecord.setFkOilTypeId_n(0);
+                    oStkRecord.setFkOilOwnerId_n(0);
+                }
+                
                 oStkRecord.setFkOilAcidity_n(0);
                 oStkRecord.setFkOilAcidityEntry_n(0);
 
