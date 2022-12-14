@@ -1,4 +1,12 @@
 ================================================================================
+2022-12-14, 1.0 083.2
+Isabel Danae GARCÍA SERVÍN/ Edwin Omar CARMONA FIGUEROA
+--------------------------------------------------------------------------------
+1) Ajustes en el reporte de existencias de inventarios.
+2) Restricción al guardar registros con empalme de fechas en los análisis de laboratorio de aceites.
+3) Corrección guardado de clase, tipo y propietario de aceite en stock record.
+
+================================================================================
 2022-12-07, 1.0 083.1
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

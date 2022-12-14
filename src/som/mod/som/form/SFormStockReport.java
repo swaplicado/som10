@@ -79,7 +79,7 @@ public class SFormStockReport extends sa.lib.gui.bean.SBeanForm implements ItemL
         moKeyMixWah = new sa.lib.gui.bean.SBeanFieldKey();
         jpPanelDecimal = new javax.swing.JPanel();
         jlMixWahItem = new javax.swing.JLabel();
-        jPanel7 = new javax.swing.JPanel();
+        jpPanelDecimal1 = new javax.swing.JPanel();
         jlMixPer = new javax.swing.JLabel();
         moDecimalMixPer = new sa.lib.gui.bean.SBeanFieldDecimal();
         jpRawMaterials = new javax.swing.JPanel();
@@ -167,29 +167,27 @@ public class SFormStockReport extends sa.lib.gui.bean.SBeanForm implements ItemL
         jlMixWah.setPreferredSize(new java.awt.Dimension(135, 23));
         jPanel6.add(jlMixWah);
 
-        moKeyMixWah.setPreferredSize(new java.awt.Dimension(500, 23));
+        moKeyMixWah.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel6.add(moKeyMixWah);
 
         jpDate.add(jPanel6);
 
-        jpPanelDecimal.setPreferredSize(new java.awt.Dimension(555, 27));
         jpPanelDecimal.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         jlMixWahItem.setText("Ítem");
-        jlMixWahItem.setPreferredSize(new java.awt.Dimension(500, 23));
+        jlMixWahItem.setPreferredSize(new java.awt.Dimension(700, 23));
         jpPanelDecimal.add(jlMixWahItem);
 
         jpDate.add(jpPanelDecimal);
 
-        jPanel7.setPreferredSize(new java.awt.Dimension(555, 29));
-        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        jpPanelDecimal1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         jlMixPer.setText("Porcentaje mezcla:*");
         jlMixPer.setPreferredSize(new java.awt.Dimension(135, 16));
-        jPanel7.add(jlMixPer);
-        jPanel7.add(moDecimalMixPer);
+        jpPanelDecimal1.add(jlMixPer);
+        jpPanelDecimal1.add(moDecimalMixPer);
 
-        jpDate.add(jPanel7);
+        jpDate.add(jpPanelDecimal1);
 
         jpAllPanels.add(jpDate, java.awt.BorderLayout.NORTH);
 
@@ -345,7 +343,7 @@ public class SFormStockReport extends sa.lib.gui.bean.SBeanForm implements ItemL
 
         jpPlant2.add(jPanel16);
 
-        jpRawMaterials.add(jpPlant2, java.awt.BorderLayout.CENTER);
+        jpRawMaterials.add(jpPlant2, java.awt.BorderLayout.SOUTH);
 
         jpAllPanels.add(jpRawMaterials, java.awt.BorderLayout.CENTER);
 
@@ -436,7 +434,6 @@ public class SFormStockReport extends sa.lib.gui.bean.SBeanForm implements ItemL
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JButton jbContinue;
     private javax.swing.JButton jbPrcBatch1;
@@ -471,6 +468,7 @@ public class SFormStockReport extends sa.lib.gui.bean.SBeanForm implements ItemL
     private javax.swing.JPanel jpConsumables;
     private javax.swing.JPanel jpDate;
     private javax.swing.JPanel jpPanelDecimal;
+    private javax.swing.JPanel jpPanelDecimal1;
     private javax.swing.JPanel jpPlant1;
     private javax.swing.JPanel jpPlant2;
     private javax.swing.JPanel jpRawMaterials;

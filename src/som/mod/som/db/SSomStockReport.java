@@ -31,6 +31,8 @@ import som.mod.som.form.SDialogStockReportPreview;
 public class SSomStockReport {
     
     private static final int FONT_SIZE_TBL = 1;
+    private static final int WEEKS_OF_TEST = 3; // CUANTAS SEMANAS ATRAS SE BUSCARAN ANÁLISIS DE LABORATORIO.
+    private static final int[] SU_OIL_CL_IDS = { 2, 1 }; // AGUACATE, SEMILLAS; NOTA: el orden de los id indican el orden en el que aparecerán en el reporte.
     private static final int[] SU_OIL_TP_IDS = { 1, 2, 3/*, 4*/ }; // CRUDO, REFINADO, REPROCESO, RESIDUO; NOTA: se comenta el id residuo ya que no es necesario que aparezca en el reporte
     private static final String SU_FUNC_AREA_TP_PREVIEW = "V";
     
@@ -45,20 +47,22 @@ public class SSomStockReport {
             ArrayList<SDbFunctionalArea> funcAreas = getFunctionalAreas();
             SDbStockReport stkRp = getStockReport(pk);
             
-            SDialogStockReportPreview preview = new SDialogStockReportPreview(miClient, generateReportHtml(stkRp, null ,SU_FUNC_AREA_TP_PREVIEW)); // v = preview
+            SDialogStockReportPreview preview = new SDialogStockReportPreview(miClient, generateReportHtml(stkRp, null, SU_FUNC_AREA_TP_PREVIEW, 2)); // v = preview
             preview.setVisible(true);
             
             if (preview.getFormResult() == SGuiConsts.FORM_RESULT_OK) {
                 for (SDbFunctionalArea funcArea : funcAreas) {
-                    String mailSubject = "[SOM] Existencias tanques " + SLibUtils.DateFormatDate.format(subtractDate(stkRp.getDate())) + " (" + funcArea.getName() + ")";
+                    String mailSubject = "[SOM] Existencias tanques " + SLibUtils.DateFormatDate.format(stkRp.getDate()) + " (" + funcArea.getName() + ")";
 
                     ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(funcArea.getStockReportMails().toLowerCase(), ";")));
+                    //ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode("isabel.garcia@swaplicado.com.mx;sflores@swaplicado.com.mx", ";")));
                     //ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode("isabel.garcia@swaplicado.com.mx", ";")));
+                    //ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode("estadisticas@aeth.mx", ";")));
 
                     SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "Aeth2021*s.", "som@aeth.mx");
 
                     SMail mail = new SMail(sender, SMailUtils.encodeSubjectUtf8(mailSubject), 
-                            generateReportHtml(stkRp, funcArea, funcArea.getFunctionalAreaType()), recipientsTo);
+                            generateReportHtml(stkRp, funcArea, funcArea.getFunctionalAreaType(), FONT_SIZE_TBL), recipientsTo);
 
                     mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
                     mail.send();
@@ -72,11 +76,11 @@ public class SSomStockReport {
         }
     }
 
-    private String generateReportHtml(SDbStockReport stkRp, SDbFunctionalArea funcArea, String funcAreaType) throws Exception {
+    private String generateReportHtml(SDbStockReport stkRp, SDbFunctionalArea funcArea, String funcAreaType, int fontSizeTbl) throws Exception {
         SGuiSession session = miClient.getSession();
         Statement statement = miClient.getSession().getDatabase().getConnection().createStatement();
         Date date = subtractDate(stkRp.getDate());
-        int lastLabWahId = getLastLabWahId(date);
+        SDbWahLab lastLabWah = getLastWahLab(date);
         int[] mixWahPk = { stkRp.getFkMixingWarehouseCompanyId(), stkRp.getFkMixingWarehouseBranchId(), stkRp.getFkMixingWarehouseWarehouseId() };
         int inpCt = funcArea == null ? 0 : funcArea.getFkInputCategoryId_n();
         String sql;
@@ -126,23 +130,23 @@ public class SSomStockReport {
                 + "</style> ";
         html += "</head>" +
                 "<body>" +
-                "<h1>Existencias tanques al " + SLibUtils.DateFormatDate.format(date) + "</h1>";
+                "<h1>Existencias tanques al " + SLibUtils.DateFormatDate.format(stkRp.getDate()) + "</h1>";
                 
         // CONSUMIBLES
         
         if (funcArea != null && funcArea.getPkFunctionalAreaId() == SModSysConsts.SU_FUNC_AREA_PRE_EXT) {
             html += "<h2>" + SLibUtils.textToHtml("Consumibles") + "</h2>";
             html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
-                    "<font size='" + FONT_SIZE_TBL + "'>";
+                    "<font size='" + fontSizeTbl + "'>";
             html = stkRp.getConsumableRecords().stream().map((cr) -> "<tr>" +
                     "<td align='right'>" + SLibUtils.textToHtml(cr.getDbmsConsumableWarehouse().getName() + " (Litros)") + "</th>" +
                     "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(cr.getVolume()))) + "</th>" +
                     "</tr>").reduce(html, String::concat);
             html += "</table><br>";
             html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
-                    "<font size='" + FONT_SIZE_TBL + "'>";
+                    "<font size='" + fontSizeTbl + "'>";
             html = stkRp.getConsumableRecords().stream().map((cr) -> "<tr>" +
-                    "<td align='right'>" + SLibUtils.textToHtml(cr.getDbmsConsumableWarehouse().getCode() + "(LLENO)") + "</th>" +
+                    "<td align='right'>" + SLibUtils.textToHtml(cr.getDbmsConsumableWarehouse().getCode() + " (Lleno)") + "</th>" +
                     "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(cr.getMeasure()))) + "</th>" +
                     "</tr>").reduce(html, String::concat);
             html += "</table><br>";
@@ -154,7 +158,7 @@ public class SSomStockReport {
             html += "<h2>" + SLibUtils.textToHtml("Producción " + (funcAreaType.equals(SModSysConsts.SU_FUNC_AREA_TP_PLA) && funcArea != null ? 
                     funcArea.getName().toLowerCase() : "general")) + "</h2>";
             html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
-                    "<font size='" + FONT_SIZE_TBL + "'>" + 
+                    "<font size='" + fontSizeTbl + "'>" + 
                     "<tr>" +
                     "<th align='center' style='width:300px'><b>" + SLibUtils.textToHtml("ÍTEM") + "</b></th>" + 
                     "<th align='center'><b>" + SLibUtils.textToHtml("ÍTEM CÓDIGO") + "</b></th>" + 
@@ -166,13 +170,20 @@ public class SSomStockReport {
                     "</tr>";
 
             String sqlWhere = "";
+            String sqlWherePE = "";
 
             if (funcAreaType.equals(SModSysConsts.SU_FUNC_AREA_TP_PLA)) {
                 if (funcArea != null && funcArea.getPkFunctionalAreaId() == SModSysConsts.SU_FUNC_AREA_REF) {
-                    sqlWhere = "AND (pti.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_REF + " OR pti.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_RES + ")";
+                    sqlWhere = "AND (pti.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_REF + " OR pti.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_RES + ") ";
                 }
                 else {
-                    sqlWhere = "AND pti.fk_oil_tp_n <> " + SModSysConsts.SU_OIL_TP_REF + " AND pti.fk_oil_tp_n <> " + SModSysConsts.SU_OIL_TP_RES + "";
+                    sqlWhere = "AND pti.fk_oil_tp_n <> " + SModSysConsts.SU_OIL_TP_REF + " AND pti.fk_oil_tp_n <> " + SModSysConsts.SU_OIL_TP_RES + " ";
+                }
+                if (funcArea != null && funcArea.getPkFunctionalAreaId() == SModSysConsts.SU_FUNC_AREA_PRE_EXT) {
+                    sqlWherePE = "OR pti.fk_oil_cl_n = " + SModSysConsts.SU_OIL_CL_PRE_EXT + " ";
+                }
+                else if (funcArea != null && funcArea.getPkFunctionalAreaId() == SModSysConsts.SU_FUNC_AREA_AVO) {
+                    sqlWherePE = "AND pti.fk_oil_cl_n <> " + SModSysConsts.SU_OIL_CL_PRE_EXT + " ";
                 }
             }
 
@@ -196,12 +207,14 @@ public class SSomStockReport {
                     "INNER JOIN cu_usr AS uu ON me.fk_usr_upd = uu.id_usr " +
                     "INNER JOIN cu_usr AS uc ON me.fk_usr_clo = uc.id_usr " +
                     "WHERE me.b_del = 0 AND me.dt_mfg_est = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
-                    (inpCt != SLibConsts.UNDEFINED ? "AND si.fk_inp_ct = " + inpCt + " " : "") +
+                    (inpCt != SLibConsts.UNDEFINED ? "AND (si.fk_inp_ct = " + inpCt + " " + sqlWherePE + ") " : "") +
                     sqlWhere + " " +
                     "ORDER BY me.dt_mfg_est, me.id_mfg_est, mee.id_ety;";
 
             resultSet = statement.executeQuery(sql);
+            boolean prod = false;
             while (resultSet.next()) {
+                prod = true;
                 html += "<tr>" + 
                         "<td style='width:300px'>" + SLibUtils.textToHtml(resultSet.getString("item")) + "</td>" +
                         "<td>" + SLibUtils.textToHtml(resultSet.getString("item_codigo")) + "</td>" +
@@ -210,6 +223,11 @@ public class SSomStockReport {
                         "<td>" + SLibUtils.textToHtml(resultSet.getString("linea")) + "</td>" +
                         "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("cantidad_producida"))) + "</td>" +
                         "<td>" + SLibUtils.textToHtml(resultSet.getString("code")) + "</td>" +
+                        "</tr>";
+            }
+            if (!prod) {
+                html += "<tr>" +
+                        "<td colspan='7'>" + SLibUtils.textToHtml("SIN PRODUCCIÓN") + "</td>" +
                         "</tr>";
             }
             html += "</table>"
@@ -224,7 +242,7 @@ public class SSomStockReport {
         int limit = funcAreaType.equals(SU_FUNC_AREA_TP_PREVIEW) || funcAreaType.equals(SModSysConsts.SU_FUNC_AREA_TP_ADM) ? 2 : 1;
         
         html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
-                    "<font size='" + FONT_SIZE_TBL + "'>";
+                    "<font size='" + fontSizeTbl + "'>";
         for (int i = 0; i < limit ; i++) {
             html += "<tr>" +
                     "<th align='center'><b>" + SLibUtils.textToHtml(i == 0 ? "TANQUE" : "JUMBO") + "</b></th>" + 
@@ -239,6 +257,7 @@ public class SSomStockReport {
                     "<td align='center'>DISP Kg.</td>";
             
             String sqlWhere = "";
+            String sqlWherePE = "";
 
             if (funcAreaType.equals(SModSysConsts.SU_FUNC_AREA_TP_PLA)) {
                 if (funcArea != null && funcArea.getPkFunctionalAreaId() == SModSysConsts.SU_FUNC_AREA_REF) {
@@ -246,6 +265,12 @@ public class SSomStockReport {
                 }
                 else {
                     sqlWhere = "AND vi.fk_oil_tp_n <> " + SModSysConsts.SU_OIL_TP_REF;
+                }
+                if (funcArea != null && funcArea.getPkFunctionalAreaId() == SModSysConsts.SU_FUNC_AREA_PRE_EXT) {
+                    sqlWherePE = "OR COALESCE(v.fk_oil_cl_n, vi.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_PRE_EXT;
+                }
+                else if (funcArea != null && funcArea.getPkFunctionalAreaId() == SModSysConsts.SU_FUNC_AREA_AVO) {
+                    sqlWherePE = "AND COALESCE(v.fk_oil_cl_n, vi.fk_oil_cl_n) <> " + SModSysConsts.SU_OIL_CL_PRE_EXT;
                 }
             }
 
@@ -264,7 +289,7 @@ public class SSomStockReport {
                     "LEFT JOIN su_oil_own AS ow ON v.fk_oil_own_n = ow.id_oil_own " +
                     "WHERE NOT v.b_del " +
                     "AND v.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
-                    (inpCt != SLibConsts.UNDEFINED ? "AND vrm.fk_inp_ct = " + inpCt + " " : "") +
+                    (inpCt != SLibConsts.UNDEFINED ? "AND (vrm.fk_inp_ct = " + inpCt + " " + sqlWherePE + ") " : "") +
                     sqlWhere + " " +
                     "AND vw.b_mobile = " + i + " " +
                     "ORDER BY tanque, vi.name;";
@@ -325,9 +350,11 @@ public class SSomStockReport {
                 funcAreaType.equals(SModSysConsts.SU_FUNC_AREA_TP_ADM)) {
         
             html += "<h2>" + SLibUtils.textToHtml("Inventario aguacate") + "</h2>";
+            html += "<h3>" + SLibUtils.textToHtml("Último análisis de laboratorio capturado: del " + SLibUtils.DateFormatDate.format(lastLabWah.getDateStart()) +
+                " al " + SLibUtils.DateFormatDate.format(lastLabWah.getDateEnd())) + "</h3>";
 
             html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
-                    "<font size='" + FONT_SIZE_TBL + "'>" + 
+                    "<font size='" + fontSizeTbl + "'>" + 
                     "<tr>" +
                     "<th align='center' style='width:70px'><b>" + SLibUtils.textToHtml("TANQUE") + "</b></th>" + 
                     "<th align='center'><b>" + SLibUtils.textToHtml("CAPACIDAD TANQUE") + "</b></th>" + 
@@ -338,6 +365,7 @@ public class SSomStockReport {
                     "<th align='center'><b>" + SLibUtils.textToHtml("ACIDEZ") + "</b></th>" +
                     "<th align='center'><b>" + SLibUtils.textToHtml("% ACIDEZ") + "</b></th>" +
                     "<th align='center'><b>" + SLibUtils.textToHtml("% ACIDEZ MEZCLA") + "</b></th>" +
+                    "<th align='center'><b>" + SLibUtils.textToHtml("I. PEROXIDOS") + "</b></th>" +
                     "<th align='center'><b>" + SLibUtils.textToHtml("% HUMEDAD") + "</b></th>" +
                     "<th align='center'><b>" + SLibUtils.textToHtml("% SÓLIDOS") + "</b></th>" +
                     "<th align='center'><b>" + SLibUtils.textToHtml("% LINOLEICO") + "</b></th>" +
@@ -346,22 +374,73 @@ public class SSomStockReport {
                     "<th align='center' style='width:200px'><b>" + SLibUtils.textToHtml("COMENTARIOS") + "</b></th>" +
                     "</tr>";
 
-            sql = "SELECT aci_per_n " +
-                    "FROM s_wah_lab_test " +
-                    "WHERE id_wah_lab = " + lastLabWahId + " " +
-                    "AND fk_wah_co = " + mixWahPk[0] + " " +
-                    "AND fk_wah_cob = " + mixWahPk[1] + " " +
-                    "AND fk_wah_wah = " + mixWahPk[2] + ";";
-
+            // TANQUE ACIDEZ MEZCLA
+            
+            sql = "SELECT " +
+                    "i.id_item, " +
+                    "w.id_co, " +
+                    "w.id_cob, " +
+                    "w.id_wah, " +
+                    "w.code, " +
+                    "(w.cap_real_lt * i.den) AS cap_kg, " +
+                    "i.name, " +
+                    "s.stock AS ext_kg, " +
+                    "s.stock / (w.cap_real_lt * i.den) AS per_oc, " +
+                    "(w.cap_real_lt * i.den) - s.stock AS esp_disp " +
+                    "FROM s_stk_record AS s " +
+                    "INNER JOIN cu_wah AS w ON s.id_co = w.id_co AND s.id_cob = w.id_cob AND s.id_wah = w.id_wah " +
+                    "INNER JOIN su_item AS i ON s.id_item = i.id_item " +
+                    "WHERE s.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
+                    "AND s.id_co = " + mixWahPk[0] + " " +
+                    "AND s.id_cob = " + mixWahPk[1] + " " +
+                    "AND s.id_wah = " + mixWahPk[2] + ";";
+            
             double mixAci = 0;
+            String htmlMixWah = "";
             resultSet = statement.executeQuery(sql);
             if (resultSet.next()) {
-                mixAci = resultSet.getDouble(1);
-            }
+                SDbWahLabTest test = getWahLabTestByWahAndItem(session.getDatabase().getConnection().createStatement(), 
+                        date, resultSet.getInt("id_item"), resultSet.getInt("id_co"), resultSet.getInt("id_cob"), resultSet.getInt("id_wah"));
+                mixAci = test.getAcidityPercentage_n() != null ? test.getAcidityPercentage_n() : 0;
+                
+                sql = "SELECT color FROM su_wah_fill_level WHERE " + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("per_oc")) + " BETWEEN val_min AND val_max";
+                ResultSet resultSetColor = session.getDatabase().getConnection().createStatement().executeQuery(sql);
 
+                sql = "SELECT oae.name " +
+                        "FROM su_oil_aci AS oa " +
+                        "INNER JOIN su_oil_aci_ety AS oae ON oa.id_oil_aci = oae.id_oil_aci " +
+                        "WHERE oa.dt_start <= '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
+                        "AND " + SLibUtils.DecimalFormatValue2D.format(mixAci) + " BETWEEN oae.val_min AND oae.val_max;";
+                ResultSet resultSetAcidity = session.getDatabase().getConnection().createStatement().executeQuery(sql);
+
+                htmlMixWah += "<tr>" + 
+                        "<td align='center' style='width:70px'>" + SLibUtils.textToHtml(resultSet.getString("code")) + "</td>" +
+                        "<td align='center'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round((resultSet.getInt("cap_kg") / 1000 ))) + " Tons") + "</td>" +
+                        "<td align='left' style='width:300px'>" + SLibUtils.textToHtml(resultSet.getString("name")) + "</td>" +
+                        "<td align='center'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round((resultSet.getInt("ext_kg") / 1000 ))) + " Tons") + "</td>" +
+                        "<td align='center' " + (resultSetColor.next() ? " style='background-color: " + resultSetColor.getString(1).toLowerCase() + "'" : " style='background-color: Red'") + ">" + SLibUtils.textToHtml(SLibUtils.DecimalFormatPercentage0D.format(resultSet.getDouble("per_oc"))) + "</td>" +
+                        "<td align='center'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round((resultSet.getInt("esp_disp") / 1000 ))) + " Tons") + "</td>" +
+                        "<td align='center'>" + SLibUtils.textToHtml(resultSetAcidity.next() ? resultSetAcidity.getString(1) : "") + "</td>" +
+                        "<td " + (test.isAcidityPercentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getAcidityPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getAcidityPercentage_n())) + "</td>" +
+                        "<td align='center'>" + SLibUtils.textToHtml("N/A") + "</td>";
+
+                String notes = (test.getPkWarehouseLaboratoryId() != lastLabWah.getPkWarehouseLaboratoryId() ? test.getDate() != null ? "Fecha del último análisis " + SLibUtils.DateFormatDate.format(test.getDate()) + ". " : "No hay resultados de laboratorio. " : "");
+                notes += " (" + SLibUtils.DecimalFormatPercentage2D.format(stkRp.getMixingPercentage()) + ")";
+
+                htmlMixWah += "<td " + (test.isPeroxideIndexOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getPeroxideIndex_n() == null ? "" : SLibUtils.DecimalFormatValue2D.format(test.getPeroxideIndex_n())) + "</td>" +
+                        "<td " + (test.isMoisturePercentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getMoisturePercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getMoisturePercentage_n())) + "</td>" +
+                        "<td " + (test.isSolidPersentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getSolidPersentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getSolidPersentage_n())) + "</td>" +
+                        "<td " + (test.isLinoleicAcidPercentageOverange()? "style='color:red'" : "") + "align='center'>" + (test.getLinoleicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getLinoleicAcidPercentage_n())) + "</td>" +
+                        "<td " + (test.isOleicAcidPercentageOverange()? "style='color:red'" : "") + "align='center'>" + (test.getOleicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getOleicAcidPercentage_n())) + "</td>" +
+                        "<td " + (test.isStearicAcidPercentageOverange()? "style='color:red'" : "") + "align='center'>" + (test.getStearicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getStearicAcidPercentage_n())) + "</td>" +
+                        "<td align='center' style='width:200px'>" + SLibUtils.textToHtml(notes) + "</td>" +
+                        "</tr>";
+            }
+            
+            // RESTO DE TANQUES
+            
             sql = "SELECT " +
-                    "wt.id_wah_lab, " +
-                    "wt.id_test, " +
+                    "i.id_item, " +
                     "w.id_co, " +
                     "w.id_cob, " +
                     "w.id_wah, " +
@@ -369,33 +448,33 @@ public class SSomStockReport {
                     "w.cap_real_lt * i.den AS cap_kg, " +
                     "i.name, " +
                     "i.id_item, " +
-                    "sr.stock AS ext_kg, " +
-                    "sr.stock / (w.cap_real_lt * i.den) AS per_oc, " +
-                    "(w.cap_real_lt * i.den) - sr.stock AS esp_disp, " +
-                    "COALESCE(oae.name, 'S/R') AS aci_lvl " +
-                    "FROM s_stk_record as sr " +
-                    "INNER JOIN cu_wah AS w ON sr.id_co = w.id_co AND sr.id_cob = w.id_cob AND sr.id_wah = w.id_wah " +
-                    "INNER JOIN su_item AS i ON sr.id_item = i.id_item " +
-                    "LEFT JOIN s_wah_lab_test AS wt ON wt.fk_wah_co = sr.id_co AND wt.fk_wah_cob = sr.id_cob AND wt.fk_wah_wah = sr.id_wah AND wt.fk_item = sr.id_item AND wt.id_wah_lab = " + lastLabWahId + " " +
-                    "LEFT JOIN su_oil_aci AS oa ON oa.dt_start <= '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
-                    "LEFT JOIN su_oil_aci_ety AS oae ON oa.id_oil_aci = oae.id_oil_aci AND wt.aci_per_n BETWEEN oae.val_min AND oae.val_max " +
-                    "WHERE sr.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
+                    "s.stock AS ext_kg, " +
+                    "s.stock / (w.cap_real_lt * i.den) AS per_oc, " +
+                    "(w.cap_real_lt * i.den) - s.stock AS esp_disp " +
+                    "FROM s_stk_record as s " +
+                    "INNER JOIN cu_wah AS w ON s.id_co = w.id_co AND s.id_cob = w.id_cob AND s.id_wah = w.id_wah " +
+                    "INNER JOIN su_item AS i ON s.id_item = i.id_item " +
+                    "WHERE s.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
                     "AND i.fk_item_rm_n = " + SModSysConsts.SU_ITEM_RM_AVO + " " +
-                    "AND sr.stock <> 0 " + 
-                    "AND NOT sr.b_del AND NOT w.b_del " +
+                    "AND s.stock <> 0 " +
+                    "AND NOT s.b_del AND NOT w.b_del " +
                     "ORDER BY w.b_mobile, code, i.name;";
 
             double totLab = 0;
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                SDbWahLabTest test = new SDbWahLabTest();
-                try {
-                    test.read(session, new int[] { resultSet.getInt("id_wah_lab"), resultSet.getInt("id_test") });
-                }
-                catch(Exception e){}
-
+                SDbWahLabTest test = getWahLabTestByWahAndItem(session.getDatabase().getConnection().createStatement(), 
+                        date, resultSet.getInt("id_item"), resultSet.getInt("id_co"), resultSet.getInt("id_cob"), resultSet.getInt("id_wah"));
+                
                 sql = "SELECT color FROM su_wah_fill_level WHERE " + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("per_oc")) + " BETWEEN val_min AND val_max";
                 ResultSet resultSetColor = session.getDatabase().getConnection().createStatement().executeQuery(sql);
+
+                sql = "SELECT oae.name " +
+                        "FROM su_oil_aci AS oa " +
+                        "INNER JOIN su_oil_aci_ety AS oae ON oa.id_oil_aci = oae.id_oil_aci " +
+                        "WHERE oa.dt_start <= '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
+                        "AND " + SLibUtils.DecimalFormatValue2D.format(test.getAcidityPercentage_n() == null ? 0 : test.getAcidityPercentage_n()) + " BETWEEN oae.val_min AND oae.val_max;";
+                ResultSet resultSetAcidity = session.getDatabase().getConnection().createStatement().executeQuery(sql);
 
                 html += "<tr>" + 
                         "<td align='center' style='width:70px'>" + SLibUtils.textToHtml(resultSet.getString("code")) + "</td>" +
@@ -404,7 +483,7 @@ public class SSomStockReport {
                         "<td align='center'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round((resultSet.getInt("ext_kg") / 1000 ))) + " Tons") + "</td>" +
                         "<td align='center' " + (resultSetColor.next() ? " style='background-color: " + resultSetColor.getString(1).toLowerCase() + "'" : " style='background-color: Red'") + ">" + SLibUtils.textToHtml(SLibUtils.DecimalFormatPercentage0D.format(resultSet.getDouble("per_oc"))) + "</td>" +
                         "<td align='center'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round((resultSet.getInt("esp_disp") / 1000 ))) + " Tons") + "</td>" +
-                        "<td align='center'>" + SLibUtils.textToHtml(resultSet.getString("aci_lvl")) + "</td>" +
+                        "<td align='center'>" + SLibUtils.textToHtml(resultSetAcidity.next() ? resultSetAcidity.getString(1) : "") + "</td>" +
                         "<td " + (test.isAcidityPercentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getAcidityPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getAcidityPercentage_n())) + "</td>" ;
 
                 if (!SLibUtils.compareKeys(mixWahPk, new int[] { resultSet.getInt("id_co"), resultSet.getInt("id_cob"), resultSet.getInt("id_wah") })
@@ -417,12 +496,16 @@ public class SSomStockReport {
                     html += "<td align='center'>" + SLibUtils.textToHtml("N/A") + "</td>";
                 }
 
-                html += "<td " + (test.isMoisturePercentageOverange()? "style='color:red'" : "") + "align='center'>" + (test.getMoisturePercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getMoisturePercentage_n())) + "</td>" +
+                String notes = test.getNote().isEmpty() ? "" : test.getNote() + ". ";
+                notes += test.getPkWarehouseLaboratoryId() != lastLabWah.getPkWarehouseLaboratoryId() ? test.getDate() != null ? "Fecha del último análisis " + SLibUtils.DateFormatDate.format(test.getDate()) + "." : "No hay resultados de laboratorio." : "";
+
+                html += "<td " + (test.isPeroxideIndexOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getPeroxideIndex_n() == null ? "" : SLibUtils.DecimalFormatValue2D.format(test.getPeroxideIndex_n())) + "</td>" +
+                        "<td " + (test.isMoisturePercentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getMoisturePercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getMoisturePercentage_n())) + "</td>" +
                         "<td " + (test.isSolidPersentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getSolidPersentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getSolidPersentage_n())) + "</td>" +
                         "<td " + (test.isLinoleicAcidPercentageOverange()? "style='color:red'" : "") + "align='center'>" + (test.getLinoleicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getLinoleicAcidPercentage_n())) + "</td>" +
                         "<td " + (test.isOleicAcidPercentageOverange()? "style='color:red'" : "") + "align='center'>" + (test.getOleicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getOleicAcidPercentage_n())) + "</td>" +
                         "<td " + (test.isStearicAcidPercentageOverange()? "style='color:red'" : "") + "align='center'>" + (test.getStearicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getStearicAcidPercentage_n())) + "</td>" +
-                        "<td align='center' style='width:200px'>" + SLibUtils.textToHtml(test.getNote()) + "</td>" +
+                        "<td align='center' style='width:200px'>" + SLibUtils.textToHtml(notes) + "</td>" +
                         "</tr>";
                 totLab += resultSet.getDouble("ext_kg");
             }
@@ -441,6 +524,7 @@ public class SSomStockReport {
                     "<td></td>" +
                     "<td></td>" +
                     "</b></tr>";
+            html += htmlMixWah;
             html += "</table>"
                     + "<br>";
 
@@ -456,7 +540,7 @@ public class SSomStockReport {
 
             for (int oilTp : SU_OIL_TP_IDS) {
                 html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
-                        "<font size='" + FONT_SIZE_TBL + "'>" + 
+                        "<font size='" + fontSizeTbl + "'>" + 
                         "<tr>" +
                         "<th style='width:300px' align='right'><b>" + SLibUtils.textToHtml("FAMILIA") + "</b></th>" + 
                         "<th align='center'><b>" + SLibUtils.textToHtml("INVENTARIO") + "</b></th>" + 
@@ -465,28 +549,33 @@ public class SSomStockReport {
                 double avoTp = 0;
                 ArrayList<SAvocadoOil> maAvocadoOils = new ArrayList();
                 sql = "SELECT " +
+                        "i.id_item, " +
+                        "sr.id_co, " +
+                        "sr.id_cob, " +
+                        "sr.id_wah, " +
                         "i.name, " +
                         "sr.stock, " +
-                        "wlt.aci_per_n, " +
                         "COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) AS oil_cl, " +
                         "COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) AS oil_tp, " +
                         "i.fk_oil_grp_family_n AS oil_fam " +
                         "FROM s_stk_record AS sr " +
                         "INNER JOIN su_item AS i ON sr.id_item = i.id_item " +
-                        "LEFT JOIN s_wah_lab_test AS wlt ON sr.id_co = wlt.fk_wah_co AND sr.id_cob = wlt.fk_wah_cob AND sr.id_wah = wlt.fk_wah_wah AND sr.id_item = wlt.fk_item AND wlt.id_wah_lab = " + lastLabWahId + " " +
-                        "WHERE sr.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " + 
+                        "WHERE sr.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
                         "AND COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_AVO + " " + // AGUACATERA
-                        "AND COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) = " + oilTp + " " + 
+                        "AND COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) = " + oilTp + " " +
                         "AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_AVO + " " +
                         "AND NOT sr.b_del " +
                         "ORDER BY i.id_item, oil_cl, oil_tp, oil_fam;";
 
                 resultSet = statement.executeQuery(sql);
                 while (resultSet.next()) {
+                    SDbWahLabTest test = getWahLabTestByWahAndItem(session.getDatabase().getConnection().createStatement(), 
+                        date, resultSet.getInt("id_item"), resultSet.getInt("id_co"), resultSet.getInt("id_cob"), resultSet.getInt("id_wah"));
                     boolean found = false;
                     String itemName = "";
+                    
                     if (oilTp == SU_OIL_TP_IDS[0] ) {
-                        if( resultSet.getDouble("aci_per_n") != 0.0) {
+                        if (test.getAcidityPercentage_n() != null && test.getAcidityPercentage_n() != 0.0) {
                             Statement statementOilAci = miClient.getSession().getDatabase().getConnection().createStatement();
                             sql = "SELECT " +
                                     "e.name, " +
@@ -498,8 +587,8 @@ public class SSomStockReport {
                             ResultSet resultSetOilAci = statementOilAci.executeQuery(sql);
                             boolean foundAci = false;
                             while (resultSetOilAci.next() && !foundAci) {
-                                if (SLibUtils.parseDouble(SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("aci_per_n"))) >= resultSetOilAci.getDouble("val_min")
-                                        && SLibUtils.parseDouble(SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("aci_per_n"))) < resultSetOilAci.getDouble("val_max")) {
+                                if (SLibUtils.parseDouble(SLibUtils.DecimalFormatValue2D.format(test.getAcidityPercentage_n())) >= resultSetOilAci.getDouble("val_min")
+                                        && SLibUtils.parseDouble(SLibUtils.DecimalFormatValue2D.format(test.getAcidityPercentage_n())) < resultSetOilAci.getDouble("val_max")) {
                                     itemName = "ACEITE CRUDO " + resultSetOilAci.getString("name");
                                     foundAci = true;
                                 }
@@ -512,7 +601,7 @@ public class SSomStockReport {
                     for (SAvocadoOil oil : maAvocadoOils) {
                         if (oil.name.equals(itemName)) {
                             oil.stock += resultSet.getDouble("stock");
-                            oil.stkAcidity += resultSet.getDouble("aci_per_n") * resultSet.getDouble("stock");
+                            oil.stkAcidity += test.getAcidityPercentage_n() == null ? 0 : test.getAcidityPercentage_n() * resultSet.getDouble("stock");
                             found = true;
                             break;
                         }
@@ -521,7 +610,7 @@ public class SSomStockReport {
                         SAvocadoOil oil = new SAvocadoOil();
                         oil.name = itemName;
                         oil.stock = resultSet.getDouble("stock");
-                        oil.stkAcidity = resultSet.getDouble("aci_per_n") * resultSet.getDouble("stock");
+                        oil.stkAcidity = test.getAcidityPercentage_n() == null ? 0 : test.getAcidityPercentage_n() * resultSet.getDouble("stock");
                         maAvocadoOils.add(oil);
                     }
                     avoTp += resultSet.getDouble("stock");
@@ -542,7 +631,7 @@ public class SSomStockReport {
                 stkAvoOils += avoTp;
             }
             html += "<table>" +
-                    "<font size='" + FONT_SIZE_TBL + "'>" + 
+                    "<font size='" + fontSizeTbl + "'>" + 
                         "<tr style='background-color: yellow'><b>" + 
                         "<td align='right' style='width:300px'>" + SLibUtils.textToHtml("TOTAL AGUACATE") + "</td>" + 
                         "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(stkAvoOils / 1000))  + " Tons") + "</b></td>" +
@@ -556,7 +645,7 @@ public class SSomStockReport {
             html += "<h3>Resumen resto de aceites</h3>";
 
             html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
-                    "<font size='" + FONT_SIZE_TBL + "'>" + 
+                    "<font size='" + fontSizeTbl + "'>" + 
                     "<tr>" +
                     "<th style='width:300px' align='right'><b>" + SLibUtils.textToHtml("ACEITE") + "</b></th>" + 
                     "<th align='center'><b>" + SLibUtils.textToHtml("INVENTARIO") + "</b></th>" + 
@@ -601,47 +690,64 @@ public class SSomStockReport {
 
             html += "<h3>Detalle refinados</h3>";
 
-            html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
-                    "<font size='" + FONT_SIZE_TBL + "'>" + 
-                    "<tr>" +
-                    "<th style='width:300px' align='right'><b>" + SLibUtils.textToHtml("ACEITE") + "</b></th>" + 
-                    "<th align='center'><b>" + SLibUtils.textToHtml("INVENTARIO") + "</b></th>" + 
-                    "</tr>";
-
-            sql = "SELECT " +
-                    "i.name, " +
-                    "SUM(sr.stock) AS stock, " +
-                    "COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) AS oil_cl, " +
-                    "COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) AS oil_tp, " +
-                    "i.fk_oil_grp_family_n AS oil_fam " +
-                    "FROM s_stk_record AS sr " +
-                    "INNER JOIN su_item AS i ON sr.id_item = i.id_item " +
-                    "WHERE sr.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
-                    "AND ((COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_AVO + " " +
-                    "AND COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) = " + SModSysConsts.SU_OIL_TP_REF + ") " +
-                    "OR (COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_PRE_EXT + " " +
-                    "AND COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) = " + SModSysConsts.SU_OIL_TP_REF + ")) " +
-                    "AND NOT sr.b_del " +
-                    "GROUP BY sr.id_item, oil_cl, oil_tp " +
-                    "ORDER BY oil_fam, oil_cl, oil_tp, i.name;";
-
             double stkRefOils = 0;
             double stkAvoRefOils = 0;
-            resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                html += "<tr>" + 
-                        "<td align='right' style='width:300px'>" + SLibUtils.textToHtml(resultSet.getString("name")) + "</td>" +
-                        "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(resultSet.getDouble("stock") / 1000)) + " Tons") + "</td>" +
-                        "</tr>";
-                stkRefOils += resultSet.getDouble("stock");
-                if (resultSet.getInt("oil_fam") == SModSysConsts.SU_OIL_GRP_FAM_AVO) {
-                    stkAvoRefOils += resultSet.getDouble("stock");
-                }
-            }
-            html += "<tr style='background-color: yellow'><b>" + 
-                    "<td align='right' style='width:300px'>" + SLibUtils.textToHtml("TOTAL REFINADOS") + "</td>" +
-                    "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(stkRefOils / 1000)) + " Tons") + "</b></td>" +
+            for (int oilCl : SU_OIL_CL_IDS) {
+                double stkRefCl = 0;
+                html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
+                    "<font size='" + fontSizeTbl + "'>" + 
+                    "<tr>" +
+                    "<th style='width:300px' align='right'><b>" + SLibUtils.textToHtml("ACEITE " + (oilCl == SModSysConsts.SU_OIL_CL_AVO ? "AGUACATE" : "OTROS") ) + "</b></th>" + 
+                    "<th align='center'><b>" + SLibUtils.textToHtml("INVENTARIO") + "</b></th>" + 
                     "</tr>";
+                
+                String sqlWhere = oilCl == SModSysConsts.SU_OIL_CL_PRE_EXT ? "OR (COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) = " + SModSysConsts.SU_OIL_TP_REF + " AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_OTHER_AVO + ")" : 
+                        "AND i.fk_oil_grp_family_n <> " + SModSysConsts.SU_OIL_GRP_FAM_OTHER_AVO;
+                
+                sql = "SELECT " +
+                        "i.name, " +
+                        "SUM(sr.stock) AS stock, " +
+                        "COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) AS oil_cl, " +
+                        "COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) AS oil_tp, " +
+                        "i.fk_oil_grp_family_n AS oil_fam " +
+                        "FROM s_stk_record AS sr " +
+                        "INNER JOIN su_item AS i ON sr.id_item = i.id_item " +
+                        "WHERE sr.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
+                        "AND COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) = " + oilCl + " " +
+                        "AND COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) = " + SModSysConsts.SU_OIL_TP_REF + " " +
+                        sqlWhere + " " +
+                        "AND NOT sr.b_del " +
+                        "GROUP BY sr.id_item, oil_cl, oil_tp " +
+                        "ORDER BY oil_fam, oil_cl, oil_tp, i.name;";
+
+                resultSet = statement.executeQuery(sql);
+                while (resultSet.next()) {
+                    html += "<tr>" + 
+                            "<td align='right' style='width:300px'>" + SLibUtils.textToHtml(resultSet.getString("name")) + "</td>" +
+                            "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(resultSet.getDouble("stock") / 1000)) + " Tons") + "</td>" +
+                            "</tr>";
+                    stkRefCl += resultSet.getDouble("stock");
+                    if (oilCl == SModSysConsts.SU_OIL_CL_AVO) {
+                        stkAvoRefOils += resultSet.getDouble("stock");
+                    }
+                }
+                html += "<tr style='background-color: blue'><b>" + 
+                            "<td align='right' style='width:300px'>" + SLibUtils.textToHtml("TOTAL") + "</td>" +
+                            "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(stkRefCl / 1000)) + " Tons") + "</b></td>" +
+                            "</tr>" +
+                            "</table>" +
+                            "<br>";
+                stkRefOils += stkRefCl;
+            }
+            html += "<table>" +
+                    "<font size='" + fontSizeTbl + "'>" + 
+                        "<tr style='background-color: yellow'><b>" + 
+                        "<td align='right' style='width:300px'>" + SLibUtils.textToHtml("TOTAL REFINADOS") + "</td>" + 
+                        "<td align='right' style='width:70px'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(stkRefOils / 1000))  + " Tons") + "</b></td>" +
+                        "</tr>";
+            html += "</table>";
+            html += "</td>";
+
             html += "</table>";
             html += "</td>" + 
                     "</tr>" +
@@ -657,7 +763,7 @@ public class SSomStockReport {
         
         return html;
     }
-    
+        
     private Date subtractDate(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -683,7 +789,8 @@ public class SSomStockReport {
         return report;
     }
 
-    private int getLastLabWahId(Date date) throws Exception {
+    private SDbWahLab getLastWahLab(Date date) throws Exception {
+        SDbWahLab test = new SDbWahLab();
         String sql = "SELECT wl.id_wah_lab FROM s_wah_lab AS wl " +
                 "WHERE wl.ts_usr_ins = ( " +
                 "SELECT MAX(wl2.ts_usr_ins) " +
@@ -691,16 +798,44 @@ public class SSomStockReport {
                 "WHERE ('" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
                 "BETWEEN wl2.dt_start AND wl2.dt_end) " +
                 "AND NOT wl2.b_del);";
-        ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
+        ResultSet resultSet = miClient.getSession().getDatabase().getConnection().createStatement().executeQuery(sql);
         if (resultSet.next()) {
-            return resultSet.getInt(1);
+            test.read(miClient.getSession(), new int[] { resultSet.getInt(1) } );
         }
-        else return 0;
+        return test;
+    }
+    
+    private SDbWahLabTest getWahLabTestByWahAndItem(Statement statement, Date date, int item, int co, int cob, int wah) throws Exception {
+        SDbWahLabTest test = new SDbWahLabTest();
+        
+        /* OBTIENE EL PK DEL ANÁLISIS DEL LABORATORIO MAS RECIENTE PARA UN DETERMINADO TANQUE E ÍTEM QUE NO EXEDA DE LAS SEMANAS DEFINIDAS
+        * EN CASO DE QUE HAYA 2 FECHAS REPETIDAS SE TOMA EL QUE HAYA SIDO CREADO MAS RECIENTE
+        */
+        String sql = "SELECT wlt.id_wah_lab, wlt.id_test FROM s_wah_lab AS wl " +
+                "INNER JOIN s_wah_lab_test AS wlt ON wl.id_wah_lab = wlt.id_wah_lab " +
+                "WHERE wl.ts_usr_ins = ( " +
+                "SELECT MAX(a.ts_usr_ins) FROM ( " +
+                "SELECT " +
+                "wl.id_wah_lab, wl.dt_start, wl.dt_end, wl.ts_usr_ins " +
+                "FROM s_wah_lab AS wl " +
+                "INNER JOIN s_wah_lab_test AS wlt ON wlt.id_wah_lab = wl.id_wah_lab " +
+                "WHERE wlt.fk_wah_co = " + co + " AND wlt.fk_wah_cob = " + cob + " AND wlt.fk_wah_wah = " + wah + " " +
+                "AND wl.dt_start >= (SELECT ADDDATE('" + SLibUtils.DbmsDateFormatDate.format(date) + "', INTERVAL -" + WEEKS_OF_TEST + " WEEK)) " +
+                "AND NOT wl.b_del " +
+                "AND wlt.fk_item = " + item + ") AS a) " +
+                "AND wlt.fk_wah_co = " + co + " AND wlt.fk_wah_cob = " + cob + " AND wlt.fk_wah_wah = " + wah + " " +
+                "AND wlt.fk_item = " + item + ";";
+        ResultSet resultSet = statement.executeQuery(sql);
+        if (resultSet.next()) {
+            test.read(miClient.getSession(), new int[] { resultSet.getInt(1), resultSet.getInt(2) });
+        }
+        
+        return test;
     }
 }
 
 class SAvocadoOil {
-
+    
     public String name;
     public double stock;
     public double stkAcidity;
