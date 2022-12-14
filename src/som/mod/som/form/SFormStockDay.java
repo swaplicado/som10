@@ -4,12 +4,10 @@
  */
 package som.mod.som.form;
 
-import java.awt.BorderLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -19,9 +17,6 @@ import sa.lib.SLibConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
-import sa.lib.grid.SGridColumnForm;
-import sa.lib.grid.SGridConsts;
-import sa.lib.grid.SGridPaneForm;
 import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
@@ -35,7 +30,6 @@ import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.cfg.db.SDbBranchWarehouse;
 import som.mod.som.data.SDailyStockUtils;
-import som.mod.som.data.SMobileWarehouseRow;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbStockDay;
 import som.mod.som.db.SSomConsts;
@@ -1227,7 +1221,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
             dateTime = dateTime.minusDays(1);
             int[] oilClassKey = SDailyStockUtils.getOilAndClassItemConfiguration(miClient.getSession(), 
                                                             moRegistry.getPkItemId(), 
-                                                            moKeyItem.getSelectedItem().getForeignKey()[0],
+                                                            moKeyItem.getSelectedItem().getForeignKey() != null ? moKeyItem.getSelectedItem().getForeignKey()[0] : 0,
                                                             new int[] { moRegistry.getPkCompanyId(), moRegistry.getPkBranchId(), moRegistry.getPkWarehouseId() },
                                                             dateTime.toDate()
                                                         );

@@ -213,7 +213,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlCaptureDate.setText("Fecha de captura:");
+        jlCaptureDate.setText("Fecha de creación:");
         jlCaptureDate.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel18.add(jlCaptureDate);
         jPanel18.add(moDateCaptureDate);
@@ -483,7 +483,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
         jpCurResults.add(jpCurChromatography, java.awt.BorderLayout.CENTER);
 
-        jpNotes.setLayout(new java.awt.GridLayout(1, 0, 5, 0));
+        jpNotes.setLayout(new java.awt.GridLayout(1, 0, 5, 5));
 
         jPanel24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -1043,17 +1043,23 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moBoolCurLlcPerOverange.setEnabled(enable);
         moBoolCurStePerOverange.setEnabled(enable);
         moBoolCurPalPerOverange.setEnabled(enable);
+        
+        jbSave.setEnabled(enable);
     }
     
-    private void verifyYearWeek(int year, int week) {
+    private boolean verifyYearWeek(int year, int week) {
         try {
-            String sql = "SELECT * FROM s_wah_lab WHERE year = " + year + " AND week = " + week + " AND NOT b_del AND NOT b_dis";
+            int id = moRegistry.getPkWarehouseLaboratoryId();
+            String sqlWhere = id != 0 ? "AND id_wah_lab <> " + id : "";
+            String sql = "SELECT * FROM s_wah_lab WHERE year = " + year + " AND week = " + week + " AND NOT b_del " + sqlWhere + ";";
             ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
             if (resultSet.next()) {
-                miClient.showMsgBoxInformation("Ya existe captura de resultados para la fecha inicial y final seleccionada.");
+                miClient.showMsgBoxError("Ya existe captura de resultados para el año y la semana seleccionadas.");
+                return true;
             }
         }
         catch(Exception e) { }
+        return false;
     }
     
     private int getYear(Date date) {
@@ -1117,22 +1123,19 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         try {
             Statement statement = miClient.getSession().getDatabase().getConnection().createStatement();
             String sql = "SELECT " +
-                    "vw.id_co, " +
-                    "vw.id_cob, " +
-                    "vw.id_wah, " +
-                    "vi.id_item, " +
-                    "SUM(v.mov_in - v.mov_out), " +
-                    "vu.code " +
-                    "FROM s_stk AS v " +
-                    "INNER JOIN su_item AS vi ON v.id_item = vi.id_item " +
-                    "INNER JOIN su_unit AS vu ON v.id_unit = vu.id_unit " +
-                    "INNER JOIN cu_wah AS vw ON v.id_co = vw.id_co AND v.id_cob = vw.id_cob AND v.id_wah = vw.id_wah " +
-                    "INNER JOIN cu_cob AS vc ON v.id_co = vc.id_co AND v.id_cob = vc.id_cob " +
-                    "WHERE v.b_del = 0 AND v.id_year = " + moYearCurYearTest.getValue() + " " +
-                    "AND v.dt <= '" + SLibUtils.DbmsDateFormatDate.format(moDateCaptureDate.getValue()) + "' " +
-                    "GROUP BY v.id_item, v.id_unit, v.id_cob, v.id_wah, vc.code, vw.name, vi.code, vi.name, vu.code " +
-                    "HAVING SUM(v.mov_in - v.mov_out) <> 0 " +
-                    "ORDER BY vw.code, vi.name;" ;
+                    "s.id_co, " +
+                    "s.id_cob, " +
+                    "s.id_wah, " +
+                    "s.id_item, " +
+                    "s.stock, " +
+                    "u.code " +
+                    "FROM s_stk_record as s " +
+                    "INNER JOIN su_item AS i ON s.id_item = i.id_item " +
+                    "INNER JOIN su_unit AS u ON s.id_unit = u.id_unit " +
+                    "INNER JOIN cu_wah AS w ON s.id_co = w.id_co AND s.id_cob = w.id_cob AND s.id_wah = w.id_wah " +
+                    "WHERE s.dt = '" + SLibUtils.DbmsDateFormatDate.format(moDateCurStartDateTest.getValue()) + "' " +
+                    "AND s.stock <> 0 " +
+                    "ORDER BY w.code, i.name;" ;
             
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
@@ -1249,31 +1252,33 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     
     private void actionContinue() {
        try {
-            verifyYearWeek(moYearCurYearTest.getValue(), moWeekCurWeekTest.getValue());
-            moDateCaptureDate.setEnabled(false);
-            jbContinue.setEnabled(false);
-            jbRestart.setEnabled(true);
-            
-            // Con resultados del analisis anterior:
-            if (mbWithLastTests) {
-                moRegistry.readLastWahLab(miClient.getSession(), moYearCurYearTest.getValue(), moWeekCurWeekTest.getValue(), false);
-                if (moRegistry.getLastWahLab() != null) {
-                    maWahLabTests = moRegistry.getLastWahLab().getWahLabTests();
+            if (!verifyYearWeek(moYearCurYearTest.getValue(), moWeekCurWeekTest.getValue())) {
+                moDateCaptureDate.setEnabled(false);
+                jbContinue.setEnabled(false);
+                jbRestart.setEnabled(true);
+
+                // Con resultados del analisis anterior:
+                maWahLabTests = new ArrayList<>();
+                if (mbWithLastTests) {
+                    moRegistry.readLastWahLab(miClient.getSession(), moYearCurYearTest.getValue(), moWeekCurWeekTest.getValue(), false);
+                    if (moRegistry.getLastWahLab() != null) {
+                        maWahLabTests = moRegistry.getLastWahLab().getWahLabTests();
+                    }
                 }
-            }
-            
-            for (SDbWahLabTest test : maWahLabTests) {
-                test.setCapturedAndSaveRow(false);
-                if (moRegistry.getLastWahLab() != null) {
-                    test.readLastWahLabTest(miClient.getSession(), moRegistry.getLastWahLab().getPkWarehouseLaboratoryId());
+
+                for (SDbWahLabTest test : maWahLabTests) {
+                    test.setCapturedAndSaveRow(false);
+                    if (moRegistry.getLastWahLab() != null) {
+                        test.readLastWahLabTest(miClient.getSession(), moRegistry.getLastWahLab().getPkWarehouseLaboratoryId());
+                    }
                 }
+
+                obtainWarehouseWithStk();
+                populateLaboratoryTest();
+                setEnabledFields(true);
             }
-            
-           obtainWarehouseWithStk();
-           populateLaboratoryTest();
-           setEnabledFields(true);
-       }
-       catch(Exception e) {}
+        }
+        catch(Exception e) {}
     }
     
     private void actionRestart() {
@@ -1340,6 +1345,30 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private void actionSaveRow() {
         SDbWahLabTest test = (SDbWahLabTest) moGridWahList.getSelectedGridRow();
         try {
+            int itemId = 0;
+            String itemName = "";
+            String sql = "SELECT i.id_item, i.name " +
+                    "FROM s_stk_record AS s " +
+                    "INNER JOIN su_item AS i ON s.id_item = i.id_item " +
+                    "WHERE s.dt = '" + SLibUtils.DbmsDateFormatDate.format(moDateCurStartDateTest.getValue()) + "' " +
+                    "AND s.id_co = " + test.getFkWarehouseCompanyId() + " " +
+                    "AND s.id_cob = " + test.getFkWarehouseBranchId() + " " +
+                    "AND s.id_wah = " + test.getFkWarehouseWarehouseId() + ";";
+            ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
+            if (resultSet.next()) {
+                itemId = resultSet.getInt(1);
+                itemName = resultSet.getString(2);
+            }
+            if (itemId == 0) {
+                miClient.showMsgBoxWarning("El tanque " + test.getDbmsBranchWarehouse().getCode() + " no tiene registrado ningún ítem en el stock.\n"
+                        + "Fecha de consulta al stock: " + SLibUtils.DateFormatDate.format(moDateCurStartDateTest.getValue()) + ".");
+            }
+            else if (itemId != test.getFkItem()){
+                miClient.showMsgBoxWarning("El tanque " + test.getDbmsBranchWarehouse().getCode() + " tiene en stock el ítem \"" + itemName + "\"\n"
+                        + "el cual no corresponde con el ítem capturado \"" + test.getDbmsItem().getName() + "\".\n"
+                        + "Fecha de consulta al stock: " + SLibUtils.DateFormatDate.format(moDateCurStartDateTest.getValue()) + ".");
+            }
+            
             test.setAcidityPercentage_n(moTextCurAciPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurAciPer.getValue()) / 10 / 10);
             test.setPeroxideIndex_n(moTextCurPerInd.getValue().isEmpty() ? null : Double.parseDouble(moTextCurPerInd.getValue()));
             test.setMoisturePercentage_n(moTextCurMoiPer.getValue().isEmpty() ? null : Double.parseDouble(moTextCurMoiPer.getValue()) / 10 / 10);
@@ -1363,9 +1392,10 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
             test.setCapturedAndSaveRow(true);
             setEnabledFields(false);
         }
-        catch (Exception e) {
+        catch (NumberFormatException e) {
             miClient.showMsgBoxError("Uno de los datos capturados no corresponde a un número.");
         }
+        catch (SQLException e) {}
     }
 
     private void actionSaveAndNextRow() {

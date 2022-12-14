@@ -151,6 +151,7 @@ public abstract class SModSysConsts {
     public static final int[] SU_INP_TP_NA = new int[] { 1, 1, 1 };
     
     public static final int SU_FUNC_AREA_PRE_EXT = 2;
+    public static final int SU_FUNC_AREA_AVO = 3;
     public static final int SU_FUNC_AREA_REF = 4;
     
     public static final String SU_FUNC_AREA_TP_ADM = "A";
