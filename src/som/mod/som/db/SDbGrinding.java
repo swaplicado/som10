@@ -180,7 +180,7 @@ public class SDbGrinding extends SDbRegistryUser {
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkItemId = resultSet.getInt("fk_item_id");
-            mnFkLotId = resultSet.getInt("fk_lot_id");
+            mnFkLotId = resultSet.getInt("fk_prc_batch");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");

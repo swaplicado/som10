@@ -267,7 +267,7 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkItemId = resultSet.getInt("fk_item_id");
             mnFkParameterId = resultSet.getInt("fk_param_id");
-            mnFkLotId = resultSet.getInt("fk_lot_id");
+            mnFkLotId = resultSet.getInt("fk_prc_batch");
             mnFkLinkId_n = resultSet.getInt("fk_link_id_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");

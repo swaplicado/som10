@@ -81,9 +81,6 @@ public abstract class SModConsts {
     public static final int SU_GRINDING_REP_GROUP = 320045;
     public static final int SU_GRINDING_REP_ITEM_GROUP = 320046;
     public static final int SU_GRINDING_REP_RECIPIENT = 320047;
-    public static final int SU_GRINDING_EVENT = 320048;
-    public static final int SU_GRINDING_RESULTS = 320049;
-    public static final int SU_GRINDINGS = 320050;
     public static final int SU_VEH_CONT_TYPE = 320023;
     public static final int SU_WAH_FILL_LEVEL = 320024;
     public static final int SU_OIL_CL = 320025;
@@ -272,7 +269,7 @@ public abstract class SModConsts {
         TablesMap.put(SU_GRINDING_ITEM_PARAM_HEADER, "su_grin_item_param_header");
         TablesMap.put(SU_GRINDING_REP_GROUP, "su_grin_rep_group");
         TablesMap.put(SU_GRINDING_REP_ITEM_GROUP, "su_grin_rep_item_group");
-        TablesMap.put(SU_GRINDING_REP_RECIPIENT, "su_grin_recipient");
+        TablesMap.put(SU_GRINDING_REP_RECIPIENT, "su_grin_rep_recipient");
         TablesMap.put(SU_VEH_CONT_TYPE, "su_veh_cont_type");
         TablesMap.put(SU_OIL_TP, "su_oil_tp");
         TablesMap.put(SU_WAH_FILL_LEVEL, "su_wah_fill_level");
@@ -285,9 +282,6 @@ public abstract class SModConsts {
         TablesMap.put(SU_CLOSING_CAL, "su_closing_cal");
         TablesMap.put(SU_FUNC_AREA, "su_func_area");
         TablesMap.put(SU_CONS_WAH, "su_cons_wah");
-        TablesMap.put(SU_GRINDING_EVENT, "su_grin_events");
-        TablesMap.put(SU_GRINDING_RESULTS, "su_grin_res");
-        TablesMap.put(SU_GRINDINGS, "su_grinding");
 
         TablesMap.put(S_LAB, "s_lab");
         TablesMap.put(S_LAB_NOTE, "s_lab_note");

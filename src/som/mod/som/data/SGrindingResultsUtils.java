@@ -42,7 +42,7 @@ import som.mod.som.db.SDbGrindingReportItemGroup;
 import som.mod.som.db.SDbGrinding;
 import som.mod.som.db.SDbGrindingResult;
 import som.mod.som.db.SDbItem;
-import som.mod.som.db.SDbGrindingLot;
+import som.mod.som.db.SDbProcessingBatch;
 
 /**
  *
@@ -86,9 +86,9 @@ public class SGrindingResultsUtils {
                             " WHERE b_del = 0 ORDER BY fk_usr_ins DESC;";
         }
         else {
-            field = "fk_lot_id";
+            field = "fk_prc_batch";
             
-            sql2 = "SELECT id_lot AS l_conf FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT) + 
+            sql2 = "SELECT id_prc_batch AS l_conf FROM " + SModConsts.TablesMap.get(SModConsts.S_PRC_BATCH) + 
                             " WHERE b_del = 0 ORDER BY fk_usr_ins DESC;";
         }
         
@@ -132,11 +132,11 @@ public class SGrindingResultsUtils {
             return 0;
         }
         
-        String sql = "SELECT fk_lot_id FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + 
+        String sql = "SELECT fk_prc_batch FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + 
                         " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY id_result DESC;";
         
-        String sqlLots = "SELECT id_lot FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT) + 
-                        " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY fk_usr_ins DESC;";
+        String sqlLots = "SELECT id_prc_batch FROM " + SModConsts.TablesMap.get(SModConsts.S_PRC_BATCH) + 
+                        " WHERE b_del = 0 AND fk_item = " + item + " ORDER BY fk_usr_ins DESC;";
         
         ResultSet itemIdRes;
         ResultSet lotIdRes;
@@ -144,13 +144,13 @@ public class SGrindingResultsUtils {
             itemIdRes = client.getSession().getStatement().executeQuery(sql);
             
             while(itemIdRes.next()) {
-                return itemIdRes.getInt("fk_lot_id");
+                return itemIdRes.getInt("fk_prc_batch");
             }
             
             lotIdRes = client.getSession().getStatement().executeQuery(sqlLots);
             
             while(lotIdRes.next()) {
-                return lotIdRes.getInt("id_lot");
+                return lotIdRes.getInt("id_prc_batch");
             }
             
             return 0;
@@ -175,12 +175,12 @@ public class SGrindingResultsUtils {
             return 0;
         }
 
-        String sql = "SELECT fk_lot_id FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT)
+        String sql = "SELECT fk_prc_batch FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT)
                 + " WHERE b_del = 0 AND fk_item_id = " + item + ""
                 + " AND dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' ORDER BY id_result DESC;";
 
-        String sqlLots = "SELECT id_lot FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT)
-                + " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY fk_usr_ins DESC;";
+        String sqlLots = "SELECT id_prc_batch FROM " + SModConsts.TablesMap.get(SModConsts.S_PRC_BATCH)
+                + " WHERE b_del = 0 AND fk_item = " + item + " ORDER BY fk_usr_ins DESC;";
 
         ResultSet itemIdRes;
         ResultSet lotIdRes;
@@ -188,13 +188,13 @@ public class SGrindingResultsUtils {
             itemIdRes = client.getSession().getStatement().executeQuery(sql);
 
             while (itemIdRes.next()) {
-                return itemIdRes.getInt("fk_lot_id");
+                return itemIdRes.getInt("fk_prc_batch");
             }
 
             lotIdRes = client.getSession().getStatement().executeQuery(sqlLots);
 
             while (lotIdRes.next()) {
-                return lotIdRes.getInt("id_lot");
+                return lotIdRes.getInt("id_prc_batch");
             }
 
             return 0;
@@ -244,7 +244,8 @@ public class SGrindingResultsUtils {
                     + "FROM "
                     + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_REP_ITEM_GROUP) + " "
                     + "WHERE "
-                    + "fk_rep_group = " + group + ";";
+                    + "fk_rep_group = " + group + " "
+                    + "ORDER BY item_sort ASC;";
 
             ArrayList<SDbGrindingReportItemGroup> links = new ArrayList<>();
             linkIdsRes = client.getSession().getStatement().getConnection().createStatement().executeQuery(sqlGroup);
@@ -286,13 +287,13 @@ public class SGrindingResultsUtils {
                     "i.name AS item_name, " +
                     "lip.fk_item_id, " +
                     (bAllItems ? ("COALESCE((SELECT  " +
-                    "        id_lot " +
+                    "        id_prc_batch " +
                     "     FROM " +
-                    "        " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT) + " " +
+                    "        " + SModConsts.TablesMap.get(SModConsts.S_PRC_BATCH) + " " +
                     "     WHERE " +
-                    "        fk_item_id = lip.fk_item_id " +
+                    "        fk_item = lip.fk_item_id " +
                     "        AND b_del = 0 " +
-                    "        ORDER BY id_lot DESC LIMIT 1), " +
+                    "        ORDER BY id_prc_batch DESC LIMIT 1), " +
                     "        0) AS lot_id, ") : "") +
                     "lip.fk_param_id " +
                     "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " lip " +
@@ -377,7 +378,7 @@ public class SGrindingResultsUtils {
         String sql = "SELECT dt_capture FROM " + 
                     SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + 
                     " WHERE fk_item_id = " + nItemId +
-                    " AND fk_lot_id = " + nLotId +
+                    " AND fk_prc_batch = " + nLotId +
                     " AND MONTH(dt_capture) = MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
                     " AND b_del = 0 ";
         sql += sFill;
@@ -414,7 +415,7 @@ public class SGrindingResultsUtils {
                         SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + 
                     " WHERE fk_item_id = " + itm + 
                     " AND fk_param_id = " + param + 
-                    " AND fk_lot_id = " + lot +
+                    " AND fk_prc_batch = " + lot +
                     " AND dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtCapture) + "' "+
                     " AND b_del = 0 ORDER BY id_result DESC;";
         
@@ -649,7 +650,7 @@ public class SGrindingResultsUtils {
                 + "IF(result_04 > 0, 1, 0) + "
                 + "IF(result_06 > 0, 1, 0)), 0) AS promedio, " +
                     "	" + (!onlyCurrentDay ? "SUM(" : "") + "COALESCE(@prom / " + monthGrinding + 
-                    " * COALESCE((SELECT grinding_oil_perc FROM som_com.su_grinding WHERE dt_capture = sgr.dt_capture), 0),0)" + (!onlyCurrentDay ? ")" : "") + " AS ponderado " +
+                    " * COALESCE((SELECT grinding_oil_perc FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING) + " WHERE dt_capture = sgr.dt_capture), 0),0)" + (!onlyCurrentDay ? ")" : "") + " AS ponderado " +
                     "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " sgr " +
                     "WHERE fk_param_id = " + parameterId + " " +
                     "AND fk_item_id = " + nItemId + " " +
@@ -856,7 +857,7 @@ public class SGrindingResultsUtils {
         ArrayList<String> files = new ArrayList<>();
         Map<String, String> inlineImages = new HashMap<>();
 
-        SDbGrindingLot oLot = group.get(0).getSDbLotAux();
+        SDbProcessingBatch oLot = group.get(0).getSDbLotAux();
         SDbItem oItem = group.get(0).getSDbItemAux();
 
         String body = "<html>"
@@ -865,7 +866,7 @@ public class SGrindingResultsUtils {
         int counter = 0;
         for (SDbGrindingReportItemGroup oItemGroup : group) {
             String itmName = oItemGroup.getSDbItemAux().getNameShort().replace(" ", "_");
-            String sFileName = "molienda/Mol_" + itmName + "_" + oItemGroup.getSDbLotAux().getLot() + "_" + fileNameformatter.format(new Date());
+            String sFileName = "molienda/Mol_" + itmName.replace("/", "").replace(".", "") + "_" + oItemGroup.getSDbLotAux().getProcessingBatch().replace("/", "").replace(".", "") + "_" + fileNameformatter.format(new Date());
             File file = new File(sFileName + ".xlsx");
             try (FileOutputStream outputStream = new FileOutputStream(sFileName + ".xlsx")) {
                 oItemGroup.getWorkbookAux().write(outputStream);
@@ -924,7 +925,7 @@ public class SGrindingResultsUtils {
                 body += "<p>" + SLibUtils.textToHtml("Última fecha de captura: ") + "&nbsp;<b>" + SLibUtils.textToHtml(subjectformatter.format(cutOffDate)) + "</b></p>"
                         + "<p>" + SLibUtils.textToHtml("Ítem: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oItemGroup.getSDbItemAux().getCode() + "-" + oItemGroup.getSDbItemAux().getName()) + "</b>"
                         + "<br>"
-                        + "" + SLibUtils.textToHtml("Lote: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oItemGroup.getSDbLotAux().getLot()) + "</b></p>";
+                        + "" + SLibUtils.textToHtml("Lote: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oItemGroup.getSDbLotAux().getProcessingBatch()) + "</b></p>";
 
                 if (!oItemGroup.getResumeHeaderRows().isEmpty()) {
                     body += "<p>";
@@ -978,7 +979,7 @@ public class SGrindingResultsUtils {
         }
 
         SDbCompany company = ((SGuiClientSessionCustom) client.getSession().getSessionCustom()).getCompany();
-        String subject = "Reporte molienda del " + subjectformatter.format(cutOffDate) + ". " + oItem.getNameShort() + " " + oLot.getLot();
+        String subject = "Reporte molienda del " + subjectformatter.format(cutOffDate) + ". " + oItem.getNameShort() + " " + oLot.getProcessingBatch();
 
         try {
             SEmbeddedImageEmailUtil.send(company.getMailNotificationConfigHost(), company.getMailNotificationConfigPort(), company.getMailNotificationConfigUser(),
@@ -1006,10 +1007,10 @@ public class SGrindingResultsUtils {
      * @param cutOffDate
      * @return 
      */
-    public static boolean saveReport(SGuiClient client, XSSFWorkbook workbook, SDbGrindingLot oLot, SDbItem oItem, Date cutOffDate) {
+    public static boolean saveReport(SGuiClient client, XSSFWorkbook workbook, SDbProcessingBatch oLot, SDbItem oItem, Date cutOffDate) {
         DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
         String itmName = oItem.getNameShort().replace(" ", "_");
-        String sFileName = "molienda/Mol_" + itmName + "_" + oLot.getLot() + "_" + fileNameformatter.format(new Date());
+        String sFileName = "molienda/Mol_" + itmName + "_" + oLot.getProcessingBatch() + "_" + fileNameformatter.format(new Date());
         File file = new File(sFileName + ".xlsx");
         
         JFileChooser fileChooser = new JFileChooser();

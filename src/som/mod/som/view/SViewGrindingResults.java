@@ -31,7 +31,7 @@ import sa.lib.gui.SGuiDate;
 import som.mod.SModConsts;
 import som.mod.som.db.SDbGrindingLinkItemParameter;
 import som.mod.som.db.SDbGrindingResult;
-import som.mod.som.db.SDbGrindingLot;
+import som.mod.som.db.SDbProcessingBatch;
 import som.mod.som.data.SGrindingData;
 import som.mod.som.data.SGrindingReport;
 import som.mod.som.data.SGrindingResultsUtils;
@@ -196,12 +196,12 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 
                 mnLot = SGrindingResultsUtils.getLastLotByItem(miClient, ((int[]) filter)[0]);
                 
-                SDbGrindingLot oLot = new SDbGrindingLot();
+                SDbProcessingBatch oLot = new SDbProcessingBatch();
                 oLot.read(miClient.getSession(), new int [] { mnLot });
                 
-                jtLot.setText(oLot.getLot());
+                jtLot.setText(oLot.getProcessingBatch());
                 
-                sql += " AND v.fk_lot_id = " + mnLot + " ";
+                sql += " AND v.fk_prc_batch = " + mnLot + " ";
             }
             catch (Exception ex) {
                 Logger.getLogger(SViewGrindingResults.class.getName()).log(Level.SEVERE, null, ex);
@@ -241,7 +241,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                     " " + SModConsts.TablesMap.get(SModConsts.S_GRINDING) + " " +
                     "WHERE " +
                     " fk_item_id = v.fk_item_id " +
-                    " AND fk_lot_id = v.fk_lot_id " +
+                    " AND fk_prc_batch = v.fk_prc_batch " +
                     " AND NOT b_del " +
                     " AND dt_capture = v.dt_capture)) AS day_grinding,"
                 + "v.result_08, "

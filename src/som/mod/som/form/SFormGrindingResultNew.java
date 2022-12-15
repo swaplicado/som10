@@ -197,9 +197,9 @@ public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
         
         params.getParamsMap().clear();
         params.setKey(null);
-        params.getParamsMap().put(SModConsts.SX_EXT_ITEM, maItemPk);
+        params.getParamsMap().put(SModConsts.SU_ITEM, maItemPk);
         
-        miClient.getSession().populateCatalogue(moKeyLot, SModConsts.S_GRINDING_LOT, 0, params);
+        miClient.getSession().populateCatalogue(moKeyLot, SModConsts.S_PRC_BATCH, 0, params);
     }
 
     @Override

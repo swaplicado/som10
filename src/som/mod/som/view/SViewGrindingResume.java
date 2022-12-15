@@ -52,7 +52,6 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
     @Override
     public void prepareSqlQuery() {
         String sql = "";
-        String hav = "";
         Object filter = null;
         
         jbRowCopy.setEnabled(false);
@@ -76,7 +75,7 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
                 "i.code AS " + SDbConsts.FIELD_CODE + ", " +
                 "i.name AS " + SDbConsts.FIELD_NAME + ", " +
                 "u.code, " +
-                "l.lot " +
+                "l.prc_batch " +
                 "FROM " +
                 "    " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " AS v " +
                 "        INNER JOIN " +
@@ -84,9 +83,9 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
                 "        INNER JOIN " +
                 "    " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON i.fk_unit = u.id_unit " +
                 "        INNER JOIN " +
-                "    " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_LOT) + " AS l ON v.fk_lot_id = l.id_lot " +
+                "    " + SModConsts.TablesMap.get(SModConsts.S_PRC_BATCH) + " AS l ON v.fk_prc_batch = l.id_prc_batch " +
                 "WHERE " + sql +
-                "GROUP BY v.dt_capture , v.fk_item_id , v.fk_lot_id;";
+                "GROUP BY v.dt_capture , v.fk_item_id , v.fk_prc_batch;";
     }
 
     @Override
@@ -98,7 +97,7 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, SDbConsts.FIELD_NAME, "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_UNT, "u.code", "Un.");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "l.lot", "Lote");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "l.prc_batch", "Lote");
 
         moModel.getGridColumns().addAll(Arrays.asList(columns));
     }

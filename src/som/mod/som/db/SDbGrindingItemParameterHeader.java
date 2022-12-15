@@ -141,7 +141,7 @@ public class SDbGrindingItemParameterHeader extends SDbRegistryUser {
             mnViewOrder = resultSet.getInt("view_order");
             msLabelText = resultSet.getString("label_text");
             msParameters = resultSet.getString("parameters_ids");
-            msUnitSimbol = resultSet.getString("unit_simbol");
+            msUnitSimbol = resultSet.getString("unit_symbol");
             mbDeleted = resultSet.getBoolean("b_del");
             mnFkItemId = resultSet.getInt("fk_item_id");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
@@ -195,7 +195,7 @@ public class SDbGrindingItemParameterHeader extends SDbRegistryUser {
                     "view_order = " + mnViewOrder + ", " +
                     "label_text = '" + msLabelText + "', " +
                     "parameters_ids = '" + msParameters + "', " +
-                    "unit_simbol = '" + msUnitSimbol + "', " +
+                    "unit_symbol = '" + msUnitSimbol + "', " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "fk_item_id = " + mnFkItemId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
@@ -227,6 +227,7 @@ public class SDbGrindingItemParameterHeader extends SDbRegistryUser {
         registry.setTsUserUpdate(this.getTsUserUpdate());
 
         registry.setRegistryNew(this.isRegistryNew());
+        
         return registry;
     }
 }

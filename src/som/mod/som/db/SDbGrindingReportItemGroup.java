@@ -24,6 +24,7 @@ import som.mod.som.data.SGrindingResumeRow;
 public class SDbGrindingReportItemGroup extends SDbRegistryUser {
 
     protected int mnPkItemGroupId;
+    protected int mnItemSort;
 
     /*
     protected boolean mbUpdatable;
@@ -47,7 +48,7 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
     
     protected String msRangeAux;
     protected SDbItem moItemAux;
-    protected SDbGrindingLot moLotAux;
+    protected SDbProcessingBatch moLotAux;
     protected XSSFWorkbook moWorkbookAux;
     protected ArrayList<SGrindingResumeRow> grindingRows;
 
@@ -57,6 +58,7 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
     }
 
     public void setPkItemGroupId(int n) { mnPkItemGroupId = n; }
+    public void setItemSort(int n) { mnItemSort = n; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -72,10 +74,11 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
     
     public void setRangeAux(String s) { msRangeAux = s; }
     public void setSDbItemAux(SDbItem o) { moItemAux = o; }
-    public void setSDbLotAux(SDbGrindingLot o) { moLotAux = o; }
+    public void setSDbLotAux(SDbProcessingBatch o) { moLotAux = o; }
     public void setWorkbookAux(XSSFWorkbook o) { moWorkbookAux = o; }
 
     public int getPkItemGroupId() { return mnPkItemGroupId; }
+    public int getItemSort() { return mnItemSort; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -93,7 +96,7 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
     
     public String getRangeAux() { return msRangeAux; }
     public SDbItem getSDbItemAux() { return moItemAux; }
-    public SDbGrindingLot getSDbLotAux() { return moLotAux; }
+    public SDbProcessingBatch getSDbLotAux() { return moLotAux; }
     public XSSFWorkbook getWorkbookAux() { return moWorkbookAux; }
     public ArrayList<SGrindingResumeRow> getResumeHeaderRows() { return grindingRows; }
 
@@ -102,6 +105,7 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
         initBaseRegistry();
 
         mnPkItemGroupId = 0;
+        mnItemSort = 0;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -177,6 +181,7 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
         }
         else {
             mnPkItemGroupId = resultSet.getInt("id_item_group");
+            mnItemSort = resultSet.getInt("item_sort");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -217,6 +222,7 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkItemGroupId + ", " + 
+                    mnItemSort + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " + 
                     (mbDisableable ? 1 : 0) + ", " + 
                     (mbDeletable ? 1 : 0) + ", " + 
@@ -227,15 +233,16 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
                     mnFkReportGroupId + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
-                    "NOW()" + ", " + 
-                    "NOW()" + ", " + 
+                    "NOW()" + ", " +
+                    "NOW()" + ", " +
                     ")";
         }
         else {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    "id_item_group = " + mnPkItemGroupId + ", " +
+//                    "id_item_group = " + mnPkItemGroupId + ", " +
+                    "item_sort = " + mnItemSort + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -244,9 +251,9 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_item = " + mnFkItemId + ", " +
                     "fk_rep_group = " + mnFkReportGroupId + ", " +
-                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
+//                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
-                    "ts_usr_ins = " + "NOW()" + ", " +
+//                    "ts_usr_ins = " + "NOW()" + ", " +
                     "ts_usr_upd = " + "NOW()" + ", " +
                     getSqlWhere();
         }
@@ -261,6 +268,7 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
         SDbGrindingReportItemGroup registry = new SDbGrindingReportItemGroup();
 
         registry.setPkItemGroupId(this.getPkItemGroupId());
+        registry.setItemSort(this.getItemSort());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
@@ -275,6 +283,7 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
         registry.setTsUserUpdate(this.getTsUserUpdate());
 
         registry.setRegistryNew(this.isRegistryNew());
+        
         return registry;
     }
 }

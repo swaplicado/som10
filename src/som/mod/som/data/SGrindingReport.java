@@ -40,7 +40,7 @@ import som.mod.som.db.SDbGrindingReportItemGroup;
 import som.mod.som.db.SDbGrindingLinkFormula;
 import som.mod.som.db.SDbGrindingEvent;
 import som.mod.som.db.SDbItem;
-import som.mod.som.db.SDbGrindingLot;
+import som.mod.som.db.SDbProcessingBatch;
 
 /**
  *
@@ -110,7 +110,7 @@ public class SGrindingReport {
 
                 int idDayLot = SGrindingResultsUtils.getLotByItemAndDate(client, itemGroup.getFkItemId(), dtDate);
 
-                SDbGrindingLot oLot = new SDbGrindingLot();
+                SDbProcessingBatch oLot = new SDbProcessingBatch();
                 oLot.read(client.getSession(), new int[]{idDayLot});
                 itemGroup.setSDbLotAux(oLot);
 
@@ -166,7 +166,7 @@ public class SGrindingReport {
      */
     public String generateReport(SGuiClient client, ArrayList<SGrindingResumeRow> resume, double rendTeo, SCaptureConfiguration cfg, 
                             LinkedHashMap<Date, ArrayList<SGrindingResultReport>> info, 
-                            XSSFSheet sheet, SDbGrindingLot oLot, SDbItem oItem, Date dtDate) throws FileNotFoundException, IOException {
+                            XSSFSheet sheet, SDbProcessingBatch oLot, SDbItem oItem, Date dtDate) throws FileNotFoundException, IOException {
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat formatterTime = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         ObjectMapper mapper = new ObjectMapper();
@@ -202,7 +202,7 @@ public class SGrindingReport {
         Cell cellLabelL = lotRow.createCell(1);
         cellLabelL.setCellValue("Lote:");
         Cell cellL = lotRow.createCell(2);
-        cellL.setCellValue(oLot.getLot() + " / " + formatter.format(oLot.getExpiration()));
+        cellL.setCellValue(oLot.getProcessingBatch() + " / " + formatter.format(oLot.getDate()));
         cellL.setCellStyle(style);
 
         sheet.createRow(rowsCount++);
@@ -900,7 +900,7 @@ public class SGrindingReport {
                 + " " + SModConsts.TablesMap.get(SModConsts.S_GRINDING) + " "
                 + "WHERE "
                 + " fk_item_id = v.fk_item_id "
-                + " AND fk_lot_id = v.fk_lot_id "
+                + " AND fk_prc_batch = v.fk_prc_batch "
                 + " AND NOT b_del "
                 + " AND dt_capture = v.dt_capture)) AS day_grinding,"
                 + "v.result_08, "
@@ -947,7 +947,7 @@ public class SGrindingReport {
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
                 + "v.fk_item_id = i.id_item "
                 + "WHERE v.dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' AND v.fk_item_id = " + idItem + " "
-                + "AND fk_lot_id = " + idLot + " "
+                + "AND fk_prc_batch = " + idLot + " "
                 + "ORDER BY v.capture_order ASC, v.fk_link_id_n ASC;";
         
         ArrayList<SGrindingResultReport> results = new ArrayList<>();
