@@ -292,6 +292,7 @@ public class SSomStockReport {
                     (inpCt != SLibConsts.UNDEFINED ? "AND (vrm.fk_inp_ct = " + inpCt + " " + sqlWherePE + ") " : "") +
                     sqlWhere + " " +
                     "AND vw.b_mobile = " + i + " " +
+                    "AND IF(vw.b_mobile, b_premises, TRUE) " +
                     "ORDER BY tanque, vi.name;";
 
             resultSet = statement.executeQuery(sql);

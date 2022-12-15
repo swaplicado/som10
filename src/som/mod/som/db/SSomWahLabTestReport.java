@@ -103,6 +103,7 @@ public class SSomWahLabTestReport {
                 + "</style>\n";
         html += "</head>" +
                 "<body>" +
+                "AETH05RG008-001.2<br>" +
                 "<h1>REGISTRO DE RESULTADOS DE TANQUES DE PROCESO</h1>" +
                 "<h2>Semana del " + SLibTimeUtils.dateFormatDatePeriodLong(lab.getDateStart(), lab.getDateEnd()) + "</h2>" +
                 "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 

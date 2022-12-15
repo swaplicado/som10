@@ -1043,8 +1043,6 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moBoolCurLlcPerOverange.setEnabled(enable);
         moBoolCurStePerOverange.setEnabled(enable);
         moBoolCurPalPerOverange.setEnabled(enable);
-        
-        jbSave.setEnabled(enable);
     }
     
     private boolean verifyYearWeek(int year, int week) {
