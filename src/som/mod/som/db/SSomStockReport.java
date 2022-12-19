@@ -261,7 +261,7 @@ public class SSomStockReport {
 
             if (funcAreaType.equals(SModSysConsts.SU_FUNC_AREA_TP_PLA)) {
                 if (funcArea != null && funcArea.getPkFunctionalAreaId() == SModSysConsts.SU_FUNC_AREA_REF) {
-                    sqlWhere = "AND vi.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_REF + " OR vi.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_RES;
+                    sqlWhere = "AND (vi.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_REF + " OR vi.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_RES + ") ";
                 }
                 else {
                     sqlWhere = "AND vi.fk_oil_tp_n <> " + SModSysConsts.SU_OIL_TP_REF + " AND vi.fk_oil_tp_n <> " + SModSysConsts.SU_OIL_TP_RES;
@@ -806,26 +806,35 @@ public class SSomStockReport {
         return test;
     }
     
-    private SDbWahLabTest getWahLabTestByWahAndItem(Statement statement, Date date, int item, int co, int cob, int wah) throws Exception {
+    private SDbWahLabTest getWahLabTestByWahAndItem(Statement statement, Date date, int itemPk, int co, int cob, int wah) throws Exception {
+        SDbItem item = new SDbItem();
         SDbWahLabTest test = new SDbWahLabTest();
         
-        /* OBTIENE EL PK DEL ANÁLISIS DEL LABORATORIO MAS RECIENTE PARA UN DETERMINADO TANQUE E ÍTEM QUE NO EXEDA DE LAS SEMANAS DEFINIDAS
+        item.read(miClient.getSession(), new int[] { itemPk });
+        
+        /* OBTIENE EL PK DEL ANÁLISIS DEL LABORATORIO MAS RECIENTE PARA UN DETERMINADO TANQUE E ÍTEM SIMILAR QUE NO EXEDA DE LAS SEMANAS DEFINIDAS
         * EN CASO DE QUE HAYA 2 FECHAS REPETIDAS SE TOMA EL QUE HAYA SIDO CREADO MAS RECIENTE
         */
         String sql = "SELECT wlt.id_wah_lab, wlt.id_test FROM s_wah_lab AS wl " +
                 "INNER JOIN s_wah_lab_test AS wlt ON wl.id_wah_lab = wlt.id_wah_lab " +
+                "INNER JOIN su_item AS i ON wlt.fk_item = i.id_item " +
                 "WHERE wl.ts_usr_ins = ( " +
                 "SELECT MAX(a.ts_usr_ins) FROM ( " +
                 "SELECT " +
                 "wl.id_wah_lab, wl.dt_start, wl.dt_end, wl.ts_usr_ins " +
                 "FROM s_wah_lab AS wl " +
                 "INNER JOIN s_wah_lab_test AS wlt ON wlt.id_wah_lab = wl.id_wah_lab " +
+                "INNER JOIN su_item AS i ON wlt.fk_item = i.id_item " +
                 "WHERE wlt.fk_wah_co = " + co + " AND wlt.fk_wah_cob = " + cob + " AND wlt.fk_wah_wah = " + wah + " " +
                 "AND wl.dt_start >= (SELECT ADDDATE('" + SLibUtils.DbmsDateFormatDate.format(date) + "', INTERVAL -" + WEEKS_OF_TEST + " WEEK)) " +
                 "AND NOT wl.b_del " +
-                "AND wlt.fk_item = " + item + ") AS a) " +
+                "AND i.fk_oil_cl_n = " + item.getFkOilClassId_n() + " " +
+                "AND i.fk_oil_tp_n = " + item.getFkOilTypeId_n() + " " +
+                "AND i.fk_item_rm_n = " + item.getFkItemRowMaterialId_n() + ") AS a) " +
                 "AND wlt.fk_wah_co = " + co + " AND wlt.fk_wah_cob = " + cob + " AND wlt.fk_wah_wah = " + wah + " " +
-                "AND wlt.fk_item = " + item + ";";
+                "AND i.fk_oil_cl_n = " + item.getFkOilClassId_n() + " " +
+                "AND i.fk_oil_tp_n = " + item.getFkOilTypeId_n() + " " +
+                "AND i.fk_item_rm_n = " + item.getFkItemRowMaterialId_n() + ";";
         ResultSet resultSet = statement.executeQuery(sql);
         if (resultSet.next()) {
             test.read(miClient.getSession(), new int[] { resultSet.getInt(1), resultSet.getInt(2) });
