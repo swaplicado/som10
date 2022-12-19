@@ -1,4 +1,11 @@
 ================================================================================
+2022-12-19, 1.0 083.3
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Reestructuración de la forma de análisis de laboratorio de aceites.
+2) Tomar los análisis de laboratorio anteriores cuando el ítem sea similar (misma clasificación).
+
+================================================================================
 2022-12-14, 1.0 083.2
 Isabel Danae GARCÍA SERVÍN/ Edwin Omar CARMONA FIGUEROA
 --------------------------------------------------------------------------------

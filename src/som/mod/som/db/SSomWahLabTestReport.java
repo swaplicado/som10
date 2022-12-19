@@ -185,7 +185,7 @@ public class SSomWahLabTestReport {
         lab.read(miClient.getSession(), pk);
         if (lab.getLastWahLab() != null) {
             for (SDbWahLabTest test : lab.getWahLabTests()) {
-                test.readLastWahLabTest(miClient.getSession(), lab.getLastWahLab().getPkWarehouseLaboratoryId());
+                test.readSimilarItemLastWahLabTest(miClient.getSession(), lab.getLastWahLab().getPkWarehouseLaboratoryId());
             }
         }
         return lab;

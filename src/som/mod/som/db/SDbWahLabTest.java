@@ -142,18 +142,25 @@ public class SDbWahLabTest extends SDbRegistryUser implements SGridRow, Serializ
     public double getStk() { return mdStk; }
     public String getUnit() { return msUnit; }
     
-    public void readLastWahLabTest(SGuiSession session, int lastPkWahLabTest) throws Exception {
-        msSql = "SELECT id_test FROM " + getSqlTable() + " " +
-                "WHERE id_wah_lab = " + lastPkWahLabTest + " " +
-                "AND fk_wah_co = " + mnFkWarehouseCompanyId + " " +
-                "AND fk_wah_cob = " + mnFkWarehouseBranchId + " " +
-                "AND fk_wah_wah = " + mnFkWarehouseWarehouseId + " " +
-                "AND fk_item = " + mnFkItem + " ";
+    public boolean readSimilarItemLastWahLabTest(SGuiSession session, int lastPkWahLabTest) throws Exception {
+        boolean similar = false;
+        moLastWahLabTest = null;
+        msSql = "SELECT wlt.id_test FROM " + getSqlTable() + " AS wlt " +
+                "INNER JOIN su_item AS i ON wlt.fk_item = i.id_item " +
+                "WHERE wlt.id_wah_lab = " + lastPkWahLabTest + " " +
+                "AND wlt.fk_wah_co = " + mnFkWarehouseCompanyId + " " +
+                "AND wlt.fk_wah_cob = " + mnFkWarehouseBranchId + " " +
+                "AND wlt.fk_wah_wah = " + mnFkWarehouseWarehouseId + " " +
+                "AND i.fk_oil_cl_n = " + moDbmsItem.getFkOilClassId_n() + " " +
+                "AND i.fk_oil_tp_n = " + moDbmsItem.getFkOilTypeId_n() + " " +
+                "AND i.fk_item_rm_n = " + moDbmsItem.getFkItemRowMaterialId_n() + ";";
         ResultSet resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
             moLastWahLabTest = new SDbWahLabTest();
             moLastWahLabTest.read(session, new int[] { lastPkWahLabTest, resultSet.getInt(1) });
+            similar = true;
         }
+        return similar;
     }
     
     public void readWarehouse(SGuiSession session) throws Exception {

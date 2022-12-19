@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.2" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
+<Form version="1.8" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="0"/>
   </Properties>
@@ -25,7 +25,7 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="jpAllForm">
+    <Container class="javax.swing.JPanel" name="jpRegistry">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -41,7 +41,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="jpDates">
+        <Container class="javax.swing.JPanel" name="jpSettings">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
               <BorderConstraints direction="North"/>
@@ -50,15 +50,12 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="jPanel3">
+            <Container class="javax.swing.JPanel" name="jpSettings1">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="An&#xe1;lisis actual:"/>
+                    <TitledBorder title="Fecha:"/>
                   </Border>
-                </Property>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[531, 102]"/>
                 </Property>
               </Properties>
               <Constraints>
@@ -68,13 +65,12 @@
               </Constraints>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                <Property name="columns" type="int" value="0"/>
-                <Property name="horizontalGap" type="int" value="5"/>
-                <Property name="rows" type="int" value="3"/>
+                <Property name="columns" type="int" value="1"/>
+                <Property name="rows" type="int" value="2"/>
                 <Property name="verticalGap" type="int" value="5"/>
               </Layout>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="jPanel18">
+                <Container class="javax.swing.JPanel" name="jpSettings11">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
                     <Property name="alignment" type="int" value="0"/>
@@ -83,123 +79,38 @@
                   <SubComponents>
                     <Component class="javax.swing.JLabel" name="jlCaptureDate">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Fecha de creaci&#xf3;n:"/>
+                        <Property name="text" type="java.lang.String" value="Creaci&#xf3;n:"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[115, 23]"/>
+                          <Dimension value="[100, 23]"/>
                         </Property>
                       </Properties>
                     </Component>
                     <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateCaptureDate">
                     </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="jpSettings12">
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                    <Property name="alignment" type="int" value="0"/>
+                    <Property name="verticalGap" type="int" value="0"/>
+                  </Layout>
+                  <SubComponents>
                     <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolDone">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Terminado"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[120, 23]"/>
-                        </Property>
                       </Properties>
                     </Component>
                     <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolValidate">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Validado"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[120, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                  </SubComponents>
-                </Container>
-                <Container class="javax.swing.JPanel" name="jPanel19">
-
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                    <Property name="alignment" type="int" value="0"/>
-                    <Property name="verticalGap" type="int" value="0"/>
-                  </Layout>
-                  <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jlCurYearTest">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="A&#xf1;o:"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[115, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="sa.lib.gui.bean.SBeanFieldCalendarYear" name="moYearCurYearTest">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[103, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JLabel" name="jlCurWeekTest">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Semana:"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[75, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="sa.lib.gui.bean.SBeanFieldCalendarWeek" name="moWeekCurWeekTest">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[103, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                  </SubComponents>
-                </Container>
-                <Container class="javax.swing.JPanel" name="jPanel20">
-
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                    <Property name="alignment" type="int" value="0"/>
-                    <Property name="verticalGap" type="int" value="0"/>
-                  </Layout>
-                  <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jlCurStartDateTest">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Del:"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[115, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateCurStartDateTest">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="enabled" type="boolean" value="false"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JLabel" name="jlCurEndDateTest">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Al:"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[75, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateCurEndDateTest">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                     </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
             </Container>
-            <Container class="javax.swing.JPanel" name="jPanel4">
-              <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="An&#xe1;lisis anterior:"/>
-                  </Border>
-                </Property>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[300, 102]"/>
-                </Property>
-              </Properties>
+            <Container class="javax.swing.JPanel" name="jpSettings2">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
                   <BorderConstraints direction="Center"/>
@@ -207,118 +118,218 @@
               </Constraints>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                <Property name="columns" type="int" value="0"/>
-                <Property name="rows" type="int" value="2"/>
+                <Property name="columns" type="int" value="2"/>
+                <Property name="horizontalGap" type="int" value="5"/>
+                <Property name="rows" type="int" value="1"/>
               </Layout>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="jPanel5">
+                <Container class="javax.swing.JPanel" name="jpSettings21">
                   <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[381, 23]"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="An&#xe1;lisis actual:"/>
+                      </Border>
                     </Property>
                   </Properties>
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                    <Property name="alignment" type="int" value="0"/>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                    <Property name="columns" type="int" value="1"/>
+                    <Property name="rows" type="int" value="2"/>
+                    <Property name="verticalGap" type="int" value="5"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jlLastYearTest">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="A&#xf1;o:"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[75, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="sa.lib.gui.bean.SBeanFieldCalendarYear" name="moYearLastYearTest">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[103, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JLabel" name="jlLastWeekTest">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Semana:"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[75, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="sa.lib.gui.bean.SBeanFieldCalendarWeek" name="moWeekLastWeekTest">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[103, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
+                    <Container class="javax.swing.JPanel" name="jpSettings211">
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                        <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="0"/>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jlCurYearTest">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="A&#xf1;o:"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldCalendarYear" name="moYearCurYearTest">
+                          <Properties>
+                            <Property name="editable" type="boolean" value="false"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jlCurStartDateTest">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Inicio:"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateCurStartDateTest">
+                          <Properties>
+                            <Property name="editable" type="boolean" value="false"/>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JPanel" name="jpSettings212">
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                        <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="0"/>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jlCurWeekTest">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Semana:"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldCalendarWeek" name="moWeekCurWeekTest">
+                          <Properties>
+                            <Property name="editable" type="boolean" value="false"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jlCurEndDateTest">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Fin:"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateCurEndDateTest">
+                          <Properties>
+                            <Property name="editable" type="boolean" value="false"/>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jPanel7">
+                <Container class="javax.swing.JPanel" name="jpSettings22">
                   <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[381, 23]"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="An&#xe1;lisis actual:"/>
+                      </Border>
                     </Property>
                   </Properties>
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                    <Property name="alignment" type="int" value="0"/>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                    <Property name="columns" type="int" value="1"/>
+                    <Property name="rows" type="int" value="2"/>
+                    <Property name="verticalGap" type="int" value="5"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jlLastStartDateTest">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Del:"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[75, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateLastStartDateTest">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="enabled" type="boolean" value="false"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JLabel" name="jlLastEndDateTest">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Al:"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[75, 23]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateLastEndDateTest">
-                      <Properties>
-                        <Property name="editable" type="boolean" value="false"/>
-                        <Property name="enabled" type="boolean" value="false"/>
-                      </Properties>
-                    </Component>
+                    <Container class="javax.swing.JPanel" name="jpSettings221">
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                        <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="0"/>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jlLastYearTest">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="A&#xf1;o:"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldCalendarYear" name="moYearLastYearTest">
+                          <Properties>
+                            <Property name="editable" type="boolean" value="false"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jlLastStartDateTest">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Inicio:"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateLastStartDateTest">
+                          <Properties>
+                            <Property name="editable" type="boolean" value="false"/>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
+                    <Container class="javax.swing.JPanel" name="jpSettings222">
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                        <Property name="alignment" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="0"/>
+                      </Layout>
+                      <SubComponents>
+                        <Component class="javax.swing.JLabel" name="jlLastWeekTest">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Semana:"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldCalendarWeek" name="moWeekLastWeekTest">
+                          <Properties>
+                            <Property name="editable" type="boolean" value="false"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jlLastEndDateTest">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Fin:"/>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[75, 23]"/>
+                            </Property>
+                          </Properties>
+                        </Component>
+                        <Component class="sa.lib.gui.bean.SBeanFieldDate" name="moDateLastEndDateTest">
+                          <Properties>
+                            <Property name="editable" type="boolean" value="false"/>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
                   </SubComponents>
                 </Container>
               </SubComponents>
             </Container>
-            <Container class="javax.swing.JPanel" name="jPanel8">
+            <Container class="javax.swing.JPanel" name="jpSettings3">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                  <BorderConstraints direction="After"/>
+                  <BorderConstraints direction="East"/>
                 </Constraint>
               </Constraints>
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                <Property name="columns" type="int" value="0"/>
-                <Property name="rows" type="int" value="2"/>
-              </Layout>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="jPanel9">
-                  <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[110, 23]"/>
-                    </Property>
-                  </Properties>
+                <Container class="javax.swing.JPanel" name="jpSettings31">
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                      <BorderConstraints direction="North"/>
+                    </Constraint>
+                  </Constraints>
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                    <Property name="columns" type="int" value="1"/>
+                    <Property name="rows" type="int" value="3"/>
+                    <Property name="verticalGap" type="int" value="5"/>
+                  </Layout>
                   <SubComponents>
                     <Component class="javax.swing.JButton" name="jbContinue">
                       <Properties>
@@ -330,11 +341,6 @@
                           <Dimension value="[100, 23]"/>
                         </Property>
                       </Properties>
-                      <Constraints>
-                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                          <BorderConstraints direction="South"/>
-                        </Constraint>
-                      </Constraints>
                     </Component>
                     <Component class="javax.swing.JButton" name="jbRestart">
                       <Properties>
@@ -346,38 +352,17 @@
                           <Dimension value="[100, 23]"/>
                         </Property>
                       </Properties>
-                      <Constraints>
-                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                          <BorderConstraints direction="First"/>
-                        </Constraint>
-                      </Constraints>
                     </Component>
-                  </SubComponents>
-                </Container>
-                <Container class="javax.swing.JPanel" name="jPanel10">
-                  <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[110, 23]"/>
-                    </Property>
-                  </Properties>
-
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
-                  <SubComponents>
                     <Component class="javax.swing.JButton" name="jbAllTest">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Ver captura"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[150, 23]"/>
+                          <Dimension value="[100, 23]"/>
                         </Property>
                       </Properties>
                       <AccessibilityProperties>
                         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Mostrar captura"/>
                       </AccessibilityProperties>
-                      <Constraints>
-                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                          <BorderConstraints direction="South"/>
-                        </Constraint>
-                      </Constraints>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -470,7 +455,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="jpCurResults">
+            <Container class="javax.swing.JPanel" name="jpCurTest">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -486,328 +471,367 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="jpCurPhysiochemical">
-                  <Properties>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Fisicoqu&#xed;micos:"/>
-                      </Border>
-                    </Property>
-                  </Properties>
+                <Container class="javax.swing.JPanel" name="jpCurItem">
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                      <BorderConstraints direction="First"/>
+                      <BorderConstraints direction="North"/>
                     </Constraint>
                   </Constraints>
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                    <Property name="alignment" type="int" value="0"/>
+                    <Property name="verticalGap" type="int" value="0"/>
+                  </Layout>
                   <SubComponents>
-                    <Container class="javax.swing.JPanel" name="jPanel21">
-                      <Constraints>
-                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                          <BorderConstraints direction="North"/>
-                        </Constraint>
-                      </Constraints>
-
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                        <Property name="alignment" type="int" value="0"/>
-                        <Property name="verticalGap" type="int" value="0"/>
-                      </Layout>
-                      <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlCurAciPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Acidez %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurAciPer">
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurAciPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlCurPerInd">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="I. per&#xf3;xidos:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurPerInd">
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurPerIndOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlCurMoiPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Humedad %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurMoiPer">
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurMoiPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlCurSolPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="S&#xf3;lidos %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurSolPer">
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurSolPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                      </SubComponents>
-                    </Container>
+                    <Component class="javax.swing.JLabel" name="jlCurItem">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&#xcd;tem:"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[75, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurItem">
+                      <Properties>
+                        <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[615, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="jbSaveRow">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Registrar"/>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[2, 2, 2, 2]"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[75, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="jbSaveAndNextRow">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Registrar y siguiente"/>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[2, 2, 2, 2]"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[130, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="jbEditTest">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Modificar"/>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[2, 2, 2, 2]"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[75, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="jbErase">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Borrar"/>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[2, 2, 2, 2]"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[75, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jpCurChromatography">
-                  <Properties>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Cromatograf&#xed;a:"/>
-                      </Border>
-                    </Property>
-                  </Properties>
+                <Container class="javax.swing.JPanel" name="jpCurTestResults">
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
                       <BorderConstraints direction="Center"/>
                     </Constraint>
                   </Constraints>
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                    <Property name="columns" type="int" value="0"/>
-                    <Property name="horizontalGap" type="int" value="5"/>
-                    <Property name="rows" type="int" value="2"/>
-                    <Property name="verticalGap" type="int" value="5"/>
-                  </Layout>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
                   <SubComponents>
-                    <Container class="javax.swing.JPanel" name="jPanel22">
+                    <Container class="javax.swing.JPanel" name="jpCurPhysiochemical">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                            <TitledBorder title="Fisicoqu&#xed;micos:"/>
+                          </Border>
+                        </Property>
+                      </Properties>
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                          <BorderConstraints direction="First"/>
+                        </Constraint>
+                      </Constraints>
 
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                        <Property name="alignment" type="int" value="0"/>
-                        <Property name="verticalGap" type="int" value="0"/>
-                      </Layout>
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlCurLinPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Linoleico %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurLinPer">
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurLinPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlCurOlePer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Ol&#xe9;ico %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurOlePer">
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurOlePerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlCurLlcPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Linol&#xe9;nico %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurLlcPer">
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurLlcPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
+                        <Container class="javax.swing.JPanel" name="jPanel21">
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                              <BorderConstraints direction="North"/>
+                            </Constraint>
+                          </Constraints>
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                            <Property name="alignment" type="int" value="0"/>
+                            <Property name="verticalGap" type="int" value="0"/>
+                          </Layout>
+                          <SubComponents>
+                            <Component class="javax.swing.JLabel" name="jlCurAciPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Acidez %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurAciPer">
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurAciPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlCurPerInd">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="I. per&#xf3;xidos:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurPerInd">
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurPerIndOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlCurMoiPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Humedad %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[100, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurMoiPer">
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurMoiPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlCurSolPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="S&#xf3;lidos %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurSolPer">
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurSolPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel23">
+                    <Container class="javax.swing.JPanel" name="jpCurChromatography">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                            <TitledBorder title="Cromatograf&#xed;a:"/>
+                          </Border>
+                        </Property>
+                      </Properties>
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                          <BorderConstraints direction="Center"/>
+                        </Constraint>
+                      </Constraints>
 
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                        <Property name="alignment" type="int" value="0"/>
-                        <Property name="verticalGap" type="int" value="0"/>
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                        <Property name="columns" type="int" value="0"/>
+                        <Property name="horizontalGap" type="int" value="5"/>
+                        <Property name="rows" type="int" value="2"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlCurStePer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Este&#xe1;rico %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurStePer">
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurStePerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlCurPalPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Palm&#xed;tico %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurPalPer">
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurPalPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
+                        <Container class="javax.swing.JPanel" name="jPanel22">
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                            <Property name="alignment" type="int" value="0"/>
+                            <Property name="verticalGap" type="int" value="0"/>
+                          </Layout>
+                          <SubComponents>
+                            <Component class="javax.swing.JLabel" name="jlCurLinPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Linoleico %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurLinPer">
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurLinPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlCurOlePer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Ol&#xe9;ico %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurOlePer">
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurOlePerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlCurLlcPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Linol&#xe9;nico %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[100, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurLlcPer">
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurLlcPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
+                        <Container class="javax.swing.JPanel" name="jPanel23">
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                            <Property name="alignment" type="int" value="0"/>
+                            <Property name="verticalGap" type="int" value="0"/>
+                          </Layout>
+                          <SubComponents>
+                            <Component class="javax.swing.JLabel" name="jlCurStePer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Este&#xe1;rico %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurStePer">
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurStePerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlCurPalPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Palm&#xed;tico %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurPalPer">
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolCurPalPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlCurNotes">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Observaciones:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[100, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurNotes">
+                              <Properties>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[400, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
                       </SubComponents>
                     </Container>
-                  </SubComponents>
-                </Container>
-                <Container class="javax.swing.JPanel" name="jpNotes">
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                      <BorderConstraints direction="Last"/>
-                    </Constraint>
-                  </Constraints>
+                    <Container class="javax.swing.JPanel" name="jpNotes">
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                          <BorderConstraints direction="Last"/>
+                        </Constraint>
+                      </Constraints>
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                    <Property name="columns" type="int" value="0"/>
-                    <Property name="horizontalGap" type="int" value="5"/>
-                    <Property name="rows" type="int" value="1"/>
-                    <Property name="verticalGap" type="int" value="5"/>
-                  </Layout>
-                  <SubComponents>
-                    <Container class="javax.swing.JPanel" name="jPanel24">
-
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                        <Property name="alignment" type="int" value="0"/>
-                        <Property name="verticalGap" type="int" value="0"/>
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                        <Property name="columns" type="int" value="0"/>
+                        <Property name="horizontalGap" type="int" value="5"/>
+                        <Property name="rows" type="int" value="1"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlCurNotes">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Observaciones:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextCurNotes">
-                          <Properties>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[615, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JButton" name="jbSaveRow">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Registrar"/>
-                            <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                              <Insets value="[2, 2, 2, 2]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[70, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JButton" name="jbSaveAndNextRow">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Registrar y siguiente"/>
-                            <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                              <Insets value="[2, 2, 2, 2]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[130, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JButton" name="jbEditTest">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Modificar"/>
-                            <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                              <Insets value="[2, 2, 2, 2]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[70, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JButton" name="jbErase">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Borrar"/>
-                            <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                              <Insets value="[2, 2, 2, 2]"/>
-                            </Property>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[70, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
+                        <Container class="javax.swing.JPanel" name="jPanel24">
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                            <Property name="alignment" type="int" value="0"/>
+                            <Property name="verticalGap" type="int" value="0"/>
+                          </Layout>
+                        </Container>
                       </SubComponents>
                     </Container>
                   </SubComponents>
                 </Container>
               </SubComponents>
             </Container>
-            <Container class="javax.swing.JPanel" name="jpLastResults">
+            <Container class="javax.swing.JPanel" name="jpLastTest">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -823,321 +847,368 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="jpLastPhysiochemical">
-                  <Properties>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Fisicoqu&#xed;micos:"/>
-                      </Border>
-                    </Property>
-                  </Properties>
+                <Container class="javax.swing.JPanel" name="jpLastItem">
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                      <BorderConstraints direction="First"/>
+                      <BorderConstraints direction="North"/>
                     </Constraint>
                   </Constraints>
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                    <Property name="alignment" type="int" value="0"/>
+                    <Property name="verticalGap" type="int" value="0"/>
+                  </Layout>
                   <SubComponents>
-                    <Container class="javax.swing.JPanel" name="jPanel25">
-                      <Constraints>
-                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                          <BorderConstraints direction="Center"/>
-                        </Constraint>
-                      </Constraints>
-
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                        <Property name="alignment" type="int" value="0"/>
-                        <Property name="verticalGap" type="int" value="0"/>
-                      </Layout>
-                      <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlLastAciPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Acidez %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastAciPer">
-                          <Properties>
-                            <Property name="editable" type="boolean" value="false"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastAciPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlLastPerInd">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="I. per&#xf3;xidos:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastPerInd">
-                          <Properties>
-                            <Property name="editable" type="boolean" value="false"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastPerIndOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlLastMoiPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Humedad %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastMoiPer">
-                          <Properties>
-                            <Property name="editable" type="boolean" value="false"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastMoiPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlLastSolPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="S&#xf3;lidos %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastSolPer">
-                          <Properties>
-                            <Property name="editable" type="boolean" value="false"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastSolPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                      </SubComponents>
-                    </Container>
+                    <Component class="javax.swing.JLabel" name="jlLastItem">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&#xcd;tem:"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[75, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastItem">
+                      <Properties>
+                        <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[615, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jlLastItemWarning">
+                      <Properties>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="0" green="0" red="ff" type="rgb"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="(&#xcd;tem similar al actual)"/>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jpLastChromatography">
-                  <Properties>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Cromatograf&#xed;a:"/>
-                      </Border>
-                    </Property>
-                  </Properties>
+                <Container class="javax.swing.JPanel" name="jpLastTestResults">
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
                       <BorderConstraints direction="Center"/>
                     </Constraint>
                   </Constraints>
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                    <Property name="columns" type="int" value="0"/>
-                    <Property name="horizontalGap" type="int" value="5"/>
-                    <Property name="rows" type="int" value="2"/>
-                    <Property name="verticalGap" type="int" value="5"/>
-                  </Layout>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
                   <SubComponents>
-                    <Container class="javax.swing.JPanel" name="jPanel26">
+                    <Container class="javax.swing.JPanel" name="jpLastPhysiochemical">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                            <TitledBorder title="Fisicoqu&#xed;micos:"/>
+                          </Border>
+                        </Property>
+                      </Properties>
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                          <BorderConstraints direction="First"/>
+                        </Constraint>
+                      </Constraints>
 
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                        <Property name="alignment" type="int" value="0"/>
-                        <Property name="verticalGap" type="int" value="0"/>
-                      </Layout>
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlLastLinPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Linoleico %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastLinPer">
-                          <Properties>
-                            <Property name="editable" type="boolean" value="false"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastLinPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlLastOlePer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Ol&#xe9;ico %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastOlePer">
-                          <Properties>
-                            <Property name="editable" type="boolean" value="false"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastOlePerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlLastLlcPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Linol&#xe9;nico %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastLlcPer">
-                          <Properties>
-                            <Property name="editable" type="boolean" value="false"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastLlcPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
+                        <Container class="javax.swing.JPanel" name="jPanel25">
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                              <BorderConstraints direction="Center"/>
+                            </Constraint>
+                          </Constraints>
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                            <Property name="alignment" type="int" value="0"/>
+                            <Property name="verticalGap" type="int" value="0"/>
+                          </Layout>
+                          <SubComponents>
+                            <Component class="javax.swing.JLabel" name="jlLastAciPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Acidez %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastAciPer">
+                              <Properties>
+                                <Property name="editable" type="boolean" value="false"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastAciPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlLastPerInd">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="I. per&#xf3;xidos:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastPerInd">
+                              <Properties>
+                                <Property name="editable" type="boolean" value="false"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastPerIndOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlLastMoiPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Humedad %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[100, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastMoiPer">
+                              <Properties>
+                                <Property name="editable" type="boolean" value="false"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastMoiPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlLastSolPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="S&#xf3;lidos %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastSolPer">
+                              <Properties>
+                                <Property name="editable" type="boolean" value="false"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastSolPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel27">
+                    <Container class="javax.swing.JPanel" name="jpLastChromatography">
+                      <Properties>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                            <TitledBorder title="Cromatograf&#xed;a:"/>
+                          </Border>
+                        </Property>
+                      </Properties>
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                          <BorderConstraints direction="Center"/>
+                        </Constraint>
+                      </Constraints>
 
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                        <Property name="alignment" type="int" value="0"/>
-                        <Property name="verticalGap" type="int" value="0"/>
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                        <Property name="columns" type="int" value="0"/>
+                        <Property name="horizontalGap" type="int" value="5"/>
+                        <Property name="rows" type="int" value="2"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlLastStePer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Este&#xe1;rico %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastStePer">
-                          <Properties>
-                            <Property name="editable" type="boolean" value="false"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastStePerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="javax.swing.JLabel" name="jlLastPalPer">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Palm&#xed;tico %:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastPalPer">
-                          <Properties>
-                            <Property name="editable" type="boolean" value="false"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastPalPerOverange">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="FR"/>
-                            <Property name="enabled" type="boolean" value="false"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[50, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
+                        <Container class="javax.swing.JPanel" name="jPanel26">
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                            <Property name="alignment" type="int" value="0"/>
+                            <Property name="verticalGap" type="int" value="0"/>
+                          </Layout>
+                          <SubComponents>
+                            <Component class="javax.swing.JLabel" name="jlLastLinPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Linoleico %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastLinPer">
+                              <Properties>
+                                <Property name="editable" type="boolean" value="false"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastLinPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlLastOlePer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Ol&#xe9;ico %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastOlePer">
+                              <Properties>
+                                <Property name="editable" type="boolean" value="false"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastOlePerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlLastLlcPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Linol&#xe9;nico %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[100, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastLlcPer">
+                              <Properties>
+                                <Property name="editable" type="boolean" value="false"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastLlcPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
+                        <Container class="javax.swing.JPanel" name="jPanel27">
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                            <Property name="alignment" type="int" value="0"/>
+                            <Property name="verticalGap" type="int" value="0"/>
+                          </Layout>
+                          <SubComponents>
+                            <Component class="javax.swing.JLabel" name="jlLastStePer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Este&#xe1;rico %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastStePer">
+                              <Properties>
+                                <Property name="editable" type="boolean" value="false"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastStePerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlLastPalPer">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Palm&#xed;tico %:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[75, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastPalPer">
+                              <Properties>
+                                <Property name="editable" type="boolean" value="false"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldBoolean" name="moBoolLastPalPerOverange">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="FR"/>
+                                <Property name="enabled" type="boolean" value="false"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[50, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="jlLastNotes">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="Observaciones:"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[100, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                            <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastNotes">
+                              <Properties>
+                                <Property name="enabled" type="boolean" value="false"/>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[400, 23]"/>
+                                </Property>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
                       </SubComponents>
                     </Container>
-                  </SubComponents>
-                </Container>
-                <Container class="javax.swing.JPanel" name="jpLastNotes">
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                      <BorderConstraints direction="Last"/>
-                    </Constraint>
-                  </Constraints>
+                    <Container class="javax.swing.JPanel" name="jpLastNotes">
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                          <BorderConstraints direction="Last"/>
+                        </Constraint>
+                      </Constraints>
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                    <Property name="columns" type="int" value="0"/>
-                    <Property name="rows" type="int" value="1"/>
-                  </Layout>
-                  <SubComponents>
-                    <Container class="javax.swing.JPanel" name="jPanel28">
-
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                        <Property name="alignment" type="int" value="0"/>
-                        <Property name="verticalGap" type="int" value="0"/>
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
+                        <Property name="columns" type="int" value="0"/>
+                        <Property name="rows" type="int" value="1"/>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jlLastNotes">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Observaciones:"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[100, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
-                        <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextLastNotes">
-                          <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
-                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[615, 23]"/>
-                            </Property>
-                          </Properties>
-                        </Component>
+                        <Container class="javax.swing.JPanel" name="jPanel28">
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                            <Property name="alignment" type="int" value="0"/>
+                            <Property name="verticalGap" type="int" value="0"/>
+                          </Layout>
+                        </Container>
                       </SubComponents>
                     </Container>
                   </SubComponents>

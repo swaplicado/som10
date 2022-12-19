@@ -261,10 +261,10 @@ public class SSomStockReport {
 
             if (funcAreaType.equals(SModSysConsts.SU_FUNC_AREA_TP_PLA)) {
                 if (funcArea != null && funcArea.getPkFunctionalAreaId() == SModSysConsts.SU_FUNC_AREA_REF) {
-                    sqlWhere = "AND vi.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_REF;
+                    sqlWhere = "AND vi.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_REF + " OR vi.fk_oil_tp_n = " + SModSysConsts.SU_OIL_TP_RES;
                 }
                 else {
-                    sqlWhere = "AND vi.fk_oil_tp_n <> " + SModSysConsts.SU_OIL_TP_REF;
+                    sqlWhere = "AND vi.fk_oil_tp_n <> " + SModSysConsts.SU_OIL_TP_REF + " AND vi.fk_oil_tp_n <> " + SModSysConsts.SU_OIL_TP_RES;
                 }
                 if (funcArea != null && funcArea.getPkFunctionalAreaId() == SModSysConsts.SU_FUNC_AREA_PRE_EXT) {
                     sqlWherePE = "OR COALESCE(v.fk_oil_cl_n, vi.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_PRE_EXT;
@@ -307,14 +307,14 @@ public class SSomStockReport {
                         if (funcAreaType.equals(SU_FUNC_AREA_TP_PREVIEW) || 
                                 funcAreaType.equals(SModSysConsts.SU_FUNC_AREA_TP_ADM)) {
                             
-                        html += "<tr>" + 
-                            "<td>" + SLibUtils.textToHtml(tanque) + "</td>" +
-                            "<td style='width:300px'> - </td>" +
-                            "<td>" + "</td>" +
-                            "<td align='right'> - </td>" +
-                            "<td align='right'>" + SLibUtils.textToHtml(capacidad) + "</td>" +
-                            "<td align='right'>" + SLibUtils.textToHtml(capacidad) + "</td>" +
-                            "</tr>";
+                            html += "<tr>" + 
+                                "<td>" + SLibUtils.textToHtml(tanque) + "</td>" +
+                                "<td style='width:300px'> - </td>" +
+                                "<td>" + "</td>" +
+                                "<td align='right'> - </td>" +
+                                "<td align='right'>" + SLibUtils.textToHtml(capacidad) + "</td>" +
+                                "<td align='right'>" + SLibUtils.textToHtml(capacidad) + "</td>" +
+                                "</tr>";
                         }
                     }
                     tanque = resultSet.getString("tanque");
