@@ -351,8 +351,13 @@ public class SSomStockReport {
                 funcAreaType.equals(SModSysConsts.SU_FUNC_AREA_TP_ADM)) {
         
             html += "<h2>" + SLibUtils.textToHtml("Inventario aguacate") + "</h2>";
-            html += "<h3>" + SLibUtils.textToHtml("Último análisis de laboratorio capturado: del " + SLibUtils.DateFormatDate.format(lastLabWah.getDateStart()) +
-                " al " + SLibUtils.DateFormatDate.format(lastLabWah.getDateEnd())) + "</h3>";
+            if (lastLabWah != null) {
+                html += "<h3>" + SLibUtils.textToHtml("Último análisis de laboratorio capturado: del " + SLibUtils.DateFormatDate.format(lastLabWah.getDateStart()) +
+                    " al " + SLibUtils.DateFormatDate.format(lastLabWah.getDateEnd())) + "</h3>";
+            }
+            else {
+                html += "<h3>" + SLibUtils.textToHtml("No hay análisis de laboratorio capturados para las ultimas " + WEEKS_OF_TEST + " semanas") + "</h3>";
+            }
 
             html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
                     "<font size='" + fontSizeTbl + "'>" + 
@@ -425,9 +430,11 @@ public class SSomStockReport {
                         "<td " + (test.isAcidityPercentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getAcidityPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getAcidityPercentage_n())) + "</td>" +
                         "<td align='center'>" + SLibUtils.textToHtml("N/A") + "</td>";
 
-                String notes = (test.getPkWarehouseLaboratoryId() != lastLabWah.getPkWarehouseLaboratoryId() ? test.getDate() != null ? "Fecha del último análisis " + SLibUtils.DateFormatDate.format(test.getDate()) + ". " : "No hay resultados de laboratorio. " : "");
-                notes += " (" + SLibUtils.DecimalFormatPercentage2D.format(stkRp.getMixingPercentage()) + ")";
-
+                String notes = "";
+                if (lastLabWah != null) {
+                    notes = (test.getPkWarehouseLaboratoryId() != lastLabWah.getPkWarehouseLaboratoryId() ? test.getDate() != null ? "Fecha del último análisis " + SLibUtils.DateFormatDate.format(test.getDate()) + ". " : "No hay resultados de laboratorio. " : "");
+                    notes += " (" + SLibUtils.DecimalFormatPercentage2D.format(stkRp.getMixingPercentage()) + ")";
+                }
                 htmlMixWah += "<td " + (test.isPeroxideIndexOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getPeroxideIndex_n() == null ? "" : SLibUtils.DecimalFormatValue2D.format(test.getPeroxideIndex_n())) + "</td>" +
                         "<td " + (test.isMoisturePercentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getMoisturePercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getMoisturePercentage_n())) + "</td>" +
                         "<td " + (test.isSolidPersentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getSolidPersentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getSolidPersentage_n())) + "</td>" +
@@ -497,9 +504,11 @@ public class SSomStockReport {
                     html += "<td align='center'>" + SLibUtils.textToHtml("N/A") + "</td>";
                 }
 
-                String notes = test.getNote().isEmpty() ? "" : test.getNote() + ". ";
-                notes += test.getPkWarehouseLaboratoryId() != lastLabWah.getPkWarehouseLaboratoryId() ? test.getDate() != null ? "Fecha del último análisis " + SLibUtils.DateFormatDate.format(test.getDate()) + "." : "No hay resultados de laboratorio." : "";
-
+                String notes = "";
+                if (lastLabWah != null) {
+                    notes = test.getNote().isEmpty() ? "" : test.getNote() + ". ";
+                    notes += test.getPkWarehouseLaboratoryId() != lastLabWah.getPkWarehouseLaboratoryId() ? test.getDate() != null ? "Fecha del último análisis " + SLibUtils.DateFormatDate.format(test.getDate()) + "." : "No hay resultados de laboratorio." : "";
+                }
                 html += "<td " + (test.isPeroxideIndexOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getPeroxideIndex_n() == null ? "" : SLibUtils.DecimalFormatValue2D.format(test.getPeroxideIndex_n())) + "</td>" +
                         "<td " + (test.isMoisturePercentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getMoisturePercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getMoisturePercentage_n())) + "</td>" +
                         "<td " + (test.isSolidPersentageOverange() ? "style='color:red'" : "") + "align='center'>" + (test.getSolidPersentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getSolidPersentage_n())) + "</td>" +
@@ -791,16 +800,17 @@ public class SSomStockReport {
     }
 
     private SDbWahLab getLastWahLab(Date date) throws Exception {
-        SDbWahLab test = new SDbWahLab();
+        SDbWahLab test = null;
         String sql = "SELECT wl.id_wah_lab FROM s_wah_lab AS wl " +
                 "WHERE wl.ts_usr_ins = ( " +
                 "SELECT MAX(wl2.ts_usr_ins) " +
                 "FROM s_wah_lab AS wl2 " +
-                "WHERE ('" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
-                "BETWEEN wl2.dt_start AND wl2.dt_end) " +
+                "WHERE wl2.dt_start >= ( " +
+                "SELECT ADDDATE('" + SLibUtils.DbmsDateFormatDate.format(date) + "', INTERVAL -" + WEEKS_OF_TEST + " WEEK)) " +
                 "AND NOT wl2.b_del);";
         ResultSet resultSet = miClient.getSession().getDatabase().getConnection().createStatement().executeQuery(sql);
         if (resultSet.next()) {
+            test = new SDbWahLab();
             test.read(miClient.getSession(), new int[] { resultSet.getInt(1) } );
         }
         return test;
