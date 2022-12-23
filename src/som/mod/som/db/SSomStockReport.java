@@ -612,6 +612,7 @@ public class SSomStockReport {
                         if (oil.name.equals(itemName)) {
                             oil.stock += resultSet.getDouble("stock");
                             oil.stkAcidity += test.getAcidityPercentage_n() == null ? 0 : test.getAcidityPercentage_n() * resultSet.getDouble("stock");
+                            avoTp += resultSet.getDouble("stock");
                             found = true;
                             break;
                         }
@@ -621,9 +622,9 @@ public class SSomStockReport {
                         oil.name = itemName;
                         oil.stock = resultSet.getDouble("stock");
                         oil.stkAcidity = test.getAcidityPercentage_n() == null ? 0 : test.getAcidityPercentage_n() * resultSet.getDouble("stock");
+                        avoTp += resultSet.getDouble("stock");
                         maAvocadoOils.add(oil);
                     }
-                    avoTp += resultSet.getDouble("stock");
                 }
 
                 html = maAvocadoOils.stream().map((oil) -> "<tr>" + 
