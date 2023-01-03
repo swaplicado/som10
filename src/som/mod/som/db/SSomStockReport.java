@@ -32,7 +32,7 @@ public class SSomStockReport {
     
     private static final int FONT_SIZE_TBL = 1;
     private static final int WEEKS_OF_TEST = 3; // CUANTAS SEMANAS ATRAS SE BUSCARAN ANÁLISIS DE LABORATORIO.
-    private static final int[] SU_OIL_CL_IDS = { 2, 1 }; // AGUACATE, SEMILLAS; NOTA: el orden de los id indican el orden en el que aparecerán en el reporte.
+    private static final int[] SU_OIL_CL_IDS = { 2, 1 }; // SEMILLAS, AGUACATE; NOTA: el orden de los id indican el orden en el que aparecerán en el reporte.
     private static final int[] SU_OIL_TP_IDS = { 1, 2, 3/*, 4*/ }; // CRUDO, REFINADO, REPROCESO, RESIDUO; NOTA: se comenta el id residuo ya que no es necesario que aparezca en el reporte
     private static final String SU_FUNC_AREA_TP_PREVIEW = "V";
     
@@ -713,7 +713,7 @@ public class SSomStockReport {
                     "</tr>";
                 
                 String sqlWhere = oilCl == SModSysConsts.SU_OIL_CL_PRE_EXT ? "OR (COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) = " + SModSysConsts.SU_OIL_TP_REF + " AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_OTHER_AVO + ")" : 
-                        "AND i.fk_oil_grp_family_n <> " + SModSysConsts.SU_OIL_GRP_FAM_OTHER_AVO;
+                        "AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_AVO;
                 
                 sql = "SELECT " +
                         "i.name, " +

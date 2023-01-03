@@ -6,8 +6,11 @@
 package som.mod.som.db;
 
 import erp.lib.SLibUtilities;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiClient;
@@ -60,6 +63,7 @@ public class SSomWahLabTestReport {
     }
 
     private String generateReportHtml(SDbWahLab lab) throws Exception {
+        Statement statement = miClient.getSession().getDatabase().getConnection().createStatement();
         String html = "<html>" +
                 "<head>" ;
         html += "<style>\n"
@@ -172,6 +176,51 @@ public class SSomWahLabTestReport {
                                 "</tr>";
                     }
         }
+        
+        String sql = "SELECT DISTINCT wlt.fk_wah_co, wlt.fk_wah_cob, wlt.fk_wah_wah " +
+                "FROM s_wah_lab AS wl " +
+                "INNER JOIN s_wah_lab_test AS wlt ON wl.id_wah_lab = wlt.id_wah_lab " +
+                "INNER JOIN cu_wah AS w ON wlt.fk_wah_co = w.id_co AND wlt.fk_wah_cob = w.id_cob AND wlt.fk_wah_wah = w.id_wah " +
+                "WHERE NOT wl.b_del " +
+                "AND wl.dt_start < '" + SLibUtils.DbmsDateFormatDate.format(lab.getDateStart()) + "' " +
+                "AND w.code NOT IN (SELECT w2.code FROM s_wah_lab_test AS wlt2 " +
+                "INNER JOIN cu_wah AS w2 ON wlt2.fk_wah_co = w2.id_co AND wlt2.fk_wah_cob = w2.id_cob AND wlt2.fk_wah_wah = w2.id_wah " +
+                "WHERE wlt2.id_wah_lab = " + lab.getPkWarehouseLaboratoryId() + ") " +
+                "ORDER BY w.code, wlt.fk_wah_co, wlt.fk_wah_cob, wlt.fk_wah_wah;";
+        
+        ResultSet resultSet = statement.executeQuery(sql);
+        while (resultSet.next()) {
+            SDbWahLabTest test = getWahLabTestWithoutResults(lab.getDateStart(), resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3));
+            html += "<tr style='background-color: Silver'>" + 
+                    "<td align='center' rowspan='2'>-</td>" +
+                    "<td align='center' rowspan='2'><b>" + SLibUtils.textToHtml(test.getDbmsBranchWarehouse().getCode()) + "</b></td>" +
+                    "<td align='center'>" + SLibUtils.textToHtml(test.getDbmsItem().getName()) + "</td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "</tr>" +
+                    "<tr style='background-color: Silver'>" + 
+                    "<td style='font-size:80%' align='center'>" + SLibUtils.textToHtml("AGL Y PEROXIDO ANTERIOR") + "</td>" +
+                    "<td " + (test.isAcidityPercentageOverange() ? "style='color:red'" : "") + "align='right'>" + (test.getAcidityPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getAcidityPercentage_n())) + "</td>" +
+                    "<td " + (test.isPeroxideIndexOverange()? "style='color:red'" : "") + "align='right'>" + (test.getPeroxideIndex_n() == null ? "" : SLibUtils.textToHtml(test.getPeroxideIndex_n() + "")) + "</td>" +
+                    "<td " + (test.isMoisturePercentageOverange()? "style='color:red'" : "") + "align='right'>" + (test.getMoisturePercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getMoisturePercentage_n())) + "</td>" +
+                    "<td " + (test.isSolidPersentageOverange() ? "style='color:red'" : "") + "align='right'>" + (test.getSolidPersentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getSolidPersentage_n())) + "</td>" +
+                    "<td " + (test.isLinoleicAcidPercentageOverange()? "style='color:red'" : "") + "align='right'>" + (test.getLinoleicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getLinoleicAcidPercentage_n())) + "</td>" +
+                    "<td " + (test.isOleicAcidPercentageOverange()? "style='color:red'" : "") + "align='right'>" + (test.getOleicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getOleicAcidPercentage_n())) + "</td>" +
+                    "<td " + (test.isLinolenicAcidPercentageOverange()? "style='color:red'" : "") + "align='right'>" + (test.getLinolenicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getLinolenicAcidPercentage_n())) + "</td>" +
+                    "<td " + (test.isStearicAcidPercentageOverange()? "style='color:red'" : "") + "align='right'>" + (test.getStearicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getStearicAcidPercentage_n())) + "</td>" +
+                    "<td " + (test.isPalmiticAcidPercentageOverange()? "style='color:red'" : "") + "align='right'>" + (test.getPalmiticAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getPalmiticAcidPercentage_n())) + "</td>" +
+                    "<td align='left'>" + SLibUtils.textToHtml("Ultimo análisis: " + SLibUtils.DateFormatDateShort.format(test.getDate())) + "</td>" +
+                    "</tr>";
+        }
+        
         html += "</table>" + 
                 "<br>" +
                 SSomMailUtils.composeMailWarning() +
@@ -189,5 +238,33 @@ public class SSomWahLabTestReport {
             }
         }
         return lab;
+    }
+    
+    private SDbWahLabTest getWahLabTestWithoutResults(Date date, int co, int cob, int wah) throws Exception {
+        SDbWahLabTest test = new SDbWahLabTest();
+        
+        String sql = "SELECT wlt.id_wah_lab, wlt.id_test " +
+                "FROM s_wah_lab AS wl " +
+                "INNER JOIN s_wah_lab_test AS wlt ON wl.id_wah_lab = wlt.id_wah_lab " +
+                "WHERE NOT wl.b_del " +
+                "AND wl.dt_start < '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
+                "AND wlt.fk_wah_co = " + co + " " +
+                "AND wlt.fk_wah_cob = " + cob + " " +
+                "AND wlt.fk_wah_wah = " + wah + " " +
+                "AND wlt.dt = ( " +
+                "SELECT MAX(wlt.dt) " +
+                "FROM s_wah_lab AS wl " +
+                "INNER JOIN s_wah_lab_test AS wlt ON wl.id_wah_lab = wlt.id_wah_lab " +
+                "AND wl.dt_start < '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
+                "AND wlt.fk_wah_co = " + co + " " +
+                "AND wlt.fk_wah_cob = " + cob + " " +
+                "AND wlt.fk_wah_wah = " + wah + ")";
+        
+        ResultSet resultSet = miClient.getSession().getDatabase().getConnection().createStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            test.read(miClient.getSession(), new int[] { resultSet.getInt(1), resultSet.getInt(2) });
+        }
+        
+        return test;
     }
 }
