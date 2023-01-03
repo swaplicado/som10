@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import sa.lib.gui.SGuiClient;
 import som.mod.SModConsts;
+import som.mod.som.db.SDbGrindingItemParameterHeader;
 import som.mod.som.db.SDbGrindingEvent;
 
 /**
@@ -25,6 +26,34 @@ public class SGrindingResume {
     
     public static ArrayList<SGrindingResumeRow> getResumeRows(SGuiClient client, Date dtDate, final int nItemId) {
         ArrayList<SGrindingResumeRow> grindingRows = new ArrayList<>();
+        
+        if (! SGrindingResume.withHeaders(client, nItemId)) {
+            return new ArrayList<>();
+        }
+        
+        /**
+         * Si hay configuraciones para el ítem actual determina el valor promedio y las carga
+         */
+        ArrayList<SDbGrindingItemParameterHeader> lHeaders = SGrindingResume.getHeaders(client, nItemId);
+        if (! lHeaders.isEmpty()) {
+            SGrindingResumeRow row;
+            for (SDbGrindingItemParameterHeader oHeader : lHeaders) {
+                row = new SGrindingResumeRow();
+                row.setDataName(oHeader.getLabelText());
+                
+                double averageSum = 0d;
+                for (int auxParameter : oHeader.getAuxParameters()) {
+                    averageSum += SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, auxParameter);
+                }
+                
+                row.setValue(oHeader.getAuxParameters().length == 0 ? 0d : averageSum / oHeader.getAuxParameters().length);
+                row.setUnit(oHeader.getUnitSimbol());
+                
+                grindingRows.add(row);
+            }
+            
+            return grindingRows;
+        }
         
         boolean onlyCurrentMonth = false;
         ArrayList<SGrindingData> grindingOfMonths = SGrindingResultsUtils.getGrindingByMonth(client, dtDate, nItemId, onlyCurrentMonth);
@@ -148,17 +177,19 @@ public class SGrindingResume {
         return grindingRows;
     }
     
-    public static ArrayList<SDbGrindingEvent> getGrindingEvents(SGuiClient client, Date start, Date end) {
+    public static ArrayList<SDbGrindingEvent> getGrindingEvents(SGuiClient client, Date start, Date end, int idItem) {
         DateFormat fileNameformatter = new SimpleDateFormat("yyy-MM-dd");
         
-        String sql = "SELECT " +
-                    "    * " +
-                    "FROM " +
-                    "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_EVENT) + " " +
-                    "WHERE " +
-                    "    NOT b_del " +
-                    "    AND dt_start BETWEEN '" + fileNameformatter.format(start) + " 00:00:00' AND '" + fileNameformatter.format(end) + " 23:59:59'\n" +
-                    "    OR dt_end BETWEEN '" + fileNameformatter.format(start) + " 00:00:00' AND '" + fileNameformatter.format(end) + " 23:59:59';";
+        String sql = "SELECT "
+                + "    * "
+                + "FROM "
+                + "    " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_EVENT) + " AS ev "
+                + "WHERE "
+                + " NOT ev.b_del "
+                + " AND (ev.dt_start BETWEEN '" + fileNameformatter.format(start) + " 00:00:00' AND '" + fileNameformatter.format(end) + " 23:59:59' "
+                + " OR ev.dt_end BETWEEN '" + fileNameformatter.format(start) + " 00:00:00' AND '" + fileNameformatter.format(end) + " 23:59:59') "
+                + " AND ev.fk_item = " + idItem + " "
+                + " ORDER BY ev.dt_start ASC;";
         
         ArrayList<SDbGrindingEvent> events = null;
         
@@ -170,8 +201,8 @@ public class SGrindingResume {
             while (result.next()) {
                 eventRow = new SDbGrindingEvent();
                 
-                eventRow.setStartDate(result.getTimestamp("dt_start"));
-                eventRow.setEndDate(result.getTimestamp("dt_end"));
+                eventRow.setDateStart(result.getTimestamp("dt_start"));
+                eventRow.setDateEnd(result.getTimestamp("dt_end"));
                 eventRow.setDescription(result.getString("description"));
                 eventRow.setPrimaryKey(new int[] { result.getInt("id_event") });
                 eventRow.setRegistryNew(false);
@@ -185,5 +216,86 @@ public class SGrindingResume {
         }
         
         return events;
+    }
+    
+    /**
+     * Determina si el ítem recibido lleva o no encabezados.
+     * Si un renglón con el nombre 'WITHOUT-HEADER' está asignado al ítem entonces se determina que
+     * este no lleva encabezados.
+     * 
+     * @param client
+     * @param nItemId
+     * @return 
+     */
+    private static boolean withHeaders(SGuiClient client, final int nItemId) {
+        String sql = "SELECT " +
+                    " id_itm_prm " +
+                    "FROM " +
+                    "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_ITEM_PARAM_HEADER) + " " +
+                    "WHERE " +
+                    " NOT b_del " +
+                    " AND label_text = 'WITHOUT-HEADER' " +
+                    " AND fk_item_id = " + nItemId +
+                    " ORDER BY view_order ASC " +
+                    ";";
+        
+        try {
+            ResultSet result = client.getSession().getStatement().getConnection().createStatement().executeQuery(sql);
+            
+           return !result.next();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(SGrindingResume.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        catch (Exception ex) {
+            Logger.getLogger(SGrindingResume.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+    
+    /**
+     * Obtiene las configuraciones de encabezados para el ítem recibido
+     * 
+     * @param client
+     * @param nItemId
+     * @return 
+     */
+    private static ArrayList<SDbGrindingItemParameterHeader> getHeaders(SGuiClient client, final int nItemId) {
+        String sql = "SELECT " +
+                    " id_itm_prm " +
+                    "FROM " +
+                    "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_ITEM_PARAM_HEADER) + " " +
+                    "WHERE " +
+                    " NOT b_del " +
+                    " AND parameters_ids <> '' " +
+                    " AND label_text <> 'WITHOUT-HEADER' " +
+                    " AND fk_item_id = " + nItemId +
+                    " ORDER BY view_order ASC " +
+                    ";";
+        
+        ArrayList<SDbGrindingItemParameterHeader> lHeaders = null;
+        
+        try {
+            ResultSet result = client.getSession().getStatement().getConnection().createStatement().executeQuery(sql);
+            
+            lHeaders = new ArrayList<>();
+            SDbGrindingItemParameterHeader headerRow = null;
+            while (result.next()) {
+                headerRow = new SDbGrindingItemParameterHeader();
+                headerRow.read(client.getSession(), new int[] { result.getInt("id_itm_prm") });
+                lHeaders.add(headerRow);
+            }
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(SGrindingResume.class.getName()).log(Level.SEVERE, null, ex);
+            return new ArrayList<>();
+        }
+        catch (Exception ex) {
+            Logger.getLogger(SGrindingResume.class.getName()).log(Level.SEVERE, null, ex);
+            return new ArrayList<>();
+        }
+        
+        return lHeaders;
     }
 }

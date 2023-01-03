@@ -21,12 +21,10 @@ import som.mod.SModConsts;
  */
 public class SDbGrinding extends SDbRegistryUser {
 
-    protected int mnPkResultId;
+    protected int mnPkGrindingId;
     protected Date mtDateCapture;
     protected double mdGrindingBascule;
     protected double mdGrindingOilPerc;
-    protected int mnFkItemId;
-    protected int mnFkLotId;
     
     /*
     protected boolean mbUpdatable;
@@ -35,6 +33,12 @@ public class SDbGrinding extends SDbRegistryUser {
     protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    
+    protected int mnFkItemId;
+    protected int mnFkLotId;
+    
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
@@ -42,7 +46,7 @@ public class SDbGrinding extends SDbRegistryUser {
     */
 
     public SDbGrinding() {
-        super(SModConsts.SU_GRINDINGS);
+        super(SModConsts.S_GRINDING);
         initRegistry();
     }
 
@@ -55,7 +59,7 @@ public class SDbGrinding extends SDbRegistryUser {
      * Public methods:
      */
     
-    public void setPkResultId(int n) { mnPkResultId = n; }
+    public void setPkGrindingId(int n) { mnPkGrindingId = n; }
     public void setDateCapture(Date t) { mtDateCapture = t; }
     public void setGrindingBascule(double d) { mdGrindingBascule = d; }
     public void setGrindingOilPerc(double d) { mdGrindingOilPerc = d; }
@@ -72,7 +76,7 @@ public class SDbGrinding extends SDbRegistryUser {
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkResultId() { return mnPkResultId; }
+    public int getPkGrindingId() { return mnPkGrindingId; }
     public Date getDateCapture() { return mtDateCapture; }
     public double getGrindingBascule() { return mdGrindingBascule; }
     public double getGrindingOilPerc() { return mdGrindingOilPerc; }
@@ -91,19 +95,19 @@ public class SDbGrinding extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkResultId = pk[0];
+        mnPkGrindingId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkResultId };
+        return new int[] { mnPkGrindingId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkResultId = 0;
+        mnPkGrindingId = 0;
         mtDateCapture = null;
         mdGrindingBascule = 0d;
         mdGrindingOilPerc = 0d;
@@ -130,7 +134,7 @@ public class SDbGrinding extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_grinding = " + mnPkResultId + " ";
+        return "WHERE id_grinding = " + mnPkGrindingId + " ";
     }
 
     @Override
@@ -142,12 +146,12 @@ public class SDbGrinding extends SDbRegistryUser {
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkResultId = 0;
+        mnPkGrindingId = 0;
 
         msSql = "SELECT COALESCE(MAX(id_grinding), 0) + 1 FROM " + getSqlTable();
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkResultId = resultSet.getInt(1);
+            mnPkGrindingId = resultSet.getInt(1);
         }
     }
 
@@ -165,7 +169,7 @@ public class SDbGrinding extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkResultId = resultSet.getInt("id_grinding");
+            mnPkGrindingId = resultSet.getInt("id_grinding");
             mtDateCapture = resultSet.getDate("dt_capture");
             mdGrindingBascule = resultSet.getDouble("grinding_bascule");
             mdGrindingOilPerc = resultSet.getDouble("grinding_oil_perc");
@@ -176,7 +180,7 @@ public class SDbGrinding extends SDbRegistryUser {
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkItemId = resultSet.getInt("fk_item_id");
-            mnFkLotId = resultSet.getInt("fk_lot_id");
+            mnFkLotId = resultSet.getInt("fk_prc_batch");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -207,7 +211,7 @@ public class SDbGrinding extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkResultId + ", " +
+                    mnPkGrindingId + ", " +
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDateCapture) + "', " +
                     mdGrindingBascule + ", " +
                     mdGrindingOilPerc + ", " +
@@ -258,7 +262,7 @@ public class SDbGrinding extends SDbRegistryUser {
     public SDbGrinding clone() throws CloneNotSupportedException {
         SDbGrinding registry = new SDbGrinding();
 
-        registry.setPkResultId(this.getPkResultId());
+        registry.setPkGrindingId(this.getPkGrindingId());
         registry.setDateCapture(this.getDateCapture());
         registry.setGrindingBascule(this.getGrindingBascule());
         registry.setGrindingOilPerc(this.getGrindingOilPerc());

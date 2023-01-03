@@ -121,10 +121,14 @@ public class SPaneFilter extends JPanel implements SGridFilter {
                 path = "/som/gui/img/icon_std_filter_cal.gif";
                 break;
             case SModConsts.SS_LINK_CFG_ITEMS:
-                jtfOption.setPreferredSize(new Dimension(50, 23));
+                jtfOption.setPreferredSize(new java.awt.Dimension(250, 23));
                 path = "/som/gui/img/icon_std_filter_item.gif";
                 break;
-            case SModConsts.SU_LOT:
+            case SModConsts.S_GRINDING_LOT:
+                jtfOption.setPreferredSize(new Dimension(50, 23));
+                path = "/som/gui/img/icon_std_filter.gif";
+                break;
+            case SModConsts.S_PRC_BATCH:
                 jtfOption.setPreferredSize(new Dimension(50, 23));
                 path = "/som/gui/img/icon_std_filter.gif";
                 break;
@@ -140,7 +144,15 @@ public class SPaneFilter extends JPanel implements SGridFilter {
             jtfOption.setText("");
         }
         else {
-            jtfOption.setText((String) miClient.getSession().readField(mnType, manSelectedKey, SDbRegistry.FIELD_CODE));
+            if (mnType != SModConsts.SS_LINK_CFG_ITEMS) {
+                jtfOption.setText((String) miClient.getSession().readField(mnType, manSelectedKey, SDbRegistry.FIELD_CODE));
+            }
+            else {
+                String sCode = (String) miClient.getSession().readField(mnType, manSelectedKey, SDbRegistry.FIELD_CODE);
+                String sName = (String) miClient.getSession().readField(mnType, manSelectedKey, SDbRegistry.FIELD_NAME);
+                jtfOption.setText(sCode + "-" + sName);
+            }
+            
             jtfOption.setCaretPosition(0);
         }
     }

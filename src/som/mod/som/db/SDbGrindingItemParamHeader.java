@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package som.mod.cfg.db;
+package som.mod.som.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,13 +18,20 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SDbLinkItemParameter extends SDbRegistryUser {
+public class SDbGrindingItemParamHeader extends SDbRegistryUser {
 
-    protected int mnPkLinkId;
+    protected int mnPkHeaderId;
+    protected int mnViewOrder;
+    protected String msLabelText;
+    protected String msParametersIds;
+    protected String msUnitSymbol;
+
+    /*
+    protected boolean mbDeleted;
+    */
+    
     protected int mnFkItemId;
-    //protected boolean mbDeleted;
-    protected int mnFkParameterId;
-    protected int mnOrder;
+    
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -32,25 +39,29 @@ public class SDbLinkItemParameter extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-    public SDbLinkItemParameter() {
-        super(SModConsts.CU_LINK_ITEM_PARAM);
+    public SDbGrindingItemParamHeader() {
+        super(SModConsts.SU_GRINDING_ITEM_PARAM_HEADER);
     }
 
-    public void setPkLinkId(int n) { mnPkLinkId = n; }
-    public void setOrder(int n) { mnOrder = n; }
+    public void setPkHeaderId(int n) { mnPkHeaderId = n; }
+    public void setViewOrder(int n) { mnViewOrder = n; }
+    public void setLabelText(String s) { msLabelText = s; }
+    public void setParametersIds(String s) { msParametersIds = s; }
+    public void setUnitSymbol(String s) { msUnitSymbol = s; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setFkItemId(int n) { mnFkItemId = n; }
-    public void setFkParameterId(int n) { mnFkParameterId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkLinkId() { return mnPkLinkId; }
-    public int getOrder() { return mnOrder; }
+    public int getPkHeaderId() { return mnPkHeaderId; }
+    public int getViewOrder() { return mnViewOrder; }
+    public String getLabelText() { return msLabelText; }
+    public String getParametersIds() { return msParametersIds; }
+    public String getUnitSymbol() { return msUnitSymbol; }
     public boolean isDeleted() { return mbDeleted; }
     public int getFkItemId() { return mnFkItemId; }
-    public int getFkParameterId() { return mnFkParameterId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -58,23 +69,25 @@ public class SDbLinkItemParameter extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkLinkId = pk[0];
+        mnPkHeaderId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkLinkId };
+        return new int[] { mnPkHeaderId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkLinkId = 0;
-        mnOrder = 0;
+        mnPkHeaderId = 0;
+        mnViewOrder = 0;
+        msLabelText = "";
+        msParametersIds = "";
+        msUnitSymbol = "";
         mbDeleted = false;
         mnFkItemId = 0;
-        mnFkParameterId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -88,24 +101,24 @@ public class SDbLinkItemParameter extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_link = " + mnPkLinkId + " ";
+        return "WHERE id_header = " + mnPkHeaderId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_link = " + pk[0] + " ";
+        return "WHERE id_header = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkLinkId = 0;
+        mnPkHeaderId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_link), 0) + 1 FROM " + getSqlTable() + " ";
+        msSql = "SELECT COALESCE(MAX(id_header), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkLinkId = resultSet.getInt(1);
+            mnPkHeaderId = resultSet.getInt(1);
         }
     }
 
@@ -123,11 +136,13 @@ public class SDbLinkItemParameter extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkLinkId = resultSet.getInt("id_link");
-            mnOrder = resultSet.getInt("capture_order");
+            mnPkHeaderId = resultSet.getInt("id_header");
+            mnViewOrder = resultSet.getInt("view_order");
+            msLabelText = resultSet.getString("label_text");
+            msParametersIds = resultSet.getString("parameters_ids");
+            msUnitSymbol = resultSet.getString("unit_symbol");
             mbDeleted = resultSet.getBoolean("b_del");
             mnFkItemId = resultSet.getInt("fk_item_id");
-            mnFkParameterId = resultSet.getInt("fk_parameter_id");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -151,29 +166,34 @@ public class SDbLinkItemParameter extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkLinkId + ", " +
-                    mnOrder + ", " +
-                    (mbDeleted ? 1 : 0) + ", " +
-                    mnFkItemId + ", " +
-                    mnFkParameterId + ", " +
-                    mnFkUserInsertId + ", " +
-                    mnFkUserUpdateId + ", " +
-                    "NOW()" + ", " +
-                    "NOW()" + " " +
+                    mnPkHeaderId + ", " + 
+                    mnViewOrder + ", " + 
+                    "'" + msLabelText + "', " + 
+                    "'" + msParametersIds + "', " + 
+                    "'" + msUnitSymbol + "', " + 
+                    (mbDeleted ? 1 : 0) + ", " + 
+                    mnFkItemId + ", " + 
+                    mnFkUserInsertId + ", " + 
+                    mnFkUserUpdateId + ", " + 
+                    "NOW()" + ", " + 
+                    "NOW()" + ", " + 
                     ")";
         }
         else {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    "capture_order = " + mnOrder + ", " +
+//                    "id_header = " + mnPkHeaderId + ", " +
+                    "view_order = " + mnViewOrder + ", " +
+                    "label_text = '" + msLabelText + "', " +
+                    "parameters_ids = '" + msParametersIds + "', " +
+                    "unit_symbol = '" + msUnitSymbol + "', " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "fk_item_id = " + mnFkItemId + ", " +
-                    "fk_parameter_id = " + mnFkParameterId + ", " +
-                    //"fk_usr_ins = " + mnFkUserInsertId + ", " +
+//                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
-                    //"ts_usr_ins = " + "NOW()" + ", " +
-                    "ts_usr_upd = " + "NOW()" + " " +
+//                    "ts_usr_ins = " + "NOW()" + ", " +
+                    "ts_usr_upd = " + "NOW()" + ", " +
                     getSqlWhere();
         }
 
@@ -183,14 +203,16 @@ public class SDbLinkItemParameter extends SDbRegistryUser {
     }
 
     @Override
-    public SDbLinkItemParameter clone() throws CloneNotSupportedException {
-        SDbLinkItemParameter registry = new SDbLinkItemParameter();
+    public SDbGrindingItemParamHeader clone() throws CloneNotSupportedException {
+        SDbGrindingItemParamHeader registry = new SDbGrindingItemParamHeader();
 
-        registry.setPkLinkId(this.getPkLinkId());
-        registry.setOrder(this.getOrder());
+        registry.setPkHeaderId(this.getPkHeaderId());
+        registry.setViewOrder(this.getViewOrder());
+        registry.setLabelText(this.getLabelText());
+        registry.setParametersIds(this.getParametersIds());
+        registry.setUnitSymbol(this.getUnitSymbol());
         registry.setDeleted(this.isDeleted());
         registry.setFkItemId(this.getFkItemId());
-        registry.setFkParameterId(this.getFkParameterId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

@@ -23,7 +23,7 @@ import som.mod.som.db.SDbGrindingResult;
  *
  * @author Edwin Carmona
  */
-public class SFormResultNew extends SBeanForm implements ItemListener {
+public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
 
     private SDbGrindingResult moRegistry;
     private int[] maItemPk;
@@ -33,8 +33,8 @@ public class SFormResultNew extends SBeanForm implements ItemListener {
      * @param client
      * @param title
      */
-    public SFormResultNew(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_GRINDING_RESULTS, SLibConsts.UNDEFINED, title);
+    public SFormGrindingResultNew(SGuiClient client, String title) {
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.S_GRINDING_RESULT, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -197,9 +197,9 @@ public class SFormResultNew extends SBeanForm implements ItemListener {
         
         params.getParamsMap().clear();
         params.setKey(null);
-        params.getParamsMap().put(SModConsts.SX_EXT_ITEM, maItemPk);
+        params.getParamsMap().put(SModConsts.SU_ITEM, maItemPk);
         
-        miClient.getSession().populateCatalogue(moKeyLot, SModConsts.SU_LOT, 0, params);
+        miClient.getSession().populateCatalogue(moKeyLot, SModConsts.S_PRC_BATCH, 0, params);
     }
 
     @Override
@@ -221,7 +221,12 @@ public class SFormResultNew extends SBeanForm implements ItemListener {
         moKeyItem.setValue(maItemPk);
         addAllListeners();
         
-        moKeyLot.setSelectedIndex(1);
+        if (moKeyLot.getItemCount() > 1) {
+            moKeyLot.setSelectedIndex(1);
+        }
+        else {
+            miClient.showMsgBoxError("No se ha configurado un lote para este ítem");
+        }
     }
 
     @Override

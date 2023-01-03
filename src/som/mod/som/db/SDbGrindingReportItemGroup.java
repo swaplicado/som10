@@ -3,30 +3,29 @@
  * and open the template in the editor.
  */
 
-package som.mod.cfg.db;
+package som.mod.som.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import sa.gui.util.SUtilConsts;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
+import som.mod.som.data.SGrindingResumeRow;
 
 /**
  *
  * @author Edwin Carmona
  */
-public class SDbGrindingParameter extends SDbRegistryUser {
+public class SDbGrindingReportItemGroup extends SDbRegistryUser {
 
-    protected int mnPkParameterId;
-    protected String msParameterCode;
-    protected String msParameter;
-    protected String msDetails;
-    protected String msDefaultTextValue;
-    protected boolean mbIsText;
-    
+    protected int mnPkItemGroupId;
+    protected int mnItemSort;
+
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -35,6 +34,8 @@ public class SDbGrindingParameter extends SDbRegistryUser {
     protected boolean mbDeleted;
     protected boolean mbSystem;
     */
+    protected int mnFkItemId;
+    protected int mnFkReportGroupId;
     
     /*
     protected int mnFkUserInsertId;
@@ -42,76 +43,99 @@ public class SDbGrindingParameter extends SDbRegistryUser {
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
+    
+    protected SDbGrindingReportGroup moGroupAux;
+    
+    protected String msRangeAux;
+    protected SDbItem moItemAux;
+    protected SDbProcessingBatch moLotAux;
+    protected XSSFWorkbook moWorkbookAux;
+    protected ArrayList<SGrindingResumeRow> grindingRows;
 
-    public SDbGrindingParameter() {
-        super(SModConsts.CU_PARAMS);
+    public SDbGrindingReportItemGroup() {
+        super(SModConsts.SU_GRINDING_REP_ITEM_GROUP);
         initRegistry();
     }
 
-    public void setPkParameter(int n) { mnPkParameterId = n; }
-    public void setCode(String s) { msParameterCode = s; }
-    public void setName(String s) { msParameter = s; }
-    public void setDetails(String s) { msDetails = s; }
-    public void setDefaultTextValue(String s) { msDefaultTextValue = s; }
-    public void setIsText(boolean b) { mbIsText = b; }
+    public void setPkItemGroupId(int n) { mnPkItemGroupId = n; }
+    public void setItemSort(int n) { mnItemSort = n; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
     public void setDisabled(boolean b) { mbDisabled = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
+    public void setFkItemId(int n) { mnFkItemId = n; }
+    public void setFkReportGroupId(int n) { mnFkReportGroupId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
+    
+    public void setRangeAux(String s) { msRangeAux = s; }
+    public void setSDbItemAux(SDbItem o) { moItemAux = o; }
+    public void setSDbLotAux(SDbProcessingBatch o) { moLotAux = o; }
+    public void setWorkbookAux(XSSFWorkbook o) { moWorkbookAux = o; }
 
-    public int getPkParameter() { return mnPkParameterId; }
-    public String getCode() { return msParameterCode; }
-    public String getName() { return msParameter; }
-    public String getDetails() { return msDetails; }
-    public String getDefaultTextValue() { return msDefaultTextValue; }
-    public boolean isText() { return mbIsText; }
+    public int getPkItemGroupId() { return mnPkItemGroupId; }
+    public int getItemSort() { return mnItemSort; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
     public boolean isDisabled() { return mbDisabled; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
+    public int getFkItemId() { return mnFkItemId; }
+    public int getFkReportGroupId() { return mnFkReportGroupId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
-
-    @Override
-    public void setPrimaryKey(int[] pk) {
-        mnPkParameterId = pk[0];
-    }
-
-    @Override
-    public int[] getPrimaryKey() {
-        return new int[] { mnPkParameterId };
-    }
+    
+    public SDbGrindingReportGroup getGrindingGroupAux() { return moGroupAux; }
+    
+    public String getRangeAux() { return msRangeAux; }
+    public SDbItem getSDbItemAux() { return moItemAux; }
+    public SDbProcessingBatch getSDbLotAux() { return moLotAux; }
+    public XSSFWorkbook getWorkbookAux() { return moWorkbookAux; }
+    public ArrayList<SGrindingResumeRow> getResumeHeaderRows() { return grindingRows; }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkParameterId = 0;
-        msParameterCode = "";
-        msParameter = "";
-        msDetails = "";
-        msDefaultTextValue = "";
-        mbIsText = false;
+        mnPkItemGroupId = 0;
+        mnItemSort = 0;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
         mbDisabled = false;
         mbDeleted = false;
         mbSystem = false;
+        mnFkItemId = 0;
+        mnFkReportGroupId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
+        
+        moGroupAux = null;
+        
+        msRangeAux = "";
+        moItemAux = null;
+        moLotAux = null;
+        moWorkbookAux = null;
+        grindingRows = new ArrayList<>();
+    }
+    
+    @Override
+    public void setPrimaryKey(int[] pk) {
+        mnPkItemGroupId = pk[0];
+    }
+
+    @Override
+    public int[] getPrimaryKey() {
+        return new int[] { mnPkItemGroupId };
     }
 
     @Override
@@ -121,24 +145,24 @@ public class SDbGrindingParameter extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_parameter = " + mnPkParameterId + " ";
+        return "WHERE id_item_group = " + mnPkItemGroupId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_parameter = " + pk[0] + " ";
+        return "WHERE id_item_group = " + pk[0] + " ";
     }
-
+    
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkParameterId = 0;
+        mnPkItemGroupId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_parameter), 0) + 1 FROM " + getSqlTable() + " ";
+        msSql = "SELECT COALESCE(MAX(id_item_group), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkParameterId = resultSet.getInt(1);
+            mnPkItemGroupId = resultSet.getInt(1);
         }
     }
 
@@ -156,18 +180,16 @@ public class SDbGrindingParameter extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkParameterId = resultSet.getInt("id_parameter");
-            msParameterCode = resultSet.getString("param_code");
-            msParameter = resultSet.getString("parameter");
-            msDetails = resultSet.getString("details");
-            msDefaultTextValue = resultSet.getString("def_text_value");
-            mbIsText = resultSet.getBoolean("b_text");
+            mnPkItemGroupId = resultSet.getInt("id_item_group");
+            mnItemSort = resultSet.getInt("item_sort");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
+            mnFkItemId = resultSet.getInt("fk_item");
+            mnFkReportGroupId = resultSet.getInt("fk_rep_group");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -176,6 +198,9 @@ public class SDbGrindingParameter extends SDbRegistryUser {
             mbRegistryNew = false;
         }
 
+        moGroupAux = new SDbGrindingReportGroup();
+        moGroupAux.read(session, new int[] { mnFkReportGroupId } );
+        
         mnQueryResultId = SDbConsts.READ_OK;
     }
 
@@ -196,43 +221,40 @@ public class SDbGrindingParameter extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkParameterId + ", " +
-                    "'" + msParameterCode + "', " +
-                    "'" + msParameter + "', " +
-                    "'" + msDetails + "', " +
-                    "'" + msDefaultTextValue + "', " +
-                    (mbIsText ? 1 : 0) + ", " +
-                    (mbUpdatable ? 1 : 0) + ", " +
-                    (mbDisableable ? 1 : 0) + ", " +
-                    (mbDeletable ? 1 : 0) + ", " +
-                    (mbDisabled ? 1 : 0) + ", " +
-                    (mbDeleted ? 1 : 0) + ", " +
-                    (mbSystem ? 1 : 0) + ", " +
-                    mnFkUserInsertId + ", " +
-                    mnFkUserUpdateId + ", " +
+                    mnPkItemGroupId + ", " + 
+                    mnItemSort + ", " + 
+                    (mbUpdatable ? 1 : 0) + ", " + 
+                    (mbDisableable ? 1 : 0) + ", " + 
+                    (mbDeletable ? 1 : 0) + ", " + 
+                    (mbDisabled ? 1 : 0) + ", " + 
+                    (mbDeleted ? 1 : 0) + ", " + 
+                    (mbSystem ? 1 : 0) + ", " + 
+                    mnFkItemId + ", " + 
+                    mnFkReportGroupId + ", " + 
+                    mnFkUserInsertId + ", " + 
+                    mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " +
-                    "NOW()" + " " +
+                    "NOW()" + ", " +
                     ")";
         }
         else {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    "param_code = '" + msParameterCode + "', " +
-                    "parameter = '" + msParameter + "', " +
-                    "details = '" + msDetails + "', " +
-                    "def_text_value = '" + msDefaultTextValue + "', " +
-                    "b_text = " + (mbIsText ? 1 : 0) + ", " +
+//                    "id_item_group = " + mnPkItemGroupId + ", " +
+                    "item_sort = " + mnItemSort + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    //"fk_usr_ins = " + mnFkUserInsertId + ", " +
+                    "fk_item = " + mnFkItemId + ", " +
+                    "fk_rep_group = " + mnFkReportGroupId + ", " +
+//                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
-                    //"ts_usr_ins = " + "NOW()" + ", " +
-                    "ts_usr_upd = " + "NOW()" + " " +
+//                    "ts_usr_ins = " + "NOW()" + ", " +
+                    "ts_usr_upd = " + "NOW()" + ", " +
                     getSqlWhere();
         }
 
@@ -242,27 +264,26 @@ public class SDbGrindingParameter extends SDbRegistryUser {
     }
 
     @Override
-    public SDbGrindingParameter clone() throws CloneNotSupportedException {
-        SDbGrindingParameter registry = new SDbGrindingParameter();
+    public SDbGrindingReportItemGroup clone() throws CloneNotSupportedException {
+        SDbGrindingReportItemGroup registry = new SDbGrindingReportItemGroup();
 
-        registry.setPkParameter(this.getPkParameter());
-        registry.setCode(this.getCode());
-        registry.setName(this.getName());
-        registry.setDetails(this.getDetails());
-        registry.setDefaultTextValue(this.getDefaultTextValue());
-        registry.setIsText(this.isText());
+        registry.setPkItemGroupId(this.getPkItemGroupId());
+        registry.setItemSort(this.getItemSort());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
         registry.setDisabled(this.isDisabled());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
+        registry.setFkItemId(this.getFkItemId());
+        registry.setFkReportGroupId(this.getFkReportGroupId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
 
         registry.setRegistryNew(this.isRegistryNew());
+        
         return registry;
     }
 }

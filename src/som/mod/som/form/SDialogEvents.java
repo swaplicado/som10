@@ -36,6 +36,7 @@ public class SDialogEvents extends JDialog implements ActionListener {
 
     private boolean mbFirstTime;
     private Date mtParamDate;
+    private int mnFkItemId;
 
     /** Creates new form SDialogStockCardex */
     public SDialogEvents(SGuiClient client) {
@@ -118,7 +119,7 @@ public class SDialogEvents extends JDialog implements ActionListener {
 
         moTextDate.setTextSettings(SGuiUtils.getLabelName(jlDate.getText()), 50);
 
-        moGridEvents = new SGridPaneForm(miClient, SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, "Eventos durante molienda") {
+        moGridEvents = new SGridPaneForm(miClient, SModConsts.S_GRINDING_EVENT, SLibConsts.UNDEFINED, "Eventos durante molienda") {
             @Override
             public void initGrid() {
                 setRowButtonsEnabled(false);
@@ -180,12 +181,13 @@ public class SDialogEvents extends JDialog implements ActionListener {
                 + "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", "
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_EVENT) + " AS v "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_EVENT) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
                 + "v.fk_usr_upd = uu.id_usr "
                 + "WHERE v.dt_start >= '" + SLibUtils.DbmsDateFormatDate.format(mtParamDate) + "' "
+                + " AND v.fk_item = " + mnFkItemId + " "
                 + "ORDER BY v.dt_start DESC, v.id_event ASC ";
 
             ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
@@ -226,9 +228,10 @@ public class SDialogEvents extends JDialog implements ActionListener {
     private sa.lib.gui.bean.SBeanFieldText moTextDate;
     // End of variables declaration//GEN-END:variables
 
-    public void setFormParams(final Date dateCutOff) {
+    public void setFormParams(final Date dateCutOff, final int idItem) {
         mtParamDate = dateCutOff;
         moTextDate.setValue(SLibUtils.DbmsDateFormatDate.format(mtParamDate));
+        this.mnFkItemId = idItem;
 
         showEvents();
     }

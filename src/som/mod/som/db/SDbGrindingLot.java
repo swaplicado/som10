@@ -19,12 +19,11 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SDbGrindingEvent extends SDbRegistryUser {
+public class SDbGrindingLot extends SDbRegistryUser {
 
-    protected int mnPkEventId;
-    protected Date mtDateStart;
-    protected Date mtDateEnd;
-    protected String msDescription;
+    protected int mnPkLotId;
+    protected String msLot;
+    protected Date mtExpiration;
     
     /*
     protected boolean mbUpdatable;
@@ -44,8 +43,8 @@ public class SDbGrindingEvent extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-    public SDbGrindingEvent() {
-        super(SModConsts.S_GRINDING_EVENT);
+    public SDbGrindingLot() {
+        super(SModConsts.S_GRINDING_LOT);
         initRegistry();
     }
 
@@ -58,10 +57,9 @@ public class SDbGrindingEvent extends SDbRegistryUser {
      * Public methods:
      */
     
-    public void setPkEventId(int n) { mnPkEventId = n; }
-    public void setDateStart(Date t) { mtDateStart = t; }
-    public void setDateEnd(Date t) { mtDateEnd = t; }
-    public void setDescription(String s) { msDescription = s; }
+    public void setPkLotId(int n) { mnPkLotId = n; }
+    public void setLot(String s) { msLot = s; }
+    public void setExpiration(Date t) { mtExpiration = t; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -74,10 +72,9 @@ public class SDbGrindingEvent extends SDbRegistryUser {
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkEventId() { return mnPkEventId; }
-    public Date getDateStart() { return mtDateStart; }
-    public Date getDateEnd() { return mtDateEnd; }
-    public String getDescription() { return msDescription; }
+    public int getPkLotId() { return mnPkLotId; }
+    public String getLot() { return msLot; }
+    public Date getExpiration() { return mtExpiration; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -92,22 +89,21 @@ public class SDbGrindingEvent extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkEventId = pk[0];
+        mnPkLotId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkEventId };
+        return new int[] { mnPkLotId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkEventId = 0;
-        mtDateStart = null;
-        mtDateEnd = null;
-        msDescription = "";
+        mnPkLotId = 0;
+        msLot = "";
+        mtExpiration = null;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -128,24 +124,24 @@ public class SDbGrindingEvent extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_event = " + mnPkEventId + " ";
+        return "WHERE id_lot = " + mnPkLotId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_event = " + pk[0] + " ";
+        return "WHERE id_lot = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkEventId = 0;
+        mnPkLotId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_event), 0) + 1 FROM " + getSqlTable();
+        msSql = "SELECT COALESCE(MAX(id_lot), 0) + 1 FROM " + getSqlTable();
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkEventId = resultSet.getInt(1);
+            mnPkLotId = resultSet.getInt(1);
         }
     }
 
@@ -159,14 +155,13 @@ public class SDbGrindingEvent extends SDbRegistryUser {
         
         msSql = "SELECT * " + getSqlFromWhere(pk);
         resultSet = session.getStatement().executeQuery(msSql);
-        if (!resultSet.next()) {
+        if (! resultSet.next()) {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkEventId = resultSet.getInt("id_event");
-            mtDateStart = resultSet.getDate("dt_start");
-            mtDateEnd = resultSet.getDate("dt_end");
-            msDescription = resultSet.getString("description");
+            mnPkLotId = resultSet.getInt("id_lot");
+            msLot = resultSet.getString("lot");
+            mtExpiration = resultSet.getDate("expiration");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -204,10 +199,9 @@ public class SDbGrindingEvent extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkEventId + ", " +
-                    "'" + SLibUtils.DbmsDateFormatDatetime.format(mtDateStart) + "', " +
-                    "'" + SLibUtils.DbmsDateFormatDatetime.format(mtDateEnd) + "', " +
-                    "'" + msDescription + "', " +
+                    mnPkLotId + ", " +
+                    "'" + msLot + "', " +
+                    "'" + SLibUtils.DbmsDateFormatDate.format(mtExpiration) + "', " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -226,16 +220,14 @@ public class SDbGrindingEvent extends SDbRegistryUser {
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
                     //"id_seas = " + mnPkSeasonId + ", " +
-                    "dt_start = '" + SLibUtils.DbmsDateFormatDatetime.format(mtDateStart) + "', " +
-                    "dt_end = '" + SLibUtils.DbmsDateFormatDatetime.format(mtDateEnd) + "', " +
-                    "description = '" + msDescription + "', " +
+                    "lot = '" + msLot + "', " +
+                    "expiration = '" + SLibUtils.DbmsDateFormatDatetime.format(mtExpiration) + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_item_id = " + mnFkItemId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -252,13 +244,12 @@ public class SDbGrindingEvent extends SDbRegistryUser {
     }
 
     @Override
-    public SDbGrindingEvent clone() throws CloneNotSupportedException {
-        SDbGrindingEvent registry = new SDbGrindingEvent();
+    public SDbGrindingLot clone() throws CloneNotSupportedException {
+        SDbGrindingLot registry = new SDbGrindingLot();
 
-        registry.setPkEventId(this.getPkEventId());
-        registry.setDateStart(this.getDateStart());
-        registry.setDateEnd(this.getDateEnd());
-        registry.setDescription(this.getDescription());
+        registry.setPkLotId(this.getPkLotId());
+        registry.setLot(this.getLot());
+        registry.setExpiration(this.getExpiration());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());

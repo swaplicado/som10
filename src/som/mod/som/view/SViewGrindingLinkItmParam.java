@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package som.mod.cfg.view;
+package som.mod.som.view;
 
 import java.util.Arrays;
 import sa.lib.SLibConsts;
@@ -18,10 +18,10 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SViewLinkItmParam extends SGridPaneView {
+public class SViewGrindingLinkItmParam extends SGridPaneView {
 
-    public SViewLinkItmParam(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.CU_LINK_ITEM_PARAM, SLibConsts.UNDEFINED, title);
+    public SViewGrindingLinkItmParam(SGuiClient client, String title) {
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SU_GRINDING_LINK_ITEM_PARAM, SLibConsts.UNDEFINED, title);
     }
 
     @Override
@@ -54,9 +54,9 @@ public class SViewLinkItmParam extends SGridPaneView {
                 + "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", "
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_LINK_ITEM_PARAM) + " AS v "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_PARAMS) + " AS pms ON "
-                + "v.fk_parameter_id = pms.id_parameter "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " AS v "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_PARAM) + " AS pms ON "
+                + "v.fk_param_id = pms.id_parameter "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS itm ON "
                 + "v.fk_item_id = itm.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "

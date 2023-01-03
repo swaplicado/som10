@@ -5,14 +5,17 @@
  */
 package som.mod.som.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  *
  * @author Edwin Carmona
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SConfigurationRow {
     private boolean isActive;
     private String label;
-
+    private String defaultValue;
 
     // Getter Methods 
 
@@ -24,6 +27,10 @@ public class SConfigurationRow {
         return label;
     }
 
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+    
     // Setter Methods 
 
     public void setIsActive(boolean isActive) {
@@ -32,5 +39,9 @@ public class SConfigurationRow {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

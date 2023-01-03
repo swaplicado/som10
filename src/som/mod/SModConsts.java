@@ -45,9 +45,6 @@ public abstract class SModConsts {
     public static final int CU_DIV = 220011;
     public static final int CU_PROD_LINES = 220012;
     public static final int CU_REP_GRP = 220016;
-    public static final int CU_PARAMS = 220017;
-    public static final int CU_LINK_ITEM_PARAM = 220018;
-    public static final int CU_LINK_FORMULAS = 220019;
     public static final int SS_LINK_CFG_ITEMS = 220020;
 
     public static final int C_USR_GUI = 230001;
@@ -75,12 +72,15 @@ public abstract class SModConsts {
     public static final int SU_SEAS_REG = 320012;
     public static final int SU_SEAS_PROD = 320013;
     public static final int SU_IOD_VAL_RANK = 320014;
-    public static final int SU_LOT = 320016;
-    public static final int SU_GRINDING_RESULTS = 320018;
-    public static final int SU_GRINDING_EVENT = 320019;
-    public static final int SU_GRINDINGS = 320020;
     public static final int SU_INP_SRC = 320021;
     public static final int SU_BY_PRODUCT = 320022;
+    public static final int SU_GRINDING_PARAM = 320041;
+    public static final int SU_GRINDING_LINK_ITEM_PARAM = 320042;
+    public static final int SU_GRINDING_LINK_FORMULA = 320043;
+    public static final int SU_GRINDING_ITEM_PARAM_HEADER = 320044;
+    public static final int SU_GRINDING_REP_GROUP = 320045;
+    public static final int SU_GRINDING_REP_ITEM_GROUP = 320046;
+    public static final int SU_GRINDING_REP_RECIPIENT = 320047;
     public static final int SU_VEH_CONT_TYPE = 320023;
     public static final int SU_WAH_FILL_LEVEL = 320024;
     public static final int SU_OIL_CL = 320025;
@@ -110,6 +110,10 @@ public abstract class SModConsts {
     public static final int S_IOG_EXP = 330026;
     public static final int S_IOG_EXP_HIS = 330027;
     public static final int S_DPS_ASS = 330031;
+    public static final int S_GRINDING_LOT = 330041;
+    public static final int S_GRINDING_RESULT = 330042;
+    public static final int S_GRINDING_EVENT = 330043;
+    public static final int S_GRINDING = 330046;
     public static final int S_STK_DAY = 330051;
     public static final int S_STK = 330052;
     public static final int S_STK_RECORD = 330053;
@@ -233,10 +237,6 @@ public abstract class SModConsts {
         TablesMap.put(CU_DIV, "cu_div");
         TablesMap.put(CU_PROD_LINES, "cu_line");
         TablesMap.put(CU_REP_GRP, "cu_rep_grp");
-        TablesMap.put(CU_PARAMS, "cu_grin_params");
-        TablesMap.put(CU_LINK_ITEM_PARAM, "cu_link_itm_params");
-        TablesMap.put(CU_LINK_FORMULAS, "cu_link_forms");
-
         TablesMap.put(C_USR_GUI, "c_usr_gui");
 
         TablesMap.put(SS_TIC_ST, "ss_tic_st");
@@ -261,9 +261,15 @@ public abstract class SModConsts {
         TablesMap.put(SU_SEAS_REG, "su_seas_reg");
         TablesMap.put(SU_SEAS_PROD, "su_seas_prod");
         TablesMap.put(SU_IOD_VAL_RANK, "su_iod_val_rank");
-        TablesMap.put(SU_LOT, "su_lots");
         TablesMap.put(SU_INP_SRC, "su_inp_src");
         TablesMap.put(SU_BY_PRODUCT, "su_by_product");
+        TablesMap.put(SU_GRINDING_PARAM, "su_grin_param");
+        TablesMap.put(SU_GRINDING_LINK_ITEM_PARAM, "su_grin_link_item_param");
+        TablesMap.put(SU_GRINDING_LINK_FORMULA, "su_grin_link_formula");
+        TablesMap.put(SU_GRINDING_ITEM_PARAM_HEADER, "su_grin_item_param_header");
+        TablesMap.put(SU_GRINDING_REP_GROUP, "su_grin_rep_group");
+        TablesMap.put(SU_GRINDING_REP_ITEM_GROUP, "su_grin_rep_item_group");
+        TablesMap.put(SU_GRINDING_REP_RECIPIENT, "su_grin_rep_recipient");
         TablesMap.put(SU_VEH_CONT_TYPE, "su_veh_cont_type");
         TablesMap.put(SU_OIL_TP, "su_oil_tp");
         TablesMap.put(SU_WAH_FILL_LEVEL, "su_wah_fill_level");
@@ -276,9 +282,6 @@ public abstract class SModConsts {
         TablesMap.put(SU_CLOSING_CAL, "su_closing_cal");
         TablesMap.put(SU_FUNC_AREA, "su_func_area");
         TablesMap.put(SU_CONS_WAH, "su_cons_wah");
-        TablesMap.put(SU_GRINDING_EVENT, "su_grin_events");
-        TablesMap.put(SU_GRINDING_RESULTS, "su_grin_res");
-        TablesMap.put(SU_GRINDINGS, "su_grinding");
 
         TablesMap.put(S_LAB, "s_lab");
         TablesMap.put(S_LAB_NOTE, "s_lab_note");
@@ -294,6 +297,10 @@ public abstract class SModConsts {
         TablesMap.put(S_IOG_EXP, "s_iog_exp");
         TablesMap.put(S_IOG_EXP_HIS, "s_iog_exp_his");
         TablesMap.put(S_DPS_ASS, "s_dps_ass");
+        TablesMap.put(S_GRINDING_LOT, "s_grin_lot");
+        TablesMap.put(S_GRINDING_RESULT, "s_grin_result");
+        TablesMap.put(S_GRINDING_EVENT, "s_grin_event");
+        TablesMap.put(S_GRINDING, "s_grinding");
         TablesMap.put(S_STK_DAY, "s_stk_day");
         TablesMap.put(S_STK, "s_stk");
         TablesMap.put(S_STK_RECORD, "s_stk_record");

@@ -29,7 +29,7 @@ public class SFormGrindingEvent extends SBeanForm {
      * Creates new form SFormSeason
      */
     public SFormGrindingEvent(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, title);
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.S_GRINDING_EVENT, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -48,6 +48,9 @@ public class SFormGrindingEvent extends SBeanForm {
         jPanel4 = new javax.swing.JPanel();
         jlDescription = new javax.swing.JLabel();
         moDescription = new sa.lib.gui.bean.SBeanFieldText();
+        jPanel13 = new javax.swing.JPanel();
+        jlItem = new javax.swing.JLabel();
+        moKeyItem = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel11 = new javax.swing.JPanel();
         jlDateStart = new javax.swing.JLabel();
         moDateDateStart = new sa.lib.gui.bean.SBeanFieldDatetime();
@@ -66,11 +69,21 @@ public class SFormGrindingEvent extends SBeanForm {
         jlDescription.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel4.add(jlDescription);
 
-        moDescription.setText("sBeanFieldText1");
         moDescription.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel4.add(moDescription);
 
         jPanel2.add(jPanel4);
+
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlItem.setText("Ítem afectado:*");
+        jlItem.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel13.add(jlItem);
+
+        moKeyItem.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel13.add(moKeyItem);
+
+        jPanel2.add(jPanel13);
 
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -99,24 +112,29 @@ public class SFormGrindingEvent extends SBeanForm {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JLabel jlDateEnd;
     private javax.swing.JLabel jlDateStart;
     private javax.swing.JLabel jlDescription;
+    private javax.swing.JLabel jlItem;
     private sa.lib.gui.bean.SBeanFieldDatetime moDateDateEnd;
     private sa.lib.gui.bean.SBeanFieldDatetime moDateDateStart;
     private sa.lib.gui.bean.SBeanFieldText moDescription;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 480, 300);
 
         moDescription.setTextSettings(SGuiUtils.getLabelName(jlDescription.getText()), 50);
+        moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
         moDateDateStart.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateStart.getText()), true);
         moDateDateEnd.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateEnd.getText()), true);
 
         moFields.addField(moDescription);
+        moFields.addField(moKeyItem);
         moFields.addField(moDateDateStart);
         moFields.addField(moDateDateEnd);
         moFields.setFormButton(jbSave);
@@ -134,7 +152,7 @@ public class SFormGrindingEvent extends SBeanForm {
 
     @Override
     public void reloadCatalogues() {
-
+        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SS_LINK_CFG_ITEMS, 0, null);
     }
 
     @Override
@@ -151,8 +169,8 @@ public class SFormGrindingEvent extends SBeanForm {
 
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
-            moRegistry.setStartDate(init);
-            moRegistry.setEndDate(init);
+            moRegistry.setDateStart(init);
+            moRegistry.setDateEnd(init);
             jtfRegistryKey.setText("");
         }
         else {
@@ -160,8 +178,9 @@ public class SFormGrindingEvent extends SBeanForm {
         }
 
         moDescription.setValue(moRegistry.getDescription());
-        moDateDateStart.setValue(moRegistry.getStartDate());
-        moDateDateEnd.setValue(moRegistry.getEndDate());
+        moKeyItem.setValue(new int[] {moRegistry.getFkItemId()});
+        moDateDateStart.setValue(moRegistry.getDateStart());
+        moDateDateEnd.setValue(moRegistry.getDateEnd());
 
         setFormEditable(true);
 
@@ -175,8 +194,9 @@ public class SFormGrindingEvent extends SBeanForm {
         if (registry.isRegistryNew()) {}
 
         registry.setDescription(moDescription.getValue());
-        registry.setStartDate(moDateDateStart.getValue());
-        registry.setEndDate(moDateDateEnd.getValue());
+        registry.setFkItemId(moKeyItem.getValue()[0]);
+        registry.setDateStart(moDateDateStart.getValue());
+        registry.setDateEnd(moDateDateEnd.getValue());
 
         return registry;
     }

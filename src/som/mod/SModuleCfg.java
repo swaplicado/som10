@@ -27,8 +27,8 @@ import som.mod.cfg.db.SDbBranchWarehouse;
 import som.mod.cfg.db.SDbCompany;
 import som.mod.cfg.db.SDbCompanyBranch;
 import som.mod.cfg.db.SDbDivision;
-import som.mod.cfg.db.SDbGrindingParameter;
-import som.mod.cfg.db.SDbLinkItemParameter;
+import som.mod.som.db.SDbGrindingParameter;
+import som.mod.som.db.SDbGrindingLinkItemParameter;
 import som.mod.cfg.db.SDbProductionLine;
 import som.mod.cfg.db.SDbReportingGroup;
 import som.mod.cfg.db.SDbUser;
@@ -41,8 +41,8 @@ import som.mod.cfg.form.SFormBranchPlant;
 import som.mod.cfg.form.SFormBranchWarehouse;
 import som.mod.cfg.form.SFormCompany;
 import som.mod.cfg.form.SFormCompanyBranch;
-import som.mod.cfg.form.SFormGrindingParameters;
-import som.mod.cfg.form.SFormLinkItemParam;
+import som.mod.som.form.SFormGrindingParameters;
+import som.mod.som.form.SFormGrindingLinkItemParam;
 import som.mod.cfg.form.SFormProductionLine;
 import som.mod.cfg.form.SFormReportingGroup;
 import som.mod.cfg.form.SFormUser;
@@ -52,8 +52,8 @@ import som.mod.cfg.view.SViewBranchWarehouse;
 import som.mod.cfg.view.SViewCompany;
 import som.mod.cfg.view.SViewCompanyBranch;
 import som.mod.cfg.view.SViewProductionLine;
-import som.mod.cfg.view.SViewLinkItmParam;
-import som.mod.cfg.view.SViewParameters;
+import som.mod.som.view.SViewGrindingLinkItmParam;
+import som.mod.som.view.SViewGrindingParameters;
 import som.mod.cfg.view.SViewReportingGroup;
 import som.mod.cfg.view.SViewUser;
 import som.mod.cfg.view.SViewUserInputCategories;
@@ -92,7 +92,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
     private SFormBranchWarehouse moFormWarehouse;
     private SFormBranchPlant moFormPlant;
     private SFormGrindingParameters moFormGrindingParameters;
-    private SFormLinkItemParam moFormLinkItemParam;
+    private SFormGrindingLinkItemParam moFormLinkItemParam;
     private SFormReportingGroup moFormReportingGroup;
     private SFormUser moFormUser;
     private SFormYear moFormYear;
@@ -209,11 +209,11 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.CU_PLA:
                 registry = new SDbBranchPlant();
                 break;
-            case SModConsts.CU_PARAMS:
+            case SModConsts.SU_GRINDING_PARAM:
                 registry = new SDbGrindingParameter();
                 break;
-            case SModConsts.CU_LINK_ITEM_PARAM:
-                registry = new SDbLinkItemParameter();
+            case SModConsts.SU_GRINDING_LINK_ITEM_PARAM:
+                registry = new SDbGrindingLinkItemParameter();
                 break;
             case SModConsts.SS_LINK_CFG_ITEMS:
                 registry = new SDbItem();
@@ -403,11 +403,11 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 sql = "SELECT id_rep_grp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_rep_grp ";
                 break;
-            case SModConsts.CU_PARAMS:
+            case SModConsts.SU_GRINDING_PARAM:
                 settings = new SGuiCatalogueSettings("Parámetros", 1);
                 settings.setCodeApplying(true);
-                sql = "SELECT id_parameter AS " + SDbConsts.FIELD_ID + "1, parameter AS " + SDbConsts.FIELD_ITEM + ", param_code AS " + SDbConsts.FIELD_CODE + " "
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY parameter, id_parameter ";
+                sql = "SELECT id_parameter AS " + SDbConsts.FIELD_ID + "1, param AS " + SDbConsts.FIELD_ITEM + ", param_code AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY param, id_parameter ";
                 break;
             case SModConsts.SU_OIL_TP:
                 settings = new SGuiCatalogueSettings("Tipo de aceite", 1);
@@ -426,7 +426,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 settings.setCodeApplying(true);
                 sql = "SELECT id_item AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " WHERE b_del = 0 AND id_item IN "
-                        + "(SELECT DISTINCT fk_item_id FROM cu_link_itm_params WHERE b_del = 0) "
+                        + "(SELECT DISTINCT fk_item_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " WHERE b_del = 0) "
                         + "ORDER BY name, id_item ";
                 break;
             default:
@@ -464,11 +464,11 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.CU_PLA:
                 view = new SViewBranchPlant(miClient, "Plantas");
                 break;
-            case SModConsts.CU_PARAMS:
-                view = new SViewParameters(miClient, "Parámetros de molienda");
+            case SModConsts.SU_GRINDING_PARAM:
+                view = new SViewGrindingParameters(miClient, "Parámetros de molienda");
                 break;
-            case SModConsts.CU_LINK_ITEM_PARAM:
-                view = new SViewLinkItmParam(miClient, "Parámetros vs ítems");
+            case SModConsts.SU_GRINDING_LINK_ITEM_PARAM:
+                view = new SViewGrindingLinkItmParam(miClient, "Parámetros vs ítems");
                 break;
             case SModConsts.CU_YEAR:
                 view = new SViewYear(miClient, "Ejercicios y períodos");
@@ -531,12 +531,12 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 if (moFormPlant == null) moFormPlant = new SFormBranchPlant(miClient, "Planta");
                 form = moFormPlant;
                 break;
-            case SModConsts.CU_PARAMS:
+            case SModConsts.SU_GRINDING_PARAM:
                 if (moFormGrindingParameters == null) moFormGrindingParameters = new SFormGrindingParameters(miClient, "Parámetro de molienda");
                 form = moFormGrindingParameters;
                 break;
-            case SModConsts.CU_LINK_ITEM_PARAM:
-                if (moFormLinkItemParam == null) moFormLinkItemParam = new SFormLinkItemParam(miClient, "Parámetro vs ítem");
+            case SModConsts.SU_GRINDING_LINK_ITEM_PARAM:
+                if (moFormLinkItemParam == null) moFormLinkItemParam = new SFormGrindingLinkItemParam(miClient, "Parámetro vs ítem");
                 form = moFormLinkItemParam;
                 break;
             case SModConsts.CU_REP_GRP:
@@ -584,10 +584,10 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 showView(SModConsts.CU_PLA, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatParameters) {
-                showView(SModConsts.CU_PARAMS, SLibConsts.UNDEFINED, null);
+                showView(SModConsts.SU_GRINDING_PARAM, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatLinkItmParams) {
-                showView(SModConsts.CU_LINK_ITEM_PARAM, SLibConsts.UNDEFINED, null);
+                showView(SModConsts.SU_GRINDING_LINK_ITEM_PARAM, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatScale) {
                 miClient.getSession().showView(SModConsts.SU_SCA, SLibConsts.UNDEFINED, null);

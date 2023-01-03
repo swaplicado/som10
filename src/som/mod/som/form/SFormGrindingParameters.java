@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package som.mod.cfg.form;
+package som.mod.som.form;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -14,7 +14,7 @@ import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import som.mod.SModConsts;
-import som.mod.cfg.db.SDbGrindingParameter;
+import som.mod.som.db.SDbGrindingParameter;
 
 /**
  *
@@ -28,7 +28,7 @@ public class SFormGrindingParameters extends sa.lib.gui.bean.SBeanForm implement
      * Creates new form SFormCompany
      */
     public SFormGrindingParameters(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.CU_PARAMS, SLibConsts.UNDEFINED, title);
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_GRINDING_PARAM, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }

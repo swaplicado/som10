@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import sa.gui.util.SUtilConsts;
-import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
@@ -19,12 +18,14 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SDbGrindingEvent extends SDbRegistryUser {
+public class SDbGrindingParameter extends SDbRegistryUser {
 
-    protected int mnPkEventId;
-    protected Date mtDateStart;
-    protected Date mtDateEnd;
-    protected String msDescription;
+    protected int mnPkParameterId;
+    protected String msParameterCode;
+    protected String msParameter;
+    protected String msDetails;
+    protected String msDefaultTextValue;
+    protected boolean mbText;
     
     /*
     protected boolean mbUpdatable;
@@ -35,8 +36,6 @@ public class SDbGrindingEvent extends SDbRegistryUser {
     protected boolean mbSystem;
     */
     
-    protected int mnFkItemId;
-    
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -44,47 +43,40 @@ public class SDbGrindingEvent extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-    public SDbGrindingEvent() {
-        super(SModConsts.S_GRINDING_EVENT);
+    public SDbGrindingParameter() {
+        super(SModConsts.SU_GRINDING_PARAM);
         initRegistry();
     }
 
-    /*
-     * Private methods:
-     */
-    
-    
-    /*
-     * Public methods:
-     */
-    
-    public void setPkEventId(int n) { mnPkEventId = n; }
-    public void setDateStart(Date t) { mtDateStart = t; }
-    public void setDateEnd(Date t) { mtDateEnd = t; }
-    public void setDescription(String s) { msDescription = s; }
+    public void setPkParameter(int n) { mnPkParameterId = n; }
+    public void setCode(String s) { msParameterCode = s; }
+    public void setName(String s) { msParameter = s; }
+    public void setDetails(String s) { msDetails = s; }
+    public void setDefaultTextValue(String s) { msDefaultTextValue = s; }
+    public void setIsText(boolean b) { mbText = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
     public void setDisabled(boolean b) { mbDisabled = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
-    public void setFkItemId(int n) { mnFkItemId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkEventId() { return mnPkEventId; }
-    public Date getDateStart() { return mtDateStart; }
-    public Date getDateEnd() { return mtDateEnd; }
-    public String getDescription() { return msDescription; }
+    public int getPkParameter() { return mnPkParameterId; }
+    public String getCode() { return msParameterCode; }
+    public String getName() { return msParameter; }
+    public String getDetails() { return msDetails; }
+    public String getDefaultTextValue() { return msDefaultTextValue; }
+    public boolean isText() { return mbText; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
     public boolean isDisabled() { return mbDisabled; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
-    public int getFkItemId() { return mnFkItemId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -92,29 +84,30 @@ public class SDbGrindingEvent extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkEventId = pk[0];
+        mnPkParameterId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkEventId };
+        return new int[] { mnPkParameterId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkEventId = 0;
-        mtDateStart = null;
-        mtDateEnd = null;
-        msDescription = "";
+        mnPkParameterId = 0;
+        msParameterCode = "";
+        msParameter = "";
+        msDetails = "";
+        msDefaultTextValue = "";
+        mbText = false;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
         mbDisabled = false;
         mbDeleted = false;
         mbSystem = false;
-        mnFkItemId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -128,24 +121,24 @@ public class SDbGrindingEvent extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_event = " + mnPkEventId + " ";
+        return "WHERE id_parameter = " + mnPkParameterId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_event = " + pk[0] + " ";
+        return "WHERE id_parameter = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkEventId = 0;
+        mnPkParameterId = 0;
 
-        msSql = "SELECT COALESCE(MAX(id_event), 0) + 1 FROM " + getSqlTable();
+        msSql = "SELECT COALESCE(MAX(id_parameter), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkEventId = resultSet.getInt(1);
+            mnPkParameterId = resultSet.getInt(1);
         }
     }
 
@@ -156,30 +149,29 @@ public class SDbGrindingEvent extends SDbRegistryUser {
         initRegistry();
         initQueryMembers();
         mnQueryResultId = SDbConsts.READ_ERROR;
-        
+
         msSql = "SELECT * " + getSqlFromWhere(pk);
         resultSet = session.getStatement().executeQuery(msSql);
         if (!resultSet.next()) {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkEventId = resultSet.getInt("id_event");
-            mtDateStart = resultSet.getDate("dt_start");
-            mtDateEnd = resultSet.getDate("dt_end");
-            msDescription = resultSet.getString("description");
+            mnPkParameterId = resultSet.getInt("id_parameter");
+            msParameterCode = resultSet.getString("param_code");
+            msParameter = resultSet.getString("parameter");
+            msDetails = resultSet.getString("details");
+            msDefaultTextValue = resultSet.getString("def_text_value");
+            mbText = resultSet.getBoolean("b_text");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkItemId = resultSet.getInt("fk_item_id");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
-
-            // Finish registry reading:
 
             mbRegistryNew = false;
         }
@@ -204,17 +196,18 @@ public class SDbGrindingEvent extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkEventId + ", " +
-                    "'" + SLibUtils.DbmsDateFormatDatetime.format(mtDateStart) + "', " +
-                    "'" + SLibUtils.DbmsDateFormatDatetime.format(mtDateEnd) + "', " +
-                    "'" + msDescription + "', " +
+                    mnPkParameterId + ", " +
+                    "'" + msParameterCode + "', " +
+                    "'" + msParameter + "', " +
+                    "'" + msDetails + "', " +
+                    "'" + msDefaultTextValue + "', " +
+                    (mbText ? 1 : 0) + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
                     (mbDisabled ? 1 : 0) + ", " +
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
-                    mnFkItemId + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     "NOW()" + ", " +
@@ -225,17 +218,17 @@ public class SDbGrindingEvent extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    //"id_seas = " + mnPkSeasonId + ", " +
-                    "dt_start = '" + SLibUtils.DbmsDateFormatDatetime.format(mtDateStart) + "', " +
-                    "dt_end = '" + SLibUtils.DbmsDateFormatDatetime.format(mtDateEnd) + "', " +
-                    "description = '" + msDescription + "', " +
+                    "param_code = '" + msParameterCode + "', " +
+                    "parameter = '" + msParameter + "', " +
+                    "details = '" + msDetails + "', " +
+                    "def_text_value = '" + msDefaultTextValue + "', " +
+                    "b_text = " + (mbText ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_item_id = " + mnFkItemId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -244,28 +237,26 @@ public class SDbGrindingEvent extends SDbRegistryUser {
         }
 
         session.getStatement().execute(msSql);
-
-        // Finish registry updating:
-
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
-    public SDbGrindingEvent clone() throws CloneNotSupportedException {
-        SDbGrindingEvent registry = new SDbGrindingEvent();
+    public SDbGrindingParameter clone() throws CloneNotSupportedException {
+        SDbGrindingParameter registry = new SDbGrindingParameter();
 
-        registry.setPkEventId(this.getPkEventId());
-        registry.setDateStart(this.getDateStart());
-        registry.setDateEnd(this.getDateEnd());
-        registry.setDescription(this.getDescription());
+        registry.setPkParameter(this.getPkParameter());
+        registry.setCode(this.getCode());
+        registry.setName(this.getName());
+        registry.setDetails(this.getDetails());
+        registry.setDefaultTextValue(this.getDefaultTextValue());
+        registry.setIsText(this.isText());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());
         registry.setDisabled(this.isDisabled());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
-        registry.setFkItemId(this.getFkItemId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
@@ -273,16 +264,5 @@ public class SDbGrindingEvent extends SDbRegistryUser {
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
-    }
-
-    @Override
-    public boolean canSave(final SGuiSession session) throws SQLException, Exception {
-        boolean can = super.canSave(session);
-
-        if (can) {
-            initQueryMembers();
-        }
-
-        return can;
     }
 }

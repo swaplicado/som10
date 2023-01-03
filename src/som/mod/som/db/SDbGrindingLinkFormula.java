@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package som.mod.cfg.db;
+package som.mod.som.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,13 +18,13 @@ import som.mod.SModConsts;
  *
  * @author Edwin Carmona
  */
-public class SDbLinkGrindingFormula extends SDbRegistryUser {
+public class SDbGrindingLinkFormula extends SDbRegistryUser {
 
     protected int mnPkFormulaId;
     //protected boolean mbDeleted;
     protected String msFormula;
     protected String msRowText;
-    protected int mnOrder;
+    protected int mnFormOrder;
     protected int mnFkLinkId;
     /*
     protected int mnFkUserInsertId;
@@ -33,14 +33,14 @@ public class SDbLinkGrindingFormula extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-    public SDbLinkGrindingFormula() {
-        super(SModConsts.CU_LINK_FORMULAS);
+    public SDbGrindingLinkFormula() {
+        super(SModConsts.SU_GRINDING_LINK_FORMULA);
     }
 
     public void setPkFormulaId(int n) { mnPkFormulaId = n; }
     public void setFormula(String s) { this.msFormula = s; }
     public void setRowText(String s) { this.msRowText = s; }
-    public void setOrder(int n) { mnOrder = n; }
+    public void setFormOrder(int n) { mnFormOrder = n; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setFkLinkId(int n) { mnFkLinkId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
@@ -51,7 +51,7 @@ public class SDbLinkGrindingFormula extends SDbRegistryUser {
     public int getPkFormulaId() { return mnPkFormulaId; }
     public String getFormula() { return msFormula; }
     public String getRowText() { return msRowText; }
-    public int getOrder() { return mnOrder; }
+    public int getFormOrder() { return mnFormOrder; }
     public boolean isDeleted() { return mbDeleted; }
     public int getFkLinkId() { return mnFkLinkId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
@@ -76,7 +76,7 @@ public class SDbLinkGrindingFormula extends SDbRegistryUser {
         mnPkFormulaId = 0;
         msFormula = "";
         msRowText = "";
-        mnOrder = 0;
+        mnFormOrder = 0;
         mbDeleted = false;
         mnFkLinkId = 0;
         mnFkUserInsertId = 0;
@@ -130,7 +130,7 @@ public class SDbLinkGrindingFormula extends SDbRegistryUser {
             mnPkFormulaId = resultSet.getInt("id_formula");
             msFormula = resultSet.getString("formula");
             msRowText = resultSet.getString("row_text");
-            mnOrder = resultSet.getInt("form_order");
+            mnFormOrder = resultSet.getInt("form_order");
             mbDeleted = resultSet.getBoolean("b_del");
             mnFkLinkId = resultSet.getInt("fk_link");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
@@ -159,7 +159,7 @@ public class SDbLinkGrindingFormula extends SDbRegistryUser {
                     mnPkFormulaId + ", " +
                     "'" + msFormula + "', " +
                     "'" + msRowText + "', " +
-                    mnOrder + ", " +
+                    mnFormOrder + ", " +
                     (mbDeleted ? 1 : 0) + ", " +
                     mnFkLinkId + ", " +
                     mnFkUserInsertId + ", " +
@@ -174,9 +174,9 @@ public class SDbLinkGrindingFormula extends SDbRegistryUser {
             msSql = "UPDATE " + getSqlTable() + " SET " +
                     "formula = '" + msFormula + "', " +
                     "row_text = '" + msRowText + "', " +
-                    "form_order = " + mnOrder + ", " +
+                    "form_order = " + mnFormOrder + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
-                    "fk_parameter_id = " + mnFkLinkId + ", " +
+                    "fk_link = " + mnFkLinkId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -190,13 +190,13 @@ public class SDbLinkGrindingFormula extends SDbRegistryUser {
     }
 
     @Override
-    public SDbLinkGrindingFormula clone() throws CloneNotSupportedException {
-        SDbLinkGrindingFormula registry = new SDbLinkGrindingFormula();
+    public SDbGrindingLinkFormula clone() throws CloneNotSupportedException {
+        SDbGrindingLinkFormula registry = new SDbGrindingLinkFormula();
 
         registry.setPkFormulaId(this.getPkFormulaId());
         registry.setFormula(this.getFormula());
         registry.setRowText(this.getRowText());
-        registry.setOrder(this.getOrder());
+        registry.setFormOrder(this.getFormOrder());
         registry.setDeleted(this.isDeleted());
         registry.setFkLinkId(this.getFkLinkId());
         registry.setFkUserInsertId(this.getFkUserInsertId());

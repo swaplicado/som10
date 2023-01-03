@@ -427,10 +427,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SX_SEAS_REG:
                 registry = new SDbSeason();
                 break;
-            case SModConsts.SU_GRINDING_EVENT:
+            case SModConsts.S_GRINDING_EVENT:
                 registry = new SDbGrindingEvent();
                 break;
-            case SModConsts.SU_GRINDING_RESULTS:
+            case SModConsts.S_GRINDING_RESULT:
                 registry = new SDbGrindingResult();
                 break;
             case SModConsts.S_LAB:
@@ -563,13 +563,13 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SU_SEAS_PROD:
                 view = new SViewSeasonProducer(miClient, "Config. proveedores");
                 break;
-            case SModConsts.SU_GRINDING_EVENT:
+            case SModConsts.S_GRINDING_EVENT:
                 view = new SViewGrindingEvents(miClient, "Eventos de molienda");
                 break;
             case SModConsts.SX_GRINDING_RESUME:
                 view = new SViewGrindingResume(miClient, "Resumen de molienda");
                 break;
-            case SModConsts.SU_GRINDING_RESULTS:
+            case SModConsts.S_GRINDING_RESULT:
                 view = new SViewGrindingResults(miClient, "Resultados de molienda");
                 break;
             case SModConsts.S_LAB:
@@ -683,11 +683,11 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 if (moFormDialogAssignSeasonRegion == null) moFormDialogAssignSeasonRegion = new SFormDialogAssignSeasonRegion(miClient, "Clasificar boletos sin temporada y/o región");
                 form = moFormDialogAssignSeasonRegion;
                 break;
-            case SModConsts.SU_GRINDING_EVENT:
+            case SModConsts.S_GRINDING_EVENT:
                 if (moFormGrindingEvent == null) moFormGrindingEvent = new SFormGrindingEvent(miClient, "Evento de molienda");
                 form = moFormGrindingEvent;
                 break;
-            case SModConsts.SU_GRINDING_RESULTS:
+            case SModConsts.S_GRINDING_RESULT:
                 if (moFormResult == null) moFormResult = new SFormGrindingResultHr(miClient, "Resultado molienda");
                 form = moFormResult;
                 break;
@@ -800,7 +800,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 miClient.getSession().showView(SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatLot) {
-                miClient.getSession().showView(SModConsts.SU_LOT, SLibConsts.UNDEFINED, null);
+                miClient.getSession().showView(SModConsts.S_GRINDING_LOT, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatInputType) {
                 miClient.getSession().showView(SModConsts.SU_INP_TP, SLibConsts.UNDEFINED, null);
@@ -836,13 +836,13 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 showView(SModConsts.SU_SEAS_PROD, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjGriEvents) {
-                showView(SModConsts.SU_GRINDING_EVENT, SLibConsts.UNDEFINED, null);
+                showView(SModConsts.S_GRINDING_EVENT, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjGriResume) {
                 showView(SModConsts.SX_GRINDING_RESUME, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjGriResults) {
-                showView(SModConsts.SU_GRINDING_RESULTS, SLibConsts.UNDEFINED, null);
+                showView(SModConsts.S_GRINDING_RESULT, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCfgRegions) {
                 showView(SModConsts.SU_REG, SLibConsts.UNDEFINED, null);

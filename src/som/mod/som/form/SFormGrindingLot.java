@@ -13,21 +13,21 @@ import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanForm;
 import som.mod.SModConsts;
-import som.mod.som.db.SDbLot;
+import som.mod.som.db.SDbGrindingLot;
 
 /**
  *
  * @author Edwin Carmona
  */
-public class SFormLot extends SBeanForm {
+public class SFormGrindingLot extends SBeanForm {
 
-    private SDbLot moRegistry;
+    private SDbGrindingLot moRegistry;
 
     /**
-     * Creates new form SFormSeason
+     * Creates new form SFormGrindingLot
      */
-    public SFormLot(SGuiClient client, String title) {
-        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_LOT, SLibConsts.UNDEFINED, title);
+    public SFormGrindingLot(SGuiClient client, String title) {
+        setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.S_GRINDING_LOT, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
     }
@@ -139,7 +139,7 @@ public class SFormLot extends SBeanForm {
 
     @Override
     public void setRegistry(SDbRegistry registry) throws Exception {
-        moRegistry = (SDbLot) registry;
+        moRegistry = (SDbGrindingLot) registry;
 
         mnFormResult = SLibConsts.UNDEFINED;
         mbFirstActivation = true;
@@ -149,7 +149,7 @@ public class SFormLot extends SBeanForm {
 
         if (moRegistry.isRegistryNew()) {
             moRegistry.initPrimaryKey();
-            moRegistry.setLotExpiration(miClient.getSession().getWorkingDate());
+            moRegistry.setExpiration(miClient.getSession().getWorkingDate());
             jtfRegistryKey.setText("");
         }
         else {
@@ -157,7 +157,7 @@ public class SFormLot extends SBeanForm {
         }
 
         moLot.setValue(moRegistry.getLot());
-        moLotExpiration.setValue(moRegistry.getLotExpiration());
+        moLotExpiration.setValue(moRegistry.getExpiration());
         moKeyItem.setValue(new int[] {moRegistry.getFkItemId()});
 
         setFormEditable(true);
@@ -167,12 +167,12 @@ public class SFormLot extends SBeanForm {
 
     @Override
     public SDbRegistry getRegistry() throws Exception {
-        SDbLot registry = moRegistry.clone();
+        SDbGrindingLot registry = moRegistry.clone();
 
         if (registry.isRegistryNew()) {}
 
         registry.setLot(moLot.getValue());
-        registry.setLotExpiration(moLotExpiration.getValue());
+        registry.setExpiration(moLotExpiration.getValue());
         registry.setFkItemId(moKeyItem.getValue()[0]);
 
         return registry;
