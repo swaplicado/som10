@@ -24,6 +24,7 @@ public class SDbProcessingRawMaterials extends SDbRegistryUser {
     protected String msProcessingUnitName;
     protected double mdProcessedUnits;
     protected double mdProcessedKg;
+    protected boolean mbExternalMaquila;
     protected int mnFkFunctionalAreaId;
     protected int mnFkItemId;
     protected int mnFkProcessingBatchId;
@@ -38,6 +39,7 @@ public class SDbProcessingRawMaterials extends SDbRegistryUser {
     public void setProcessingUnitName(String s) { msProcessingUnitName = s; }
     public void setProcessedUnits(double d) { mdProcessedUnits = d; }
     public void setProcessedKg(double d) { mdProcessedKg = d; }
+    public void setExternalMaquila(boolean b) { mbExternalMaquila = b; }
     public void setFkFunctionalAreaId(int n) { mnFkFunctionalAreaId = n; }
     public void setFkItemId(int n) { mnFkItemId = n; }
     public void setFkProcessingBatchId(int n) { mnFkProcessingBatchId = n; }
@@ -47,6 +49,7 @@ public class SDbProcessingRawMaterials extends SDbRegistryUser {
     public String getProcessingUnitName() { return msProcessingUnitName; }
     public double getProcessedUnits() { return mdProcessedUnits; }
     public double getProcessedKg() { return mdProcessedKg; }
+    public boolean isExternalMaquila() { return mbExternalMaquila; }
     public int getFkFunctionalAreaId() { return mnFkFunctionalAreaId; }
     public int getFkItemId() { return mnFkItemId; }
     public int getFkProcessingBatchId() { return mnFkProcessingBatchId; }
@@ -71,6 +74,7 @@ public class SDbProcessingRawMaterials extends SDbRegistryUser {
         msProcessingUnitName = "";
         mdProcessedUnits = 0;
         mdProcessedKg = 0;
+        mbExternalMaquila = false;
         mnFkFunctionalAreaId = 0;
         mnFkItemId = 0;
         mnFkProcessingBatchId = 0;
@@ -126,6 +130,7 @@ public class SDbProcessingRawMaterials extends SDbRegistryUser {
             msProcessingUnitName = resultSet.getString("prc_unit_name");
             mdProcessedUnits = resultSet.getDouble("prc_units");
             mdProcessedKg = resultSet.getDouble("prc_kgs");
+            mbExternalMaquila = resultSet.getBoolean("b_ext_maquila");
             mnFkFunctionalAreaId = resultSet.getInt("fk_func_area");
             mnFkItemId = resultSet.getInt("fk_item");
             mnFkProcessingBatchId = resultSet.getInt("fk_prc_batch");
@@ -155,6 +160,7 @@ public class SDbProcessingRawMaterials extends SDbRegistryUser {
                     "'" + msProcessingUnitName + "', " + 
                     mdProcessedUnits + ", " + 
                     mdProcessedKg + ", " + 
+                    (mbExternalMaquila ? 1 : 0) + ", " + 
                     mnFkFunctionalAreaId + ", " + 
                     mnFkItemId + ", " + 
                     mnFkProcessingBatchId + " " + 
@@ -169,6 +175,7 @@ public class SDbProcessingRawMaterials extends SDbRegistryUser {
                     "prc_unit_name = '" + msProcessingUnitName + "', " +
                     "prc_units = " + mdProcessedUnits + ", " +
                     "prc_kgs = " + mdProcessedKg + ", " +
+                    "b_ext_maquila = " + (mbExternalMaquila ? 1 : 0) + ", " +
                     "fk_func_area = " + mnFkFunctionalAreaId + ", " +
                     "fk_item = " + mnFkItemId + ", " +
                     "fk_prc_batch = " + mnFkProcessingBatchId + " " +
@@ -190,6 +197,7 @@ public class SDbProcessingRawMaterials extends SDbRegistryUser {
         registry.setProcessingUnitName(this.getProcessingUnitName());
         registry.setProcessedUnits(this.getProcessedUnits());
         registry.setProcessedKg(this.getProcessedKg());
+        registry.setExternalMaquila(this.isExternalMaquila());
         registry.setFkFunctionalAreaId(this.getFkFunctionalAreaId());
         registry.setFkItemId(this.getFkItemId());
         registry.setFkProcessingBatchId(this.getFkProcessingBatchId());

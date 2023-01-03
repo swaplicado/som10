@@ -121,7 +121,9 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SR_STK,
             SModConsts.SR_STK_MOVE,
             SModConsts.SR_STK_COMP,
-            SModConsts.SR_IOG_LIST
+            SModConsts.SR_IOG_LIST,
+            SModConsts.SR_PRC_RAW_MAT_AVO,
+            SModConsts.SR_PRC_RAW_MAT_SEED
         });
     }
     

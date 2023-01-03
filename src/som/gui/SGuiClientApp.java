@@ -68,8 +68,8 @@ import som.mod.cfg.db.SDbUserGui;
 public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener {
 
     public static final String APP_NAME = "SOM 1.0";
-    public static final String APP_RELEASE = "SOM 1.0 083.3"; // release date: 2022-12-19
-    public static final String APP_COPYRIGHT = "2013-2022";
+    public static final String APP_RELEASE = "SOM 1.0 085.0"; // release date: 2023-01-03
+    public static final String APP_COPYRIGHT = "2013-2023";
     public static final String APP_PROVIDER = "Software Aplicado SA de CV";
 
     public static final String VENDOR = APP_PROVIDER;

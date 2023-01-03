@@ -186,8 +186,9 @@ public abstract class SModConsts {
     public static final int SX_WIZ_DPS_ADJ = 340106;
     public static final int SX_TIC_DPS_PAY = 340107;
     public static final int SX_DAY_MAIL = 340108;
-    public static final int SX_EXT_OIL_CL = 340108;
+    public static final int SX_EXT_OIL_CL = 340109;
     public static final int SX_QA_OIL_MOI_POND = 340082;
+    public static final int SX_STK_DAILY = 340110;
 
     public static final int SR_TIC = 350001;
     public static final int SR_TIC_METRRME = 350015;
@@ -207,6 +208,8 @@ public abstract class SModConsts {
     public static final int SR_CH_OIL_PERC = 350016;
     public static final int SR_STK_DAILY = 350021;
     public static final int SR_ITEM_FRUIT_ACI = 350022;
+    public static final int SR_PRC_RAW_MAT_AVO = 350023;
+    public static final int SR_PRC_RAW_MAT_SEED = 350024;
 
     public static final int E_TIC_REV = 430001;
 

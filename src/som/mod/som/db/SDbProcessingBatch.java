@@ -29,6 +29,7 @@ public class SDbProcessingBatch extends SDbRegistryUser {
     protected boolean mbSystem;
     */
     protected int mnFkItemId;
+    protected int mnFkClosingCalendar_n;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -47,6 +48,7 @@ public class SDbProcessingBatch extends SDbRegistryUser {
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkItemId(int n) { mnFkItemId = n; }
+    public void setFkClosingCalendar_n(int n) { mnFkClosingCalendar_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -58,6 +60,7 @@ public class SDbProcessingBatch extends SDbRegistryUser {
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
     public int getFkItemId() { return mnFkItemId; }
+    public int getFkClosingCalendar_n() { return mnFkClosingCalendar_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -83,6 +86,7 @@ public class SDbProcessingBatch extends SDbRegistryUser {
         mbDeleted = false;
         mbSystem = false;
         mnFkItemId = 0;
+        mnFkClosingCalendar_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -137,6 +141,7 @@ public class SDbProcessingBatch extends SDbRegistryUser {
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkItemId = resultSet.getInt("fk_item");
+            mnFkClosingCalendar_n = resultSet.getInt("fk_closing_cal_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -168,6 +173,7 @@ public class SDbProcessingBatch extends SDbRegistryUser {
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
                     mnFkItemId + ", " + 
+                    (mnFkClosingCalendar_n == 0 ? "NULL, " : mnFkClosingCalendar_n + ", ") + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -184,6 +190,7 @@ public class SDbProcessingBatch extends SDbRegistryUser {
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_item = " + mnFkItemId + ", " +
+                    "fk_closing_cal_n = " + (mnFkClosingCalendar_n == 0 ? "NULL, " : mnFkClosingCalendar_n + ", ") +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -207,6 +214,7 @@ public class SDbProcessingBatch extends SDbRegistryUser {
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
         registry.setFkItemId(this.getFkItemId());
+        registry.setFkClosingCalendar_n(this.getFkClosingCalendar_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

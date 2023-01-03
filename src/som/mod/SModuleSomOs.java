@@ -7,9 +7,11 @@ package som.mod;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import sa.lib.SLibConsts;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistry;
 import sa.lib.db.SDbRegistrySysFly;
@@ -48,6 +50,8 @@ import som.mod.som.db.SDbWarehouseFillLevel;
 import som.mod.som.db.SSomStockDays;
 import som.mod.som.form.SDialogDailyStockReport;
 import som.mod.som.form.SDialogRepIogList;
+import som.mod.som.form.SDialogRepPrcRawMatAvocado;
+import som.mod.som.form.SDialogRepPrcRawMatSeed;
 import som.mod.som.form.SDialogRepStock;
 import som.mod.som.form.SDialogRepStockComparate;
 import som.mod.som.form.SDialogRepStockDay;
@@ -97,6 +101,7 @@ import som.mod.som.view.SViewOilOwner;
 import som.mod.som.view.SViewOilType;
 import som.mod.som.view.SViewProcessingBatch;
 import som.mod.som.view.SViewStock;
+import som.mod.som.view.SViewStockDaily;
 import som.mod.som.view.SViewStockDays;
 import som.mod.som.view.SViewStockDaysLog;
 import som.mod.som.view.SViewStockMoves;
@@ -180,6 +185,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjStkStockDiv;
     private JMenuItem mjStkStockWh;
     private JMenuItem mjStkStockWhDiv;
+    private JMenuItem mjStkStockDaily;
     private JMenuItem mjStkStockReport;
     private JMenu mjRep;
     private JMenuItem mjRepStock;
@@ -192,6 +198,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjRepStockDay;
     private JMenuItem mjRepStockComp;
     private JMenuItem mjRepStockDaily;
+    private JMenuItem mjRepProRawMatAvo;
+    private JMenuItem mjRepProRawMatSeed;
 
     private SFormIog moFormIog;
     private SFormStockDay moFormStockDay;
@@ -243,7 +251,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCatConsWah = new JMenuItem("Almacenes consumibles");
         mjCatWahFillLevel = new JMenuItem("Niveles de lleno almacenes");
         mjCatOilOwn = new JMenuItem("Propietarios de aceite");
-        mjCatClosingCalendar = new JMenuItem("Cierres de mes");
+        mjCatClosingCalendar = new JMenuItem("Cierres de mes producción");
         mjCatUpdateCatalogues = new JMenuItem("Actualizar catálogos sistema externo...");
 
         mjCat.add(mjCatProducer);
@@ -441,12 +449,14 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjStkStockDiv = new JMenuItem("Existencias por división");
         mjStkStockWh = new JMenuItem("Existencias por almacén");
         mjStkStockWhDiv = new JMenuItem("Existencias por almacén, división");
+        mjStkStockDaily = new JMenuItem("Existencias por almacén diario");
         mjStkStockReport = new JMenuItem("Reporte de existencias de tanques");
         
         mjStk.add(mjStkStock);
         mjStk.add(mjStkStockDiv);
         mjStk.add(mjStkStockWh);
         mjStk.add(mjStkStockWhDiv);
+        mjStk.add(mjStkStockDaily);
         mjStk.addSeparator();
         mjStk.add(mjStkStockReport);
 
@@ -454,6 +464,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjStkStockDiv.addActionListener(this);
         mjStkStockWh.addActionListener(this);
         mjStkStockWhDiv.addActionListener(this);
+        mjStkStockDaily.addActionListener(this);
         mjStkStockReport.addActionListener(this);
 
         mjRep = new JMenu("Reportes");
@@ -467,6 +478,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjRepStockDay = new JMenuItem("Inventario diario (toma física)...");
         mjRepStockComp = new JMenuItem("Inventario producción real vs. teórico...");
         mjRepStockDaily = new JMenuItem("Estimaciones e inventarios diarios...");
+        mjRepProRawMatAvo = new JMenuItem("Producción diaria aceite aguacate...");
+        mjRepProRawMatSeed = new JMenuItem("Producción diaria molienda...");
 
         mjRep.add(mjRepStock);
         mjRep.add(mjRepStockDiv);
@@ -480,6 +493,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjRep.add(mjRepStockDay);
         mjRep.add(mjRepStockComp);
         mjRep.add(mjRepStockDaily);
+        mjRep.addSeparator();
+        mjRep.add(mjRepProRawMatAvo);
+        mjRep.add(mjRepProRawMatSeed);
 
         mjRepStock.addActionListener(this);
         mjRepStockDiv.addActionListener(this);
@@ -491,6 +507,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjRepStockDay.addActionListener(this);
         mjRepStockComp.addActionListener(this);
         mjRepStockDaily.addActionListener(this);
+        mjRepProRawMatAvo.addActionListener(this);
+        mjRepProRawMatSeed.addActionListener(this);
 
         // Privileges
 
@@ -732,6 +750,25 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 sql = "SELECT id_oil_grp_fam AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", " 
                         + "code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis " + aux + " ORDER BY name;";
+                break;
+            case SModConsts.SU_CLOSING_CAL:
+                settings = new SGuiCatalogueSettings("Cierre de mes", 1);
+                if (params != null) {
+                    value = params.getParamsMap().get(SModConsts.SU_INP_CT);
+                    if (value != null) {
+                        aux += "AND a.fk_inp_ct_n = " + ((int) value) + " ";
+                    }
+                    value = params.getParamsMap().get(SGuiConsts.PARAM_DATE);
+                    if (value != null) {
+                        aux += "AND c.closing_dt >= '" + SLibUtils.DbmsDateFormatDate.format((Date) value) + "' ";
+                    }
+                }
+            
+                sql = "SELECT c.id_closing_cal AS " + SDbConsts.FIELD_ID + "1, CONCAT(c.closing_dt,' (', c.cal_year, '/', c.cal_month,')') AS " + SDbConsts.FIELD_ITEM + ", "
+                        + "CONCAT('(', c.cal_year, '/', c.cal_month,')') AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " AS c "
+                        + "INNER JOIN su_func_area AS a ON c.fk_func_area = a.id_func_area "
+                        + "WHERE NOT c.b_del AND NOT c.b_dis AND NOT a.b_del " + aux + " ORDER BY closing_dt;";
                 break;
             case SModConsts.SU_OIL_OWN:
                 settings = new SGuiCatalogueSettings("Origen de aceite", 1);
@@ -979,6 +1016,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                         break;
                 }
                 break;
+            case SModConsts.SX_STK_DAILY:
+                view = new SViewStockDaily(miClient, "Existencias por almacén diario");
+                break;
             case SModConsts.SU_BY_PRODUCT:
                 view = new SViewByProduct(miClient, "Procesos");
                 break;
@@ -1010,7 +1050,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 view = new SViewWarehouseFillLevel(miClient, "Niveles de lleno almacenes");
                 break;
             case SModConsts.SU_CLOSING_CAL:
-                view = new SViewClosingCalendar(miClient, "Cierres de mes");
+                view = new SViewClosingCalendar(miClient, "Cierres de mes producción");
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -1123,7 +1163,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 form = moFormWarehouseFillLevel;
                 break;
             case SModConsts.SU_CLOSING_CAL:
-                if (moFormClosingCalendar == null) { moFormClosingCalendar = new SFormClosingCalendar(miClient, "Cierre de mes"); }
+                if (moFormClosingCalendar == null) { moFormClosingCalendar = new SFormClosingCalendar(miClient, "Cierre de mes producción"); }
                 form = moFormClosingCalendar;
                 break;
             default:
@@ -1152,6 +1192,12 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.SR_IOG_LIST:
                 report = new SGuiReport("reps/s_iog_list.jasper", "Reporte documentos inventarios");
+                break;
+            case SModConsts.SR_PRC_RAW_MAT_AVO:
+                report = new SGuiReport("reps/s_prc_raw_mat_avo.jasper", "Reporte de producción diaria de aceite de aguacate");
+                break;
+            case SModConsts.SR_PRC_RAW_MAT_SEED:
+                report = new SGuiReport("reps/s_prc_raw_mat_seed.jasper", "Reporte de producción diaria de molienda");
                 break;
         }
 
@@ -1334,6 +1380,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             else if (menuItem == mjStkStockDiv) {
                 showView(SModConsts.S_STK, SModConsts.SX_STK_DIV, null);
             }
+            else if (menuItem == mjStkStockDaily) {
+                showView(SModConsts.SX_STK_DAILY, SLibConsts.UNDEFINED, null);
+            }
             else if (menuItem == mjStkStockReport) {
                 showView(SModConsts.S_STK_REPORT, SLibConsts.UNDEFINED, null);
             }
@@ -1372,6 +1421,12 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjRepStockDaily) {
                 new SDialogDailyStockReport(miClient).setVisible(true);
+            }
+            else if (menuItem == mjRepProRawMatAvo) {
+                new SDialogRepPrcRawMatAvocado(miClient, "Reporte de producción diaria de aceite de aguacate").setVisible(true);
+            }
+            else if (menuItem == mjRepProRawMatSeed) {
+                new SDialogRepPrcRawMatSeed(miClient, "Reporte de producción diaria de molienda").setVisible(true);
             }
         }
     }
