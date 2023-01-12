@@ -248,11 +248,13 @@ public class SSomStockReport {
                     "<th align='center'><b>" + SLibUtils.textToHtml(i == 0 ? "TANQUE" : "JUMBO") + "</b></th>" + 
                     "<th align='center' style='width:300px'><b>" + SLibUtils.textToHtml("ÍTEM") + "</b></th>" + 
                     "<th align='center'><b>" + SLibUtils.textToHtml("ORIGEN") + "</b></th>" +
+                    "<th align='center'><b>" + SLibUtils.textToHtml("OLEICO") + "</b></th>" +
+                    "<th align='center'><b>" + SLibUtils.textToHtml("LINOLEICO") + "</b></th>" +
                     "<th align='center'><b>" + SLibUtils.textToHtml("EXISTENCIAS Kg") + "</b></th>" +
                     "<th colspan='2' align='center'><b>" + SLibUtils.textToHtml("CAPACIDADES Kg") + "</b></th>" +
                     "</tr>" + 
                     "<tr>" + 
-                    "<td colspan='4'></td>" + 
+                    "<td colspan='6'></td>" + 
                     "<td align='center'>TOTAL Kg</td>" + 
                     "<td align='center'>DISP Kg.</td>";
             
@@ -280,7 +282,11 @@ public class SSomStockReport {
                     "ow.name AS origen, " +
                     "v.stock AS existencias, " +
                     "vw.cap_real_lt, " +
-                    "vi.den " +
+                    "vi.den, " +
+                    "v.id_item, " +
+                    "v.id_co, " +
+                    "v.id_cob, " +
+                    "v.id_wah " +
                     "FROM s_stk_record AS v " +
                     "INNER JOIN su_item AS vi ON v.id_item = vi.id_item " +
                     "INNER JOIN su_item AS vrm ON vi.fk_item_rm_n = vrm.id_item " + 
@@ -312,6 +318,8 @@ public class SSomStockReport {
                                 "<td style='width:300px'> - </td>" +
                                 "<td>" + "</td>" +
                                 "<td align='right'> - </td>" +
+                                "<td align='right'> - </td>" +
+                                "<td align='right'> - </td>" +
                                 "<td align='right'>" + SLibUtils.textToHtml(capacidad) + "</td>" +
                                 "<td align='right'>" + SLibUtils.textToHtml(capacidad) + "</td>" +
                                 "</tr>";
@@ -323,10 +331,15 @@ public class SSomStockReport {
                 }
                 if (resultSet.getDouble("existencias") != 0) {
                     // TANQUE CON PRODUCTO
+                    Statement wahStatement = miClient.getSession().getDatabase().getConnection().createStatement();
+                    SDbWahLabTest test = getWahLabTestByWahAndItem(wahStatement, date, resultSet.getInt("id_item"), resultSet.getInt("id_co"), resultSet.getInt("id_cob"), resultSet.getInt("id_wah"));
+                    
                     html += "<tr>" + 
                             "<td>" + SLibUtils.textToHtml(resultSet.getString("tanque")) + "</td>" +
                             "<td style='width:300px'>" + SLibUtils.textToHtml(resultSet.getString("item")) + "</td>" +
                             "<td align='right'>" + SLibUtils.textToHtml(resultSet.getString("origen") == null ? "" : resultSet.getString("origen")) + "</td>" +
+                            "<td align='right'>" + SLibUtils.textToHtml(test.getOleicAcidPercentage_n() == null ? " - " : SLibUtils.DecimalFormatPercentage2D.format(test.getOleicAcidPercentage_n())) + "</td>" +
+                            "<td align='right'>" + SLibUtils.textToHtml(test.getLinoleicAcidPercentage_n() == null ? " - " : SLibUtils.DecimalFormatPercentage2D.format(test.getLinoleicAcidPercentage_n())) + "</td>" +
                             "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("existencias"))) + "</td>" +
                             "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("cap_real_lt") * resultSet.getDouble("den"))) + "</td>" +
                             "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue2D.format((resultSet.getDouble("cap_real_lt") * resultSet.getDouble("den")) - resultSet.getDouble("existencias"))) + "</td>" +
@@ -337,7 +350,7 @@ public class SSomStockReport {
             }
         }
         html += "<tr style='background-color: Silver'>" +
-                "<td colspan='3' align='right'><b>TOTAL</td>" +
+                "<td colspan='5' align='right'><b>TOTAL</td>" +
                 "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue2D.format(sumStkWah)) + "</b></td>" +
                 "<td> - </td>" +
                 "<td> - </td>" +

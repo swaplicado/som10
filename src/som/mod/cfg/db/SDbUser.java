@@ -203,7 +203,7 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
 
     @Override
     public int getPrivilegeLevel(final int privilege) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return SUtilConsts.LEV_MANAGER;
     }
 
     @Override

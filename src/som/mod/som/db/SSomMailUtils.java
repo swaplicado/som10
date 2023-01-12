@@ -349,15 +349,23 @@ public class SSomMailUtils {
         // TOTALES DEL AÑO
         double totalYear = 0;
         double totalLastYear = 0;
-        String sql = "SELECT SUM(IF(YEAR(t.dt) = " + year + ", t.qty, 0.0)) AS y, SUM(IF(YEAR(t.dt) = " + (year - 1) + ", t.qty, 0.0)) AS y_1 " +
+        double totalAncestorYear = 0;
+        double total3YearAgo = 0;
+        String sql = "SELECT " +
+                "SUM(IF(YEAR(t.dt) = " + year + ", t.qty, 0.0)) AS y, " +
+                "SUM(IF(YEAR(t.dt) = " + (year - 1) + ", t.qty, 0.0)) AS y_1, " +
+                "SUM(IF(YEAR(t.dt) = " + (year - 2) + ", t.qty, 0.0)) AS y_2, " +
+                "SUM(IF(YEAR(t.dt) = " + (year - 3) + ", t.qty, 0.0)) AS y_3 " +
                 "FROM s_tic AS t " +
                 "INNER JOIN su_item AS i ON t.fk_item = i.id_item " +
                 "INNER JOIN su_inp_tp AS tp ON i.fk_inp_ct = tp.id_inp_ct AND i.fk_inp_cl = tp.id_inp_cl AND i.fk_inp_tp = tp.id_inp_tp " +
-                "WHERE YEAR(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar;";
+                "WHERE YEAR(t.dt) BETWEEN " + (year - 3) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar;";
         ResultSet resultSet = session.getStatement().executeQuery(sql);
         if (resultSet.next()) {
             totalYear = resultSet.getDouble("y");
             totalLastYear = resultSet.getDouble("y_1");
+            totalAncestorYear = resultSet.getDouble("y_2");
+            total3YearAgo = resultSet.getDouble("y_3");
         }
         
         // TABLA TOTALES
@@ -371,13 +379,19 @@ public class SSomMailUtils {
                 "<td align='center'><b>" + SLibUtils.textToHtml("Insumo") + "</b></td>" +
                 "<td align='center' colspan=\"2\"><b>" + SLibUtils.textToHtml(year + " (kg)") + "</b></td>" +
                 "<td align='center' colspan=\"2\"><b>" + SLibUtils.textToHtml((year - 1) + " (kg)") + "</b></td>" +
+                "<td align='center' colspan=\"2\"><b>" + SLibUtils.textToHtml((year - 2) + " (kg)") + "</b></td>" +
+                "<td align='center' colspan=\"2\"><b>" + SLibUtils.textToHtml((year - 3) + " (kg)") + "</b></td>" +
                 "</tr>";
         
-        sql = "SELECT tp.name, SUM(IF(YEAR(t.dt) = " + year + ", t.qty, 0.0)) AS y, SUM(IF(YEAR(t.dt) = " + (year - 1) + ", t.qty, 0.0)) AS y_1 " +
+        sql = "SELECT tp.name, " +
+                "SUM(IF(YEAR(t.dt) = " + year + ", t.qty, 0.0)) AS y, " +
+                "SUM(IF(YEAR(t.dt) = " + (year - 1) + ", t.qty, 0.0)) AS y_1, " +
+                "SUM(IF(YEAR(t.dt) = " + (year - 2) + ", t.qty, 0.0)) AS y_2, " +
+                "SUM(IF(YEAR(t.dt) = " + (year - 3) + ", t.qty, 0.0)) AS y_3 " +
                 "FROM s_tic AS t " +
                 "INNER JOIN su_item AS i ON t.fk_item = i.id_item " +
                 "INNER JOIN su_inp_tp AS tp ON i.fk_inp_ct = tp.id_inp_ct AND i.fk_inp_cl = tp.id_inp_cl AND i.fk_inp_tp = tp.id_inp_tp " +
-                "WHERE year(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar " +
+                "WHERE year(t.dt) BETWEEN " + (year - 3) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar " +
                 "GROUP BY tp.id_inp_ct, tp.id_inp_cl, tp.id_inp_tp;";
         resultSet = session.getStatement().executeQuery(sql);
         while (resultSet.next()) {
@@ -387,6 +401,10 @@ public class SSomMailUtils {
                     "<td align='right'><font size='0.7'>" + formatPercentage.format(resultSet.getDouble(2)/totalYear) + "</font></td>" +
                     "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble(3)) + "</td>" +
                     "<td align='right'><font size='0.7'>" + formatPercentage.format(resultSet.getDouble(3)/totalLastYear) + "</font></td>" +
+                    "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble(4)) + "</td>" +
+                    "<td align='right'><font size='0.7'>" + formatPercentage.format(resultSet.getDouble(4)/totalAncestorYear) + "</font></td>" +
+                    "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble(5)) + "</td>" +
+                    "<td align='right'><font size='0.7'>" + formatPercentage.format(resultSet.getDouble(5)/total3YearAgo) + "</font></td>" +
                     "</tr>";
         }
         html += "<tr bgcolor='" + COLOR_INPUT_FTR + "'>" +
@@ -394,6 +412,10 @@ public class SSomMailUtils {
                 "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(totalYear) + "</b></td>" +
                 "<td align='right'><font size='0.7'><b>" + formatPercentage.format(1) + "</b></font></td>" +
                 "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(totalLastYear) + "</b></td>" +
+                "<td align='right'><font size='0.7'><b>" + formatPercentage.format(1) + "</b></font></td>" +
+                "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(totalAncestorYear) + "</b></td>" +
+                "<td align='right'><font size='0.7'><b>" + formatPercentage.format(1) + "</b></font></td>" +
+                "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(total3YearAgo) + "</b></td>" +
                 "<td align='right'><font size='0.7'><b>" + formatPercentage.format(1) + "</b></font></td>" +
                 "</tr>" +
                 "</font>" +
@@ -412,6 +434,8 @@ public class SSomMailUtils {
                 "<td align='center'><b>" + SLibUtils.textToHtml("Supraregión") + "</b></td>" +
                 "<td align='center'><b>" + SLibUtils.textToHtml(year + " (kg)") + "</b></td>" +
                 "<td align='center'><b>" + SLibUtils.textToHtml((year - 1) + " (kg)") + "</b></td>" +
+                "<td align='center'><b>" + SLibUtils.textToHtml((year - 2) + " (kg)") + "</b></td>" +
+                "<td align='center'><b>" + SLibUtils.textToHtml((year - 3) + " (kg)") + "</b></td>" +
                 "</tr>";
         
         // DESGLOCE POR SUPRAREGION
@@ -421,13 +445,16 @@ public class SSomMailUtils {
         double sumTotalYearIns = 0;
         double sumTotalLastYearIns = 0;
         sql = "SELECT tp.name, IF(sreg.name IS NOT NULL, 0, 1) AS _order, IF(sreg.name IS NULL, 'N/D', sreg.name) as supra, " + 
-                "SUM(IF(YEAR(t.dt) = " + year + ", t.qty, 0.0)) AS y, SUM(IF(YEAR(t.dt) = " + (year - 1) + ", t.qty, 0.0)) AS y_1 " +
+                "SUM(IF(YEAR(t.dt) = " + year + ", t.qty, 0.0)) AS y, " + 
+                "SUM(IF(YEAR(t.dt) = " + (year - 1) + ", t.qty, 0.0)) AS y_1, " +
+                "SUM(IF(YEAR(t.dt) = " + (year - 2) + ", t.qty, 0.0)) AS y_2, " +
+                "SUM(IF(YEAR(t.dt) = " + (year - 3) + ", t.qty, 0.0)) AS y_3 " +
                 "FROM s_tic AS t " +
                 "INNER JOIN su_item AS i ON t.fk_item = i.id_item " +
                 "INNER JOIN su_inp_tp AS tp ON i.fk_inp_ct = tp.id_inp_ct AND i.fk_inp_cl = tp.id_inp_cl AND i.fk_inp_tp = tp.id_inp_tp " +
                 "LEFT JOIN su_reg AS reg ON t.fk_reg_n = reg.id_reg " +
                 "LEFT JOIN su_sup_reg AS sreg ON reg.fk_sup_reg = sreg.id_sup_reg " + 
-                "WHERE year(t.dt) BETWEEN " + (year - 1) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar " +
+                "WHERE year(t.dt) BETWEEN " + (year - 3) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar " +
                 "GROUP BY tp.id_inp_ct, tp.id_inp_cl, tp.id_inp_tp, sreg.name " + 
                 "ORDER by tp.name, _order, sreg.sort, supra";
         resultSet = session.getStatement().executeQuery(sql);
@@ -443,6 +470,8 @@ public class SSomMailUtils {
                         "<td align='left'>" + SLibUtils.textToHtml(resultSet.getString("supra")) + "</b></td>" +
                         "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("y")) + "</td>" +
                         "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("y_1")) + "</td>" +
+                        "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("y_2")) + "</td>" +
+                        "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("y_3")) + "</td>" +
                         "</tr>";
                 sumTotalYearIns += resultSet.getDouble("y");
                 sumTotalLastYearIns += resultSet.getDouble("y_1");
@@ -456,6 +485,8 @@ public class SSomMailUtils {
                         "<td align='left'>" + SLibUtils.textToHtml(resultSet.getString("supra")) + "</td>" +
                         "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("y")) + "</td>" +
                         "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("y_1")) + "</td>" +
+                        "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("y_2")) + "</td>" +
+                        "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("y_3")) + "</td>" +
                         "</tr>";
                 rowspan++;
             }
@@ -465,6 +496,8 @@ public class SSomMailUtils {
                 "<td align='left' colspan='2'><b>" + SLibUtils.textToHtml("TOTAL") + "</b></td>" +
                 "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(totalYear) + "</b></td>" +
                 "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(totalLastYear) + "</b></td>" +
+                "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(totalAncestorYear) + "</b></td>" +
+                "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(total3YearAgo) + "</b></td>" +
                 "</tr>" +
                 "</font>" +
                 "</table>" +
