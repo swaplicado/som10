@@ -250,6 +250,7 @@ public class SSomStockReport {
                     "<th align='center'><b>" + SLibUtils.textToHtml("ORIGEN") + "</b></th>" +
                     "<th align='center'><b>" + SLibUtils.textToHtml("OLEICO") + "</b></th>" +
                     "<th align='center'><b>" + SLibUtils.textToHtml("LINOLEICO") + "</b></th>" +
+                    "<th align='center'><b>" + SLibUtils.textToHtml("ACIDEZ") + "</b></th>" +
                     "<th align='center'><b>" + SLibUtils.textToHtml("EXISTENCIAS Kg") + "</b></th>" +
                     "<th colspan='2' align='center'><b>" + SLibUtils.textToHtml("CAPACIDADES Kg") + "</b></th>" +
                     "</tr>" + 
@@ -320,6 +321,7 @@ public class SSomStockReport {
                                 "<td align='right'> - </td>" +
                                 "<td align='right'> - </td>" +
                                 "<td align='right'> - </td>" +
+                                "<td align='right'> - </td>" +
                                 "<td align='right'>" + SLibUtils.textToHtml(capacidad) + "</td>" +
                                 "<td align='right'>" + SLibUtils.textToHtml(capacidad) + "</td>" +
                                 "</tr>";
@@ -340,6 +342,7 @@ public class SSomStockReport {
                             "<td align='right'>" + SLibUtils.textToHtml(resultSet.getString("origen") == null ? "" : resultSet.getString("origen")) + "</td>" +
                             "<td align='right'>" + SLibUtils.textToHtml(test.getOleicAcidPercentage_n() == null ? " - " : SLibUtils.DecimalFormatPercentage2D.format(test.getOleicAcidPercentage_n())) + "</td>" +
                             "<td align='right'>" + SLibUtils.textToHtml(test.getLinoleicAcidPercentage_n() == null ? " - " : SLibUtils.DecimalFormatPercentage2D.format(test.getLinoleicAcidPercentage_n())) + "</td>" +
+                            "<td align='right'>" + SLibUtils.textToHtml(test.getAcidityPercentage_n()== null ? " - " : SLibUtils.DecimalFormatPercentage2D.format(test.getAcidityPercentage_n())) + "</td>" +
                             "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("existencias"))) + "</td>" +
                             "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue2D.format(resultSet.getDouble("cap_real_lt") * resultSet.getDouble("den"))) + "</td>" +
                             "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue2D.format((resultSet.getDouble("cap_real_lt") * resultSet.getDouble("den")) - resultSet.getDouble("existencias"))) + "</td>" +
@@ -776,7 +779,8 @@ public class SSomStockReport {
             html += "</td>" + 
                     "</tr>" +
                     "<tr>" +
-                    "<td colspan='3'><b>TOTAL ACEITES: " + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round((stkAvoOils + stkOtherOils + stkRefOils - stkAvoRefOils) / 1000)) + " Tons") + "</b></td>" +
+                    "<td colspan='3'><b>TOTAL ACEITES*: " + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round((stkAvoOils + stkOtherOils + stkRefOils - stkAvoRefOils) / 1000)) + " Tons") + "</b></td>" +
+                    "<td colspan='3'>" + SLibUtils.textToHtml("*Total aguacate + total restos aceites + total aceite otros") + "</td>" +
                     "</tr>" +
                     "</table>";
         }
