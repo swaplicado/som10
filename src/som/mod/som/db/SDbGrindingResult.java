@@ -123,7 +123,8 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
                     
                     return sValue;
                 }
-                break;
+                
+                return "";
                 
             default:
                 break;
