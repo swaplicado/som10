@@ -16,6 +16,17 @@ public class SConfigurationRow {
     private boolean isActive;
     private String label;
     private String defaultValue;
+    
+    /**
+     * Esta propiedad puede recibir string, boolean o number
+     */
+    private String dataType;
+    
+    /**
+     * Cuando es string recibe una expresión regular para la validación
+     * Cuando es number recibe un formateador como: "###,###,###.00"
+     */
+    private String formatter;
 
     // Getter Methods 
 
@@ -29,6 +40,14 @@ public class SConfigurationRow {
 
     public String getDefaultValue() {
         return defaultValue;
+    }
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public String getFormatter() {
+        return formatter;
     }
     
     // Setter Methods 
@@ -44,4 +63,13 @@ public class SConfigurationRow {
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
+    public void setFormatter(String formatter) {
+        this.formatter = formatter;
+    }
+    
 }

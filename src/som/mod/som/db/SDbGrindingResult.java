@@ -8,7 +8,10 @@ package som.mod.som.db;
 import som.mod.som.data.SCaptureConfiguration;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
@@ -16,6 +19,7 @@ import sa.lib.db.SDbRegistryUser;
 import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
+import som.mod.som.data.SConfigurationRow;
 import som.mod.som.data.SGrindingReport;
 
 /**
@@ -75,6 +79,59 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
      * Private methods:
      */
     
+    private String processInput(Object value, SConfigurationRow cfg) {
+        if (cfg.getDataType() == null || cfg.getDataType().isEmpty()) {
+            String v = (String) value;
+            String absValue = SGrindingReport.isNumeric(v.replace(",", "")) ? SLibUtils.DecimalFormatValue4D.format(Double.parseDouble(v)) : v;
+            
+            return absValue;
+        }
+        
+        String sValue = (String) value;
+        switch(cfg.getDataType()) {
+            case "string":
+                if (cfg.getFormatter() != null) {
+                    // Regex to check valid username.
+                    String regex = cfg.getFormatter();
+
+                    // Compile the ReGex
+                    Pattern p = Pattern.compile(regex);
+                    Matcher m = p.matcher(sValue);
+  
+                    // Return if the username
+                    // matched the ReGex
+                    if (m.matches()) {
+                        return sValue;
+                    }
+                    
+                    // Throw error!
+                    return "";
+                }
+            break;
+            
+            case "boolean":
+                sValue = (sValue.equals("1") || sValue.equals("true")) ? "1" : "0";
+                break;
+                
+            case "number":
+                // "###,###,###.00"
+                if (SGrindingReport.isNumeric(sValue.replace(",", ""))) {
+                    if (cfg.getFormatter() != null && !cfg.getFormatter().isEmpty()) {
+                        DecimalFormat df = new DecimalFormat(cfg.getFormatter());
+                        return df.format(Double.parseDouble(sValue));
+                    }
+                    
+                    return sValue;
+                }
+                
+                return "";
+                
+            default:
+                break;
+        }
+        
+        return sValue;
+    }
     
     /*
      * Public methods:
@@ -515,44 +572,42 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
 
     @Override
     public void setRowValueAt(Object value, int col) {
-        String v = (String) value;
-        String absValue = SGrindingReport.isNumeric(v.replace(",", "")) ? SLibUtils.DecimalFormatValue4D.format(Double.parseDouble(v)) : v;
         switch (col) {
             case 2:
-                mdResult08 = absValue;
+                mdResult08 = this.processInput(value, this.getCaptureConfigurationAux().getR08());
                 break;
             case 3:
-                mdResult10 = absValue;
+                mdResult10 = this.processInput(value, this.getCaptureConfigurationAux().getR10());
                 break;
             case 4:
-                mdResult12 = absValue;
+                mdResult12 = this.processInput(value, this.getCaptureConfigurationAux().getR12());
                 break;
             case 5:
-                mdResult14 = absValue;
+                mdResult14 = this.processInput(value, this.getCaptureConfigurationAux().getR14());
                 break;
             case 6:
-                mdResult16 = absValue;
+                mdResult16 = this.processInput(value, this.getCaptureConfigurationAux().getR16());
                 break;
             case 7:
-                mdResult18 = absValue;
+                mdResult18 = this.processInput(value, this.getCaptureConfigurationAux().getR18());
                 break;
             case 8:
-                mdResult20 = absValue;
+                mdResult20 = this.processInput(value, this.getCaptureConfigurationAux().getR20());
                 break;
             case 9:
-                mdResult22 = absValue;
+                mdResult22 = this.processInput(value, this.getCaptureConfigurationAux().getR22());
                 break;
             case 10:
-                mdResult00 = absValue;
+                mdResult00 = this.processInput(value, this.getCaptureConfigurationAux().getR00());
                 break;
             case 11:
-                mdResult02 = absValue;
+                mdResult02 = this.processInput(value, this.getCaptureConfigurationAux().getR02());
                 break;
             case 12:
-                mdResult04 = absValue;
+                mdResult04 = this.processInput(value, this.getCaptureConfigurationAux().getR04());
                 break;
             case 13:
-                mdResult06 = absValue;
+                mdResult06 = this.processInput(value, this.getCaptureConfigurationAux().getR06());
                 break;
             
             default:
