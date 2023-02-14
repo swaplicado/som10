@@ -265,7 +265,6 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
         moGridTableRows.getTable().setColumnSelectionAllowed(false);
         moGridTableRows.getTable().getTableHeader().setReorderingAllowed(false);
         moGridTableRows.getTable().getTableHeader().setResizingAllowed(true);
-        moGridTableRows.getTable().setRowSorter(new TableRowSorter<AbstractTableModel>(moGridTableRows.getModel()));
         moGridTableRows.getTable().getTableHeader().setEnabled(true);
         moGridTableRows.resetSortKeys();
         moGridTableRows.setSelectedGridRow(0);
