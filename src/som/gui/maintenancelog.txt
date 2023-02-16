@@ -1,11 +1,17 @@
 ================================================================================
-2023-01-03, 1.0 084.1
+2023-02-16, 1.0 086.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Adición del campo "Número de validaciones" en la forma de captura de análisis de laboratorio de tanques para agregar una nota de actualización en el reporte.
+
+================================================================================
+2023-01-03, 1.0 085.1
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
 1) Ajustes a los reportes de recepción de semillas y existencias de tanques.
 
 ================================================================================
-2023-01-03, 1.0 084.0
+2023-01-03, 1.0 085.0
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
 1) Creación de los reportes de producción diaria de aguacate y de molienda.

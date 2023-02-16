@@ -105,6 +105,7 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
         
         msSql = "SELECT "
                 + "v.id_wah_lab AS " + SDbConsts.FIELD_ID + "1, "
+                + "v.val, "
                 + "v.year AS " + SDbConsts.FIELD_CODE + ", "
                 + "v.week AS " + SDbConsts.FIELD_NAME + ", " 
                 + "v.dt_start, "
@@ -141,12 +142,13 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[16];
+        SGridColumnView[] columns = new SGridColumnView[17];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_0D, SDbConsts.FIELD_CODE, "Año");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_0D, SDbConsts.FIELD_NAME, "Semana");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "dt_start", "Fecha inicial");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "dt_end", "Fecha final");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_0D, "val", "Validaciones");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "v.b_done", "Terminado");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "v.b_val", "Validado");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);

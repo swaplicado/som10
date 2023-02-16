@@ -36,10 +36,12 @@ public class SSomWahLabTestReport {
     public void sendReport(String mailTo, int[] pk) {
         try {
             SDbWahLab lab = getWahLab(pk);
-            if (lab.isValidation()) {
+            if (lab.isValidated()) {
                 String mailBody = generateReportHtml(lab);
+                
+                String period = "(" + SLibTimeUtils.dateFormatDatePeriodShort(lab.getDateStart(), lab.getDateEnd()) + (lab.getValidation() > 1 ? " ACTUALIZADO" : "" ) + ")";
 
-                String mailSubject = "[SOM] Registro de resultados de tanques de proceso";
+                String mailSubject = "[SOM] Resultados tanques proceso " + period;
 
                 ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailTo, ";")));
 
@@ -109,8 +111,9 @@ public class SSomWahLabTestReport {
                 "<body>" +
                 "AETH05RG008-001.2<br>" +
                 "<h1>REGISTRO DE RESULTADOS DE TANQUES DE PROCESO</h1>" +
-                "<h2>Semana del " + SLibTimeUtils.dateFormatDatePeriodLong(lab.getDateStart(), lab.getDateEnd()) + "</h2>" +
-                "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
+                "<h2>Semana del " + SLibTimeUtils.dateFormatDatePeriodLong(lab.getDateStart(), lab.getDateEnd()) + " " +
+                (lab.getValidation() > 1 ? SLibUtils.textToHtml("(actualización " + (lab.getValidation() - 1) + ")") : "" ) + "</h2>" ;
+        html += "<table border='1' bordercolor='#000000' cellpadding='0' cellspacing='0'>" + 
                 "<font size='" + FONT_SIZE_TBL + "'>" + 
                 "<tr>" +
                 "<th align='center'><b>" + SLibUtils.textToHtml("Fecha análisis") + "</b></th>" + 
@@ -193,8 +196,8 @@ public class SSomWahLabTestReport {
             SDbWahLabTest test = getWahLabTestWithoutResults(lab.getDateStart(), resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3));
             html += "<tr style='background-color: Silver'>" + 
                     "<td align='center' rowspan='2'>-</td>" +
-                    "<td align='center' rowspan='2'><b>" + SLibUtils.textToHtml(test.getDbmsBranchWarehouse().getCode()) + "</b></td>" +
-                    "<td align='center'>" + SLibUtils.textToHtml(test.getDbmsItem().getName()) + "</td>" +
+                    "<td align='center' rowspan='2'><b>" + SLibUtils.textToHtml(test.getDbmsBranchWarehouse() == null ? "" : test.getDbmsBranchWarehouse().getCode()) + "</b></td>" +
+                    "<td align='center'>" + SLibUtils.textToHtml(test.getDbmsItem() == null ? "" : test.getDbmsItem().getName()) + "</td>" +
                     "<td></td>" +
                     "<td></td>" +
                     "<td></td>" +
@@ -217,7 +220,7 @@ public class SSomWahLabTestReport {
                     "<td " + (test.isLinolenicAcidPercentageOverange()? "style='color:red'" : "") + "align='right'>" + (test.getLinolenicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getLinolenicAcidPercentage_n())) + "</td>" +
                     "<td " + (test.isStearicAcidPercentageOverange()? "style='color:red'" : "") + "align='right'>" + (test.getStearicAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getStearicAcidPercentage_n())) + "</td>" +
                     "<td " + (test.isPalmiticAcidPercentageOverange()? "style='color:red'" : "") + "align='right'>" + (test.getPalmiticAcidPercentage_n() == null ? "" : SLibUtils.DecimalFormatPercentage2D.format(test.getPalmiticAcidPercentage_n())) + "</td>" +
-                    "<td align='left'>" + SLibUtils.textToHtml("Ultimo análisis: " + SLibUtils.DateFormatDateShort.format(test.getDate())) + "</td>" +
+                    "<td align='left'>" + SLibUtils.textToHtml("Ultimo análisis: " + SLibUtils.DateFormatDateShort.format(test.getDate() == null ? miClient.getSession().getWorkingDate() : test.getDate())) + "</td>" +
                     "</tr>";
         }
         

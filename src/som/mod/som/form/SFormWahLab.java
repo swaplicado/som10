@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -77,6 +78,9 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
         jpRegistry = new javax.swing.JPanel();
         jpSettings = new javax.swing.JPanel();
+        jpVersion = new javax.swing.JPanel();
+        jlValVersion = new javax.swing.JLabel();
+        moIntValVersion = new sa.lib.gui.bean.SBeanFieldInteger();
         jpSettings1 = new javax.swing.JPanel();
         jpSettings11 = new javax.swing.JPanel();
         jlCaptureDate = new javax.swing.JLabel();
@@ -217,6 +221,17 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jpRegistry.setLayout(new java.awt.BorderLayout());
 
         jpSettings.setLayout(new java.awt.BorderLayout());
+
+        jpVersion.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        jlValVersion.setText("Número de validaciones:");
+        jpVersion.add(jlValVersion);
+
+        moIntValVersion.setEnabled(false);
+        moIntValVersion.setPreferredSize(new java.awt.Dimension(50, 23));
+        jpVersion.add(moIntValVersion);
+
+        jpSettings.add(jpVersion, java.awt.BorderLayout.PAGE_START);
 
         jpSettings1.setBorder(javax.swing.BorderFactory.createTitledBorder("Fecha:"));
         jpSettings1.setLayout(new java.awt.GridLayout(2, 1, 0, 5));
@@ -784,6 +799,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private javax.swing.JLabel jlLastStePer;
     private javax.swing.JLabel jlLastWeekTest;
     private javax.swing.JLabel jlLastYearTest;
+    private javax.swing.JLabel jlValVersion;
     private javax.swing.JPanel jpAllResults;
     private javax.swing.JPanel jpCurChromatography;
     private javax.swing.JPanel jpCurItem;
@@ -813,6 +829,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private javax.swing.JPanel jpSettings3;
     private javax.swing.JPanel jpSettings31;
     private javax.swing.JPanel jpTest;
+    private javax.swing.JPanel jpVersion;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolCurAciPerOverange;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolCurLinPerOverange;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolCurLlcPerOverange;
@@ -838,6 +855,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     private sa.lib.gui.bean.SBeanFieldDate moDateCurStartDateTest;
     private sa.lib.gui.bean.SBeanFieldDate moDateLastEndDateTest;
     private sa.lib.gui.bean.SBeanFieldDate moDateLastStartDateTest;
+    private sa.lib.gui.bean.SBeanFieldInteger moIntValVersion;
     private sa.lib.gui.bean.SBeanFieldText moTextCurAciPer;
     private sa.lib.gui.bean.SBeanFieldText moTextCurItem;
     private sa.lib.gui.bean.SBeanFieldText moTextCurLinPer;
@@ -868,6 +886,8 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 1120, 700);
+        
+        moIntValVersion.setIntegerSettings(SGuiUtils.getLabelName(jlValVersion), SGuiConsts.GUI_TYPE_INT_RAW, true);
 
         moDateCaptureDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlCaptureDate), false);
         moBoolDone.setBooleanSettings(moBoolDone.getText(), false);
@@ -926,6 +946,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moBoolLastPalPerOverange.setBooleanSettings(SGuiUtils.getLabelName(moBoolLastPalPerOverange.getText()), false);
         moTextLastNotes.setTextSettings(SGuiUtils.getLabelName(jlLastNotes), 100, 0);
         
+        moFields.addField(moIntValVersion);
         moFields.addField(moDateCaptureDate);
         moFields.addField(moBoolDone);
         moFields.addField(moBoolValidate);
@@ -1331,6 +1352,18 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         catch (Exception e) {}
     }
     
+    private void editAfterValidation() {
+        if (!miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_VLR) && moBoolValidate.getValue()) {
+            jbRestart.setEnabled(false);
+            moBoolDone.setEnabled(false);
+            jbSaveRow.setEnabled(false);
+            jbSaveAndNextRow.setEnabled(false);
+            jbEditTest.setEnabled(false);
+            jbErase.setEnabled(false);
+            jbSave.setEnabled(false);
+        }        
+    }
+    
     private void actionContinue() {
        try {
             if (!verifyYearWeek(moYearCurYearTest.getValue(), moWeekCurWeekTest.getValue())) {
@@ -1496,6 +1529,16 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         moDialogAllWahLabTest.setVisible(true);
     }
     
+    private void actionValidate() {
+        if (moBoolValidate.getValue()) {
+            moIntValVersion.setEnabled(true);
+            moIntValVersion.setValue(moIntValVersion.getValue() + 1);
+        }
+        else {
+            moIntValVersion.setEnabled(false);
+        }
+    }
+    
     private void actionCaptureDate() {
         moYearCurYearTest.setValue(getYear(moDateCaptureDate.getValue()));
         moWeekCurWeekTest.setValue(getWeekOfYear(moDateCaptureDate.getValue()));
@@ -1522,6 +1565,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jbSaveAndNextRow.addActionListener(this);
         jbAllTest.addActionListener(this);
         moDateCaptureDate.getComponent().addFocusListener(this);
+        moBoolValidate.addActionListener(this);
     }
 
     @Override
@@ -1536,10 +1580,12 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jbSaveAndNextRow.removeActionListener(this);
         jbAllTest.removeActionListener(this);
         moDateCaptureDate.getComponent().removeFocusListener(this);
+        moBoolValidate.removeActionListener(this);
     }
 
     @Override
     public void reloadCatalogues() {
+        moIntValVersion.setValue(0);
         moDialogAllWahLabTest = null;
         moBoolDone.setValue(false);
         moBoolValidate.setValue(false);
@@ -1588,8 +1634,9 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         // Registro viejo :
         else {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
+            moIntValVersion.setValue(moRegistry.getValidation());
             moBoolDone.setValue(moRegistry.isDone());
-            moBoolValidate.setValue(moRegistry.isValidation());
+            moBoolValidate.setValue(moRegistry.isValidated());
             moYearCurYearTest.setValue(moRegistry.getYear());
             moWeekCurWeekTest.setValue(moRegistry.getWeek());
             moDateCurStartDateTest.setValue(moRegistry.getDateStart());
@@ -1612,6 +1659,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         }
         setEnabledFields(false);
         addAllListeners();
+        editAfterValidation();
     }
 
     @Override
@@ -1620,8 +1668,9 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
         if (registry.isRegistryNew()) { }
 
+        registry.setValidation(moIntValVersion.getValue());
         registry.setDone(moBoolDone.getValue());
-        registry.setValidation(moBoolValidate.getValue());
+        registry.setValidated(moBoolValidate.getValue());
         registry.setYear(moYearCurYearTest.getValue());
         registry.setWeek(moWeekCurWeekTest.getValue());
         registry.setDateStart(moDateCurStartDateTest.getValue());
@@ -1705,6 +1754,13 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
             }
             else if (button == jbAllTest) {
                 actionAllTest();
+            }
+        }
+        else if (e.getSource() instanceof JCheckBox) {
+            JCheckBox checkBox = (JCheckBox) e.getSource();
+            
+            if (checkBox == moBoolValidate) {
+                actionValidate();
             }
         }
     }
