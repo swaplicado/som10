@@ -39,7 +39,7 @@ public class SSomWahLabTestReport {
             if (lab.isValidated()) {
                 String mailBody = generateReportHtml(lab);
                 
-                String period = "(" + SLibTimeUtils.dateFormatDatePeriodShort(lab.getDateStart(), lab.getDateEnd()) + (lab.getValidation() > 1 ? " ACTUALIZADO" : "" ) + ")";
+                String period = "(" + SLibTimeUtils.dateFormatDatePeriod(lab.getDateStart(), lab.getDateEnd()) + (lab.getValidation() > 1 ? " ACTUALIZADO" : "" ) + ")";
 
                 String mailSubject = "[SOM] Resultados tanques proceso " + period;
 

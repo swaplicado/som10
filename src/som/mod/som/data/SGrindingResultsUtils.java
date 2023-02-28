@@ -72,10 +72,11 @@ public class SGrindingResultsUtils {
      * @param option puede ser:
      *                 SGrindingResultsUtils.ITEM
      *                 SGrindingResultsUtils.LOT
+     * @param plantKey
      * 
      * @return int id del último ítem o lote que se haya capturado
      */
-    public static int getLastConfiguration(SGuiClient client, final int option) {
+    public static int getLastConfiguration(SGuiClient client, final int option, final int[] plantKey) {
         String field = "";
         
         String sql2 = "";
@@ -101,13 +102,13 @@ public class SGrindingResultsUtils {
         try {
             itemIdRes = client.getSession().getStatement().executeQuery(sql);
             
-            while(itemIdRes.next()) {
+            if (itemIdRes.next()) {
                 return itemIdRes.getInt(field);
             }
             
             lastConfRes = client.getSession().getStatement().executeQuery(sql2);
             
-            while(lastConfRes.next()) {
+            if (lastConfRes.next()) {
                 return lastConfRes.getInt("l_conf");
             }
             
@@ -124,16 +125,19 @@ public class SGrindingResultsUtils {
      * 
      * @param client
      * @param item
+     * @param plantKey
      * 
      * @return int id del lote
      */
-    public static int getLastLotByItem(SGuiClient client, final int item) {
+    public static int getLastLotByItem(SGuiClient client, final int item, final int[] plantKey) {
         if (item == 0) {
             return 0;
         }
         
         String sql = "SELECT fk_prc_batch FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + 
-                        " WHERE b_del = 0 AND fk_item_id = " + item + " ORDER BY id_result DESC;";
+                        " WHERE b_del = 0 AND fk_item_id = " + item + " " +
+                        " AND fk_pla_co = " + plantKey[0] + " AND fk_pla_cob = " + plantKey[1] + " AND fk_pla_pla = " + plantKey[2] + " " +
+                        " ORDER BY id_result DESC;";
         
         String sqlLots = "SELECT id_prc_batch FROM " + SModConsts.TablesMap.get(SModConsts.S_PRC_BATCH) + 
                         " WHERE b_del = 0 AND fk_item = " + item + " ORDER BY fk_usr_ins DESC;";
@@ -210,10 +214,11 @@ public class SGrindingResultsUtils {
      * 
      * @param client
      * @param item
+     * @param plantKey
      * 
      * @return 
      */
-    public static ArrayList<SDbGrindingReportItemGroup> getGroupOfGrindingItem(SGuiClient client, final int item) {
+    public static ArrayList<SDbGrindingReportItemGroup> getGroupOfGrindingItem(SGuiClient client, final int item, final int[] plantKey) {
         if (item == 0) {
             return new ArrayList<>();
         }
@@ -223,7 +228,9 @@ public class SGrindingResultsUtils {
                 + "FROM "
                 + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_REP_ITEM_GROUP) + " "
                 + "WHERE "
-                + "fk_item = " + item + " LIMIT 1;";
+                + "fk_item = " + item + " "
+                + " AND fk_pla_co = " + plantKey[0] + " AND fk_pla_cob = " + plantKey[1] + " AND fk_pla_pla = " + plantKey[2] + " "
+                + " LIMIT 1;";
 
         ResultSet itemIdRes;
         ResultSet linkIdsRes;
@@ -278,8 +285,9 @@ public class SGrindingResultsUtils {
      * @param nItemId
      * @param nLotId
      * @param tCaptureDate
+     * @param maPlantPk
      */
-    public static void generateResults(SGuiClient client, final boolean bAllItems, final int nItemId, final int nLotId, final Date tCaptureDate) {
+    public static void generateResults(SGuiClient client, final boolean bAllItems, final int nItemId, final int nLotId, final Date tCaptureDate, final int[] maPlantPk) {
         String sql = "SELECT  " +
                     "id_link, " +
                     "capture_order, " +
@@ -300,7 +308,7 @@ public class SGrindingResultsUtils {
                     "INNER JOIN " +
                     "su_item i ON lip.fk_item_id = i.id_item " +
                     "WHERE " +
-                    "lip.b_del = 0 " +
+                    "lip.b_del = 0 AND lip.fk_pla_co = " + maPlantPk[0] + " AND lip.fk_pla_cob = " + maPlantPk[1] + " AND lip.fk_pla_pla = " + maPlantPk[2] + " " +
                     (! bAllItems ? (" AND lip.fk_item_id = ") + nItemId : "") + " " +
                     "ORDER BY lip.fk_item_id ASC, lip.fk_param_id ASC;";
         
@@ -319,6 +327,9 @@ public class SGrindingResultsUtils {
                 res.setOrder(links.getInt("capture_order"));
                 res.setDateCapture(tCaptureDate);
                 res.setFklinkId_n(links.getInt("id_link"));
+                res.setFkPlantCompanyId(maPlantPk[0]);
+                res.setFkPlantBranchId(maPlantPk[1]);
+                res.setFkPlantPlantId(maPlantPk[2]);
                 
                 if (res.getFkLotId() == 0) {
                     client.showMsgBoxError("El ítem " + links.getString("item_code") + 
@@ -328,7 +339,7 @@ public class SGrindingResultsUtils {
                 }
                 
                 if (SGrindingResultsUtils.resultExists(client, res.getFkItemId(), 
-                        res.getFkParameterId(), res.getFkLotId(), res.getDateCapture()) > 0) {
+                        res.getFkParameterId(), res.getFkLotId(), res.getDateCapture(), maPlantPk) > 0) {
                     continue;
                 }
 
@@ -410,14 +421,16 @@ public class SGrindingResultsUtils {
      * @param dtCapture
      * @return 
      */
-    private static int resultExists(SGuiClient client, final int itm, final int param, final int lot, final Date dtCapture) {
+    private static int resultExists(SGuiClient client, final int itm, final int param, final int lot, final Date dtCapture, final int[] maPlantPk) {
         String sql = "SELECT id_result FROM " + 
                         SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + 
                     " WHERE fk_item_id = " + itm + 
                     " AND fk_param_id = " + param + 
                     " AND fk_prc_batch = " + lot +
                     " AND dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtCapture) + "' "+
-                    " AND b_del = 0 ORDER BY id_result DESC;";
+                    " AND b_del = 0 AND fk_pla_co = " + maPlantPk[0] + " " +
+                    " AND fk_pla_cob = " + maPlantPk[1] + " " +
+                    " AND fk_pla_pla = " + maPlantPk[2] + " ORDER BY id_result DESC;";
         
         ResultSet resIdResult;
         
@@ -446,10 +459,11 @@ public class SGrindingResultsUtils {
      * @param dtDate
      * @param item
      * @param parameter
+     * @param aPlantKey
      * 
      * @return 
      */
-    public static double getMonthAverage(SGuiClient client, final Date dtDate, final int item, final int parameter) {
+    public static double getMonthAverage(SGuiClient client, final Date dtDate, final int item, final int parameter, final int[] aPlantKey) {
         
         String sql = "SELECT " +
                     "result_08," +
@@ -471,6 +485,7 @@ public class SGrindingResultsUtils {
                     " AND YEAR(dt_capture) = YEAR('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
                     " AND fk_param_id = " + parameter + " " +
                     " AND fk_item_id = " + item + " " +
+                    " AND fk_pla_co = " + aPlantKey[0] + " AND fk_pla_cob = " + aPlantKey[1] + " AND fk_pla_pla = " + aPlantKey[2] + " " +
                     " AND NOT b_del " +
                     "GROUP BY dt_capture";
         
@@ -617,13 +632,15 @@ public class SGrindingResultsUtils {
      * @param onlyCurrentDay si es verdadero retorna solamente el promedio ponderado del día recibido.
      * @param isWeightedAverage verdadero si se requiere el promedio ponderado, si es falso regresa
      *                          el promedio normal
+     * @param plantKey
      * 
      * @return double
      */
     public static double getWeightedAverage(SGuiClient client, final Date dtDate, 
                                     final double monthGrinding, final int nItemId, 
                                     final int parameterId, final boolean onlyCurrentDay,
-                                    final boolean isWeightedAverage) {
+                                    final boolean isWeightedAverage,
+                                    final int[] plantKey) {
         String sql = "SELECT @prom := COALESCE("
                 + "(IF(COALESCE(result_08, 0) > 0, result_08, 0) +"
                 + "IF(COALESCE(result_10, 0) > 0, result_10, 0) + "
@@ -654,6 +671,7 @@ public class SGrindingResultsUtils {
                     "FROM " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_RESULT) + " sgr " +
                     "WHERE fk_param_id = " + parameterId + " " +
                     "AND fk_item_id = " + nItemId + " " +
+                    "AND fk_pla_co = " + plantKey[0] + " AND fk_pla_cob = " + plantKey[1] + " AND fk_pla_pla = " + plantKey[2] + " " +
                     "AND MONTH(dt_capture) = MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
                     (onlyCurrentDay ? "AND dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' " : "") + 
                     ";";
@@ -749,10 +767,11 @@ public class SGrindingResultsUtils {
      * @param nItemId id del ítem del cual se quiere obtener la molienda
      * @param onlyCurrentMonth si este parámetro es verdadero devuelve solo el mes actual,
      *                      si es falso devuelve el mes actual y los anteriores (solo el presente año) 
+     * @param aPlantKey llave foránea de la planta
      * 
      * @return ArrayList[SGrindingData] 
      */
-    public static ArrayList<SGrindingData> getGrindingByMonth(SGuiClient client, Date dtDate, final int nItemId, final boolean onlyCurrentMonth) {
+    public static ArrayList<SGrindingData> getGrindingByMonth(SGuiClient client, Date dtDate, final int nItemId, final boolean onlyCurrentMonth, final int[] aPlantKey) {
         ArrayList<SGrindingData> grindings = new ArrayList<>();
         
         String sql = "SELECT " +
@@ -765,6 +784,7 @@ public class SGrindingResultsUtils {
                         "AND MONTH(dt_capture) " + (onlyCurrentMonth ? "=" : "<=" ) +  " MONTH('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
                         "AND YEAR(dt_capture) = " + " YEAR('" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "') " +
                         "AND fk_item_id = " + nItemId + " " +
+                        "AND fk_pla_co = " + aPlantKey[0] + " AND fk_pla_cob = " + aPlantKey[1] + " AND fk_pla_pla = " + aPlantKey[2] + " " +
                         "GROUP BY g_month;";
         
         ResultSet resGrindings;
@@ -799,16 +819,18 @@ public class SGrindingResultsUtils {
      * 
      * @param client
      * @param nItemId
+     * @param aPlantKey
      * 
      * @return SCaptureConfiguration
      */
-    public static SCaptureConfiguration getCfgField(SGuiClient client, final int nItemId) {
+    public static SCaptureConfiguration getCfgField(SGuiClient client, final int nItemId, final int[] aPlantKey) {
         String query = "SELECT " +
                         "    capture_cfg " +
                         "FROM " +
                         "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " " +
                         "WHERE " +
-                        "    fk_item_id = " + nItemId + " AND NOT b_del " +
+                        " fk_item_id = " + nItemId + " AND NOT b_del " +
+                        " AND fk_pla_co = " + aPlantKey[0] + " AND fk_pla_cob = " + aPlantKey[1] + " AND fk_pla_pla = " + aPlantKey[2] + " " +
                         "ORDER BY capture_order ASC " +
                         "LIMIT 1;";
         
@@ -851,7 +873,7 @@ public class SGrindingResultsUtils {
         return sFormula;
     }
     
-    public static boolean sendReport(SGuiClient client, ArrayList<SDbGrindingReportItemGroup> group, Date cutOffDate, String sMonth) {
+    public static boolean sendReport(SGuiClient client, ArrayList<SDbGrindingReportItemGroup> group, Date cutOffDate, String sMonth, int[] plantKey) {
         DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
         DateFormat subjectformatter = new SimpleDateFormat("dd-MM-yyyy");
         ArrayList<String> files = new ArrayList<>();
@@ -960,7 +982,7 @@ public class SGrindingResultsUtils {
         body += "</body>"
                 + "</html>";
 
-        String[] tos = SGrindingResultsUtils.getGrindingRecsAndCcs(client, oItem.getPkItemId());
+        String[] tos = SGrindingResultsUtils.getGrindingRecsAndCcs(client, oItem.getPkItemId(), plantKey);
 
         if (tos[0].isEmpty()) {
             client.showMsgBoxError("No se encontró configuración de destinatarios de correo.");
@@ -1010,8 +1032,9 @@ public class SGrindingResultsUtils {
     public static boolean saveReport(SGuiClient client, XSSFWorkbook workbook, SDbProcessingBatch oLot, SDbItem oItem, Date cutOffDate) {
         DateFormat fileNameformatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
         String itmName = oItem.getNameShort().replace(" ", "_");
-        String sFileName = "molienda/Mol_" + itmName + "_" + oLot.getProcessingBatch() + "_" + fileNameformatter.format(new Date());
-        File file = new File(sFileName + ".xlsx");
+        String sFileName = "Mol_" + itmName + "_" + oLot.getProcessingBatch() + "_" + fileNameformatter.format(new Date());
+        sFileName = sFileName.replace("/", "_");
+        File file = new File("molienda/" + sFileName + ".xlsx");
         
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Especifica un archivo para el guardado.");
@@ -1050,7 +1073,7 @@ public class SGrindingResultsUtils {
      * 
      * @return String[0] destinatarios, String[1] Con copia
      */
-    private static String[] getGrindingRecsAndCcs(SGuiClient client, final int idItem) {
+    private static String[] getGrindingRecsAndCcs(SGuiClient client, final int idItem, final int[] plantKey) {
         String query = "SELECT "
                 + "    recs, "
                 + "    ccs "
@@ -1058,6 +1081,7 @@ public class SGrindingResultsUtils {
                 + "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_REP_RECIPIENT) + " "
                 + "WHERE "
                 + "    fk_item = " + idItem + " AND NOT b_del "
+                + " AND fk_pla_co = " + plantKey[0] + " AND fk_pla_cob = " + plantKey[1] + " AND fk_pla_pla = " + plantKey[2] + " "
                 + ";";
 
         ResultSet resCfg;

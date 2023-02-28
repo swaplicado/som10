@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
-import sa.lib.SLibConsts;
+import javax.swing.JTextField;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
 import sa.lib.grid.SGridConsts;
@@ -24,6 +24,7 @@ import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiDate;
 import som.mod.SModConsts;
+import som.mod.cfg.db.SDbBranchPlant;
 import som.mod.som.db.SDbGrindingLinkItemParameter;
 import som.mod.som.db.SDbGrindingResult;
 import som.mod.som.form.SFormGrindingResultHr;
@@ -36,17 +37,38 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
    
     SGuiClient miClient;
     private SGridFilterDatePeriod moFilterDatePeriod;
+    
+    private int[] maPlantKey;
+    
+    private JTextField jtPlant;
 
-    public SViewGrindingResume(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_GRINDING_RESUME, SLibConsts.UNDEFINED, title);
+    public SViewGrindingResume(SGuiClient client, final int subType, final int[] plaKey, String title) {
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_GRINDING_RESUME, subType, title);
         this.miClient = client;
+        this.maPlantKey = plaKey;
+        
         initComponentsCustom();
     }
     
     private void initComponentsCustom() {
+        jtPlant = new JTextField();
+        jtPlant.setPreferredSize(new java.awt.Dimension(200, 23));
+        jtPlant.setEditable(false);
+        
         moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
         moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jtPlant);
+        
+        try {
+            SDbBranchPlant oPlant = new SDbBranchPlant();
+            oPlant.read(miClient.getSession(), maPlantKey);
+            
+            jtPlant.setText(oPlant.getCode() + " - " + oPlant.getName());
+        }
+        catch (Exception ex) {
+            Logger.getLogger(SViewGrindingResume.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -54,6 +76,8 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
         String sql = "";
         Object filter = null;
         
+        jbRowNew.setEnabled(false);
+        jbRowEdit.setEnabled(false);
         jbRowCopy.setEnabled(false);
         jbRowDelete.setEnabled(false);
         jbRowDisable.setEnabled(false);
@@ -84,7 +108,9 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
                 "    " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON i.fk_unit = u.id_unit " +
                 "        INNER JOIN " +
                 "    " + SModConsts.TablesMap.get(SModConsts.S_PRC_BATCH) + " AS l ON v.fk_prc_batch = l.id_prc_batch " +
-                "WHERE " + sql +
+                "WHERE " + 
+                sql +
+                (sql.isEmpty() ? "" : " AND ") + "v.fk_pla_co = " + maPlantKey[0] + " AND v.fk_pla_cob = " + maPlantKey[1] + " AND v.fk_pla_pla = " + maPlantKey[2] + " " +
                 "GROUP BY v.dt_capture , v.fk_item_id , v.fk_prc_batch;";
     }
 
@@ -141,7 +167,6 @@ public class SViewGrindingResume extends SGridPaneView implements ActionListener
                 Logger.getLogger(SViewGrindingResume.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
     }
     
     @Override

@@ -6,6 +6,8 @@ package som.mod.som.form;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import sa.lib.SLibConsts;
@@ -17,6 +19,7 @@ import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanForm;
 import som.mod.SModConsts;
+import som.mod.cfg.db.SDbBranchPlant;
 import som.mod.som.db.SDbGrindingResult;
 
 /**
@@ -27,6 +30,7 @@ public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
 
     private SDbGrindingResult moRegistry;
     private int[] maItemPk;
+    private int[] maPlantPk;
 
     /**
      * Creates new form SFormResult
@@ -56,8 +60,11 @@ public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
         jPanel10 = new javax.swing.JPanel();
         jlHr12 = new javax.swing.JLabel();
         bAllItems = new javax.swing.JCheckBox();
+        jPanel11 = new javax.swing.JPanel();
+        jlBlank1 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
-        jlBlank = new javax.swing.JLabel();
+        jlPlant = new javax.swing.JLabel();
+        moTextPlant = new sa.lib.gui.bean.SBeanFieldText();
         jPanel8 = new javax.swing.JPanel();
         jlItem = new javax.swing.JLabel();
         moKeyItem = new sa.lib.gui.bean.SBeanFieldKey();
@@ -68,7 +75,7 @@ public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -88,10 +95,21 @@ public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
 
         jPanel2.add(jPanel10);
 
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlBlank1.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel11.add(jlBlank1);
+
+        jPanel2.add(jPanel11);
+
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlBlank.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel7.add(jlBlank);
+        jlPlant.setText("Planta:");
+        jlPlant.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel7.add(jlPlant);
+
+        moTextPlant.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel7.add(moTextPlant);
 
         jPanel2.add(jPanel7);
 
@@ -126,19 +144,22 @@ public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
     private javax.swing.JCheckBox bAllItems;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JLabel jlBlank;
+    private javax.swing.JLabel jlBlank1;
     private javax.swing.JLabel jlDate;
     private javax.swing.JLabel jlHr12;
     private javax.swing.JLabel jlItem;
     private javax.swing.JLabel jlLot;
+    private javax.swing.JLabel jlPlant;
     private sa.lib.gui.bean.SBeanFieldDate moCaptureDate;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     private sa.lib.gui.bean.SBeanFieldKey moKeyLot;
+    private sa.lib.gui.bean.SBeanFieldText moTextPlant;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
@@ -158,6 +179,7 @@ public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
         moKeyLot.setValue(new int[] { 0 });
         
         jbEdit.setEnabled(false);
+        moTextPlant.setEditable(false);
         
         reloadCatalogues();
     }
@@ -174,6 +196,18 @@ public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
            this.reloadLots();
         }
     }
+    
+    private void setTextPlant() {
+        try {
+            SDbBranchPlant oPlant = new SDbBranchPlant();
+            oPlant.read(miClient.getSession(), maPlantPk);
+            
+            moTextPlant.setValue(oPlant.getCode() + " - " + oPlant.getName());
+        }
+        catch (Exception ex) {
+            Logger.getLogger(SFormGrindingResultNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     @Override
     public void addAllListeners() {
@@ -188,7 +222,11 @@ public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
 
     @Override
     public void reloadCatalogues() {
-        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SS_LINK_CFG_ITEMS, 0, null);
+        SGuiParams params = new SGuiParams();
+        params.getParamsMap().clear();
+        params.setKey(null);
+        params.getParamsMap().put(SModConsts.SX_EXT_PLA, maPlantPk);
+        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SS_LINK_CFG_ITEMS, 0, params);
         this.reloadLots();
     }
     
@@ -213,8 +251,14 @@ public class SFormGrindingResultNew extends SBeanForm implements ItemListener {
         jtfRegistryKey.setText("");
         
         maItemPk = new int[] { moRegistry.getFkItemId() };
+        maPlantPk = new int[] { 
+                                moRegistry.getFkPlantCompanyId(), 
+                                moRegistry.getFkPlantBranchId(), 
+                                moRegistry.getFkPlantPlantId() 
+                            };
         
         moCaptureDate.setValue(moRegistry.getDateCapture());
+        setTextPlant();
         bAllItems.setSelected(false);
         onChangeAllItems();
         reloadCatalogues();

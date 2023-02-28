@@ -30,6 +30,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.joda.time.DateTime;
@@ -62,11 +63,12 @@ public class SGrindingReport {
      * @param idItem
      * @param idLot
      * @param actionType SGrindingReport.SEND_REPORT or SGrindingReport.SAVE_REPORT
+     * @param plantKey
      * @throws IOException
      * @throws Exception 
      */
-    public void processReport(SGuiClient client, Date dtDate, int idItem, int idLot, int actionType) throws IOException, Exception {
-        ArrayList<SDbGrindingReportItemGroup> group = SGrindingResultsUtils.getGroupOfGrindingItem(client, idItem);
+    public void processReport(SGuiClient client, Date dtDate, int idItem, int idLot, int actionType, int[] plantKey) throws IOException, Exception {
+        ArrayList<SDbGrindingReportItemGroup> group = SGrindingResultsUtils.getGroupOfGrindingItem(client, idItem, plantKey);
         if (group.isEmpty()) {
             group = new ArrayList<>();
             SDbGrindingReportItemGroup aux = new SDbGrindingReportItemGroup();
@@ -88,7 +90,7 @@ public class SGrindingReport {
             DateTime lastDate = new DateTime(dtDate);
             lastDate = lastDate.dayOfMonth().withMaximumValue();
 
-            SCaptureConfiguration cfg = SGrindingResultsUtils.getCfgField(client, itemGroup.getFkItemId());
+            SCaptureConfiguration cfg = SGrindingResultsUtils.getCfgField(client, itemGroup.getFkItemId(), plantKey);
 
             if (cfg == null) {
                 return;
@@ -111,19 +113,19 @@ public class SGrindingReport {
                 int idDayLot = SGrindingResultsUtils.getLotByItemAndDate(client, itemGroup.getFkItemId(), dtDate);
 
                 SDbProcessingBatch oLot = new SDbProcessingBatch();
-                oLot.read(client.getSession(), new int[]{idDayLot});
+                oLot.read(client.getSession(), new int[] { idDayLot });
                 itemGroup.setSDbLotAux(oLot);
 
-                grindingRows = SGrindingResume.getResumeRows(client, indexDate.toDate(), itemGroup.getFkItemId());
+                grindingRows = SGrindingResume.getResumeRows(client, indexDate.toDate(), itemGroup.getFkItemId(), plantKey);
                 double rendTeo = 0d;
                 if (!grindingRows.isEmpty()) {
                     SGrindingResumeRow last = grindingRows.get(grindingRows.size() - 1);
                     rendTeo = last.getValue();
                 }
 
-                LinkedHashMap<Date, ArrayList<SGrindingResultReport>> info = this.getGrinding(client, indexDate.toDate(), itemGroup.getFkItemId(), idDayLot);
+                LinkedHashMap<Date, ArrayList<SGrindingResultReport>> info = this.getGrinding(client, indexDate.toDate(), itemGroup.getFkItemId(), idDayLot, plantKey);
 
-                sRange = this.generateReport(client, grindingRows, rendTeo, cfg, info, sheet, oLot, oItem, dtDate);
+                sRange = this.generateReport(client, grindingRows, rendTeo, cfg, info, sheet, oLot, oItem, dtDate, plantKey);
 
                 sheet.autoSizeColumn(1);
                 sheet.autoSizeColumn(2);
@@ -139,7 +141,7 @@ public class SGrindingReport {
         }
 
         if (actionType == SGrindingReport.SEND_REPORT) {
-            SGrindingResultsUtils.sendReport(client, group, dtDate, sMonth);
+            SGrindingResultsUtils.sendReport(client, group, dtDate, sMonth, plantKey);
         }
         else if (actionType == SGrindingReport.SAVE_REPORT) {
             SGrindingResultsUtils.saveReport(client, group.get(0).getWorkbookAux(), group.get(0).getSDbLotAux(), group.get(0).getSDbItemAux(), dtDate);
@@ -158,6 +160,7 @@ public class SGrindingReport {
      * @param oLot
      * @param oItem
      * @param dtDate
+     * @param plantKey
      * 
      * @return 
      * 
@@ -166,15 +169,19 @@ public class SGrindingReport {
      */
     public String generateReport(SGuiClient client, ArrayList<SGrindingResumeRow> resume, double rendTeo, SCaptureConfiguration cfg, 
                             LinkedHashMap<Date, ArrayList<SGrindingResultReport>> info, 
-                            XSSFSheet sheet, SDbProcessingBatch oLot, SDbItem oItem, Date dtDate) throws FileNotFoundException, IOException {
+                            XSSFSheet sheet, SDbProcessingBatch oLot, SDbItem oItem, Date dtDate, int[] plantKey) throws FileNotFoundException, IOException {
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat formatterTime = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         ObjectMapper mapper = new ObjectMapper();
 
-        CellStyle style = sheet.getWorkbook().createCellStyle();
-        Font font = sheet.getWorkbook().createFont();
+        CellStyle boldStyle = sheet.getWorkbook().createCellStyle();
+//        Font font = sheet.getWorkbook().createFont();
 //        font.setBold(true);
-        style.setFont(font);
+//        style.setFont(font);
+        
+        XSSFFont fontBold = sheet.getWorkbook().createFont();
+        fontBold.setBold(true);
+        boldStyle.setFont(fontBold);
 
         moStyleDecimals = sheet.getWorkbook().createCellStyle();
         moStyleDecimals.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat("0.0000"));
@@ -193,7 +200,7 @@ public class SGrindingReport {
         cellLabelI.setCellValue("Ítem:");
         Cell cellI = itemRow.createCell(2);
         cellI.setCellValue(oItem.getCode() + " - " + oItem.getName());
-        cellI.setCellStyle(style);
+        cellI.setCellStyle(boldStyle);
 
         /**
          * Lote
@@ -203,7 +210,7 @@ public class SGrindingReport {
         cellLabelL.setCellValue("Lote:");
         Cell cellL = lotRow.createCell(2);
         cellL.setCellValue(oLot.getProcessingBatch() + " / " + formatter.format(oLot.getDate()));
-        cellL.setCellStyle(style);
+        cellL.setCellStyle(boldStyle);
 
         sheet.createRow(rowsCount++);
 
@@ -215,7 +222,7 @@ public class SGrindingReport {
             int columnCount = 1;
             Cell cell = resumeRow.createCell(columnCount++);
             cell.setCellValue(sGrindingResumeRow.getDataName());
-            cell.setCellStyle(style);
+            cell.setCellStyle(boldStyle);
             Cell cellV = resumeRow.createCell(columnCount++);
             cellV.setCellValue(sGrindingResumeRow.getValue());
             Cell cellU = resumeRow.createCell(columnCount++);
@@ -248,7 +255,7 @@ public class SGrindingReport {
             /**
              * Eventos de molienda
              */
-            ArrayList<SDbGrindingEvent> events = SGrindingResume.getGrindingEvents(client, keyDate, keyDate, oItem.getPkItemId());
+            ArrayList<SDbGrindingEvent> events = SGrindingResume.getGrindingEvents(client, keyDate, keyDate, oItem.getPkItemId(), plantKey);
             if (!events.isEmpty()) {
                 Row eventsTitle = sheet.createRow(rowsCount++);
                 Cell cellT = eventsTitle.createCell(1);
@@ -258,7 +265,7 @@ public class SGrindingReport {
                     int columnEventCount = 1;
                     Cell cell = eventRow.createCell(columnEventCount++);
                     cell.setCellValue(event.getDescription());
-                    cell.setCellStyle(style);
+                    cell.setCellStyle(boldStyle);
                     Cell cellV = eventRow.createCell(columnEventCount++);
                     cellV.setCellValue("De " + formatterTime.format(event.getDateStart()) + " a " + formatterTime.format(event.getDateEnd()));
                 }
@@ -317,7 +324,7 @@ public class SGrindingReport {
                 for (String columnName : columns) {
                     Cell cell = headerRow.createCell(headerColumnCount++);
                     cell.setCellValue(columnName);
-                    cell.setCellStyle(style);
+                    cell.setCellStyle(boldStyle);
                 }
             }
 
@@ -334,11 +341,7 @@ public class SGrindingReport {
                 Cell cellParam = infoRow.createCell(columnCount++);
                 cellParam.setCellValue(row.parameterName);
 
-                // 
-                if (row.parameterCode.equals("--")) {
-                    cellDate.setCellStyle(moBackgroundBlackStyle);
-                    cellParam.setCellStyle(moBackgroundBlackStyle);
-                }
+                cellParam.setCellStyle(boldStyle);
 
                 //horas:
                 if (cfg.r08.getIsActive()) {
@@ -849,7 +852,7 @@ public class SGrindingReport {
      * @param idLot
      * @return 
      */
-    private LinkedHashMap<Date, ArrayList<SGrindingResultReport>> getGrinding(SGuiClient client, Date dtDate, int idItem, int idLot) {
+    private LinkedHashMap<Date, ArrayList<SGrindingResultReport>> getGrinding(SGuiClient client, Date dtDate, int idItem, int idLot, int[] plantKey) {
         LocalDate localDate = dtDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         int month = localDate.getMonthValue();
         int year = localDate.getYear();
@@ -861,7 +864,7 @@ public class SGrindingReport {
         LinkedHashMap<Date, ArrayList<SGrindingResultReport>> grinding = new LinkedHashMap<>();
         DateTime indexDate = dateStart;
         while(indexDate.isBefore(lastDate) || indexDate.isEqual(lastDate)) {
-            ArrayList<SGrindingResultReport> results = this.getGrindingDay(client, indexDate.toDate(), idItem, idLot);
+            ArrayList<SGrindingResultReport> results = this.getGrindingDay(client, indexDate.toDate(), idItem, idLot, plantKey);
             grinding.put(indexDate.toDate(), results);
             
             indexDate = indexDate.plusDays(1);
@@ -879,7 +882,7 @@ public class SGrindingReport {
      * @param idLot
      * @return 
      */
-    private ArrayList<SGrindingResultReport> getGrindingDay(SGuiClient client, Date dtDate, int idItem, int idLot) {
+    private ArrayList<SGrindingResultReport> getGrindingDay(SGuiClient client, Date dtDate, int idItem, int idLot, int[] plantKey) {
         String msSql = "SELECT "
                 + "v.id_result, "
                 + "v.fk_param_id, "
@@ -948,6 +951,7 @@ public class SGrindingReport {
                 + "v.fk_item_id = i.id_item "
                 + "WHERE v.dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(dtDate) + "' AND v.fk_item_id = " + idItem + " "
                 + "AND fk_prc_batch = " + idLot + " "
+                + "AND v.fk_pla_co = " + plantKey[0] + " AND v.fk_pla_cob = " + plantKey[1] + " AND v.fk_pla_pla = " + plantKey[2] + " "
                 + "ORDER BY v.capture_order ASC, v.fk_link_id_n ASC;";
         
         ArrayList<SGrindingResultReport> results = new ArrayList<>();

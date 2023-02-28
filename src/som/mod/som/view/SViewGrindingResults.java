@@ -28,7 +28,10 @@ import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiDate;
+import sa.lib.gui.SGuiParams;
 import som.mod.SModConsts;
+import som.mod.SModSysConsts;
+import som.mod.cfg.db.SDbBranchPlant;
 import som.mod.som.db.SDbGrindingLinkItemParameter;
 import som.mod.som.db.SDbGrindingResult;
 import som.mod.som.db.SDbProcessingBatch;
@@ -52,6 +55,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
     private SDialogEvents moDialogEvents;
     private SDialogGrindingData moDialogData;
     private JTextField jtLot;
+    private JTextField jtPlant;
     private JButton jbShowEvents;
     private JButton jbShowData;
     private JButton jbFirst;
@@ -65,23 +69,33 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
     private Date mtDate;
     private int mnLot;
     private double mdGrindingOil;
+    private final int[] maPlantKey;
 
-    public SViewGrindingResults(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_GRINDING_RESULT, SLibConsts.UNDEFINED, title);
+    public SViewGrindingResults(SGuiClient client, final int subtype, final int[] plaKey, String title) {
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_GRINDING_RESULT, subtype, title);
         this.miClient = client;
+        this.maPlantKey = plaKey;
         
         moFilterDate = new SGridFilterDate(miClient, this);
         moFilterDate.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_DATE, miClient.getSession().getWorkingDate().getTime()));
         
-        moItemFilter = new SPaneFilter(this, SModConsts.SS_LINK_CFG_ITEMS);
-        int item = SGrindingResultsUtils.getLastConfiguration(client, SGrindingResultsUtils.ITEM);
+        SGuiParams params = new SGuiParams();
+        params.getParamsMap().clear();
+        params.setKey(null);
+        params.getParamsMap().put(SModConsts.SX_EXT_PLA, maPlantKey);
+        moItemFilter = new SPaneFilter(this, SModConsts.SS_LINK_CFG_ITEMS, params);
+        int item = SGrindingResultsUtils.getLastConfiguration(client, SGrindingResultsUtils.ITEM, maPlantKey);
         moItemFilter.initFilter(new int[] { item });
         
-        mnLot = SGrindingResultsUtils.getLastLotByItem(client, item);
+        mnLot = SGrindingResultsUtils.getLastLotByItem(client, item, maPlantKey);
        
         jtLot = new JTextField();
         jtLot.setPreferredSize(new java.awt.Dimension(100, 23));
         jtLot.setEditable(false);
+        
+        jtPlant = new JTextField();
+        jtPlant.setPreferredSize(new java.awt.Dimension(200, 23));
+        jtPlant.setEditable(false);
         
         jbShowEvents = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tar_not.gif")), "Ver eventos", this);
         jbShowData = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_notes.gif")), "Ver datos", this);
@@ -98,6 +112,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDate);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moItemFilter);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jtLot);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jtPlant);
         
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbFirst);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbPrev);
@@ -122,10 +137,10 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
         SGrindingReport report = new SGrindingReport();
         Date filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE);
         int [] itemKey = (int[]) moFiltersMap.get(SModConsts.SS_LINK_CFG_ITEMS);
-        int idLot = SGrindingResultsUtils.getLastLotByItem(miClient, itemKey[0]);
+        int idLot = SGrindingResultsUtils.getLastLotByItem(miClient, itemKey[0], maPlantKey);
         
         try {
-            report.processReport(miClient, filter, itemKey[0], idLot, SGrindingReport.SEND_REPORT);
+            report.processReport(miClient, filter, itemKey[0], idLot, SGrindingReport.SEND_REPORT, maPlantKey);
         }
         catch (IOException ex) {
             Logger.getLogger(SViewGrindingResults.class.getName()).log(Level.SEVERE, null, ex);
@@ -138,10 +153,10 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
         SGrindingReport report = new SGrindingReport();
         Date filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE);
         int [] itemKey = (int[]) moFiltersMap.get(SModConsts.SS_LINK_CFG_ITEMS);
-        int idLot = SGrindingResultsUtils.getLastLotByItem(miClient, itemKey[0]);
+        int idLot = SGrindingResultsUtils.getLastLotByItem(miClient, itemKey[0], maPlantKey);
         
         try {
-            report.processReport(miClient, filter, itemKey[0], idLot, SGrindingReport.SAVE_REPORT);
+            report.processReport(miClient, filter, itemKey[0], idLot, SGrindingReport.SAVE_REPORT, maPlantKey);
         }
         catch (IOException ex) {
             Logger.getLogger(SViewGrindingResults.class.getName()).log(Level.SEVERE, null, ex);
@@ -152,13 +167,13 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
     
     private void actionShowEvents() {
         moDialogEvents.formReset();
-        moDialogEvents.setFormParams(mtDate, ((int[]) moFiltersMap.get(SModConsts.SS_LINK_CFG_ITEMS)) [0]);
+        moDialogEvents.setFormParams(mtDate, ((int[]) moFiltersMap.get(SModConsts.SS_LINK_CFG_ITEMS)) [0], maPlantKey);
         moDialogEvents.setVisible(true);
     }
     
     private void actionShowData() {
         moDialogData.formReset();
-        moDialogData.setFormParams(mtDate, ((int[]) moFiltersMap.get(SModConsts.SS_LINK_CFG_ITEMS)) [0], mnLot);
+        moDialogData.setFormParams(mtDate, ((int[]) moFiltersMap.get(SModConsts.SS_LINK_CFG_ITEMS)) [0], mnLot, maPlantKey);
         moDialogData.setVisible(true);
     }
 
@@ -180,6 +195,17 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
         moPaneSettings.setUserInsertApplying(true);
         moPaneSettings.setUserUpdateApplying(true);
         
+        try {
+            SDbBranchPlant oPlant = new SDbBranchPlant();
+            oPlant.read(miClient.getSession(), maPlantKey);
+            
+            jtPlant.setText(oPlant.getCode() + " - " + oPlant.getName());
+        }
+        catch (Exception ex) {
+            Logger.getLogger(SViewGrindingResults.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
         filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE);
         if (filter != null) {
             sql += (sql.length() == 0 ? "" : "AND ") +  "v.dt_capture = '" + SLibUtils.DbmsDateFormatDate.format((SGuiDate) filter) + "' ";
@@ -194,7 +220,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
             try {
                 sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_item_id" }, (int[]) filter);
                 
-                mnLot = SGrindingResultsUtils.getLastLotByItem(miClient, ((int[]) filter)[0]);
+                mnLot = SGrindingResultsUtils.getLastLotByItem(miClient, ((int[]) filter)[0], maPlantKey);
                 
                 SDbProcessingBatch oLot = new SDbProcessingBatch();
                 oLot.read(miClient.getSession(), new int [] { mnLot });
@@ -208,9 +234,9 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
             }
         }
         
-        ArrayList<SGrindingData> grinding = SGrindingResultsUtils.getGrindingByMonth(miClient, mtDate, ((int[]) filter)[0], true);
+        ArrayList<SGrindingData> grinding = SGrindingResultsUtils.getGrindingByMonth(miClient, mtDate, ((int[]) filter)[0], true, maPlantKey);
         if (! grinding.isEmpty()) {
-            SGrindingData oGrinding = SGrindingResultsUtils.getGrindingByMonth(miClient, mtDate, ((int[]) filter)[0], true).get(0);
+            SGrindingData oGrinding = SGrindingResultsUtils.getGrindingByMonth(miClient, mtDate, ((int[]) filter)[0], true, maPlantKey).get(0);
             if (oGrinding != null) {
                 mdGrindingOil = oGrinding.getSumGrindingOilPercent();
             }
@@ -289,7 +315,7 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 + "COALESCE(v.b_del, 0) AS " + SDbConsts.FIELD_IS_DEL + ", "
                 + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
                 + "v.fk_usr_ins AS " + SDbConsts.FIELD_USER_INS_ID + ", "
-                + "v.id_result AS " + SDbConsts.FIELD_USER_UPD_ID + ", "  // POR AHORA
+                + "v.fk_link_id_n AS " + SDbConsts.FIELD_USER_UPD_ID + ", "  // POR AHORA
                 + "v.ts_usr_ins AS " + SDbConsts.FIELD_USER_INS_TS + ", "
                 + "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", "
                 + "'' AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
@@ -299,7 +325,8 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 + "gp.id_parameter = v.fk_param_id AND NOT gp.b_del "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
                 + "v.fk_item_id = i.id_item "
-                + (sql.isEmpty() ? "" : "WHERE " + sql)
+                + "WHERE v.fk_pla_co = " + maPlantKey[0] + " AND v.fk_pla_cob = " + maPlantKey[1] + " AND v.fk_pla_pla = " + maPlantKey[2] + " "
+                + "AND " + sql
                 + (hav.isEmpty() ? "" : hav)
                 + "ORDER BY v.capture_order ASC";
     }
@@ -354,18 +381,28 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 
                 dbLink.read(miClient.getSession(),  new int[] { gridRow.getFkUserUpdateId() }); // id de Link
                 
-                form = new SFormGrindingResultHr(miClient, "Captura Resultados Molienda");
+                String title = "";
+                switch (this.mnGridSubtype) {
+                    case SModSysConsts.CU_PLA_INT_PYE:
+                        title = "Captura resultados Molienda";
+                        break;
+                    case SModSysConsts.CU_PLA_INT_AGU:
+                        title = "Captura resultados Aguacatera";
+                        break;
+                }
+                
+                form = new SFormGrindingResultHr(miClient, title);
                 
                 dbResult.setDateCapture(mtDate);
                 dbResult.setFkItemId(dbLink.getFkItemId());
                 dbResult.setFkParameterId(dbLink.getFkParameterId());
+                dbResult.setFkPlantCompanyId(maPlantKey[0]);
+                dbResult.setFkPlantBranchId(maPlantKey[1]);
+                dbResult.setFkPlantPlantId(maPlantKey[2]);
                 dbResult.setOrder(dbLink.getCaptureOrder());
                 
                 form.setRegistry(dbResult);
                 form.setVisible(true);
-                
-                dbResult = (SDbGrindingResult) form.getRegistry();
-//                dbResult.save(miClient.getSession());
             }
             catch (Exception ex) {
                 Logger.getLogger(SViewGrindingResults.class.getName()).log(Level.SEVERE, null, ex);
@@ -376,12 +413,18 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
     
     @Override
     public void actionRowNew() {
-        SFormGrindingResultNew form;
+        String title = "";
+        switch (this.mnGridSubtype) {
+            case SModSysConsts.CU_PLA_INT_PYE:
+                title = "Captura resultados Molienda";
+                break;
+            case SModSysConsts.CU_PLA_INT_AGU:
+                title = "Captura resultados Aguacatera";
+                break;
+        }
+        SFormGrindingResultNew form = new SFormGrindingResultNew(miClient, title);
         
         SDbGrindingResult dbResult = new SDbGrindingResult();
-                
-        form = new SFormGrindingResultNew(miClient, "Captura Resultados Molienda");
-        
         dbResult.setDateCapture(mtDate);
         
         int item = 0;
@@ -390,10 +433,13 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
             item = filter[0];
         }
         else {
-            item = SGrindingResultsUtils.getLastConfiguration(miClient, SGrindingResultsUtils.ITEM);
+            item = SGrindingResultsUtils.getLastConfiguration(miClient, SGrindingResultsUtils.ITEM, maPlantKey);
         }
         
         dbResult.setFkItemId(item);
+        dbResult.setFkPlantCompanyId(maPlantKey[0]);
+        dbResult.setFkPlantBranchId(maPlantKey[1]);
+        dbResult.setFkPlantPlantId(maPlantKey[2]);
 
         try {
             form.setRegistry(dbResult);
@@ -404,12 +450,12 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 SGrindingResultsUtils.generateResults(miClient, dbResult.getFkItemId() == 0, 
                                                         dbResult.getFkItemId(), 
                                                         dbResult.getFkLotId(), 
-                                                        dbResult.getDateCapture());
+                                                        dbResult.getDateCapture(),
+                                                        maPlantKey);
 
                 mnLot = dbResult.getFkLotId();
                 miClient.getSession().notifySuscriptors(SModConsts.S_GRINDING_RESULT);
             }
-            
         }
         catch (Exception ex) {
             Logger.getLogger(SViewGrindingResults.class.getName()).log(Level.SEVERE, null, ex);

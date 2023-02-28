@@ -48,6 +48,7 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
     private Date mtParamDate;
     private int mnItem;
     private int mnLot;
+    private int[] maPlantFk;
 
     /** Creates new form SDialogStockCardex */
     public SDialogGrindingData(SGuiClient client) {
@@ -253,7 +254,7 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
     @SuppressWarnings("unchecked")
     private void showData() {
         Vector<SGridRow> rows = new Vector<>();
-        ArrayList<SGrindingResumeRow> grindingRows = SGrindingResume.getResumeRows(miClient, mtParamDate, mnItem);
+        ArrayList<SGrindingResumeRow> grindingRows = SGrindingResume.getResumeRows(miClient, mtParamDate, mnItem, maPlantFk);
         
         SRowData row = null;
         for (SGrindingResumeRow grindingRow : grindingRows) {
@@ -304,10 +305,11 @@ public class SDialogGrindingData extends JDialog implements ActionListener {
     private sa.lib.gui.bean.SBeanFieldText moTextMonth;
     // End of variables declaration//GEN-END:variables
 
-    public void setFormParams(final Date dateCutOff, final int item, final int lot) {
+    public void setFormParams(final Date dateCutOff, final int item, final int lot, final int[] plantFk) {
         mtParamDate = dateCutOff;
         mnItem = item;
         mnLot = lot;
+        maPlantFk = plantFk;
         
         LocalDate d = ((Date) mtParamDate.clone()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Month mes = d.getMonth();

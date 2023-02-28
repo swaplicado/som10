@@ -34,8 +34,12 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
     protected boolean mbDeleted;
     protected boolean mbSystem;
     */
+    
     protected int mnFkItemId;
     protected int mnFkReportGroupId;
+    protected int mnFkPlantCompanyId;
+    protected int mnFkPlantBranchId;
+    protected int mnFkPlantPlantId;
     
     /*
     protected int mnFkUserInsertId;
@@ -67,6 +71,9 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkItemId(int n) { mnFkItemId = n; }
     public void setFkReportGroupId(int n) { mnFkReportGroupId = n; }
+    public void setFkPlantCompanyId(int n) { mnFkPlantCompanyId = n; }
+    public void setFkPlantBranchId(int n) { mnFkPlantBranchId = n; }
+    public void setFkPlantPlantId(int n) { mnFkPlantPlantId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -87,6 +94,9 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
     public boolean isSystem() { return mbSystem; }
     public int getFkItemId() { return mnFkItemId; }
     public int getFkReportGroupId() { return mnFkReportGroupId; }
+    public int getFkPlantCompanyId() { return mnFkPlantCompanyId; }
+    public int getFkPlantBranchId() { return mnFkPlantBranchId; }
+    public int getFkPlantPlantId() { return mnFkPlantPlantId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -114,6 +124,9 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
         mbSystem = false;
         mnFkItemId = 0;
         mnFkReportGroupId = 0;
+        mnFkPlantCompanyId = 0;
+        mnFkPlantBranchId = 0;
+        mnFkPlantPlantId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -190,6 +203,9 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkItemId = resultSet.getInt("fk_item");
             mnFkReportGroupId = resultSet.getInt("fk_rep_group");
+            mnFkPlantCompanyId = resultSet.getInt("fk_pla_co");
+            mnFkPlantBranchId = resultSet.getInt("fk_pla_cob");
+            mnFkPlantPlantId = resultSet.getInt("fk_pla_pla");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -231,6 +247,9 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
                     (mbSystem ? 1 : 0) + ", " + 
                     mnFkItemId + ", " + 
                     mnFkReportGroupId + ", " + 
+                    mnFkPlantCompanyId + ", " + 
+                    mnFkPlantBranchId + ", " + 
+                    mnFkPlantPlantId + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " +
@@ -251,6 +270,9 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_item = " + mnFkItemId + ", " +
                     "fk_rep_group = " + mnFkReportGroupId + ", " +
+                    "fk_pla_co = " + mnFkPlantCompanyId + ", " +
+                    "fk_pla_cob = " + mnFkPlantBranchId + ", " +
+                    "fk_pla_pla = " + mnFkPlantPlantId + ", " +
 //                    "fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
 //                    "ts_usr_ins = " + "NOW()" + ", " +
@@ -277,6 +299,9 @@ public class SDbGrindingReportItemGroup extends SDbRegistryUser {
         registry.setSystem(this.isSystem());
         registry.setFkItemId(this.getFkItemId());
         registry.setFkReportGroupId(this.getFkReportGroupId());
+        registry.setFkPlantCompanyId(this.getFkPlantCompanyId());
+        registry.setFkPlantBranchId(this.getFkPlantBranchId());
+        registry.setFkPlantPlantId(this.getFkPlantPlantId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

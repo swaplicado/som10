@@ -37,6 +37,7 @@ public class SDialogEvents extends JDialog implements ActionListener {
     private boolean mbFirstTime;
     private Date mtParamDate;
     private int mnFkItemId;
+    private int[] maFkPlantKey;
 
     /** Creates new form SDialogStockCardex */
     public SDialogEvents(SGuiClient client) {
@@ -188,12 +189,15 @@ public class SDialogEvents extends JDialog implements ActionListener {
                 + "v.fk_usr_upd = uu.id_usr "
                 + "WHERE v.dt_start >= '" + SLibUtils.DbmsDateFormatDate.format(mtParamDate) + "' "
                 + " AND v.fk_item = " + mnFkItemId + " "
+                + " AND v.fk_pla_co = " + maFkPlantKey[0] + " AND v.fk_pla_cob = " + maFkPlantKey[1] + " "
+                + " AND v.fk_pla_pla = " + maFkPlantKey[2] + " "
                 + "ORDER BY v.dt_start DESC, v.id_event ASC ";
 
             ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
 
             while (resultSet.next()) {
                 SRowEvent row = new SRowEvent();
+                
                 row.setStartDate(resultSet.getTimestamp("dt_start"));
                 row.setEndDate(resultSet.getTimestamp("dt_end"));
                 row.setDescription(resultSet.getString("description"));
@@ -228,10 +232,11 @@ public class SDialogEvents extends JDialog implements ActionListener {
     private sa.lib.gui.bean.SBeanFieldText moTextDate;
     // End of variables declaration//GEN-END:variables
 
-    public void setFormParams(final Date dateCutOff, final int idItem) {
+    public void setFormParams(final Date dateCutOff, final int idItem, final int[] plantPk) {
         mtParamDate = dateCutOff;
         moTextDate.setValue(SLibUtils.DbmsDateFormatDate.format(mtParamDate));
-        this.mnFkItemId = idItem;
+        mnFkItemId = idItem;
+        maFkPlantKey = plantPk;
 
         showEvents();
     }

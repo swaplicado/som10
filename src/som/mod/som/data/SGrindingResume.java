@@ -24,17 +24,17 @@ import som.mod.som.db.SDbGrindingEvent;
  */
 public class SGrindingResume {
     
-    public static ArrayList<SGrindingResumeRow> getResumeRows(SGuiClient client, Date dtDate, final int nItemId) {
+    public static ArrayList<SGrindingResumeRow> getResumeRows(SGuiClient client, Date dtDate, final int nItemId, final int[] plantFk) {
         ArrayList<SGrindingResumeRow> grindingRows = new ArrayList<>();
         
-        if (! SGrindingResume.withHeaders(client, nItemId)) {
+        if (! SGrindingResume.withHeaders(client, nItemId, plantFk)) {
             return new ArrayList<>();
         }
         
         /**
          * Si hay configuraciones para el ítem actual determina el valor promedio y las carga
          */
-        ArrayList<SDbGrindingItemParameterHeader> lHeaders = SGrindingResume.getHeaders(client, nItemId);
+        ArrayList<SDbGrindingItemParameterHeader> lHeaders = SGrindingResume.getHeaders(client, nItemId, plantFk);
         if (! lHeaders.isEmpty()) {
             SGrindingResumeRow row;
             for (SDbGrindingItemParameterHeader oHeader : lHeaders) {
@@ -43,7 +43,7 @@ public class SGrindingResume {
                 
                 double averageSum = 0d;
                 for (int auxParameter : oHeader.getAuxParameters()) {
-                    averageSum += SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, auxParameter);
+                    averageSum += SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, auxParameter, plantFk);
                 }
                 
                 row.setValue(oHeader.getAuxParameters().length == 0 ? 0d : averageSum / oHeader.getAuxParameters().length);
@@ -56,7 +56,7 @@ public class SGrindingResume {
         }
         
         boolean onlyCurrentMonth = false;
-        ArrayList<SGrindingData> grindingOfMonths = SGrindingResultsUtils.getGrindingByMonth(client, dtDate, nItemId, onlyCurrentMonth);
+        ArrayList<SGrindingData> grindingOfMonths = SGrindingResultsUtils.getGrindingByMonth(client, dtDate, nItemId, onlyCurrentMonth, plantFk);
         
         double dTotalGrindingBascule = 0d;
         double dTotalGrindingOilPercent = 0d;
@@ -87,7 +87,7 @@ public class SGrindingResume {
                             "Prom. Mensual Cont. Ac.Semilla",
                             "Prom. Mensual Proteína",
                             "Molienda total x dif aceite",
-                            "Molienda total  Báscula",
+                            "Molienda total Báscula",
                         };
         
         for (int i = 0; i < dataRows.length; i++) {
@@ -98,19 +98,19 @@ public class SGrindingResume {
             
             switch (i) {
                 case 0:
-                    row.setValue(SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, SGrindingResultsUtils.RESID_PASTA));
+                    row.setValue(SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, SGrindingResultsUtils.RESID_PASTA, plantFk));
                     row.setUnit("%");
                     break;
                 case 1:
-                    row.setValue(SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, SGrindingResultsUtils.RESID_PRENSA));
+                    row.setValue(SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, SGrindingResultsUtils.RESID_PRENSA, plantFk));
                     row.setUnit(" ");
                     break;
                 case 2:
-                    row.setValue(SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, SGrindingResultsUtils.CONT_ACEITE_SEM));
+                    row.setValue(SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, SGrindingResultsUtils.CONT_ACEITE_SEM, plantFk));
                     row.setUnit("%");
                     break;
                 case 3:
-                    row.setValue(SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, SGrindingResultsUtils.PROTEINA));
+                    row.setValue(SGrindingResultsUtils.getMonthAverage(client, dtDate, nItemId, SGrindingResultsUtils.PROTEINA, plantFk));
                     row.setUnit("%");
                     break;
                 case 4:
@@ -133,7 +133,7 @@ public class SGrindingResume {
         boolean onlyCurrentDay = false;
         boolean isWeightedAverage = true;
         double dWeightedAvgContSem =  SGrindingResultsUtils.getWeightedAverage(client, dtDate, dTotalGrindingOilPercent, 
-                                                        nItemId, SGrindingResultsUtils.CONT_ACEITE_SEM, onlyCurrentDay, isWeightedAverage);
+                                                        nItemId, SGrindingResultsUtils.CONT_ACEITE_SEM, onlyCurrentDay, isWeightedAverage, plantFk);
         SGrindingResumeRow row1 = new SGrindingResumeRow();
             
         row1.setDataName("Ponderado Cont. Aceite Semilla");
@@ -143,7 +143,7 @@ public class SGrindingResume {
         grindingRows.add(row1);
         
         double dWeightedAvgResPasta =  SGrindingResultsUtils.getWeightedAverage(client, dtDate, dTotalGrindingOilPercent, 
-                                                            nItemId, SGrindingResultsUtils.RESID_PASTA, onlyCurrentDay, isWeightedAverage);
+                                                            nItemId, SGrindingResultsUtils.RESID_PASTA, onlyCurrentDay, isWeightedAverage, plantFk);
         
         SGrindingResumeRow row = new SGrindingResumeRow();
             
@@ -162,9 +162,9 @@ public class SGrindingResume {
         grindingRows.add(rowRt);
         
         double resPasta = SGrindingResultsUtils.getWeightedAverage(client, dtDate, 0d, 
-                                                            nItemId, SGrindingResultsUtils.RESID_PASTA, true, false);
+                                                            nItemId, SGrindingResultsUtils.RESID_PASTA, true, false, plantFk);
         double conAcSem = SGrindingResultsUtils.getWeightedAverage(client, dtDate, 0d, 
-                                                            nItemId, SGrindingResultsUtils.CONT_ACEITE_SEM, true, false);
+                                                            nItemId, SGrindingResultsUtils.CONT_ACEITE_SEM, true, false, plantFk);
         
         SGrindingResumeRow rowRendt = new SGrindingResumeRow();
             
@@ -177,8 +177,8 @@ public class SGrindingResume {
         return grindingRows;
     }
     
-    public static ArrayList<SDbGrindingEvent> getGrindingEvents(SGuiClient client, Date start, Date end, int idItem) {
-        DateFormat fileNameformatter = new SimpleDateFormat("yyy-MM-dd");
+    public static ArrayList<SDbGrindingEvent> getGrindingEvents(SGuiClient client, Date start, Date end, int idItem, int[] plantKey) {
+        DateFormat dateFormatter = new SimpleDateFormat("yyy-MM-dd");
         
         String sql = "SELECT "
                 + "    * "
@@ -186,9 +186,10 @@ public class SGrindingResume {
                 + "    " + SModConsts.TablesMap.get(SModConsts.S_GRINDING_EVENT) + " AS ev "
                 + "WHERE "
                 + " NOT ev.b_del "
-                + " AND (ev.dt_start BETWEEN '" + fileNameformatter.format(start) + " 00:00:00' AND '" + fileNameformatter.format(end) + " 23:59:59' "
-                + " OR ev.dt_end BETWEEN '" + fileNameformatter.format(start) + " 00:00:00' AND '" + fileNameformatter.format(end) + " 23:59:59') "
-                + " AND ev.fk_item = " + idItem + " "
+                + " AND (ev.dt_start BETWEEN '" + dateFormatter.format(start) + " 00:00:00' AND '" + dateFormatter.format(end) + " 23:59:59' "
+                + " OR ev.dt_end BETWEEN '" + dateFormatter.format(start) + " 00:00:00' AND '" + dateFormatter.format(end) + " 23:59:59') "
+                + " AND ev.fk_item_id = " + idItem + " "
+                + " AND fk_pla_co = " + plantKey[0] + " AND fk_pla_cob = " + plantKey[1] + " AND fk_pla_pla = " + plantKey[2] + " "
                 + " ORDER BY ev.dt_start ASC;";
         
         ArrayList<SDbGrindingEvent> events = null;
@@ -212,7 +213,7 @@ public class SGrindingResume {
         }
         catch (SQLException ex) {
             Logger.getLogger(SGrindingResume.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            return new ArrayList<>();
         }
         
         return events;
@@ -227,15 +228,16 @@ public class SGrindingResume {
      * @param nItemId
      * @return 
      */
-    private static boolean withHeaders(SGuiClient client, final int nItemId) {
+    private static boolean withHeaders(SGuiClient client, final int nItemId, final int[] aPlantKey) {
         String sql = "SELECT " +
                     " id_itm_prm " +
                     "FROM " +
-                    "    " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_ITEM_PARAM_HEADER) + " " +
+                    " " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_ITEM_PARAM_HEADER) + " " +
                     "WHERE " +
                     " NOT b_del " +
                     " AND label_text = 'WITHOUT-HEADER' " +
                     " AND fk_item_id = " + nItemId +
+                    " AND fk_pla_co = " + aPlantKey[0] + " AND fk_pla_cob = " + aPlantKey[1] + " AND fk_pla_pla = " + aPlantKey[2] + " " +
                     " ORDER BY view_order ASC " +
                     ";";
         
@@ -261,7 +263,7 @@ public class SGrindingResume {
      * @param nItemId
      * @return 
      */
-    private static ArrayList<SDbGrindingItemParameterHeader> getHeaders(SGuiClient client, final int nItemId) {
+    private static ArrayList<SDbGrindingItemParameterHeader> getHeaders(SGuiClient client, final int nItemId, final int[] aPlantKey) {
         String sql = "SELECT " +
                     " id_itm_prm " +
                     "FROM " +
@@ -271,6 +273,7 @@ public class SGrindingResume {
                     " AND parameters_ids <> '' " +
                     " AND label_text <> 'WITHOUT-HEADER' " +
                     " AND fk_item_id = " + nItemId +
+                    " AND fk_pla_co = " + aPlantKey[0] + " AND fk_pla_cob = " + aPlantKey[1] + " AND fk_pla_pla = " + aPlantKey[2] + " " +
                     " ORDER BY view_order ASC " +
                     ";";
         

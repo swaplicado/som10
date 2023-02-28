@@ -426,8 +426,14 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 settings.setCodeApplying(true);
                 sql = "SELECT id_item AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " WHERE b_del = 0 AND id_item IN "
-                        + "(SELECT DISTINCT fk_item_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " WHERE b_del = 0) "
-                        + "ORDER BY name, id_item ";
+                        + "(SELECT DISTINCT fk_item_id FROM " + SModConsts.TablesMap.get(SModConsts.SU_GRINDING_LINK_ITEM_PARAM) + " AS glip WHERE glip.b_del = 0 ";
+                if (params != null) {
+                    value = params.getParamsMap().get(SModConsts.SX_EXT_PLA);
+                    if (value != null) {
+                        sql += "AND glip.fk_pla_co = " + ((int[]) value)[0] + " AND glip.fk_pla_cob = " + ((int[]) value)[1] + " AND glip.fk_pla_pla = " + ((int[]) value)[2] + " ";
+                    }
+                }
+                sql += ") ORDER BY name, id_item ";
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);

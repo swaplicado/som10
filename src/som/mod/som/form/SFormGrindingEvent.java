@@ -5,16 +5,20 @@
 package som.mod.som.form;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.joda.time.LocalDate;
 import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
+import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanForm;
 import som.mod.SModConsts;
+import som.mod.cfg.db.SDbBranchPlant;
 import som.mod.som.db.SDbGrindingEvent;
 
 /**
@@ -24,6 +28,8 @@ import som.mod.som.db.SDbGrindingEvent;
 public class SFormGrindingEvent extends SBeanForm {
 
     private SDbGrindingEvent moRegistry;
+    
+    private int[] maPlantFk;
 
     /**
      * Creates new form SFormSeason
@@ -45,6 +51,9 @@ public class SFormGrindingEvent extends SBeanForm {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
+        jPanel14 = new javax.swing.JPanel();
+        jlPlant = new javax.swing.JLabel();
+        moPlant = new sa.lib.gui.bean.SBeanFieldText();
         jPanel4 = new javax.swing.JPanel();
         jlDescription = new javax.swing.JLabel();
         moDescription = new sa.lib.gui.bean.SBeanFieldText();
@@ -62,6 +71,17 @@ public class SFormGrindingEvent extends SBeanForm {
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jPanel2.setLayout(new java.awt.GridLayout(5, 1, 0, 5));
+
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlPlant.setText("Planta:");
+        jlPlant.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel14.add(jlPlant);
+
+        moPlant.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel14.add(moPlant);
+
+        jPanel2.add(jPanel14);
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -113,16 +133,19 @@ public class SFormGrindingEvent extends SBeanForm {
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JLabel jlDateEnd;
     private javax.swing.JLabel jlDateStart;
     private javax.swing.JLabel jlDescription;
     private javax.swing.JLabel jlItem;
+    private javax.swing.JLabel jlPlant;
     private sa.lib.gui.bean.SBeanFieldDatetime moDateDateEnd;
     private sa.lib.gui.bean.SBeanFieldDatetime moDateDateStart;
     private sa.lib.gui.bean.SBeanFieldText moDescription;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
+    private sa.lib.gui.bean.SBeanFieldText moPlant;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
@@ -138,6 +161,20 @@ public class SFormGrindingEvent extends SBeanForm {
         moFields.addField(moDateDateStart);
         moFields.addField(moDateDateEnd);
         moFields.setFormButton(jbSave);
+        
+        moPlant.setEditable(false);
+    }
+    
+    private void setTextPlant() {
+        try {
+            SDbBranchPlant oPlant = new SDbBranchPlant();
+            oPlant.read(miClient.getSession(), maPlantFk);
+            
+            moPlant.setValue(oPlant.getCode() + " - " + oPlant.getName());
+        }
+        catch (Exception ex) {
+            Logger.getLogger(SFormGrindingEvent.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -152,7 +189,12 @@ public class SFormGrindingEvent extends SBeanForm {
 
     @Override
     public void reloadCatalogues() {
-        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SS_LINK_CFG_ITEMS, 0, null);
+        SGuiParams params = new SGuiParams();
+        params.getParamsMap().clear();
+        params.setKey(null);
+        params.getParamsMap().put(SModConsts.SX_EXT_PLA, maPlantFk);
+        
+        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SS_LINK_CFG_ITEMS, 0, params);
     }
 
     @Override
@@ -177,6 +219,12 @@ public class SFormGrindingEvent extends SBeanForm {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
         }
 
+        maPlantFk =  new int[] { 
+                                moRegistry.getFkPlantCompanyId(), 
+                                moRegistry.getFkPlantBranchId(), 
+                                moRegistry.getFkPlantPlantId() 
+                            };
+        setTextPlant();
         moDescription.setValue(moRegistry.getDescription());
         moKeyItem.setValue(new int[] {moRegistry.getFkItemId()});
         moDateDateStart.setValue(moRegistry.getDateStart());

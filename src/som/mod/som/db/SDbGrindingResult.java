@@ -59,6 +59,9 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
     protected int mnFkParameterId;
     protected int mnFkLotId;
     protected int mnFkLinkId_n;
+    protected int mnFkPlantCompanyId;
+    protected int mnFkPlantBranchId;
+    protected int mnFkPlantPlantId;
     
     /*
     protected int mnFkUserInsertId;
@@ -164,6 +167,9 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
     public void setFkParameterId(int n) { mnFkParameterId = n; }
     public void setFkLotId(int n) { mnFkLotId = n; }
     public void setFklinkId_n(int n) { mnFkLinkId_n = n; }
+    public void setFkPlantCompanyId(int n) { mnFkPlantCompanyId = n; }
+    public void setFkPlantBranchId(int n) { mnFkPlantBranchId = n; }
+    public void setFkPlantPlantId(int n) { mnFkPlantPlantId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -199,6 +205,9 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
     public int getFkParameterId() { return mnFkParameterId; }
     public int getFkLotId() { return mnFkLotId; }
     public int getFkLinkId_n() { return mnFkLinkId_n; }
+    public int getFkPlantCompanyId() { return mnFkPlantCompanyId; }
+    public int getFkPlantBranchId() { return mnFkPlantBranchId; }
+    public int getFkPlantPlantId() { return mnFkPlantPlantId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -248,6 +257,9 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
         mnFkParameterId = 0;
         mnFkLotId = 0;
         mnFkLinkId_n = 0;
+        mnFkPlantCompanyId = 0;
+        mnFkPlantBranchId = 0;
+        mnFkPlantPlantId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -326,6 +338,9 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
             mnFkParameterId = resultSet.getInt("fk_param_id");
             mnFkLotId = resultSet.getInt("fk_prc_batch");
             mnFkLinkId_n = resultSet.getInt("fk_link_id_n");
+            mnFkPlantCompanyId = resultSet.getInt("fk_pla_co");
+            mnFkPlantBranchId = resultSet.getInt("fk_pla_cob");
+            mnFkPlantPlantId = resultSet.getInt("fk_pla_pla");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -383,6 +398,9 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
                     mnFkParameterId + ", " +
                     mnFkLotId + ", " +
                     (mnFkLinkId_n > 0 ? mnFkLinkId_n : "NULL") + ", " +
+                    mnFkPlantCompanyId + ", " + 
+                    mnFkPlantBranchId + ", " + 
+                    mnFkPlantPlantId + ", " + 
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     "NOW()" + ", " +
@@ -416,6 +434,13 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
+                    "fk_item_id = " + mnFkItemId + ", " +
+                    "fk_param_id = " + mnFkParameterId + ", " +
+                    "fk_prc_batch = " + mnFkLotId + ", " +
+                    "fk_link_id_n = " + mnFkLinkId_n + ", " +
+                    "fk_pla_co = " + mnFkPlantCompanyId + ", " +
+                    "fk_pla_cob = " + mnFkPlantBranchId + ", " +
+                    "fk_pla_pla = " + mnFkPlantPlantId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -462,6 +487,9 @@ public class SDbGrindingResult extends SDbRegistryUser implements SGridRow {
         registry.setFkParameterId(this.getFkParameterId());
         registry.setFkLotId(this.getFkLotId());
         registry.setFklinkId_n(this.getFkLinkId_n());
+        registry.setFkPlantCompanyId(this.getFkPlantCompanyId());
+        registry.setFkPlantBranchId(this.getFkPlantBranchId());
+        registry.setFkPlantPlantId(this.getFkPlantPlantId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

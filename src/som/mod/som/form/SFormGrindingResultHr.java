@@ -15,8 +15,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableRowSorter;
 import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
@@ -30,6 +28,7 @@ import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanForm;
 import som.mod.SModConsts;
+import som.mod.cfg.db.SDbBranchPlant;
 import som.mod.som.data.SCaptureConfiguration;
 import som.mod.som.db.SDbGrindingResult;
 import som.mod.som.db.SDbItem;
@@ -42,6 +41,7 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
 
     private SDbGrindingResult moRegistry;
     private SGridPaneForm moGridTableRows;
+    private int[] maPlantPk;
 
     /**
      * Creates new form SFormResult
@@ -71,12 +71,15 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
         jPanel4 = new javax.swing.JPanel();
         jlCaptureDate = new javax.swing.JLabel();
         moCaptureDate = new sa.lib.gui.bean.SBeanFieldDate();
+        jPanel5 = new javax.swing.JPanel();
+        jlPlant = new javax.swing.JLabel();
+        moPlantName = new sa.lib.gui.bean.SBeanFieldText();
         jpResults = new javax.swing.JPanel();
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jpHeader.setBorder(javax.swing.BorderFactory.createTitledBorder("Encabezado"));
-        jpHeader.setLayout(new java.awt.GridLayout(1, 2, 0, 5));
+        jpHeader.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
@@ -98,6 +101,17 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
 
         jpHeader.add(jPanel4);
 
+        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        jlPlant.setText("Planta:");
+        jlPlant.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel5.add(jlPlant);
+
+        moPlantName.setPreferredSize(new java.awt.Dimension(225, 23));
+        jPanel5.add(moPlantName);
+
+        jpHeader.add(jPanel5);
+
         jPanel1.add(jpHeader, java.awt.BorderLayout.NORTH);
 
         jpResults.setBorder(javax.swing.BorderFactory.createTitledBorder("Captura de resultados"));
@@ -111,12 +125,15 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JLabel jlCaptureDate;
     private javax.swing.JLabel jlItem;
+    private javax.swing.JLabel jlPlant;
     private javax.swing.JPanel jpHeader;
     private javax.swing.JPanel jpResults;
     private sa.lib.gui.bean.SBeanFieldDate moCaptureDate;
     private sa.lib.gui.bean.SBeanFieldText moItemName;
+    private sa.lib.gui.bean.SBeanFieldText moPlantName;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
@@ -177,6 +194,7 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
         
         moCaptureDate.setEditable(false);
         moItemName.setEditable(false);
+        moPlantName.setEditable(false);
         moFields.setFormButton(jbSave);
     }
     
@@ -197,7 +215,7 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
                 "    AND res.fk_item_id = " + moRegistry.getFkItemId() + " " +
                 "    AND dt_capture = '" + SLibUtils.DbmsDateFormatDate.format(moRegistry.getDateCapture()) + "';";
         
-        ArrayList<SDbGrindingResult> rows = new ArrayList<SDbGrindingResult>();
+        ArrayList<SDbGrindingResult> rows = new ArrayList<>();
         try {
             ResultSet res = miClient.getSession().getDatabase().getConnection().createStatement().executeQuery(sql);
             ObjectMapper mapper = new ObjectMapper();
@@ -220,6 +238,18 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
         }
 
         return rows;
+    }
+    
+    private void setTextPlant() {
+        try {
+            SDbBranchPlant oPlant = new SDbBranchPlant();
+            oPlant.read(miClient.getSession(), maPlantPk);
+            
+            moPlantName.setValue(oPlant.getCode() + " - " + oPlant.getName());
+        }
+        catch (Exception ex) {
+            Logger.getLogger(SFormGrindingResultNew.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -249,6 +279,15 @@ public class SFormGrindingResultHr extends SBeanForm implements ActionListener {
         
         moItemName.setValue(oItem.getCode() + " - " + oItem.getName());
         moCaptureDate.setValue(moRegistry.getDateCapture());
+        
+        maPlantPk = new int[] { 
+                                moRegistry.getFkPlantCompanyId(), 
+                                moRegistry.getFkPlantBranchId(), 
+                                moRegistry.getFkPlantPlantId() 
+                            };
+        
+        moCaptureDate.setValue(moRegistry.getDateCapture());
+        setTextPlant();
 
         removeAllListeners();
         reloadCatalogues();

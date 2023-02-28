@@ -180,6 +180,7 @@ public abstract class SModConsts {
     public static final int SX_STK_CLO = 340076;
     public static final int SX_EXT_ITEM = 340101;
     public static final int SX_EXT_DPS = 340102;
+    public static final int SX_EXT_PLA = 340111;
     public static final int SX_WIZ_DPS = 340103;
     public static final int SX_WIZ_DPS_TIC = 340104;
     public static final int SX_WIZ_DPS_PUR = 340105;

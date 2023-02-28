@@ -20,6 +20,7 @@ import sa.lib.grid.SGridPaneView;
 import sa.lib.gui.SGuiCatalogueSettings;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
+import sa.lib.gui.SGuiParams;
 import som.mod.SModConsts;
 
 /**
@@ -33,12 +34,23 @@ public class SPaneFilter extends JPanel implements SGridFilter {
     private int mnType;
     private int[] manSelectedKey;
     private SDialogFilter moDialogFilter;
+    private SGuiParams moParams;
 
     /** Creates new form SPaneFilter */
     public SPaneFilter(SGridPaneView paneView, int type) {
         miClient = paneView.getClient();
         moPaneView = paneView;
         mnType = type;
+        initComponents();
+        initComponentsCustom();
+    }
+    
+    /** Creates new form SPaneFilter */
+    public SPaneFilter(SGridPaneView paneView, int type, SGuiParams params) {
+        miClient = paneView.getClient();
+        moPaneView = paneView;
+        mnType = type;
+        moParams = params;
         initComponents();
         initComponentsCustom();
     }
@@ -81,7 +93,13 @@ public class SPaneFilter extends JPanel implements SGridFilter {
 
     private void initComponentsCustom() {
         String path = "";
-        SGuiCatalogueSettings settings = miClient.getSession().getModuleByGuiType(mnType, SLibConsts.UNDEFINED).getCatalogueSettings(mnType, SLibConsts.UNDEFINED, null);
+        SGuiCatalogueSettings settings;
+        if (moParams != null) {
+            settings = miClient.getSession().getModuleByGuiType(mnType, SLibConsts.UNDEFINED).getCatalogueSettings(mnType, SLibConsts.UNDEFINED, moParams);
+        }
+        else {
+            settings = miClient.getSession().getModuleByGuiType(mnType, SLibConsts.UNDEFINED).getCatalogueSettings(mnType, SLibConsts.UNDEFINED, null);
+        }
 
         manSelectedKey = null;
         moDialogFilter = new SDialogFilter(miClient, mnType);
