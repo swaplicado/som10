@@ -19,16 +19,13 @@ import sa.lib.gui.SGuiUtils;
  * @author Isabel Servín
  * 
  */
-public class SDialogStockReportPreview extends JDialog implements ActionListener {
+public class SDialogReportPreview extends JDialog implements ActionListener {
     
-    private final SGuiClient miClient;
     private final String msHtml;
-    
     protected int mnFormResult;
     
-    public SDialogStockReportPreview(SGuiClient client, String html) {
+    public SDialogReportPreview(SGuiClient client, String html) {
         super(client.getFrame(), true);
-        miClient = client;
         msHtml = html;
         initComponents();
         initComponentsExtra();
@@ -134,7 +131,6 @@ public class SDialogStockReportPreview extends JDialog implements ActionListener
             if (button == jbOk) {
                 actionOk();
             }
-            
         }
     }
 }

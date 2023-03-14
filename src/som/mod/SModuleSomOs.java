@@ -29,6 +29,7 @@ import som.mod.ext.db.SExtUtils;
 import som.mod.som.db.SDbByProduct;
 import som.mod.som.db.SDbClosingCalendar;
 import som.mod.som.db.SDbConsumableWarehouse;
+import som.mod.som.db.SDbDryerReport;
 import som.mod.som.db.SDbFunctionalArea;
 import som.mod.som.db.SDbIog;
 import som.mod.som.db.SDbIogExportation;
@@ -62,6 +63,7 @@ import som.mod.som.form.SFormConsumableWarehouse;
 import som.mod.som.form.SFormDialogIogExportation;
 import som.mod.som.form.SFormDialogStockClosing;
 import som.mod.som.form.SFormDialogWizardDps;
+import som.mod.som.form.SFormDryerReport;
 import som.mod.som.form.SFormFunctionalArea;
 import som.mod.som.form.SFormIog;
 import som.mod.som.form.SFormMix;
@@ -82,6 +84,7 @@ import som.mod.som.form.SFormWarehouseFillLevel;
 import som.mod.som.view.SViewByProduct;
 import som.mod.som.view.SViewClosingCalendar;
 import som.mod.som.view.SViewConsumableWarehouse;
+import som.mod.som.view.SViewDryerReport;
 import som.mod.som.view.SViewExternalDpsReturn;
 import som.mod.som.view.SViewExternalDpsSupply;
 import som.mod.som.view.SViewFunctionalArea;
@@ -187,6 +190,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjStkStockWhDiv;
     private JMenuItem mjStkStockDaily;
     private JMenuItem mjStkStockReport;
+    private JMenu mjEst;
+    private JMenuItem mjEstDryer;
     private JMenu mjRep;
     private JMenuItem mjRepStock;
     private JMenuItem mjRepStockDiv;
@@ -222,6 +227,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private SFormWahLab moFormWahLabWithoutLastTest;
     private SFormWahLabTest moFormWahLabTest;
     private SFormStockReport moFormStockReport;
+    private SFormDryerReport moFormDryerReport;
     private SFormProcessingBatch moFormPrcBatch;
     private SFormWarehouseFillLevel moFormWarehouseFillLevel;
     private SFormConsumableWarehouse moFormConsumableWarehouse;
@@ -466,6 +472,13 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjStkStockWhDiv.addActionListener(this);
         mjStkStockDaily.addActionListener(this);
         mjStkStockReport.addActionListener(this);
+        
+        mjEst = new JMenu("Estadisticas");
+        mjEstDryer = new JMenuItem("Reporte de secador");
+        
+        mjEst.add(mjEstDryer);
+        
+        mjEstDryer.addActionListener(this);
 
         mjRep = new JMenu("Reportes");
         mjRepStock = new JMenuItem("Existencias...");
@@ -478,7 +491,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjRepStockDay = new JMenuItem("Inventario diario (toma física)...");
         mjRepStockComp = new JMenuItem("Inventario producción real vs. teórico...");
         mjRepStockDaily = new JMenuItem("Estimaciones e inventarios diarios...");
-        mjRepProRawMatAvo = new JMenuItem("Producción diaria aceite aguacate...");
+        mjRepProRawMatAvo = new JMenuItem("Producción diaria fruta...");
         mjRepProRawMatSeed = new JMenuItem("Producción diaria molienda...");
 
         mjRep.add(mjRepStock);
@@ -548,13 +561,15 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjQualityWahLab.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_LAB));
         
         mjStk.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_WHS_OM, SModSysConsts.CS_RIG_REP_OM }));
+        
+        mjEst.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_WHS_OM, SModSysConsts.CS_RIG_REP_OM }));
 
         mjRep.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_WHS_OM, SModSysConsts.CS_RIG_REP_OM }));
     }
 
     @Override
     public JMenu[] getMenus() {
-        return new JMenu[] { mjCat, mjTic, mjDpsSupplyPur, mjDpsSupplySal, mjDocInv, mjDocMix, mjOil, mjQuality, mjStk, mjRep };
+        return new JMenu[] { mjCat, mjTic, mjDpsSupplyPur, mjDpsSupplySal, mjDocInv, mjDocMix, mjOil, mjQuality, mjStk, mjEst, mjRep };
     }
 
     @Override
@@ -618,6 +633,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.S_STK_REPORT:
                 registry = new SDbStockReport();
+                break;
+            case SModConsts.S_DRYER_REP:
+                registry = new SDbDryerReport();
                 break;
             case SModConsts.SX_EXT_DPS:
                 //registry = new SRowSupplyDpsTicket();
@@ -938,6 +956,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             case SModConsts.S_STK_REPORT:
                 view = new SViewStockReport(miClient, "Reporte de existencias");
                 break;
+            case SModConsts.S_DRYER_REP:
+                view = new SViewDryerReport(miClient, "Reporte de secador");
+                break;
             case SModConsts.SX_STK_DAYS:
                 view = new SViewStockDays(miClient, "Inv. físicos diarios");
                 break;
@@ -1117,6 +1138,10 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             case SModConsts.S_STK_REPORT:
                 if (moFormStockReport == null) { moFormStockReport = new SFormStockReport(miClient, "Reporte de existencias"); }
                 form = moFormStockReport;
+                break;
+            case SModConsts.S_DRYER_REP:
+                if (moFormDryerReport == null) { moFormDryerReport = new SFormDryerReport(miClient, "Reporte del secador"); }
+                form = moFormDryerReport;
                 break;
             case SModConsts.SX_WIZ_DPS:
                 if (moFormDialogWizardDps == null) { moFormDialogWizardDps = new SFormDialogWizardDps(miClient, "Movimientos externos"); }
@@ -1391,6 +1416,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjStkStockWhDiv) {
                 showView(SModConsts.S_STK, SModConsts.SX_STK_WAH_DIV, null);
+            }
+            else if (menuItem == mjEstDryer) {
+                showView(SModConsts.S_DRYER_REP, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjRepStock) {
                 new SDialogRepStock(miClient, "Reporte existencias", SModConsts.SX_STK_STK).setVisible(true);

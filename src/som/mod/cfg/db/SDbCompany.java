@@ -60,6 +60,10 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     protected String msFruitRipenessDegrees;
     protected String msPlateCageLabels;
     protected String msWarehouseLaboratoryReportMail;
+    protected String msDryerReportMails;
+    protected int mnDryerDaysToReport;
+    protected double mdDryerBagasseGrindingFactor;
+    protected double mdDryerBagasseExternalFactor;
     protected int mnVersion;
     protected Date mtVersionTs;
     /*
@@ -224,6 +228,10 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public void setFruitRipenessDegrees(String s) { msFruitRipenessDegrees = s; }
     public void setPlateCageLabels(String s) { msPlateCageLabels = s; }
     public void setWarehouseLaboratoryReportMail(String s) { msWarehouseLaboratoryReportMail = s; }
+    public void setDryerReportMails(String s) { msDryerReportMails = s; }
+    public void setDryerDaysToReport(int n) { mnDryerDaysToReport = n; }
+    public void setDryerBagasseGrindingFactor(double d) { mdDryerBagasseGrindingFactor = d; }
+    public void setDryerBagasseExternalFactor(double d) { mdDryerBagasseExternalFactor = d; }
     public void setVersion(int n) { mnVersion = n; }
     public void setVersionTs(Date t) { mtVersionTs = t; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -270,6 +278,10 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public String getFruitRipenessDegrees() { return msFruitRipenessDegrees; }
     public String getPlateCageLabels() { return msPlateCageLabels; }
     public String getWarehouseLaboratoryReportMail() { return msWarehouseLaboratoryReportMail; }
+    public String getDryerReportMails() { return msDryerReportMails; }
+    public int getDryerDaysToReport() { return mnDryerDaysToReport; }
+    public double getDryerBagasseGrindingFactor() { return mdDryerBagasseGrindingFactor; }
+    public double getDryerBagasseExternalFactor() { return mdDryerBagasseExternalFactor; }
     public int getVersion() { return mnVersion; }
     public Date getVersionTs() { return mtVersionTs; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -332,6 +344,10 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         msFruitRipenessDegrees = "";
         msPlateCageLabels = "";
         msWarehouseLaboratoryReportMail = "";
+        msDryerReportMails = "";
+        mnDryerDaysToReport = 0;
+        mdDryerBagasseGrindingFactor = 0;
+        mdDryerBagasseExternalFactor = 0;
         mnVersion = 0;
         mtVersionTs = null;
         mbUpdatable = false;
@@ -426,6 +442,10 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
             msFruitRipenessDegrees = resultSet.getString("fruit_ripe");
             msPlateCageLabels = resultSet.getString("pla_cag_labels");
             msWarehouseLaboratoryReportMail = resultSet.getString("wah_lab_rep_mails");
+            msDryerReportMails = resultSet.getString("dryer_rep_mails");
+            mnDryerDaysToReport = resultSet.getInt("dryer_years_to_report");
+            mdDryerBagasseGrindingFactor = resultSet.getDouble("dryer_bag_grin_fact");
+            mdDryerBagasseExternalFactor = resultSet.getDouble("dryer_bag_ext_fact");
             mnVersion = resultSet.getInt("ver");
             mtVersionTs = resultSet.getTimestamp("ver_ts");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -513,6 +533,10 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "'" + msFruitRipenessDegrees + "', " + 
                     "'" + msPlateCageLabels + "', " + 
                     "'" + msWarehouseLaboratoryReportMail + "', " + 
+                    "'" + msDryerReportMails + "', " + 
+                    mnDryerDaysToReport + ", " + 
+                    mdDryerBagasseGrindingFactor + ", " + 
+                    mdDryerBagasseExternalFactor + ", " + 
                     mnVersion + ", " +
                     "NOW()" + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -564,6 +588,10 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "fruit_ripe = '" + msFruitRipenessDegrees + "', " +
                     "pla_cag_labels = '" + msPlateCageLabels + "', " +
                     "wah_lab_rep_mails = '" + msWarehouseLaboratoryReportMail + "', " +
+                    "dryer_rep_mails = '" + msDryerReportMails + "', " +
+                    "dryer_years_to_report = " + mnDryerDaysToReport + ", " +
+                    "dryer_bag_grin_fact = " + mdDryerBagasseGrindingFactor + ", " +
+                    "dryer_bag_ext_fact = " + mdDryerBagasseExternalFactor + ", " +
                     //"ver = " + mnVersion + ", " +
                     //"ver_ts = " + "NOW()" + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -633,6 +661,10 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         registry.setFruitRipenessDegrees(this.getFruitRipenessDegrees());
         registry.setPlateCageLabels(this.getPlateCageLabels());
         registry.setWarehouseLaboratoryReportMail(this.getWarehouseLaboratoryReportMail());
+        registry.setDryerReportMails(this.getDryerReportMails());
+        registry.setDryerDaysToReport(this.getDryerDaysToReport());
+        registry.setDryerBagasseGrindingFactor(this.getDryerBagasseGrindingFactor());
+        registry.setDryerBagasseExternalFactor(this.getDryerBagasseExternalFactor());
         registry.setVersion(this.getVersion());
         registry.setVersionTs(this.getVersionTs());
         registry.setUpdatable(this.isUpdatable());

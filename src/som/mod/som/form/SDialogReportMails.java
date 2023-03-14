@@ -129,6 +129,8 @@ public class SDialogReportMails extends JDialog implements ActionListener {
                 case SModConsts.S_WAH_LAB:
                     sql = "SELECT wah_lab_rep_mails FROM cu_co;";
                     break;
+                case SModConsts.S_DRYER_REP:
+                    sql = "SELECT dryer_rep_mails FROM cu_co;";
             }
             ResultSet resultSet = miClient.getSession().getStatement().executeQuery(sql);
             if (resultSet.next()) {
@@ -146,6 +148,9 @@ public class SDialogReportMails extends JDialog implements ActionListener {
             switch (mnReportType) {
                 case SModConsts.S_WAH_LAB:
                     sql = "UPDATE cu_co SET wah_lab_rep_mails = '" + jtaMails.getText().replaceAll("\n", ";") + "' WHERE id_co = 1";
+                    break;
+                case SModConsts.S_DRYER_REP:
+                    sql = "UPDATE cu_co SET dryer_rep_mails = '" + jtaMails.getText().replaceAll("\n", ";") + "' WHERE id_co = 1";
                     break;
             }
             miClient.getSession().getStatement().execute(sql);
@@ -196,7 +201,6 @@ public class SDialogReportMails extends JDialog implements ActionListener {
             if (button == jbOk) {
                 actionOk();
             }
-            
         }
     }
 }

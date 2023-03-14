@@ -320,6 +320,7 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void reloadCatalogues() {
         Iterator it = maSmnRec.entrySet().iterator();
         while (it.hasNext()) {

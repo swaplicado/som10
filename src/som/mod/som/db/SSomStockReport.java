@@ -22,7 +22,7 @@ import sa.lib.mail.SMailConsts;
 import sa.lib.mail.SMailSender;
 import sa.lib.mail.SMailUtils;
 import som.mod.SModSysConsts;
-import som.mod.som.form.SDialogStockReportPreview;
+import som.mod.som.form.SDialogReportPreview;
 
 /**
  *
@@ -47,7 +47,7 @@ public class SSomStockReport {
             ArrayList<SDbFunctionalArea> funcAreas = getFunctionalAreas();
             SDbStockReport stkRp = getStockReport(pk);
             
-            SDialogStockReportPreview preview = new SDialogStockReportPreview(miClient, generateReportHtml(stkRp, null, SU_FUNC_AREA_TP_PREVIEW, 2)); // v = preview
+            SDialogReportPreview preview = new SDialogReportPreview(miClient, generateReportHtml(stkRp, null, SU_FUNC_AREA_TP_PREVIEW, 2)); // v = preview
             preview.setVisible(true);
             
             if (preview.getFormResult() == SGuiConsts.FORM_RESULT_OK) {
@@ -76,6 +76,7 @@ public class SSomStockReport {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private String generateReportHtml(SDbStockReport stkRp, SDbFunctionalArea funcArea, String funcAreaType, int fontSizeTbl) throws Exception {
         SGuiSession session = miClient.getSession();
         Statement statement = miClient.getSession().getDatabase().getConnection().createStatement();

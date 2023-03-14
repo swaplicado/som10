@@ -111,6 +111,7 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.S_WAH_LAB_TEST,
             SModConsts.S_PRC_BATCH,
             SModConsts.S_STK_REPORT,
+            SModConsts.S_DRYER_REP,
             SModConsts.SX_STK_DAYS,
             SModConsts.SX_STK_MOVE,
             SModConsts.SX_STK_PROD_EST,
