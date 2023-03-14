@@ -729,8 +729,8 @@ public class SSomStockReport {
                     "<th align='center'><b>" + SLibUtils.textToHtml("INVENTARIO") + "</b></th>" + 
                     "</tr>";
                 
-                String sqlWhere = oilCl == SModSysConsts.SU_OIL_CL_PRE_EXT ? "OR (COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) = " + SModSysConsts.SU_OIL_TP_REF + " AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_OTHER_AVO + ")" : 
-                        "AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_AVO;
+                String sqlWhere = oilCl == SModSysConsts.SU_OIL_CL_PRE_EXT ? "OR (COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) = " + SModSysConsts.SU_OIL_TP_REF + " AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_OTHER_AVO + " AND sr.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "')" : 
+                        "AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_AVO + " AND sr.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "'";
                 
                 sql = "SELECT " +
                         "i.name, " +
