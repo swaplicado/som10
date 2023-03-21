@@ -104,6 +104,7 @@ public abstract class SModConsts {
     public static final int S_WAH_LAB_TEST = 330017;
     public static final int S_WAH_LAB_TEST_ALL = 330019;
     public static final int S_WAH_PREMISE = 330018;
+    public static final int S_WAH_START = 330019;
     public static final int S_IOG = 330021;
     public static final int S_IOG_NOTE = 330022;
     public static final int S_IOG_REF = 330023;
@@ -127,7 +128,7 @@ public abstract class SModConsts {
     public static final int S_MFG_EST_PL = 330064;
     public static final int S_MIX = 330071;
     public static final int S_MIX_NOTE = 330072;
-    public static final int S_WAH_START = 330073;
+    public static final int S_DRYER_REP = 330073;
 
     public static final int SX_SEAS_REG = 340001;
     public static final int SX_PROD_SEAS = 340002;
@@ -292,9 +293,10 @@ public abstract class SModConsts {
         TablesMap.put(S_LAB_TEST, "s_lab_test");
         TablesMap.put(S_TIC, "s_tic");
         TablesMap.put(S_TIC_NOTE, "s_tic_note");
-        TablesMap.put(S_WAH_PREMISE, "s_wah_premise");
         TablesMap.put(S_WAH_LAB, "s_wah_lab");
         TablesMap.put(S_WAH_LAB_TEST, "s_wah_lab_test");
+        TablesMap.put(S_WAH_PREMISE, "s_wah_premise");
+        TablesMap.put(S_WAH_START, "s_wah_start");
         TablesMap.put(S_IOG, "s_iog");
         TablesMap.put(S_IOG_NOTE, "s_iog_note");
         TablesMap.put(S_IOG_REF, "s_iog_ref");
@@ -317,8 +319,8 @@ public abstract class SModConsts {
         TablesMap.put(S_MFG_EST_RM_CON, "s_mfg_est_rm_con");
         TablesMap.put(S_MIX, "s_mix");
         TablesMap.put(S_MIX_NOTE, "s_mix_note");
-        TablesMap.put(S_WAH_START, "s_wah_start");
-
+        TablesMap.put(S_DRYER_REP, "s_dryer_rep");
+        
         TablesMap.put(E_TIC_REV, "e_tic_rev");
     }
 }

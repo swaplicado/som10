@@ -185,6 +185,7 @@ public class SDialogAllWahLabTest extends JDialog implements ActionListener {
         }
     }
     
+    @SuppressWarnings("unchecked")
     public void setValue(int param, Object value) {
         switch (param) {
             case PARAM_ROWS:

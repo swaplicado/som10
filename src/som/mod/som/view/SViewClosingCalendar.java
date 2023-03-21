@@ -75,6 +75,7 @@ public class SViewClosingCalendar extends SGridPaneView {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void createGridColumns() {
         int col = 0;
         SGridColumnView[] columns = new SGridColumnView[11];
