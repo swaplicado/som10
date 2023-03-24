@@ -944,20 +944,32 @@ public class SGrindingResultsUtils {
                 String basePath = System.getProperty("user.dir");
                 String imageFilePath = basePath + "/" + img;
 
-                body += "<p>" + SLibUtils.textToHtml("Última fecha de captura: ") + "&nbsp;<b>" + SLibUtils.textToHtml(subjectformatter.format(cutOffDate)) + "</b></p>"
-                        + "<p>" + SLibUtils.textToHtml("Ítem: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oItemGroup.getSDbItemAux().getCode() + "-" + oItemGroup.getSDbItemAux().getName()) + "</b>"
+                body += "<p>" + SLibUtils.textToHtml("Última fecha de captura: ") + "&nbsp;<b style='color: blue; font-size: 16px;'>" + SLibUtils.textToHtml(subjectformatter.format(cutOffDate)) + "</b></p>"
+                        + "<p>" + SLibUtils.textToHtml("Ítem: ") + "&nbsp;<b style='font-size: 16px'>" + SLibUtils.textToHtml(oItemGroup.getSDbItemAux().getCode() + " - " + oItemGroup.getSDbItemAux().getName()) + "</b>"
                         + "<br>"
                         + "" + SLibUtils.textToHtml("Lote: ") + "&nbsp;<b>" + SLibUtils.textToHtml(oItemGroup.getSDbLotAux().getProcessingBatch()) + "</b></p>";
 
-                if (!oItemGroup.getResumeHeaderRows().isEmpty()) {
-                    body += "<p>";
+                if (! oItemGroup.getResumeHeaderRows().isEmpty()) {
+                    String color = "";
+                    body += "<br>";
+                    body += "<table>";
                     for (SGrindingResumeRow resumeHeaderRow : oItemGroup.getResumeHeaderRows()) {
-                        body += SLibUtils.textToHtml(resumeHeaderRow.getDataName()) + ": <b>"
-                                + SLibUtils.textToHtml(SLibUtils.getDecimalFormatQuantity().format(resumeHeaderRow.getValue())) + " "
-                                + SLibUtils.textToHtml(resumeHeaderRow.getUnit()) + "</b>";
-                        body += "<br>";
+                        if (resumeHeaderRow.getUnit().contains("%")) {
+                            if (resumeHeaderRow.getValue() < 5d) {
+                                color = "background-color: green;";
+                            }
+                            else {
+                                color = "background-color: red;";
+                            }
+                        }
+                        body += "<tr>";
+                        body += "<td style='font-size: 16px'>" + SLibUtils.textToHtml(resumeHeaderRow.getDataName()) + ": </td>"
+                                + "<td style='" + color + "'><b>" + SLibUtils.textToHtml(SLibUtils.getDecimalFormatQuantity().format(resumeHeaderRow.getValue())) + "</b></td>"
+                                + "<td style='font-size: 16px'>" + SLibUtils.textToHtml(resumeHeaderRow.getUnit()) + "</td>";
+                        body += "</tr>";
                     }
-                    body += "</p>";
+                    body += "</table>";
+                    body += "<hr>";
                 }
 
                 body += "<img src=\"cid:AbcXyz123" + counter + "\" />";
@@ -1006,15 +1018,17 @@ public class SGrindingResultsUtils {
         try {
             SEmbeddedImageEmailUtil.send(company.getMailNotificationConfigHost(), company.getMailNotificationConfigPort(), company.getMailNotificationConfigUser(),
                     company.getMailNotificationConfigPassword(), rc, cc, subject, body, inlineImages, files);
+            
+            client.showMsgBoxInformation("Reporte de molienda enviado a " + tos[0] + " cc: " + tos[1]);
         }
         catch (MessagingException ex) {
             Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+            client.showMsgBoxError(ex.getMessage());
         }
         catch (IOException ex) {
             Logger.getLogger(SGrindingResultsUtils.class.getName()).log(Level.SEVERE, null, ex);
+            client.showMsgBoxError(ex.getMessage());
         }
-
-        client.showMsgBoxInformation("Reporte de molienda enviado a " + tos[0] + " cc: " + tos[1]);
 
         return true;
     }

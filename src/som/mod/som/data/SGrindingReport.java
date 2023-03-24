@@ -342,6 +342,11 @@ public class SGrindingReport {
                 cellParam.setCellValue(row.parameterName);
 
                 cellParam.setCellStyle(boldStyle);
+                
+                if (row.parameterCode.equals("--")) {
+                    cellDate.setCellStyle(moBackgroundBlackStyle);
+                    cellParam.setCellStyle(moBackgroundBlackStyle);
+                }
 
                 //horas:
                 if (cfg.r08.getIsActive()) {
