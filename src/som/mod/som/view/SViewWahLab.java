@@ -42,8 +42,8 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
     }
 
     private void initComponentsCustom() {
-        moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
-        moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
+        moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE);
+        moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_YEAR, miClient.getSession().getWorkingDate().getTime()));
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
         
         mjNewWithLastTest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_new_main.gif")), "Analisis nuevo con resultados de análisis anterior", this);
@@ -144,7 +144,7 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
         int col = 0;
         SGridColumnView[] columns = new SGridColumnView[17];
 
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_0D, SDbConsts.FIELD_CODE, "Año");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_CAL_YEAR, SDbConsts.FIELD_CODE, "Año");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_0D, SDbConsts.FIELD_NAME, "Semana");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "dt_start", "Fecha inicial");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "dt_end", "Fecha final");

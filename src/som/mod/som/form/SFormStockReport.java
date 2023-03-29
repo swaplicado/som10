@@ -855,7 +855,9 @@ public class SFormStockReport extends sa.lib.gui.bean.SBeanForm implements ItemL
             moRegistry.getFkMixingWarehouseWarehouseId() });
         moDecimalMixPer.setValue(moRegistry.getMixingPercentage());
         
-        actionKeyMixWah();
+        if (!moRegistry.isRegistryNew()) {
+            actionKeyMixWah();
+        }
         
         moTextPlant1.setText(maFunctionalAreas.get(0).getName());
         moTextUnitP1.setText(maFunctionalAreas.get(0).getProcessingUnitName());

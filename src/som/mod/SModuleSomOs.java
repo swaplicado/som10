@@ -444,7 +444,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjOilIogExpLog.addActionListener(this);
         
         mjQuality = new JMenu("Control calidad");
-        mjQualityWahLab = new JMenuItem("Análisis de laboratorio");
+        mjQualityWahLab = new JMenuItem("Análisis de laboratorio de aceites");
         
         mjQuality.add(mjQualityWahLab);
         
@@ -926,7 +926,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 }
                 break;
             case SModConsts.S_WAH_LAB:
-                view = new SViewWahLab(miClient, "Análisis laboratorio aceite");
+                view = new SViewWahLab(miClient, "Análisis laboratorio aceites");
                 break;
             case SModConsts.SX_IOG_PROD:
                 switch (subtype) {

@@ -109,7 +109,7 @@ public class SSomWahLabTestReport {
                 + "</style>\n";
         html += "</head>" +
                 "<body>" +
-                "AETH05RG008-001.2<br>" +
+                "AETH05RG008-001.3<br>" +
                 "<h1>REGISTRO DE RESULTADOS DE TANQUES DE PROCESO</h1>" +
                 "<h2>Semana del " + SLibTimeUtils.dateFormatDatePeriodLong(lab.getDateStart(), lab.getDateEnd()) + " " +
                 (lab.getValidation() > 1 ? SLibUtils.textToHtml("(actualización " + (lab.getValidation() - 1) + ")") : "" ) + "</h2>" ;
