@@ -1001,7 +1001,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
         moFields.setFormButton(jbSaveAndNextRow);
         
-        moGridWahList = new SGridPaneForm(miClient, SModConsts.S_WAH_LAB_TEST, SLibConsts.UNDEFINED, "Pruebas de laboratorio") {
+       moGridWahList = new SGridPaneForm(miClient, SModConsts.S_WAH_LAB_TEST, SLibConsts.UNDEFINED, "Pruebas de laboratorio") {
             @Override
             public void initGrid() {
                 setRowButtonsEnabled(true);
@@ -1023,7 +1023,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
                 }
             }
         };
-
+        
         moFormWahLabTest = new SFormWahLabTest(miClient, "Almacenes e ítems");
         moGridWahList.setForm(moFormWahLabTest);
         moGridWahList.setPaneFormOwner(this);
@@ -1276,16 +1276,18 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     
     private void populateLaboratoryTest() throws SQLException {
         Vector<SGridRow> vRows = new Vector<>();
-        vRows.addAll(maWahLabTests);
-        
-        moGridWahList.populateGrid(vRows, this); 
-        moGridWahList.clearSortKeys();
-        moGridWahList.setSelectedGridRow(0);
+        if (maWahLabTests.size() > 0) {
+            vRows.addAll(maWahLabTests);
+        }
+        moGridWahList.populateGrid(vRows); 
     }
     
     private void eraseAll() {
-        moGridWahList.clearGrid();
-        maWahLabTests = null;
+        try {
+            moGridWahList.clearGrid();
+            maWahLabTests = new ArrayList<>();
+            populateLaboratoryTest();
+        } catch (Exception e) {}
         
         moTextCurItem.setValue("");
         moTextCurAciPer.setValue("");
@@ -1585,22 +1587,29 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
 
     @Override
     public void reloadCatalogues() {
-        moIntValVersion.setValue(0);
-        moDialogAllWahLabTest = null;
-        moBoolDone.setValue(false);
-        moBoolValidate.setValue(false);
-        moDateCaptureDate.setEnabled(true);
-        moYearCurYearTest.setValue(0);
-        moWeekCurWeekTest.setValue(0);
-        moDateCurStartDateTest.setValue(null);
-        moDateCurEndDateTest.setValue(null);
-        moYearLastYearTest.setValue(0);
-        moWeekLastWeekTest.setValue(0);
-        moDateLastStartDateTest.setValue(null);
-        moDateLastEndDateTest.setValue(null);
-        jbContinue.setEnabled(true);
-        jbRestart.setEnabled(false);
-        eraseAll();
+        try {
+            maWahLabTests = new ArrayList<>();
+            populateLaboratoryTest();
+            moIntValVersion.setValue(0);
+            moDialogAllWahLabTest = null;
+            moBoolDone.setValue(false);
+            moBoolValidate.setValue(false);
+            moDateCaptureDate.setEnabled(true);
+            moYearCurYearTest.setValue(0);
+            moWeekCurWeekTest.setValue(0);
+            moDateCurStartDateTest.setValue(null);
+            moDateCurEndDateTest.setValue(null);
+            moYearLastYearTest.setValue(0);
+            moWeekLastWeekTest.setValue(0);
+            moDateLastStartDateTest.setValue(null);
+            moDateLastEndDateTest.setValue(null);
+            jbContinue.setEnabled(true);
+            jbRestart.setEnabled(false);
+            eraseAll();
+        }
+        catch (SQLException e) {
+            SLibUtils.showException(this, e);
+        }
     }
 
     @Override
