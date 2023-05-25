@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
@@ -188,7 +188,7 @@ public class SGrindingReport {
 
         moBackgroundBlackStyle = sheet.getWorkbook().createCellStyle();
         moBackgroundBlackStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
-        moBackgroundBlackStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        moBackgroundBlackStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         int rowsCount = 1;
 
