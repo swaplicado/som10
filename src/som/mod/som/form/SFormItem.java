@@ -1577,9 +1577,9 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         registry.setPrintInputType(moBoolPrintInputType.getValue());
         registry.setFkItemTypeId(moKeyItemType.getValue()[0]);
-        registry.setFkOilClassId_n(moKeyOilClass.getValue()[0]);
-        registry.setFkOilTypeId_n(moKeyOilType.getValue()[1]);
-        registry.setFkOilGroupFamily_n(moKeyOilFamilyGroup.getValue()[0]); 
+        registry.setFkOilClassId_n(moKeyOilClass.getSelectedIndex() > 0 ? moKeyOilClass.getValue()[0] : SLibConsts.UNDEFINED);
+        registry.setFkOilTypeId_n(moKeyOilType.getSelectedIndex() > 0 ? moKeyOilType.getValue()[1] : SLibConsts.UNDEFINED);
+        registry.setFkOilGroupFamily_n(moKeyOilFamilyGroup.getSelectedIndex() > 0 ? moKeyOilFamilyGroup.getValue()[0] : SLibConsts.UNDEFINED); 
         
         if (isRowMaterial) {
             registry.setFkInputCategoryId(moKeyInputType.getValue()[0]);
@@ -1656,7 +1656,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
                 validation.setMessage("La suma de los campos '" + SGuiUtils.getLabelName(jlMfgFinishedGoodPercentage.getText()) + "', '" + SGuiUtils.getLabelName(jlMfgByproductPercentage.getText()) + "' y '" + SGuiUtils.getLabelName(jlMfgWastePercentage.getText()) + "' es diferente del 100%.");
                 validation.setComponent(moDecMfgFinishedGoodPercentage);
             }
-            else if (moKeyOilClass.getValue()[0] > 0 && moKeyOilType.getValue()[0] == 0) {
+            else if (moKeyOilClass.getSelectedIndex() > 0 && moKeyOilType.getSelectedIndex() == 0) {
                 validation.setMessage("Si seleccionó '" + SGuiUtils.getLabelName(jlOilClass.getText()) + "', debe seleccionar una opción de '" + SGuiUtils.getLabelName(jlOilType.getText()) + "'.");
                 validation.setComponent(moKeyOilType);
             }

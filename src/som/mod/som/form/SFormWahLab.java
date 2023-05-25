@@ -1279,7 +1279,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         if (maWahLabTests.size() > 0) {
             vRows.addAll(maWahLabTests);
         }
-        moGridWahList.populateGrid(vRows); 
+        moGridWahList.populateGrid(vRows, this); 
     }
     
     private void eraseAll() {
