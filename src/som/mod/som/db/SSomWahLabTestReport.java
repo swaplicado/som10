@@ -43,7 +43,7 @@ public class SSomWahLabTestReport {
 
                 String mailSubject = "[SOM] Resultados tanques proceso " + period;
 
-                ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode("isabel.garcia@swaplicado.com.mx", ";")));
+                ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailTo, ";")));
 
                 SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "Aeth2021*s.", "som@aeth.mx");
 
