@@ -1,4 +1,11 @@
 ================================================================================
+2023-08-07, 1.0 088.1
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Adición de columnas del usuario que ingresó y modificó en la vista del stock diario.
+2) Creación del método read por orden alfabético de los tanques en los resultados de laboratorio de aceites.
+
+================================================================================
 2023-03-24, 1.0 088.0
 Edwin Omar CARMONA FIGUEROA
 --------------------------------------------------------------------------------

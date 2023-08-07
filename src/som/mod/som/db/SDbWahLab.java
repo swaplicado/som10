@@ -116,7 +116,7 @@ public class SDbWahLab extends SDbRegistryUser {
      * @param pk
      * @throws java.sql.SQLException
     */
-    public void readXta(SGuiSession session, int[] pk) throws SQLException, Exception {
+    public void readWithoutLastTest(SGuiSession session, int[] pk) throws SQLException, Exception {
         ResultSet resultSet;
         Statement statement;
         
@@ -162,6 +162,66 @@ public class SDbWahLab extends SDbRegistryUser {
         
         mnQueryResultId = SDbConsts.READ_OK;
     }
+    
+    /**
+     * Copia del método read pero ordenando los analisis de laboratorio por la clave del tanque
+     * @param session
+     * @param pk
+     * @throws java.sql.SQLException
+    */
+    public void readByWahCode(SGuiSession session, int[] pk) throws SQLException, Exception {
+        ResultSet resultSet;
+        Statement statement;
+        
+        initRegistry();
+        initQueryMembers();
+        mnQueryResultId = SDbConsts.READ_ERROR;
+        
+        msSql = "SELECT * " + getSqlFromWhere(pk);
+        resultSet = session.getStatement().executeQuery(msSql);
+        if (!resultSet.next()) {
+            throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
+        }
+        else {
+            mnPkWarehouseLaboratoryId = resultSet.getInt("id_wah_lab");
+            mnValidation = resultSet.getInt("val");
+            mnYear = resultSet.getInt("year");
+            mnWeek = resultSet.getInt("week");
+            mtDateStart = resultSet.getDate("dt_start");
+            mtDateEnd = resultSet.getDate("dt_end");
+            mbDone = resultSet.getBoolean("b_done");
+            mbValidated = resultSet.getBoolean("b_val");
+            mbDeleted = resultSet.getBoolean("b_del");
+            mbSystem = resultSet.getBoolean("b_sys");
+            mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
+            mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
+            mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
+            mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
+            
+            // Read aswell child registries:
+            
+            statement = session.getStatement().getConnection().createStatement();
+            maWahLabTests = new ArrayList<>();
+            
+            msSql = "SELECT id_test FROM " + SModConsts.TablesMap.get(SModConsts.S_WAH_LAB_TEST) + " AS t " 
+                    + "INNER JOIN cu_wah AS w ON " 
+                    + "t.fk_wah_co = w.id_co AND t.fk_wah_cob = w.id_cob AND t.fk_wah_wah = w.id_wah "
+                    + getSqlWhere()  
+                    + "ORDER BY w.code ";
+            resultSet = statement.executeQuery(msSql);
+            while (resultSet.next()) {
+                SDbWahLabTest labTest = new SDbWahLabTest();
+                labTest.read(session, new int[] { mnPkWarehouseLaboratoryId, resultSet.getInt(1) });
+                maWahLabTests.add(labTest);
+            }
+            
+            readLastWahLab(session, mnYear, mnWeek, false);
+            
+            mbRegistryNew = false;
+        }
+        
+        mnQueryResultId = SDbConsts.READ_OK;
+    }
 
     public void readLastWahLab(SGuiSession session, int curYear, int curWeek, boolean showMessage) throws Exception {
         Statement statement = session.getStatement().getConnection().createStatement();
@@ -173,7 +233,7 @@ public class SDbWahLab extends SDbRegistryUser {
         ResultSet resultSet = statement.executeQuery(msSql);
         if (resultSet.next()) {
             moLastWahLab = new SDbWahLab();
-            moLastWahLab.readXta(session, new int[] { resultSet.getInt(1) });
+            moLastWahLab.readWithoutLastTest(session, new int[] { resultSet.getInt(1) });
         }
         else {
             sqlWhere = "WHERE year = " + (curWeek == 1 ? curYear - 1 : curYear) + " "
@@ -183,7 +243,7 @@ public class SDbWahLab extends SDbRegistryUser {
             resultSet = statement.executeQuery(msSql);
             if (resultSet.next()) {
                 moLastWahLab = new SDbWahLab();
-                moLastWahLab.readXta(session, new int[] { resultSet.getInt(1) });
+                moLastWahLab.readWithoutLastTest(session, new int[] { resultSet.getInt(1) });
             }
             else {
                 if (showMessage){

@@ -264,7 +264,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
                     mdCapacityRealLiter + ", " +
                     mdVolumeAdjustLiter + ", " +
                     mdAcidity + ", " +
-                    (msNote.equals("") ? "'-'" : msNote) + ", " +
+                    (msNote.equals("") ? "'-'" : "'" + msNote + "'") + ", " +
                     (mbMobile ? 1 : 0) + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
@@ -296,7 +296,7 @@ public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
                     "cap_real_lt = " + mdCapacityRealLiter + ", " +
                     "vol_adj_lt = " + mdVolumeAdjustLiter + ", " +
                     "acidity = " + mdAcidity + ", " +
-                    "note = " + (msNote.equals("") ? "'-'" : "'" + msNote + "'") + ", " +
+                    "note = '" + (msNote.equals("") ? "-" : msNote) + "', " +
                     "b_mobile = " + (mbMobile ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +

@@ -43,7 +43,7 @@ public class SSomWahLabTestReport {
 
                 String mailSubject = "[SOM] Resultados tanques proceso " + period;
 
-                ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailTo, ";")));
+                ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode("isabel.garcia@swaplicado.com.mx", ";")));
 
                 SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "Aeth2021*s.", "som@aeth.mx");
 
@@ -234,7 +234,7 @@ public class SSomWahLabTestReport {
     
     private SDbWahLab getWahLab(int[] pk) throws Exception {
         SDbWahLab lab = new SDbWahLab();
-        lab.read(miClient.getSession(), pk);
+        lab.readByWahCode(miClient.getSession(), pk);
         if (lab.getLastWahLab() != null) {
             for (SDbWahLabTest test : lab.getWahLabTests()) {
                 test.readSimilarItemLastWahLabTest(miClient.getSession(), lab.getLastWahLab().getPkWarehouseLaboratoryId());

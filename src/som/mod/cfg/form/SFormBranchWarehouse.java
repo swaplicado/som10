@@ -26,6 +26,8 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
 
     /**
      * Creates new registry SFormBranchWarehouse
+     * @param client
+     * @param title
      */
     public SFormBranchWarehouse(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.CU_WAH, SLibConsts.UNDEFINED, title);

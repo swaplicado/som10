@@ -82,12 +82,22 @@ public class SViewStockDays extends SGridPaneView {
             "co.code AS f_co_code, " +
             "co.name AS f_co_name, " +
             "cob.code AS f_cob_code, " +
-            "cob.name AS f_cob_name, v.id_co, v.id_cob " +
+            "cob.name AS f_cob_name, v.id_co, v.id_cob,  " +
+            "v.fk_usr_ins AS " + SDbConsts.FIELD_USER_INS_ID + ", " +
+            "v.fk_usr_upd AS " + SDbConsts.FIELD_USER_UPD_ID + ", " +
+            "v.ts_usr_ins AS " + SDbConsts.FIELD_USER_INS_TS + ", " +
+            "v.ts_usr_upd AS " + SDbConsts.FIELD_USER_UPD_TS + ", " +
+            "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", " +
+            "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " " +
             "FROM " + SModConsts.TablesMap.get(SModConsts.S_STK_DAY) + " AS v " +
             "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_CO) +  " AS co ON " +
             "v.id_co = co.id_co " +
             "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_COB) +  " AS cob ON " +
             "v.id_cob = cob.id_co AND v.id_cob = cob.id_cob " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON " +
+            "v.fk_usr_ins = ui.id_usr " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON " +
+            "v.fk_usr_upd = uu.id_usr " +
             (sql.isEmpty() ? "" : "WHERE " + sql) +
             "GROUP BY v.id_co, v.id_cob, v.dt " +
             "ORDER BY co.code, co.name, cob.code, cob.name, v.dt ";
@@ -96,7 +106,7 @@ public class SViewStockDays extends SGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[6];
+        SGridColumnView[] columns = new SGridColumnView[10];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "f_co_name", "Empresa");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, "f_co_code", "Empresa código");
@@ -104,6 +114,10 @@ public class SViewStockDays extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CO, "f_cob_code", "Sucursal código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, SDbConsts.FIELD_DATE, SGridConsts.COL_TITLE_DATE);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, SDbConsts.FIELD_USER_INS_TS, SGridConsts.COL_TITLE_USER_INS_TS);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_UPD_NAME, SGridConsts.COL_TITLE_USER_UPD_NAME);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, SDbConsts.FIELD_USER_UPD_TS, SGridConsts.COL_TITLE_USER_UPD_TS);
 
         moModel.getGridColumns().addAll(Arrays.asList(columns));
     }
