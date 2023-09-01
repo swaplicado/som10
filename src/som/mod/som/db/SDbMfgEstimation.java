@@ -462,24 +462,47 @@ public class SDbMfgEstimation extends SDbRegistryUser {
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 maItemsStockDay.add(new Object[] {
-                    resultSet.getInt("sd.id_item"), resultSet.getString("i.name"), resultSet.getString("i.code"),
-                    resultSet.getDouble("f_stk_day"), resultSet.getString("u.code"), resultSet.getString("cb.code"),
-                    resultSet.getString("w.code"), resultSet.getInt("sd.id_co"), resultSet.getInt("sd.id_cob"),
-                    resultSet.getInt("sd.id_wah"), resultSet.getInt("w.fk_wah_tp"), resultSet.getString("wt.code"),
-                    resultSet.getInt("fk_item_src_1_n"), resultSet.getInt("fk_item_src_2_n"), resultSet.getString("pl.code"), 
-                    resultSet.getString("pl.name"), resultSet.getInt("w.fk_line") });
+                    resultSet.getInt("sd.id_item"), // 0
+                    resultSet.getString("i.name"), // 1
+                    resultSet.getString("i.code"), // 2
+                    resultSet.getDouble("f_stk_day"), // 3
+                    resultSet.getString("u.code"), // 4
+                    resultSet.getString("cb.code"), // 5
+                    resultSet.getString("w.code"), // 6
+                    resultSet.getInt("sd.id_co"), // 7
+                    resultSet.getInt("sd.id_cob"), // 8
+                    resultSet.getInt("sd.id_wah"), // 9
+                    resultSet.getInt("w.fk_wah_tp"), // 10
+                    resultSet.getString("wt.code"),
+                    resultSet.getInt("fk_item_src_1_n"), 
+                    resultSet.getInt("fk_item_src_2_n"), 
+                    resultSet.getString("pl.code"), 
+                    resultSet.getString("pl.name"), 
+                    resultSet.getInt("w.fk_line") });
             }
 
             sql = computeQueryStockDaySystem(false, true, false);
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 maItemsStockSystem.add(new Object[] {
-                    resultSet.getInt("s.id_item"), resultSet.getString("i.name"), resultSet.getString("i.code"),
-                    resultSet.getDouble("f_stock"), resultSet.getString("u.code"), resultSet.getString("f_stock_dly"),
-                    resultSet.getString("cb.code"), resultSet.getString("w.code"), resultSet.getInt("s.id_co"),
-                    resultSet.getInt("s.id_cob"), resultSet.getInt("s.id_wah"), resultSet.getInt("w.fk_wah_tp"),
-                    resultSet.getString("wt.code"), resultSet.getInt("f_fk_item_src_1_n"), resultSet.getInt("f_fk_item_src_2_n"),
-                    resultSet.getString("pl.code"), resultSet.getString("pl.name"), resultSet.getInt("w.fk_line")});
+                    resultSet.getInt("s.id_item"), // 0
+                    resultSet.getString("i.name"),  // 1
+                    resultSet.getString("i.code"), // 2
+                    resultSet.getDouble("f_stock"), // 3
+                    resultSet.getString("u.code"), // 4
+                    resultSet.getString("f_stock_dly"), // 5
+                    resultSet.getString("cb.code"), // 6
+                    resultSet.getString("w.code"), // 7
+                    resultSet.getInt("s.id_co"), // 8
+                    resultSet.getInt("s.id_cob"), // 9
+                    resultSet.getInt("s.id_wah"),  // 10
+                    resultSet.getInt("w.fk_wah_tp"),
+                    resultSet.getString("wt.code"), 
+                    resultSet.getInt("f_fk_item_src_1_n"), 
+                    resultSet.getInt("f_fk_item_src_2_n"),
+                    resultSet.getString("pl.code"), 
+                    resultSet.getString("pl.name"), 
+                    resultSet.getInt("w.fk_line")});
             }
 
             /* XXX
@@ -513,16 +536,17 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                 // Compare items:
 
                 existStockDayItem = false;
-                if ((Integer) oItemStockDay[7] == (Integer) oItemStockSystem[8] && // Company
-                    (Integer) oItemStockDay[8] == (Integer) oItemStockSystem[9] && // Branch
-                    (Integer) oItemStockDay[9] == (Integer) oItemStockSystem[10] && // Warehouse
-                    (Integer) oItemStockDay[0] == (Integer) oItemStockSystem[0]) { // Item
+                boolean isEqual = ((Integer) oItemStockDay[7]).intValue() == ((Integer) oItemStockSystem[8]).intValue() && // Company
+                    ((Integer) oItemStockDay[8]).intValue() == ((Integer) oItemStockSystem[9]).intValue() && // Branch
+                    ((Integer) oItemStockDay[9]).intValue() == ((Integer) oItemStockSystem[10]).intValue() && // Warehouse
+                    ((Integer) oItemStockDay[0]).intValue() == ((Integer) oItemStockSystem[0]).intValue();
+                if (isEqual) { // Item
                     // Compare quantity:
 
                     existStockDayItem = true;
                     if (((Double) oItemStockDay[3]).intValue() > ((Double) oItemStockSystem[3]).intValue() ||
                             (((Double) oItemStockDay[3]).intValue() < ((Double) oItemStockSystem[3]).intValue() &&
-                            (Integer) oItemStockSystem[11] == SModSysConsts.CS_WAH_TP_TAN_MFG)) {
+                            ((Integer) oItemStockSystem[11]).intValue() == SModSysConsts.CS_WAH_TP_TAN_MFG)) {
 
                         // Calculate production:
 
@@ -555,7 +579,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                                     mfgWarehouseProduct.getPkCompanyId(), mfgWarehouseProduct.getPkBranchId(), mfgWarehouseProduct.getPkWarehouseId()});
                         mfgWarehouseProduct.setQuantityDelivery(quantityDelivery);
 
-                        if (((Integer) oItemStockSystem[11] == SModSysConsts.CS_WAH_TP_TAN_MFG &&
+                        if ((((Integer) oItemStockSystem[11]).intValue() == SModSysConsts.CS_WAH_TP_TAN_MFG &&
                                 SLibUtils.round(mfgWarehouseProduct.getQuantityDelivery(), SLibUtils.DecimalFormatValue4D.getMaximumFractionDigits()) !=
                                 SLibUtils.round(mfgWarehouseProduct.getQuantity(), SLibUtils.DecimalFormatValue4D.getMaximumFractionDigits())) ||
                                 SLibUtils.round(mfgWarehouseProduct.getQuantityDelivery(), SLibUtils.DecimalFormatValue4D.getMaximumFractionDigits()) <
@@ -749,10 +773,10 @@ public class SDbMfgEstimation extends SDbRegistryUser {
 
                     // Compare warehouse item:
 
-                    if ((Integer) oItemStockDay[7] == (Integer) oItemStockSystem[8] && // Company
-                        (Integer) oItemStockDay[8] == (Integer) oItemStockSystem[9] && // Branch
-                        (Integer) oItemStockDay[9] == (Integer) oItemStockSystem[10] && // Warehouse
-                        (Integer) oItemStockDay[0] == (Integer) oItemStockSystem[0]) { // Item
+                    if (((Integer) oItemStockDay[7]).intValue() == ((Integer) oItemStockSystem[8]).intValue() && // Company
+                        ((Integer) oItemStockDay[8]).intValue() == ((Integer) oItemStockSystem[9]).intValue() && // Branch
+                        ((Integer) oItemStockDay[9]).intValue() == ((Integer) oItemStockSystem[10]).intValue() && // Warehouse
+                        ((Integer) oItemStockDay[0]).intValue() == ((Integer) oItemStockSystem[0]).intValue()) { // Item
 
                         // Compare quantity:
                         SDbBranchWarehouse whs = new SDbBranchWarehouse();
