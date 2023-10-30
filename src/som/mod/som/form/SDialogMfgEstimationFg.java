@@ -9,12 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 import javax.swing.JButton;
-import org.joda.time.DateTime;
 import sa.lib.SLibConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
@@ -591,10 +589,7 @@ public class SDialogMfgEstimationFg extends SBeanFormDialog implements ActionLis
             
             if (bContinue) {
                 // guardar registros en el stock record después de realizar la entrega de la estimación
-                DateTime dateTime = new DateTime(moDateDate.getValue());
-                dateTime = dateTime.minusDays(1);
-                Date estimationDate = dateTime.toDate();
-                SStockRecordUtils.saveStockRecord(miClient, estimationDate);
+                SStockRecordUtils.saveStockRecord(miClient, SLibTimeUtils.addDate(moDateDate.getValue(), 0, 0, -1));
             }
 
                 /*
