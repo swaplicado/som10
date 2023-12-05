@@ -53,12 +53,14 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
     */
 
     protected Vector<SDbUserRight> mvChildUserRights;
+    protected Vector<SDbUserRightAlternative> mvChildUserRightsAlternatives;
     protected Vector<SDbUserScale> mvChildUserScales;
     protected Vector<SDbUserInputCategory> mvChildUserInputCategories;
 
     public SDbUser() {
         super(SModConsts.CU_USR);
         mvChildUserRights = new Vector<>();
+        mvChildUserRightsAlternatives = new Vector<>();
         mvChildUserScales = new Vector<>();
         mvChildUserInputCategories = new Vector<>();
         initRegistry();
@@ -95,6 +97,7 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
     public Vector<SDbUserRight> getChildUserRights() { return mvChildUserRights; }
+    public Vector<SDbUserRightAlternative> getChildUserRightsAlternatives() { return mvChildUserRightsAlternatives; }
     public Vector<SDbUserScale> getChildUserScales() { return mvChildUserScales; }
     public Vector<SDbUserInputCategory> getChildUserInputCategories() { return mvChildUserInputCategories; }
     
@@ -165,6 +168,27 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
         return access;
     }
 
+    public boolean hasPrivilegeAlternative(final int privilege) {
+        boolean hasPrivilege = false;
+
+        if (isSupervisor()) {
+            hasPrivilege = true;
+        }
+        else if (isAdministrator()) {
+            hasPrivilege = true;
+        }
+        else {
+            for (SDbUserRightAlternative right : mvChildUserRightsAlternatives) {
+                if (privilege == right.getPkRightId()) {
+                    hasPrivilege = true;
+                    break;
+                }
+            }
+        }
+
+        return hasPrivilege;
+    }
+    
     @Override
     public boolean hasPrivilege(final int privilege) {
         boolean hasPrivilege = false;
@@ -266,6 +290,7 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
         mtTsUserUpdate = null;
 
         mvChildUserRights.clear();
+        mvChildUserRightsAlternatives.clear();
         mvChildUserScales.clear();
         mvChildUserInputCategories.clear();
     }
@@ -338,6 +363,14 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
                 SDbUserRight child = new SDbUserRight();
                 child.read(session, new int[] { mnPkUserId, resultSet.getInt(1) });
                 mvChildUserRights.add(child);
+            }
+            
+            msSql = "SELECT id_rig FROM " + SModConsts.TablesMap.get(SModConsts.CU_USR_ALT_RIG) + " " + getSqlWhere();
+            resultSet = statement.executeQuery(msSql);
+            while (resultSet.next()) {
+                SDbUserRightAlternative child = new SDbUserRightAlternative();
+                child.read(session, new int[] { mnPkUserId, resultSet.getInt(1) });
+                mvChildUserRightsAlternatives.add(child);
             }
 
             msSql = "SELECT id_sca FROM " + SModConsts.TablesMap.get(SModConsts.CU_USR_SCA) + " " + getSqlWhere();
@@ -430,6 +463,15 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
             child.setRegistryNew(true);
             child.save(session);
         }
+        
+        msSql = "DELETE FROM " + SModConsts.TablesMap.get(SModConsts.CU_USR_ALT_RIG) + " " + getSqlWhere();
+        session.getStatement().execute(msSql);
+
+        for (SDbUserRightAlternative child : mvChildUserRightsAlternatives) {
+            child.setPkUserId(mnPkUserId);
+            child.setRegistryNew(true);
+            child.save(session);
+        }
 
         msSql = "DELETE FROM " + SModConsts.TablesMap.get(SModConsts.CU_USR_SCA) + " " + getSqlWhere();
         session.getStatement().execute(msSql);
@@ -476,6 +518,10 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
 
         for (SDbUserRight child : mvChildUserRights) {
             registry.getChildUserRights().add(child.clone());
+        }
+        
+        for (SDbUserRightAlternative child : mvChildUserRightsAlternatives) {
+            registry.getChildUserRightsAlternatives().add(child.clone());
         }
 
         for (SDbUserScale child : mvChildUserScales) {

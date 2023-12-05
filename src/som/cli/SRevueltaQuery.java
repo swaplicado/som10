@@ -100,7 +100,7 @@ public class SRevueltaQuery {
     private static void run() throws Exception {
         String sql = "select * from dba.pesadas "
                 + "where Usb_ID = 'ACTH' "//and pro_id = 'PAAG' "
-                + "and pes_fechor between '2023-01-31 06:30:00' AND '2023-02-01 06:29:59' ";
+                + "and pes_fechor between '2023-11-27 06:30:00' AND '2023-11-28 06:29:59' ";
                 //+ "order by pes_id;"; //pes_id, pro_id, pro_nombre, pes_fechorpri
         
         int count = 0;

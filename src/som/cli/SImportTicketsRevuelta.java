@@ -102,8 +102,9 @@ public class SImportTicketsRevuelta {
         rstSoom.next();
         setLastImportedTicket(rstSoom.getInt(1));
         String sql = "SELECT "
-                + "Pes_ID, Pes_FecHorPri, Pes_ObsPri, Pes_PesoPri, Pes_Bruto, "
-                + "Pes_FecHorSeg, Pes_UnidadPri, Pes_PesoSeg, Pes_Tara, Pes_Neto, Pes_Placas, Pes_Chofer, "
+                + "Pes_ID, Pes_FecHorPri, Pes_ObsPri, Pes_PesoPri, Pes_Bruto, Pes_OpeNomPri, "
+                + "Pes_FecHorSeg, Pes_UnidadPri, Pes_PesoSeg, Pes_ObsSeg, Pes_OpeNomSeg, "
+                + "Pes_Tara, Pes_Neto, Pes_Placas, Pes_Chofer, "
                 + "Pro_ID, Emp_ID, NOW() AS now "
                 + "FROM dba.Pesadas "
                 + "WHERE Pes_ID >= 150000 "
@@ -160,6 +161,10 @@ public class SImportTicketsRevuelta {
                     registry.setWeightDestinyGross_r(rstRev.getInt("Pes_PesoPri"));
                     registry.setQuantity(id);
                     //registry.setWeightDestinyNet_r(WeightDestinyNet_r());
+                    registry.setScaleOperatorArrival(rstRev.getString("Pes_OpeNomPri"));
+                    registry.setScaleOperatorDeparture(rstRev.getString("Pes_OpeNomSeg"));
+                    registry.setScaleCommentsArrival(rstRev.getString("Pes_ObsPri"));
+                    registry.setScaleCommentsDeparture(rstRev.getString("Pes_ObsSeg"));
                     //registry.setSystemPenaltyPercentage(SystemPenaltyPercentage());
                     //registry.setSystemWeightPayment(SystemWeightPayment());
                     //registry.setSystemPricePerTon(SystemPricePerTon());

@@ -118,24 +118,6 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="jbImportTicket">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Importar de Revuelta"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Importar de Revuelta (primer pesada)"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[165, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="jbCleanTicket">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Limpiar"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Limpiar datos primer pesada"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[75, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel10">
@@ -369,24 +351,6 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="jbImportTareTicket">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Importar de Revuelta"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Importar de Revuelta (segunda pesada)"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[165, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="jbCleanTare">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Limpiar"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Limpiar datos segunda pesada"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[75, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel8">
@@ -497,18 +461,6 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="jbPackingFullQuantityArrival">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Modificar"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Modificar cantidad empaque lleno"/>
-                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[0, 0, 0, 0]"/>
-                    </Property>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[75, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel18">
@@ -532,18 +484,6 @@
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[50, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="jbPackingEmptyQuantityArrival">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Modificar"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Modificar cantidad empaque vac&#xed;o"/>
-                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[0, 0, 0, 0]"/>
-                    </Property>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[75, 23]"/>
                     </Property>
                   </Properties>
                 </Component>

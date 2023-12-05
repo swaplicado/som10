@@ -47,6 +47,9 @@ public abstract class SModSysConsts {
     public static final int CS_RIG_LOG = 13;    // logistics
     public static final int CS_RIG_VLR = 14;    // validation laboratory results
 
+    public static final int CS_ALT_RIG_PUR = 1; // purchase
+    public static final int CS_ALT_RIG_QTY = 2; // quality
+    
     public static final int CU_LAN_SPA = 1;
     public static final int CU_LAN_ENG = 2;
 

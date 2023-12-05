@@ -5,51 +5,22 @@
 
 package som.mod.som.db;
 
-import erp.lib.SLibUtilities;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Vector;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
-import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
-import sa.lib.db.SDbRegistry;
 import sa.lib.db.SDbRegistryUser;
-import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiSession;
-import sa.lib.mail.SMail;
-import sa.lib.mail.SMailConsts;
-import sa.lib.mail.SMailSender;
-import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
-import som.mod.SModSysConsts;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
- * 2019-01-07, Sergio Flores: Mostrar solo proveedores con movimientos en sección período actual, en notificación automática de recepción de boletos.
- * 2019-01-17, Sergio Flores: Mejoras reporte automático vía mail al tarar boletos:
- *   a) remoción de proveedores sin movimientos en todas las secciones. Antes aparecían todos.
- *   b) implementación de métodos privados para concentrar la generación de secciones de tablas del reporte.
+ * @author Isabel Servín
  */
-public class SDbTicket extends SDbRegistryUser implements SGridRow {
-
-    public static final int FIELD_PAYED = SDbRegistry.FIELD_BASE + 1;
-    public static final int FIELD_TICKET_STATUS = SDbRegistry.FIELD_BASE + 2;
-    public static final int FIELD_LABORATORY = SDbRegistry.FIELD_BASE + 3;
-    public static final int FIELD_TARED = SDbRegistry.FIELD_BASE + 4;
-    public static final int FIELD_ASSORTED = SDbRegistry.FIELD_BASE + 5;
-    public static final int FIELD_DPS = SDbRegistry.FIELD_BASE + 6;
-    public static final int FIELD_DPS_NULL = SDbRegistry.FIELD_BASE + 7;
-    
-    private static final int MAX_LEN_PROD = 20;
-    private static final int MAX_LEN_NAME = 25;
-    private static final int MAX_SEARCH_TICKETS = 100;
+public class SDbTicketAlternative extends SDbRegistryUser  {
 
     protected int mnPkTicketId;
     protected int mnNumber;
@@ -134,6 +105,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected Date mtTsUserTared;
     protected Date mtTsUserPayed;
     protected Date mtTsUserAssorted;
+    
+    protected SDbLaboratoryAlternative moDbmsLaboratoryAlt;
 
     protected boolean mbOldTared;
     protected boolean mbOldPayed;
@@ -151,111 +124,11 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected String msXtaProducer;
     protected String msXtaProducerFiscalId;
 
-    protected boolean mbAuxMoveNextOnSave;
-    protected boolean mbAuxRequirePriceComputation;
-    protected boolean mbAuxItemSendMail;
-    protected String msAuxItemRecipientsTo;
-    protected boolean mbAuxProducerSendMail;
-    protected String msAuxProducerRecipientsTo;
-
-    protected Vector<SDbTicketNote> mvChildTicketNotes;
-    protected Vector<SDbLaboratory> mvChildLaboratories;
-
-    public SDbTicket() {
-        super(SModConsts.S_TIC);
-        mvChildTicketNotes = new Vector<>();
-        mvChildLaboratories = new Vector<>();
+    public SDbTicketAlternative() {
+        super(SModConsts.S_ALT_TIC);
         initRegistry();
     }
-
-    /*
-     * Private methods
-     */
-
-    /**
-     * Send mail when ticket tared.
-     * @param session Current user session.
-     * @param producerId Zero or ID of producer. When zero, a summary of all receptions is included. Otherwise, when non-zero, only the ticket info is rendered.
-     */
-    private void sendMail(final SGuiSession session, final int producerId) {
-        String subject;
-        String body;
-        String section;
-
-        try {
-            if ((producerId == 0 && !msAuxItemRecipientsTo.isEmpty()) || (producerId != 0 && !msAuxProducerRecipientsTo.isEmpty())) {
-                int[] curDate = SLibTimeUtils.digestDate(mtDate);
-                int curYear = curDate[0];
-                int curMonth = curDate[1];
-                SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int[] { mnFkItemId });
-                SDbProducer prodr = (SDbProducer) session.readRegistry(SModConsts.SU_PROD, new int[] { mnFkProducerId });
-                String itemName = SLibUtils.textProperCase(item.getName());
-
-                subject = "[SOM] " + "Boleto " + mnNumber + ": " +
-                        SLibUtils.textToHtml(itemName) + "; " +
-                        SLibUtils.DecimalFormatValue2D.format(mdWeightDestinyNet_r) + " " + SSomConsts.KG + "; " +
-                        SLibUtils.textToHtml(prodr.getNameTrade());
-
-                // REPORT HEADER. Ticket info:
-
-                section = SLibUtils.textToHtml("Recepción") + " " + SLibUtils.textToHtml(SLibUtils.textProperCase(msXtaScaleName));
-
-                body = "<b>" + section + "</b><br>"
-                    + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
-                    + "<tr><td>Boleto</td><td align='left'>" + mnNumber + "</td></tr>"
-                    + "<tr><td>Chofer</td><td align='left'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(msDriver.length() > MAX_LEN_NAME ? msDriver.substring(0, MAX_LEN_NAME) : msDriver)) + "</td></tr>"
-                    + "<tr><td>Fecha</td><td align='left'>" + SLibUtils.DateFormatDatetime.format(mtDatetimeArrival) + "</td></tr>"
-                    + "<tr><td>Proveedor</td><td align='left'>" + SLibUtils.textToHtml((prodr.getNameTrade().length() > MAX_LEN_PROD ? prodr.getNameTrade().substring(0, MAX_LEN_PROD) : prodr.getNameTrade())) + "</td></tr>"
-                    + "<tr><td>Producto</td><td align='left'>" + SLibUtils.textToHtml(itemName.length() > MAX_LEN_NAME ? itemName.substring(0, MAX_LEN_NAME) : itemName) + "</td></tr>"
-                    + "<tr><td>Peso neto</td><td align='right'>" + SLibUtils.DecimalFormatValue2D.format(mdWeightDestinyNet_r) + " " + SSomConsts.KG + "</td></tr>"
-                    + "<tr><td>1er. pesada</td><td align='left'>" + (mbRevueltaImport1 ? SLibUtils.textToHtml("Automática") : "Manual") + "</td></tr>"
-                    + "<tr><td>2da. pesada</td><td align='left'>" + (mbRevueltaImport2 ? SLibUtils.textToHtml("Automática") : "Manual") + "</td></tr>"
-                    + "</table><br>";
-
-                if (producerId == 0) {
-                    // A summary of all receptions is about to be included:
-                    body += SSomUtils.composeHtmlSummaryItem(session, mnFkItemId, mtDate);
-                }
-                
-                // Add mail warning:
-
-                body += SSomMailUtils.composeMailWarning();
-
-                // Send mail to recipients:
-
-                SMailSender sender = new SMailSender(
-                    ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigHost(),
-                    ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigPort(),
-                    ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigProtocol(),
-                    ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().isMailNotificationConfigStartTls(),
-                    ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().isMailNotificationConfigAuth(),
-                    ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigUser(),
-                    ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigPassword(),
-                    ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigUser());
-
-                ArrayList<String> recipients;
-                if (producerId == 0) {
-                    recipients = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(msAuxItemRecipientsTo, ";")));
-                }
-                else {
-                    recipients = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(msAuxProducerRecipientsTo, ";")));
-                }
-                
-                SMail mail = new SMail(sender, subject, body, recipients);
-                
-                mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
-                mail.send();
-            }
-            else {
-                throw new Exception ("No se pudo enviar el mail.");
-            }
-        }
-        catch (Exception e) {
-            SLibUtils.printException(this, e);
-            msQueryResult = "Error: " + e;
-        }
-    }
-
+    
     /*
      * Public methods
      */
@@ -415,6 +288,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public Date getTsUserTared() { return mtTsUserTared; }
     public Date getTsUserPayed() { return mtTsUserPayed; }
     public Date getTsUserAssorted() { return mtTsUserAssorted; }
+    
+    public void setDbmsLaboratoryAlt(SDbLaboratoryAlternative o) { moDbmsLaboratoryAlt = o; }
 
     public void setXtaScaleName(String s) { msXtaScaleName = s;  }
     public void setXtaScaleCode(String s) { msXtaScaleCode = s;  }
@@ -427,13 +302,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setXtaInputSource(String s) { msXtaInputSource = s;  }
     public void setXtaProducer(String s) { msXtaProducer = s;  }
     public void setXtaProviderFiscalId(String s) { msXtaProducerFiscalId = s;  }
-
-    public void setAuxMoveNextOnSend(boolean b) { mbAuxMoveNextOnSave = b; }
-    public void setAuxRequirePriceComputation(boolean b) { mbAuxRequirePriceComputation = b; }
-    public void setAuxItemSendMail(boolean b) { mbAuxItemSendMail = b; }
-    public void setAuxItemRecipientsTo(String s) { msAuxItemRecipientsTo = s; }
-    public void setAuxProducerSendMail(boolean b) { mbAuxProducerSendMail = b; }
-    public void setAuxProducerRecipientsTo(String s) { msAuxProducerRecipientsTo = s; }
+    
+    public SDbLaboratoryAlternative getDbmsLaboratoryAlt() { return moDbmsLaboratoryAlt; }
 
     public String getXtaScaleName() { return msXtaScaleName; }
     public String getXtaScaleCode() { return msXtaScaleCode; }
@@ -446,16 +316,28 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public String getXtaInputSource() { return msXtaInputSource;  }
     public String getXtaProducer() { return msXtaProducer; }
     public String getXtaProducerFiscalId() { return msXtaProducerFiscalId; }
-
-    public boolean isAuxMoveNextOnSend() { return mbAuxMoveNextOnSave; }
-    public boolean isAuxRequirePriceComputation() { return mbAuxRequirePriceComputation; }
-    public boolean isAuxItemSendMail() { return mbAuxItemSendMail; }
-    public String getAuxItemRecipientsTo() { return msAuxItemRecipientsTo; }
-    public boolean isAuxProducerSendMail() { return mbAuxProducerSendMail; }
-    public String getAuxProducerRecipientsTo() { return msAuxProducerRecipientsTo; }
-
-    public Vector<SDbTicketNote> getChildTicketNotes() { return mvChildTicketNotes; }
-    public Vector<SDbLaboratory> getChildLaboratories() { return mvChildLaboratories; }
+    
+    private void validateRegistryNew(SGuiSession session) throws Exception {
+        ResultSet resultSet;
+        mbRegistryNew = false;
+        msSql = "SELECT * FROM " + getSqlTable() + " WHERE id_tic = " + mnPkTicketId;
+        resultSet = session.getStatement().executeQuery(msSql);
+        if (!resultSet.next()) {
+            mbRegistryNew = true;
+        }
+    }
+    
+    public String getTicketTable(SGuiSession session, int[] pk) throws Exception {
+        ResultSet resultSet;
+        msSql = "SELECT * FROM " + getSqlTable() + " " + getSqlWhere(pk);
+        resultSet = session.getStatement().executeQuery(msSql);
+        if (!resultSet.next()) {
+            return "s_tic";
+        }
+        else {
+            return getSqlTable();
+        }
+    }
 
     @Override
     public String getName() {
@@ -557,6 +439,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mbOldTared = false;
         mbOldPayed = false;
         mbOldAssorted = false;
+        
+        moDbmsLaboratoryAlt = null;
     
         msXtaScaleName = "";
         msXtaScaleCode = "";
@@ -569,16 +453,6 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         msXtaInputSource = "";
         msXtaProducer = "";
         msXtaProducerFiscalId = "";
-
-        mbAuxMoveNextOnSave = false;
-        mbAuxRequirePriceComputation = false;
-        mbAuxItemSendMail = false;
-        msAuxItemRecipientsTo = "";
-        mbAuxProducerSendMail = false;
-        msAuxProducerRecipientsTo = "";
-
-        mvChildTicketNotes.clear();
-        mvChildLaboratories.clear();
     }
 
     @Override
@@ -611,15 +485,14 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     @Override
     public void read(SGuiSession session, int[] pk) throws SQLException, Exception {
-        Statement statement = null;
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         initRegistry();
         initQueryMembers();
         mnQueryResultId = SDbConsts.READ_ERROR;
 
         msSql = "SELECT t.*, sc.name, sc.code, p.name, p.fis_id, i.name, i.fk_unit, it.id_inp_ct, it.id_inp_cl, it.name, src.name, s.name, r.name " +
-                "FROM " + getSqlTable() + " AS t "
+                "FROM " + getTicketTable(session, pk) + " AS t "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sc ON "
                 + "t.fk_sca = sc.id_sca "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS p ON "
@@ -692,6 +565,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mbDeleted = resultSet.getBoolean("t.b_del");
             mbSystem = resultSet.getBoolean("t.b_sys");
             mbAlternative = resultSet.getBoolean("b_alt");
+            
             mnFkScaleId = resultSet.getInt("t.fk_sca");
             mnFkTicketStatusId = resultSet.getInt("t.fk_tic_st");
             mnFkSeasonId_n = resultSet.getInt("t.fk_seas_n");
@@ -739,28 +613,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             msXtaInputSource = resultSet.getString("src.name");
             msXtaProducer = resultSet.getString("p.name");
             msXtaProducerFiscalId = resultSet.getString("p.fis_id");
-
-            // Read aswell child registries:
-
-            statement = session.getStatement().getConnection().createStatement();
-
-            msSql = "SELECT id_note FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC_NOTE) + " " + getSqlWhere();
-            resultSet = statement.executeQuery(msSql);
-            while (resultSet.next()) {
-                SDbTicketNote child = new SDbTicketNote();
-                child.read(session, new int[] { mnPkTicketId, resultSet.getInt(1) });
-                mvChildTicketNotes.add(child);
-            }
-
-            if (mnFkLaboratoryId_n > SLibConsts.UNDEFINED) {
-                SDbLaboratory child = new SDbLaboratory();
-                child.read(session, new int[] { mnFkLaboratoryId_n });
-                if (!child.isDeleted()) {
-                    mvChildLaboratories.add(child);
-                }
-                else {
-                    mnFkLaboratoryId_n = SLibConsts.UNDEFINED;
-                }
+            
+            if (mnFkLaboratoryId_n != 0 && mbAlternative) {
+                moDbmsLaboratoryAlt = new SDbLaboratoryAlternative();
+                moDbmsLaboratoryAlt.read(session, new int[] { mnFkLaboratoryId_n });
             }
 
             // Finish registry reading:
@@ -776,45 +632,17 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         initQueryMembers();
         mnQueryResultId = SDbConsts.SAVE_ERROR;
         
-        computeWeight(session, true);
-
-        if (mbAuxRequirePriceComputation) {
-            computePrice(session);
-        }
+        validateRegistryNew(session);
         
-        if (mbAuxMoveNextOnSave) {
-            moveNext(session);
-        }
-        
-        if (mbTared && !mbOldTared) {
-            mnFkUserTaredId = session.getUser().getPkUserId();
-        }
-        else if (mnFkUserTaredId == 0) {
-            mnFkUserTaredId = SUtilConsts.USR_NA_ID;
-        }
-        
-        if (mbPayed && !mbOldPayed) {
-            mnFkUserPayedId = session.getUser().getPkUserId();
-        }
-        else if (mnFkUserPayedId == 0) {
-            mnFkUserPayedId = SUtilConsts.USR_NA_ID;
-        }
-        
-        if (mbAssorted && !mbOldAssorted) {
-            mnFkUserAssortedId = session.getUser().getPkUserId();
-        }
-        else if (mnFkUserAssortedId == 0) {
-            mnFkUserAssortedId = SUtilConsts.USR_NA_ID;
-        }
-
         if (mbRegistryNew) {
-            computePrimaryKey(session);
             mbUpdatable = true;
             mbDisableable = true;
             mbDeletable = true;
             mbDisabled = false;
             mbDeleted = false;
             mbSystem = false;
+            mbAlternative = true;
+            mnFkLaboratoryId_n = 0;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
@@ -906,6 +734,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         }
         else {
             mnFkUserUpdateId = session.getUser().getPkUserId();
+            mbAlternative = true;
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
                     /*
@@ -992,42 +821,47 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
         session.getStatement().execute(msSql);
 
-        // Save aswell child registries:
-
-        msSql = "DELETE FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC_NOTE) + " " + getSqlWhere();
+        msSql = "UPDATE s_tic SET b_alt = 1 " + getSqlWhere();
         session.getStatement().execute(msSql);
-
-        for (SDbTicketNote child : mvChildTicketNotes) {
-            child.setRegistryNew(true);
-            child.setPkTicketId(mnPkTicketId);
-            child.save(session);
-        }
-
-        for (SDbLaboratory child : mvChildLaboratories) {
-            if (child.isRegistryNew() || child.isRegistryEdited()) {
-                child.setDeleted(mbDeleted);
-                child.save(session);
-                saveField(session.getStatement(), getPrimaryKey(), FIELD_LABORATORY, child.getPkLaboratoryId());
+        
+        // Save aswell child registries:
+        
+        if (moDbmsLaboratoryAlt != null && 
+                (moDbmsLaboratoryAlt.isRegistryNew() || moDbmsLaboratoryAlt.isRegistryEdited())) {
+            moDbmsLaboratoryAlt.save(session);
+            if (moDbmsLaboratoryAlt.getPkAlternativeLaboratoryId() != 0) {
+                msSql = "UPDATE " + getSqlTable() + " SET fk_lab_n = " + moDbmsLaboratoryAlt.getPkAlternativeLaboratoryId() + " " + getSqlWhere();
+                session.getStatement().execute(msSql);
             }
         }
-
-        if (mbAuxItemSendMail) {
-            sendMail(session, 0);
-        }
         
-        if (mbAuxProducerSendMail) {
-            sendMail(session, mnFkProducerId);
-        }
-
-        // Finish registry updating:
-
+        
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
+    
+    @Override
+    public void delete(SGuiSession session) throws Exception {
+        if (mnFkLaboratoryId_n == 0) {
+            msSql = "UPDATE s_tic SET b_alt = 0 " + getSqlWhere();
+            session.getStatement().execute(msSql);
+            msSql = "DELETE FROM " + getSqlTable() + " " + getSqlWhere();
+            session.getStatement().execute(msSql);
+        }
+        else {
+            throw new Exception("No se puede eliminar debido a que tiene un análisis de laboratorio asociado.");
+        }
+    }
+    
+    public void deleteLabTest(SGuiSession session) throws Exception {
+        msSql = "UPDATE " + getSqlTable() + " SET fk_lab_n = NULL " + getSqlWhere();
+        session.getStatement().execute(msSql);
+        moDbmsLaboratoryAlt.delete(session);
+    }
 
     @Override
-    public SDbTicket clone() throws CloneNotSupportedException {
-        SDbTicket registry = new SDbTicket();
+    public SDbTicketAlternative clone() throws CloneNotSupportedException {
+        SDbTicketAlternative registry = new SDbTicketAlternative();
 
         registry.setPkTicketId(this.getPkTicketId());
         registry.setNumber(this.getNumber());
@@ -1123,402 +957,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setXtaProducer(this.getXtaProducer());
         registry.setXtaProviderFiscalId(this.getXtaProducerFiscalId());
 
-        registry.setAuxMoveNextOnSend(this.isAuxMoveNextOnSend());
-        registry.setAuxRequirePriceComputation(this.isAuxRequirePriceComputation());
-        registry.setAuxItemSendMail(this.isAuxItemSendMail());
-        registry.setAuxItemRecipientsTo(this.getAuxItemRecipientsTo());
-        registry.setAuxProducerSendMail(this.isAuxProducerSendMail());
-        registry.setAuxProducerRecipientsTo(this.getAuxProducerRecipientsTo());
-
-        for (SDbTicketNote child : mvChildTicketNotes) {
-            registry.getChildTicketNotes().add(child.clone());
-        }
-
-        for (SDbLaboratory child : mvChildLaboratories) {
-            registry.getChildLaboratories().add(child.clone());
-        }
-
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
-    }
-
-    @Override
-    public boolean canSave(final SGuiSession session) throws SQLException, Exception {
-        boolean can = super.canSave(session);
-
-        if (can) {
-            initQueryMembers();
-            can = !SSomUtils.existsTicket(session, mnNumber, mnPkTicketId);
-
-            if (!can) {
-                msQueryResult = "¡El boleto #" + mnNumber + " ya existe!";
-            }
-        }
-
-        return can;
-    }
-
-    @Override
-    public boolean canDelete(final SGuiSession session) throws SQLException, Exception {
-        boolean can = super.canDelete(session);
-
-        if (can) {
-            can = !isLinkIog(session);
-
-            if (!can) {
-                msQueryResult = "¡El boleto está vinculado con un documento de inventarios!";
-            }
-            else {
-                can = !SSomUtils.existsTicket(session, mnNumber, mnPkTicketId);
-
-                if (!can) {
-                    msQueryResult = "¡El boleto ya existe!";
-                }
-            }
-        }
-
-        return can;
-    }
-
-    @Override
-    public void saveField(final Statement statement, final int[] pk, final int field, final Object value) throws SQLException, Exception {
-        initQueryMembers();
-        mnQueryResultId = SDbConsts.SAVE_ERROR;
-
-        msSql = "UPDATE " + getSqlTable() + " SET ";
-
-        switch (field) {
-            case FIELD_PAYED:
-                msSql += "b_pay = " + value + " ";
-                break;
-            case FIELD_TICKET_STATUS:
-                msSql += "fk_tic_st = " + value + " ";
-                break;
-            case FIELD_LABORATORY:
-                msSql += "fk_lab_n = " + value + " ";
-                break;
-            case FIELD_TARED:
-                msSql += "b_tar = " + value + " ";
-                break;
-            case FIELD_ASSORTED:
-                msSql += "b_ass = " + value + ", fk_usr_ass = " + mnFkUserAssortedId + ", ts_usr_ass = NOW() ";
-                break;
-            case FIELD_DPS:
-                msSql += "b_dps = " + value + " ";
-                break;
-            case FIELD_DPS_NULL:
-                msSql += "fk_ext_dps_year_n = NULL, fk_ext_dps_doc_n = NULL, fk_ext_dps_ety_n = NULL ";
-                break;
-            default:
-                throw new Exception(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
-        }
-
-        msSql += getSqlWhere(pk);
-        statement.execute(msSql);
-        mnQueryResultId = SDbConsts.SAVE_OK;
-    }
-
-    @Override
-    public int[] getRowPrimaryKey() {
-        return getPrimaryKey();
-    }
-
-    @Override
-    public String getRowCode() {
-        return getCode();
-    }
-
-    @Override
-    public String getRowName() {
-        return getName();
-    }
-
-    @Override
-    public boolean isRowSystem() {
-        return false;
-    }
-
-    @Override
-    public boolean isRowDeletable() {
-        return true;
-    }
-
-    @Override
-    public boolean isRowEdited() {
-        return isRegistryEdited();
-    }
-
-    @Override
-    public void setRowEdited(final boolean edited) {
-        setRegistryEdited(edited);
-    }
-
-    @Override
-    public Object getRowValueAt(int row) {
-        Object value = null;
-
-        switch(row) {
-            case 0:
-                value = mnNumber;
-                break;
-            case 1:
-                value = mtDatetimeArrival;
-                break;
-            case 2:
-                value = msPlate;
-                break;
-            case 3:
-                value = mdWeightSource;
-                break;
-            case 4:
-                value = mdWeightDestinyNet_r;
-                break;
-            case 5:
-                value = !mvChildLaboratories.isEmpty() ? mvChildLaboratories.get(0).getImpuritiesPercentageAverage() : 0;
-                break;
-            case 6:
-                value = !mvChildLaboratories.isEmpty() ? mvChildLaboratories.get(0).getMoisturePercentageAverage() : 0;
-                break;
-            case 7:
-                value = mdUserPenaltyPercentage;
-                break;
-            case 8:
-                value = mdUserWeightPayment;
-                break;
-            case 9:
-                value = mdUserPricePerTon;
-                break;
-            case 10:
-                value = mbPayed;
-                break;
-            case 11:
-                value = mdUserTotal_r;
-                break;
-            default:
-        }
-
-        return value;
-    }
-
-    @Override
-    public void setRowValueAt(Object value, int row) {
-        switch(row) {
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6:
-                break;
-            case 7:
-                break;
-            case 8:
-                break;
-            case 9:
-                break;
-            case 10:
-                mbRegistryEdited = true;
-                mbPayed = (Boolean) value;
-                break;
-            case 11:
-                break;
-            default:
-        }
-    }
-
-    public boolean isLinkIog(final SGuiSession session) throws SQLException {
-        boolean isLink = false;
-
-        msSql = "SELECT COUNT(*) FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " WHERE b_del = 0 AND fk_tic_n = " + mnPkTicketId + " ";
-
-        try (ResultSet resultSet = session.getStatement().executeQuery(msSql)) {
-            if (resultSet.next()) {
-                isLink = resultSet.getInt(1) > 0;
-            }
-        }
-
-        return isLink;
-    }
-
-    public void computeWeight(SGuiSession session, boolean computePrice) throws Exception {
-        double oldWeightDestinyNet = mdWeightDestinyNet_r;
-        
-        //SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int[] { mnFkItemId }); // when this method is called from CLI, session does not have modules!
-        SDbItem item = new SDbItem();
-        item.read(session, new int[] { mnFkItemId });
-
-        mdPackingWeightArrival = (mdPackingFullQuantityArrival + mdPackingEmptyQuantityArrival) * item.getPackingWeight();
-        mdPackingWeightDeparture = (mdPackingFullQuantityDeparture + mdPackingEmptyQuantityDeparture) * item.getPackingWeight();
-        mdPackingWeightNet_r = mdPackingWeightArrival - mdPackingWeightDeparture;
-        
-        mdWeightDestinyGross_r = mdWeightDestinyArrival - mdWeightDestinyDeparture;
-        mdWeightDestinyNet_r = mdWeightDestinyDeparture == 0 ? 0 : mdWeightDestinyGross_r - mdPackingWeightNet_r;
-
-        if (!mbWeightSourceAvailable) {
-            mdWeightSource = mdWeightDestinyGross_r;
-        }
-
-        mdQuantity = mdWeightDestinyNet_r / item.getUnitaryWeight();
-        
-        if (computePrice && oldWeightDestinyNet != 0 && Math.abs(oldWeightDestinyNet - mdWeightDestinyNet_r) > 0.001) {
-            computePrice(session);
-            mbAuxRequirePriceComputation = false;
-        }
-    }
-    
-    public void computePrice(SGuiSession session) {
-        double dMaxImpuritiesPer = 0;
-        double dMaxMoisturePer = 0;
-        double dPricePerTon = 0;
-        double dImpuritiesPer = 0;
-        double dMoisturePer = 0;
-        SDbSeasonRegion seasonRegion = null;
-        SDbSeasonProducer seasonProducer = null;
-        
-        /*
-         * Tickets are usually addressed to some season, but not allways to some region.
-         * So this is more likely to happen that region is missed.
-         */
-
-        if (mbLaboratory && mnFkSeasonId_n != SLibConsts.UNDEFINED && mnFkRegionId_n != SLibConsts.UNDEFINED) {
-            seasonRegion = (SDbSeasonRegion) session.readRegistry(SModConsts.SU_SEAS_REG, new int[] { mnFkSeasonId_n, mnFkRegionId_n, mnFkItemId });
-            seasonProducer = (SDbSeasonProducer) session.readRegistry(SModConsts.SU_SEAS_PROD, new int[] { mnFkSeasonId_n, mnFkRegionId_n, mnFkItemId, mnFkProducerId });
-
-            dMaxImpuritiesPer = seasonRegion.getMaximumImpuritiesPercentage();
-            dMaxMoisturePer = seasonRegion.getMaximumMoisturePercentage();
-            dPricePerTon = seasonProducer.isPricePerTon() ? seasonProducer.getPricePerTon() : seasonRegion.getPricePerTon();
-
-            if (!mvChildLaboratories.isEmpty()) {
-                mvChildLaboratories.get(0).computeTestsAverage();
-
-                dImpuritiesPer = (mvChildLaboratories.get(0).getImpuritiesPercentageAverage() - dMaxImpuritiesPer) <= 0 ? 0 : (mvChildLaboratories.get(0).getImpuritiesPercentageAverage() - dMaxImpuritiesPer);
-                dMoisturePer = (mvChildLaboratories.get(0).getMoisturePercentageAverage() - dMaxMoisturePer) <= 0 ? 0 : (mvChildLaboratories.get(0).getMoisturePercentageAverage() - dMaxMoisturePer);
-
-                mdSystemPenaltyPercentage = SLibUtils.round((dImpuritiesPer + dMoisturePer), SLibUtils.DecimalFormatPercentage4D.getMaximumFractionDigits());
-
-                mdUserPenaltyPercentage = mdSystemPenaltyPercentage;
-            }
-
-            // System computed values:
-
-            mdSystemWeightPayment = SLibUtils.round(((mdWeightSource - mdWeightDestinyNet_r * mdSystemPenaltyPercentage)), SLibUtils.DecimalFormatPercentage0D.getMaximumFractionDigits());
-            mdSystemPricePerTon = dPricePerTon;
-            mdSystemPayment_r = (mdSystemWeightPayment * mdSystemPricePerTon) / 1000;
-            mdSystemTotal_r = mdSystemPayment_r;
-
-            // User values:
-
-            mdUserWeightPayment = mdSystemWeightPayment;
-            mdUserPricePerTon = mdSystemPricePerTon;
-            mdUserPayment_r = mdSystemPayment_r;
-            mdUserFreight = mdSystemFreight;
-            mdUserTotal_r = mdSystemTotal_r;
-        }
-    }
-    
-    public void movePrevious(final SGuiSession session) throws SQLException, Exception {
-        String msg = "No puede regresar el boleto al estado anterior porque:\n";
-
-        if (mbDeleted) {
-            throw new Exception(msg + "El boleto está eliminado.");
-        }
-        else if (mnFkTicketStatusId == SModSysConsts.SS_TIC_ST_LAB) {
-            if (mnFkLaboratoryId_n != SLibConsts.UNDEFINED) {
-                throw new Exception(msg + "El boleto tiene análisis de laboratorio.");
-            }
-            else {
-                mnFkTicketStatusId = SModSysConsts.SS_TIC_ST_SCA;
-            }
-        }
-        else if (mnFkTicketStatusId == SModSysConsts.SS_TIC_ST_ADM) {
-            if (mbPayed) {
-                throw new Exception(msg + "El boleto está pagado.");
-            }
-            else if (mbLaboratory) {
-                mnFkTicketStatusId = SModSysConsts.SS_TIC_ST_LAB;
-            }
-            else {
-                mnFkTicketStatusId = SModSysConsts.SS_TIC_ST_SCA;
-            }
-        }
-
-        save(session);
-    }
-
-    public void moveNext(final SGuiSession session) throws SQLException, Exception {
-        String msg = "No puede enviar el boleto al estado siguiente porque:\n";
-
-        if (mbDeleted) {
-            throw new Exception(msg + "El boleto está eliminado.");
-        }
-        else if (mnFkTicketStatusId == SModSysConsts.SS_TIC_ST_SCA) {
-            if (mbLaboratory) {
-                mnFkTicketStatusId = SModSysConsts.SS_TIC_ST_LAB;
-            }
-            else {
-                mnFkTicketStatusId = SModSysConsts.SS_TIC_ST_ADM;
-            }
-        }
-        else if (mnFkTicketStatusId == SModSysConsts.SS_TIC_ST_LAB) {
-            if (mnFkLaboratoryId_n == SLibConsts.UNDEFINED && !mbAuxMoveNextOnSave) {
-                throw new Exception(msg + "El boleto no tiene análisis de laboratorio.");
-            }
-            else if (!mvChildLaboratories.get(0).isDone() && !mbAuxMoveNextOnSave) {
-                throw new Exception(msg + "El análisis de laboratorio del boleto no está terminado.");
-            }
-            else if (!mbTared) {
-                throw new Exception(msg + "El boleto no está tarado.");
-            }
-            else {
-                mnFkTicketStatusId = SModSysConsts.SS_TIC_ST_ADM;
-                computePrice(session);
-            }
-        }
-
-        if (!mbAuxMoveNextOnSave) {
-            save(session);
-        }
-
-        mbAuxMoveNextOnSave = false;
-    }
-    
-    /**
-     * Get tickets by number with fuzzy search on ticket number.
-     * @param session GUI session.
-     * @param number Number to search.
-     * @return Array of tickets.
-     * @throws SQLException
-     * @throws Exception 
-     */
-    public static ArrayList<SDbTicket> getTicketsByNumber(final SGuiSession session, final int number) throws SQLException, Exception {
-        int count = 0;
-        ArrayList<SDbTicket> tickets = new ArrayList<>();
-        
-        String sql = "SELECT id_tic "
-                + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " "
-                + "WHERE num LIKE '%" + number + "%' "
-                + "ORDER BY num, id_tic;";
-        try (Statement statement = session.getStatement().getConnection().createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
-            
-            while (resultSet.next()) {
-                if (++count > MAX_SEARCH_TICKETS) {
-                    session.getClient().showMsgBoxWarning("La búsqueda arrojó demasiados resultados, y se acotó a " + MAX_SEARCH_TICKETS + " registros.");
-                    break;
-                }
-                
-                SDbTicket ticket = (SDbTicket) session.readRegistry(SModConsts.S_TIC, new int[] { resultSet.getInt(1) });
-                tickets.add(ticket);
-            }
-        }
-        
-        return tickets;
     }
 }

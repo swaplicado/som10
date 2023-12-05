@@ -37,6 +37,7 @@ import som.mod.som.db.SDbSeasonProducer;
 import som.mod.som.db.SDbSeasonRegion;
 import som.mod.som.db.SDbSupraRegion;
 import som.mod.som.db.SDbTicket;
+import som.mod.som.db.SDbTicketAlternative;
 import som.mod.som.db.SDbWarehouseStart;
 import som.mod.som.form.SDialogRepFreightTime;
 import som.mod.som.form.SDialogRepFruitYieldByOrigin;
@@ -50,6 +51,7 @@ import som.mod.som.form.SFormDialogAssignSeasonRegion;
 import som.mod.som.form.SFormGrindingEvent;
 import som.mod.som.form.SFormGrindingResultHr;
 import som.mod.som.form.SFormLaboratory;
+import som.mod.som.form.SFormLaboratoryAlternative;
 import som.mod.som.form.SFormMgmtSupplierInputType;
 import som.mod.som.form.SFormMgmtSupplierItem;
 import som.mod.som.form.SFormRegion;
@@ -58,6 +60,7 @@ import som.mod.som.form.SFormSeasonProducer;
 import som.mod.som.form.SFormSeasonRegion;
 import som.mod.som.form.SFormSupraRegion;
 import som.mod.som.form.SFormTicket;
+import som.mod.som.form.SFormTicketAlternative;
 import som.mod.som.form.SFormTicketMgmt;
 import som.mod.som.form.SFormTicketSeasonRegion;
 import som.mod.som.form.SFormTicketWahUnld;
@@ -66,6 +69,7 @@ import som.mod.som.view.SViewGrindingEvents;
 import som.mod.som.view.SViewGrindingResults;
 import som.mod.som.view.SViewGrindingResume;
 import som.mod.som.view.SViewLaboratory;
+import som.mod.som.view.SViewLaboratoryAlternative;
 import som.mod.som.view.SViewOilMoiPond;
 import som.mod.som.view.SViewRegion;
 import som.mod.som.view.SViewSeason;
@@ -73,6 +77,7 @@ import som.mod.som.view.SViewSeasonProducer;
 import som.mod.som.view.SViewSeasonRegion;
 import som.mod.som.view.SViewSupraRegion;
 import som.mod.som.view.SViewTicket;
+import som.mod.som.view.SViewTicketAlternative;
 import som.mod.som.view.SViewTicketTare;
 import som.mod.som.view.SViewTicketWahUnld;
 import som.mod.som.view.SViewTicketsLaboratoryTestFruit;
@@ -154,7 +159,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private SFormGrindingEvent moFormGrindingEvent;
     private SFormGrindingResultHr moFormResult;
     private SFormLaboratory moFormLaboratory;
+    private SFormLaboratoryAlternative moFormLaboratoryAlternative;
     private SFormTicket moFormTicket;
+    private SFormTicketAlternative moFormTicketAlternative;
     private SFormTicket moFormTicketTare;
     private SFormWarehouseStart moFormWarehouseStart;
     private SFormTicketWahUnld moFormTicketWahUnld;
@@ -467,6 +474,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SX_TIC_SEAS_REG:
                 registry = new SDbTicket();
                 break;
+            case SModConsts.S_ALT_TIC:
+            case SModConsts.S_ALT_LAB:
+                registry = new SDbTicketAlternative();
+                break;
             case SModConsts.SX_TIC_MAN_SUP:
                 registry = new SDbMgmtTicketsSupplierItem();
                 break;
@@ -628,6 +639,18 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
                 }
                 break;
+            case SModConsts.S_ALT_LAB:
+                switch (subtype) {
+                    case SModConsts.SX_ALT_WO_LAB:
+                        view = new SViewLaboratoryAlternative(miClient, subtype, "Bol. pendientes resultados lab.");
+                        break;
+                    case SModConsts.SX_ALT_W_LAB:
+                        view = new SViewLaboratoryAlternative(miClient, subtype, "Bol. con resultados lab.");
+                        break;
+                    default:
+                        miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
+                break;
             case SModConsts.S_WAH_START:
                 view = new SViewWarehouseStart(miClient, "Fechas inicio almacenes");
                 break;
@@ -654,6 +677,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                     default:
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
                 }
+                break;
+            case SModConsts.S_ALT_TIC:
+                view = new SViewTicketAlternative(miClient, "Boletos báscula");
                 break;
             case SModConsts.SX_TIC_TARE:
                 switch (subtype) {
@@ -739,6 +765,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 if (moFormTicket == null) moFormTicket = new SFormTicket(miClient, "Boleto", SLibConsts.UNDEFINED);
                 form = moFormTicket;
                 break;
+            case SModConsts.S_ALT_TIC:
+                if (moFormTicketAlternative == null) moFormTicketAlternative = new SFormTicketAlternative(miClient, "Boleto", SLibConsts.UNDEFINED);
+                form = moFormTicketAlternative;
+                break;
             case SModConsts.S_WAH_START:
                 if (moFormWarehouseStart == null) moFormWarehouseStart = new SFormWarehouseStart(miClient, "Inicio de almacén");
                 form = moFormWarehouseStart;
@@ -746,6 +776,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SX_TIC_LAB:
                 if (moFormLaboratory == null) moFormLaboratory = new SFormLaboratory(miClient, "Análisis de laboratorio");
                 form = moFormLaboratory;
+                break;
+            case SModConsts.S_ALT_LAB:
+                if (moFormLaboratoryAlternative == null) moFormLaboratoryAlternative = new SFormLaboratoryAlternative(miClient, "Análisis de laboratorio");
+                form = moFormLaboratoryAlternative;
                 break;
             case SModConsts.SX_TIC_TARE:
                 if (moFormTicketTare == null) moFormTicketTare = new SFormTicket(miClient, "Boleto", SModConsts.SX_TIC_TARE_PEND);
@@ -786,6 +820,12 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SR_TIC:
                 guiReport = new SGuiReport("reps/s_tic.jasper", "Reporte boleto");
                 break;
+            case SModConsts.SR_ALT_TIC:
+                guiReport = new SGuiReport("reps/s_alt_tic.jasper", "Boleto SOM Orgánico");
+                break;
+            case SModConsts.SR_ALT_LAB:
+                guiReport = new SGuiReport("reps/s_alt_lab.jasper", "Análisis laboratorio SOM Orgánico");
+                break;
             case SModConsts.SR_TIC_COMP:
                 guiReport = new SGuiReport("reps/s_tic_comp.jasper", "Reporte comparativo boletos SOM vs. Revuelta");
                 break;
@@ -824,6 +864,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.SR_FRE_TIME:
                 guiReport = new SGuiReport("reps/s_fre_time.jasper", "Reporte duración fletes de materia prima");
+                break;
+            case SModConsts.SR_ITM_TIC:
+                guiReport = new SGuiReport("reps/s_itm_tic.jasper", "Reporte de lista de boletos de báscula por producto");
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);

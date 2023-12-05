@@ -30,6 +30,7 @@ public abstract class SModConsts {
     public static final int CS_PLA_TP = 210002;
     public static final int CS_USR_TP = 210003;
     public static final int CS_RIG = 210004;
+    public static final int CS_ALT_RIG = 210101;
 
     public static final int CU_CO = 220001;
     public static final int CU_COB = 220002;
@@ -42,6 +43,7 @@ public abstract class SModConsts {
     public static final int CU_USR_RIG = 220009;
     public static final int CU_USR_SCA = 220010;
     public static final int CU_USR_INP_CT = 220021;
+    public static final int CU_USR_ALT_RIG = 220101;
     public static final int CU_DIV = 220011;
     public static final int CU_PROD_LINES = 220012;
     public static final int CU_REP_GRP = 220016;
@@ -98,8 +100,10 @@ public abstract class SModConsts {
     public static final int S_LAB = 330001;
     public static final int S_LAB_NOTE = 330002;
     public static final int S_LAB_TEST = 330003;
+    public static final int S_ALT_LAB = 330101;
     public static final int S_TIC = 330011;
     public static final int S_TIC_NOTE = 330012;
+    public static final int S_ALT_TIC = 330102;
     public static final int S_WAH_LAB = 330016;
     public static final int S_WAH_LAB_TEST = 330017;
     public static final int S_WAH_LAB_TEST_ALL = 330019;
@@ -191,8 +195,12 @@ public abstract class SModConsts {
     public static final int SX_EXT_OIL_CL = 340109;
     public static final int SX_QA_OIL_MOI_POND = 340082;
     public static final int SX_STK_DAILY = 340110;
+    public static final int SX_ALT_WO_LAB = 340112;
+    public static final int SX_ALT_W_LAB = 340113;
 
     public static final int SR_TIC = 350001;
+    public static final int SR_ALT_TIC = 350025;
+    public static final int SR_ALT_LAB = 350026;
     public static final int SR_TIC_METRRME = 350015;
     public static final int SR_TIC_COMP = 350002;
     public static final int SR_ITEM_REC = 350003;
@@ -212,6 +220,7 @@ public abstract class SModConsts {
     public static final int SR_ITEM_FRUIT_ACI = 350022;
     public static final int SR_PRC_RAW_MAT_AVO = 350023;
     public static final int SR_PRC_RAW_MAT_SEED = 350024;
+    public static final int SR_ITM_TIC = 350027;
 
     public static final int E_TIC_REV = 430001;
 
@@ -227,6 +236,7 @@ public abstract class SModConsts {
         TablesMap.put(CS_PLA_TP, "cs_pla_tp");
         TablesMap.put(CS_USR_TP, "cs_usr_tp");
         TablesMap.put(CS_RIG, "cs_rig");
+        TablesMap.put(CS_ALT_RIG, "cs_alt_rig");
 
         TablesMap.put(CU_CO, "cu_co");
         TablesMap.put(CU_COB, "cu_cob");
@@ -239,6 +249,7 @@ public abstract class SModConsts {
         TablesMap.put(CU_USR_RIG, "cu_usr_rig");
         TablesMap.put(CU_USR_SCA, "cu_usr_sca");
         TablesMap.put(CU_USR_INP_CT, "cu_usr_inp_ct");
+        TablesMap.put(CU_USR_ALT_RIG, "cu_usr_alt_rig");
         TablesMap.put(CU_DIV, "cu_div");
         TablesMap.put(CU_PROD_LINES, "cu_line");
         TablesMap.put(CU_REP_GRP, "cu_rep_grp");
@@ -291,8 +302,10 @@ public abstract class SModConsts {
         TablesMap.put(S_LAB, "s_lab");
         TablesMap.put(S_LAB_NOTE, "s_lab_note");
         TablesMap.put(S_LAB_TEST, "s_lab_test");
+        TablesMap.put(S_ALT_LAB, "s_alt_lab");
         TablesMap.put(S_TIC, "s_tic");
         TablesMap.put(S_TIC_NOTE, "s_tic_note");
+        TablesMap.put(S_ALT_TIC, "s_alt_tic");
         TablesMap.put(S_WAH_LAB, "s_wah_lab");
         TablesMap.put(S_WAH_LAB_TEST, "s_wah_lab_test");
         TablesMap.put(S_WAH_PREMISE, "s_wah_premise");

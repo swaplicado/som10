@@ -51,6 +51,7 @@ import sa.lib.gui.bean.SBeanOptionPicker;
 import sa.lib.img.SImgConsts;
 import sa.lib.xml.SXmlUtils;
 import som.mod.SModConsts;
+import som.mod.SModSysConsts;
 import som.mod.SModUtils;
 import som.mod.SModuleCfg;
 import som.mod.SModuleSom;
@@ -60,16 +61,17 @@ import som.mod.SModuleSomRm;
 import som.mod.cfg.db.SDbCompany;
 import som.mod.cfg.db.SDbUser;
 import som.mod.cfg.db.SDbUserGui;
+import som.mod.som.form.SDialogRepItemTickets;
 
 /**
  *
- * @author Sergio Flores, Alfredo Pérez, Sergio Flores, Isabel Servín
+ * @author Isabel Servín
  */
-public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener {
+public class SGuiClientAppAlternative extends JFrame implements SGuiClient, ActionListener {
 
-    public static final String APP_NAME = "SOM 1.0";
-    public static final String APP_RELEASE = "SOM 1.0 089.0"; // release date: 2023-12-05
-    public static final String APP_COPYRIGHT = "2013-2023";
+    public static final String APP_NAME = SGuiClientApp.APP_NAME;
+    public static final String APP_RELEASE = SGuiClientApp.APP_RELEASE;
+    public static final String APP_COPYRIGHT = SGuiClientApp.APP_COPYRIGHT;
     public static final String APP_PROVIDER = "Software Aplicado SA de CV";
 
     public static final String VENDOR = APP_PROVIDER;
@@ -97,11 +99,13 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
     private ImageIcon moIconCloseInactive;
     private ImageIcon moIconCloseBright;
     private ImageIcon moIconCloseDark;
+    
+    private SDialogRepItemTickets moDialogRepItemTickets;
 
     /**
      * Creates new form SGuiClient
      */
-    public SGuiClientApp() {
+    public SGuiClientAppAlternative() {
         initComponents();
         initComponentsCustom();
     }
@@ -115,12 +119,6 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        bgModules = new javax.swing.ButtonGroup();
-        jtbToolbar = new javax.swing.JToolBar();
-        jtbModuleCfg = new javax.swing.JToggleButton();
-        jtbModuleSomRm = new javax.swing.JToggleButton();
-        jtbModuleSomOs = new javax.swing.JToggleButton();
-        jtbModuleSomLog = new javax.swing.JToggleButton();
         jtpTabbedPane = new javax.swing.JTabbedPane();
         jpStatusBar = new javax.swing.JPanel();
         jpStatusBar1 = new javax.swing.JPanel();
@@ -145,10 +143,10 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jsFile3 = new javax.swing.JPopupMenu.Separator();
         jmiFileExit = new javax.swing.JMenuItem();
         jmView = new javax.swing.JMenu();
-        jmiViewModuleCfg = new javax.swing.JMenuItem();
-        jmiViewModuleSomSeed = new javax.swing.JMenuItem();
-        jmiViewModuleSomOil = new javax.swing.JMenuItem();
-        jmiViewModuleSomLogistic = new javax.swing.JMenuItem();
+        jmiTicket = new javax.swing.JMenuItem();
+        jmiWithoutLabTicket = new javax.swing.JMenuItem();
+        jmiLabTicket = new javax.swing.JMenuItem();
+        jmiTicketReport = new javax.swing.JMenuItem();
         jmHelp = new javax.swing.JMenu();
         jmiHelpHelp = new javax.swing.JMenuItem();
         jsHelp1 = new javax.swing.JPopupMenu.Separator();
@@ -163,63 +161,6 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
                 formWindowClosing(evt);
             }
         });
-
-        jtbToolbar.setFloatable(false);
-        jtbToolbar.setRollover(true);
-
-        bgModules.add(jtbModuleCfg);
-        jtbModuleCfg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_cfg_bw.gif"))); // NOI18N
-        jtbModuleCfg.setToolTipText("Módulo configuración");
-        jtbModuleCfg.setFocusable(false);
-        jtbModuleCfg.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jtbModuleCfg.setMaximumSize(new java.awt.Dimension(64, 64));
-        jtbModuleCfg.setMinimumSize(new java.awt.Dimension(64, 64));
-        jtbModuleCfg.setPreferredSize(new java.awt.Dimension(64, 64));
-        jtbModuleCfg.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_cfg.gif"))); // NOI18N
-        jtbModuleCfg.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_cfg.gif"))); // NOI18N
-        jtbModuleCfg.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jtbToolbar.add(jtbModuleCfg);
-
-        bgModules.add(jtbModuleSomRm);
-        jtbModuleSomRm.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_seed_bw.gif"))); // NOI18N
-        jtbModuleSomRm.setToolTipText("Módulo materias primas");
-        jtbModuleSomRm.setFocusable(false);
-        jtbModuleSomRm.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jtbModuleSomRm.setMaximumSize(new java.awt.Dimension(64, 64));
-        jtbModuleSomRm.setMinimumSize(new java.awt.Dimension(64, 64));
-        jtbModuleSomRm.setPreferredSize(new java.awt.Dimension(64, 64));
-        jtbModuleSomRm.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_seed.gif"))); // NOI18N
-        jtbModuleSomRm.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_seed.gif"))); // NOI18N
-        jtbModuleSomRm.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jtbToolbar.add(jtbModuleSomRm);
-
-        bgModules.add(jtbModuleSomOs);
-        jtbModuleSomOs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_oil_bw.gif"))); // NOI18N
-        jtbModuleSomOs.setToolTipText("Módulo aceites y pastas");
-        jtbModuleSomOs.setFocusable(false);
-        jtbModuleSomOs.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jtbModuleSomOs.setMaximumSize(new java.awt.Dimension(64, 64));
-        jtbModuleSomOs.setMinimumSize(new java.awt.Dimension(64, 64));
-        jtbModuleSomOs.setPreferredSize(new java.awt.Dimension(64, 64));
-        jtbModuleSomOs.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_oil.gif"))); // NOI18N
-        jtbModuleSomOs.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_oil.gif"))); // NOI18N
-        jtbModuleSomOs.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jtbToolbar.add(jtbModuleSomOs);
-
-        bgModules.add(jtbModuleSomLog);
-        jtbModuleSomLog.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_log_bw.gif"))); // NOI18N
-        jtbModuleSomLog.setToolTipText("Módulo logística");
-        jtbModuleSomLog.setFocusable(false);
-        jtbModuleSomLog.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jtbModuleSomLog.setMaximumSize(new java.awt.Dimension(64, 64));
-        jtbModuleSomLog.setMinimumSize(new java.awt.Dimension(64, 64));
-        jtbModuleSomLog.setPreferredSize(new java.awt.Dimension(64, 64));
-        jtbModuleSomLog.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_log.gif"))); // NOI18N
-        jtbModuleSomLog.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/mod_log.gif"))); // NOI18N
-        jtbModuleSomLog.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jtbToolbar.add(jtbModuleSomLog);
-
-        getContentPane().add(jtbToolbar, java.awt.BorderLayout.NORTH);
         getContentPane().add(jtpTabbedPane, java.awt.BorderLayout.CENTER);
 
         jpStatusBar.setBackground(java.awt.Color.black);
@@ -330,23 +271,23 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
 
         jmbMenuBar.add(jmFile);
 
-        jmView.setText("Ver");
+        jmView.setText("Boletos báscula");
 
-        jmiViewModuleCfg.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.InputEvent.CTRL_MASK));
-        jmiViewModuleCfg.setText("Ver módulo configuración");
-        jmView.add(jmiViewModuleCfg);
+        jmiTicket.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.InputEvent.CTRL_MASK));
+        jmiTicket.setText("Boletos báscula");
+        jmView.add(jmiTicket);
 
-        jmiViewModuleSomSeed.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.InputEvent.CTRL_MASK));
-        jmiViewModuleSomSeed.setText("Ver módulo materias primas");
-        jmView.add(jmiViewModuleSomSeed);
+        jmiWithoutLabTicket.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.InputEvent.CTRL_MASK));
+        jmiWithoutLabTicket.setText("Boletos pendientes de resultados de laboratorio");
+        jmView.add(jmiWithoutLabTicket);
 
-        jmiViewModuleSomOil.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.InputEvent.CTRL_MASK));
-        jmiViewModuleSomOil.setText("Ver módulo aceites y pastas");
-        jmView.add(jmiViewModuleSomOil);
+        jmiLabTicket.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.InputEvent.CTRL_MASK));
+        jmiLabTicket.setText("Boletos con resultados de laboratorio");
+        jmView.add(jmiLabTicket);
 
-        jmiViewModuleSomLogistic.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.InputEvent.CTRL_MASK));
-        jmiViewModuleSomLogistic.setText("Ver módulo logística");
-        jmView.add(jmiViewModuleSomLogistic);
+        jmiTicketReport.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.InputEvent.CTRL_MASK));
+        jmiTicketReport.setText("Reporte de lista de boletos de bascula por producto");
+        jmView.add(jmiTicketReport);
 
         jmbMenuBar.add(jmView);
 
@@ -398,13 +339,12 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-               new SGuiClientApp().setVisible(true);
+               new SGuiClientAppAlternative().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup bgModules;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton jbWorkingDate;
     private javax.swing.JLabel jlAppRelease;
@@ -420,10 +360,10 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
     private javax.swing.JMenuItem jmiFileWorkingDate;
     private javax.swing.JMenuItem jmiHelpAbout;
     private javax.swing.JMenuItem jmiHelpHelp;
-    private javax.swing.JMenuItem jmiViewModuleCfg;
-    private javax.swing.JMenuItem jmiViewModuleSomLogistic;
-    private javax.swing.JMenuItem jmiViewModuleSomOil;
-    private javax.swing.JMenuItem jmiViewModuleSomSeed;
+    private javax.swing.JMenuItem jmiLabTicket;
+    private javax.swing.JMenuItem jmiTicket;
+    private javax.swing.JMenuItem jmiTicketReport;
+    private javax.swing.JMenuItem jmiWithoutLabTicket;
     private javax.swing.JPanel jpStatusBar;
     private javax.swing.JPanel jpStatusBar1;
     private javax.swing.JPanel jpStatusBar2;
@@ -431,11 +371,6 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
     private javax.swing.JPopupMenu.Separator jsFile2;
     private javax.swing.JPopupMenu.Separator jsFile3;
     private javax.swing.JPopupMenu.Separator jsHelp1;
-    private javax.swing.JToggleButton jtbModuleCfg;
-    private javax.swing.JToggleButton jtbModuleSomLog;
-    private javax.swing.JToggleButton jtbModuleSomOs;
-    private javax.swing.JToggleButton jtbModuleSomRm;
-    private javax.swing.JToolBar jtbToolbar;
     private javax.swing.JTextField jtfSessionBranch;
     private javax.swing.JTextField jtfSystemDate;
     private javax.swing.JTextField jtfUser;
@@ -506,24 +441,21 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
 
         jbWorkingDate.addActionListener(this);
 
-        jtbModuleCfg.addActionListener(this);
-        jtbModuleSomRm.addActionListener(this);
-        jtbModuleSomOs.addActionListener(this);
-        jtbModuleSomLog.addActionListener(this);
-
         jmiFileWorkingDate.addActionListener(this);
         jmiFileUserPassword.addActionListener(this);
         jmiFileCloseViewsAll.addActionListener(this);
         jmiFileCloseViewsOther.addActionListener(this);
         jmiFileCloseSession.addActionListener(this);
         jmiFileExit.addActionListener(this);
-        jmiViewModuleCfg.addActionListener(this);
-        jmiViewModuleSomSeed.addActionListener(this);
-        jmiViewModuleSomOil.addActionListener(this);
-        jmiViewModuleSomLogistic.addActionListener(this);
+        jmiTicket.addActionListener(this);
+        jmiWithoutLabTicket.addActionListener(this);
+        jmiLabTicket.addActionListener(this);
+        jmiTicketReport.addActionListener(this);
         jmiHelpHelp.addActionListener(this);
         jmiHelpAbout.addActionListener(this);
 
+        moDialogRepItemTickets = null;
+        
         jlAppRelease.setText(APP_RELEASE);
     }
 
@@ -578,20 +510,7 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
         jtfWorkingDate.setText("");
         renderClientSession(null);
 
-        jmFile.setEnabled(false);
-        jmView.setEnabled(false);
-        jmHelp.setEnabled(false);
-        jmiFileWorkingDate.setEnabled(false);
-        jmiViewModuleCfg.setEnabled(false);
-        jmiViewModuleSomSeed.setEnabled(false);
-        jmiViewModuleSomOil.setEnabled(false);
-        jmiViewModuleSomLogistic.setEnabled(false);
         jbWorkingDate.setEnabled(false);
-        jtbModuleCfg.setEnabled(false);
-        jtbModuleSomRm.setEnabled(false);
-        jtbModuleSomOs.setEnabled(false);
-        jtbModuleSomLog.setEnabled(false);
-        bgModules.clearSelection();
     }
 
     private void login() {
@@ -702,44 +621,14 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
 
                 jbWorkingDate.setEnabled(true);
 
-                if (user.hasModuleAccess(SModConsts.MOD_CFG)) {
-                    modulesAccessed++;
-                    jtbModuleCfg.setEnabled(true);
-                    if (defaultToggleButton == null) {
-                        defaultToggleButton = jtbModuleCfg;
-                    }
-                }
-
-                if (user.hasModuleAccess(SModConsts.MOD_SOM_RM)) {
-                    modulesAccessed++;
-                    jtbModuleSomRm.setEnabled(true);
-                    if (defaultToggleButton == null) {
-                        defaultToggleButton = jtbModuleSomRm;
-                    }
-                }
-
-                if (user.hasModuleAccess(SModConsts.MOD_SOM_OS)) {
-                    modulesAccessed++;
-                    jtbModuleSomOs.setEnabled(true);
-                    if (defaultToggleButton == null) {
-                        defaultToggleButton = jtbModuleSomOs;
-                    }
-                }
-                if (user.hasModuleAccess(SModConsts.MOD_SOM_LOG)) {
-                    modulesAccessed++;
-                    jtbModuleSomLog.setEnabled(true);
-                    if (defaultToggleButton == null) {
-                        defaultToggleButton = jtbModuleSomLog;
-                    }
-                }
-
                 jmiFileWorkingDate.setEnabled(jbWorkingDate.isEnabled());
-                jmiViewModuleCfg.setEnabled(jtbModuleCfg.isEnabled());
-                jmiViewModuleSomSeed.setEnabled(jtbModuleSomRm.isEnabled());
-                jmiViewModuleSomOil.setEnabled(jtbModuleSomOs.isEnabled());
-                jmiViewModuleSomLogistic.setEnabled(jtbModuleSomLog.isEnabled());
 
                 renderClientSession((SGuiClientSessionCustom) moSession.getSessionCustom());
+                
+                jmiTicket.setEnabled(user.hasPrivilegeAlternative(SModSysConsts.CS_ALT_RIG_PUR));                
+                jmiWithoutLabTicket.setEnabled(user.hasPrivilegeAlternative(SModSysConsts.CS_ALT_RIG_QTY));                
+                jmiLabTicket.setEnabled(user.hasPrivilegeAlternative(SModSysConsts.CS_ALT_RIG_QTY));                
+                jmiTicketReport.setEnabled(user.hasPrivilegeAlternative(SModSysConsts.CS_ALT_RIG_PUR));                
 
                 if (defaultToggleButton != null) {
                     defaultToggleButton.requestFocus();
@@ -1050,22 +939,6 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
                 actionFileWorkingDate();
             }
         }
-        else if (e.getSource() instanceof JToggleButton) {
-            JToggleButton toggleButton = (JToggleButton) e.getSource();
-
-            if (toggleButton == jtbModuleCfg) {
-                actionToggleViewModule(SModConsts.MOD_CFG, SLibConsts.UNDEFINED);
-            }
-            else if (toggleButton == jtbModuleSomRm) {
-                actionToggleViewModule(SModConsts.MOD_SOM_RM, SLibConsts.UNDEFINED);
-            }
-            else if (toggleButton == jtbModuleSomOs) {
-                actionToggleViewModule(SModConsts.MOD_SOM_OS, SLibConsts.UNDEFINED);
-            }
-            else if (toggleButton == jtbModuleSomLog) {
-                actionToggleViewModule(SModConsts.MOD_SOM_LOG, SLibConsts.UNDEFINED);
-            }
-        }
         else if (e.getSource() instanceof JMenuItem) {
             JMenuItem menuItem = (JMenuItem) e.getSource();
 
@@ -1087,21 +960,17 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
             else if (menuItem == jmiFileExit) {
                 actionFileExit();
             }
-            else if (menuItem == jmiViewModuleCfg) {
-                jtbModuleCfg.doClick();
-                jtbModuleCfg.requestFocus();
+            else if (menuItem == jmiTicket) {
+                moSession.showView(SModConsts.S_ALT_TIC, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == jmiViewModuleSomSeed) {
-                jtbModuleSomRm.doClick();
-                jtbModuleSomRm.requestFocus();
+            else if (menuItem == jmiWithoutLabTicket) {
+                moSession.showView(SModConsts.S_ALT_LAB, SModConsts.SX_ALT_WO_LAB, null);
             }
-            else if (menuItem == jmiViewModuleSomOil) {
-                jtbModuleSomOs.doClick();
-                jtbModuleSomOs.requestFocus();
+            else if (menuItem == jmiLabTicket) {
+                moSession.showView(SModConsts.S_ALT_LAB, SModConsts.SX_ALT_W_LAB, null);
             }
-            else if (menuItem == jmiViewModuleSomLogistic) {
-                jtbModuleSomLog.doClick();
-                jtbModuleSomLog.requestFocus();
+            else if (menuItem == jmiTicketReport) {
+                new SDialogRepItemTickets(this, "Reporte de lista de boletos de báscula por producto").setVisible(true);
             }
             else if (menuItem == jmiHelpHelp) {
                 actionHelpHelp();

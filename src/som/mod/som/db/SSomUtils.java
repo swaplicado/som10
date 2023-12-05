@@ -893,7 +893,7 @@ public abstract class SSomUtils {
 
         return ticketKey;
     }
-
+    
     /**
      * Obtain weight on destiny from tickes on provided period.
      * @param session Current GUI session.
