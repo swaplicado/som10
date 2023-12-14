@@ -260,6 +260,11 @@ public class SModuleSom extends SGuiModule {
                     if (value != null) {
                         aux += "AND i.fk_unit = " + ((int[]) value)[0] + " ";
                     }
+                    
+                    value = params.getParamsMap().get(SModConsts.SX_ITEM_ALT);
+                    if (value != null) {
+                        aux += "AND i.id_item IN (" + value + ") ";
+                    }
                 }
 
                 sql = "SELECT i.id_item AS " + SDbConsts.FIELD_ID + "1, i.name AS " + SDbConsts.FIELD_ITEM + ", i.code AS " + SDbConsts.FIELD_CODE + ", "

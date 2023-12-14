@@ -64,6 +64,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     protected int mnDryerDaysToReport;
     protected double mdDryerBagasseGrindingFactor;
     protected double mdDryerBagasseExternalFactor;
+    protected String msAlternativeItemIds;
     protected int mnVersion;
     protected Date mtVersionTs;
     /*
@@ -232,6 +233,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public void setDryerDaysToReport(int n) { mnDryerDaysToReport = n; }
     public void setDryerBagasseGrindingFactor(double d) { mdDryerBagasseGrindingFactor = d; }
     public void setDryerBagasseExternalFactor(double d) { mdDryerBagasseExternalFactor = d; }
+    public void setAlternativeItemIds(String s) { msAlternativeItemIds = s; }
     public void setVersion(int n) { mnVersion = n; }
     public void setVersionTs(Date t) { mtVersionTs = t; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -282,6 +284,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
     public int getDryerDaysToReport() { return mnDryerDaysToReport; }
     public double getDryerBagasseGrindingFactor() { return mdDryerBagasseGrindingFactor; }
     public double getDryerBagasseExternalFactor() { return mdDryerBagasseExternalFactor; }
+    public String getAlternativeItemIds() { return msAlternativeItemIds; }
     public int getVersion() { return mnVersion; }
     public Date getVersionTs() { return mtVersionTs; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -348,6 +351,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         mnDryerDaysToReport = 0;
         mdDryerBagasseGrindingFactor = 0;
         mdDryerBagasseExternalFactor = 0;
+        msAlternativeItemIds = "";
         mnVersion = 0;
         mtVersionTs = null;
         mbUpdatable = false;
@@ -446,6 +450,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
             mnDryerDaysToReport = resultSet.getInt("dryer_years_to_report");
             mdDryerBagasseGrindingFactor = resultSet.getDouble("dryer_bag_grin_fact");
             mdDryerBagasseExternalFactor = resultSet.getDouble("dryer_bag_ext_fact");
+            msAlternativeItemIds = resultSet.getString("alt_item_ids");
             mnVersion = resultSet.getInt("ver");
             mtVersionTs = resultSet.getTimestamp("ver_ts");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -537,6 +542,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     mnDryerDaysToReport + ", " + 
                     mdDryerBagasseGrindingFactor + ", " + 
                     mdDryerBagasseExternalFactor + ", " + 
+                    "'" + msAlternativeItemIds + "', " + 
                     mnVersion + ", " +
                     "NOW()" + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -592,6 +598,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
                     "dryer_years_to_report = " + mnDryerDaysToReport + ", " +
                     "dryer_bag_grin_fact = " + mdDryerBagasseGrindingFactor + ", " +
                     "dryer_bag_ext_fact = " + mdDryerBagasseExternalFactor + ", " +
+                    "alt_item_ids = '" + msAlternativeItemIds + "', " +
                     //"ver = " + mnVersion + ", " +
                     //"ver_ts = " + "NOW()" + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -665,6 +672,7 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
         registry.setDryerDaysToReport(this.getDryerDaysToReport());
         registry.setDryerBagasseGrindingFactor(this.getDryerBagasseGrindingFactor());
         registry.setDryerBagasseExternalFactor(this.getDryerBagasseExternalFactor());
+        registry.setAlternativeItemIds(this.getAlternativeItemIds());
         registry.setVersion(this.getVersion());
         registry.setVersionTs(this.getVersionTs());
         registry.setUpdatable(this.isUpdatable());

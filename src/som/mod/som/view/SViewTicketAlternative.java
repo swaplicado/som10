@@ -29,6 +29,7 @@ import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.som.db.SDbTicketAlternative;
 import som.mod.som.db.SSomConsts;
+import som.mod.som.db.SSomUtils;
 
 /**
  *
@@ -37,7 +38,7 @@ import som.mod.som.db.SSomConsts;
 public class SViewTicketAlternative extends SGridPaneView implements ActionListener {
 
     private SGridFilterDatePeriod moFilterDatePeriod;
-    private SPaneFilter moPaneFilterItem;
+    private String msItemCodes;
     
     private JButton mjbDelete;
     private JButton mjbPrint;
@@ -49,22 +50,24 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
     }
 
     private void initComponetsCustom() {
-        
-        mjbDelete = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_delete.gif")), "Eliminar de SOM Orgánico", this);
-        mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
-        
-        moPaneFilterItem = new SPaneFilter(this, SModConsts.SU_ITEM);
-        moPaneFilterItem.initFilter(null);
+        try {
+            mjbDelete = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_delete.gif")), "Eliminar de SOM Orgánico", this);
+            mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
 
-        moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
-        moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
-        
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterItem);
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbDelete);
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
-        
-        mjbDelete.setEnabled(miClient.getSession().getUser().isAdministrator());
+            msItemCodes = SSomUtils.getAlternativeItemCodes(miClient.getSession());
+            
+            moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
+            moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
+            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+
+            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbDelete);
+            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
+
+            mjbDelete.setEnabled(miClient.getSession().getUser().isAdministrator());
+        }
+        catch (Exception e) {
+            miClient.showMsgBoxError(e.getMessage());
+        }
     }
 
     private void actionQuit() {
@@ -158,11 +161,6 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
         filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
         if (filter != null) {
             sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt", (SGuiDate) filter);
-        }
-
-        filter = (int[]) moFiltersMap.get(SModConsts.SU_ITEM);
-        if (filter != null) {
-            sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_item" }, (int[]) filter);
         }
         
         msSql = "SELECT "
@@ -285,6 +283,7 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
                 + "v.fk_wah_unld_co_n = w.id_co AND v.fk_wah_unld_cob_n = w.id_cob AND v.fk_wah_unld_wah_n = w.id_wah "                
                 + (sqlWhere.isEmpty() ? "" : "WHERE " + sqlWhere)
                 + "AND NOT v.b_alt "
+                + "AND v.fk_item IN (" + msItemCodes + ") "
                 + "UNION "
                 + "SELECT "
                 + "v.id_tic AS " + SDbConsts.FIELD_ID + "1, "
@@ -406,6 +405,7 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
                 + "v.fk_wah_unld_co_n = w.id_co AND v.fk_wah_unld_cob_n = w.id_cob AND v.fk_wah_unld_wah_n = w.id_wah "                
                 + (sqlWhere.isEmpty() ? "" : "WHERE " + sqlWhere)
                 + "AND v.b_alt "
+                + "AND v.fk_item IN (" + msItemCodes + ") "
                 + "ORDER BY sca_code, id_sca, num, f_id_1 ";
     }
 

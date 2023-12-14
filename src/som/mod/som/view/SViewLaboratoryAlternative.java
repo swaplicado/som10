@@ -31,6 +31,7 @@ import som.gui.SGuiClientSessionCustom;
 import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.som.db.SDbTicketAlternative;
+import som.mod.som.db.SSomUtils;
 
 /**
  *
@@ -41,6 +42,8 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
     private SGridFilterDatePeriod moFilterDatePeriod;
     private JButton mjbPrint;
     
+    private String msItemCodes;
+    
     public SViewLaboratoryAlternative(SGuiClient client, int gridSubtype, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_ALT_LAB, gridSubtype, title);
         setRowButtonsEnabled(true, true, false, false, true);
@@ -48,14 +51,21 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
     }
     
     private void initComponetsCustom() {
-        moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
-        moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
-        
-        mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
+        try {
+            moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
+            moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
 
-        if (mnGridSubtype == SModConsts.SX_ALT_W_LAB) {
-            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
-            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
+            mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
+
+            if (mnGridSubtype == SModConsts.SX_ALT_W_LAB) {
+                getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+                getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
+            }
+            
+            msItemCodes = SSomUtils.getAlternativeItemCodes(miClient.getSession());
+        }
+        catch (Exception e) {
+            miClient.showMsgBoxError(e.getMessage());
         }
     }
     
@@ -175,6 +185,7 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
                 + "LEFT JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
                 + "vl.fk_usr_upd = uu.id_usr " 
                 + (sqlWhere.isEmpty() ? "" : "WHERE " + sqlWhere)
+                + "AND v.fk_item IN (" + msItemCodes + ") "
                 + "ORDER BY v.id_tic;";
     }
 

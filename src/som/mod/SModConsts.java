@@ -197,6 +197,7 @@ public abstract class SModConsts {
     public static final int SX_STK_DAILY = 340110;
     public static final int SX_ALT_WO_LAB = 340112;
     public static final int SX_ALT_W_LAB = 340113;
+    public static final int SX_ITEM_ALT = 340114;
 
     public static final int SR_TIC = 350001;
     public static final int SR_ALT_TIC = 350025;

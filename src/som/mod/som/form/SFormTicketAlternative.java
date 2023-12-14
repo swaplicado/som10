@@ -762,9 +762,16 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
     @Override
     public void reloadCatalogues() {
-        miClient.getSession().populateCatalogue(moKeyScale, SModConsts.CU_USR_SCA, SLibConsts.UNDEFINED, new SGuiParams(new int[] { miClient.getSession().getUser().getPkUserId() }));
-        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
-        miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
+        try {
+            SGuiParams params = new SGuiParams();
+            params.getParamsMap().put(SModConsts.SX_ITEM_ALT, SSomUtils.getAlternativeItemCodes(miClient.getSession()));
+            miClient.getSession().populateCatalogue(moKeyScale, SModConsts.CU_USR_SCA, SLibConsts.UNDEFINED, new SGuiParams(new int[] { miClient.getSession().getUser().getPkUserId() }));
+            miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, params);
+            miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
+        }
+        catch (Exception e) {
+            miClient.showMsgBoxError(e.getMessage());
+        }
     }
 
     @Override

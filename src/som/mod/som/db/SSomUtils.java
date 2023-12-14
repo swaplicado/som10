@@ -1645,4 +1645,19 @@ public abstract class SSomUtils {
         String sql = "UPDATE s_tic SET fk_inp_src = " + inputSourceId + " WHERE fk_prod = " + producerId + ";";
         session.getStatement().execute(sql);
     }
+    
+    /**
+     * Devuelve los codigos en formato de cadena de los ítems que seran mostrados en el sistema alternativo.
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    public static String getAlternativeItemCodes(final SGuiSession session) throws Exception {
+        String sql = "SELECT alt_item_ids FROM " + SModConsts.TablesMap.get(SModConsts.CU_CO);
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            return resultSet.getString(1);
+        }
+        return "";
+    }
 }
