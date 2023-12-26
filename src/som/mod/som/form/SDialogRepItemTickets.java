@@ -13,12 +13,15 @@ import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanDialogReport;
 import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
+import som.mod.som.db.SSomUtils;
 
 /**
  *
  * @author Isabel Servín
  */
 public class SDialogRepItemTickets extends SBeanDialogReport {
+    
+    private String msItemCodes;
 
     /**
      * Creates new form SDialogRepItemTickets
@@ -103,7 +106,10 @@ public class SDialogRepItemTickets extends SBeanDialogReport {
         moDateStart.setValue(SLibTimeUtils.getBeginOfYear(miClient.getSession().getWorkingDate()));
         moDateEnd.setValue(SLibTimeUtils.getEndOfYear(miClient.getSession().getWorkingDate()));
 
-        
+        try {
+            msItemCodes = SSomUtils.getAlternativeItemCodes(miClient.getSession());
+        } catch (Exception e) {}
+            
         resetForm();            
     }
 
@@ -136,7 +142,8 @@ public class SDialogRepItemTickets extends SBeanDialogReport {
         moParamsMap = SPrtUtils.createReportParamsMap(miClient.getSession());
         
         sqlWhere = "v.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(moDateStart.getValue()) + "' " + 
-                "AND '" + SLibUtils.DbmsDateFormatDate.format(moDateEnd.getValue()) + "'";
+                "AND '" + SLibUtils.DbmsDateFormatDate.format(moDateEnd.getValue()) + "'" +
+                "AND v.fk_item IN (" + msItemCodes + ") ";
         
         moParamsMap.put("tDateStart", moDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateEnd.getValue());

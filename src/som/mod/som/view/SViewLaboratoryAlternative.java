@@ -113,7 +113,7 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
                 else {
                     ticket = (SDbTicketAlternative) miClient.getSession().readRegistry(SModConsts.S_ALT_TIC, gridRow.getRowPrimaryKey());
 
-                    if (miClient.showMsgBoxConfirm("¿Desea eliminar el análisis de laboratorio del boleto de SOM Orgánico?") == JOptionPane.YES_OPTION) {
+                    if (miClient.showMsgBoxConfirm("¿Desea eliminar el análisis de laboratorio del boleto de SOM Aguacate?") == JOptionPane.YES_OPTION) {
                         try {
                             ticket.deleteLabTest(miClient.getSession());
 
@@ -210,7 +210,7 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "it.code", "Ítem código");
         if (mnGridSubtype == SModConsts.SX_ALT_W_LAB) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "vl.dt", "Fecha de análisis");
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_2D, "vl.yield_per", "Rendimiento (%)");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "vl.yield_per", "Rendimiento (%)");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, SDbConsts.FIELD_USER_INS_TS, SGridConsts.COL_TITLE_USER_INS_TS);
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_UPD_NAME, SGridConsts.COL_TITLE_USER_UPD_NAME);

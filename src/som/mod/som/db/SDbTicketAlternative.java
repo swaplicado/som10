@@ -842,15 +842,13 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     
     @Override
     public void delete(SGuiSession session) throws Exception {
-        if (mnFkLaboratoryId_n == 0) {
-            msSql = "UPDATE s_tic SET b_alt = 0 " + getSqlWhere();
-            session.getStatement().execute(msSql);
-            msSql = "DELETE FROM " + getSqlTable() + " " + getSqlWhere();
-            session.getStatement().execute(msSql);
+        if (mnFkLaboratoryId_n != 0) {
+            deleteLabTest(session);
         }
-        else {
-            throw new Exception("No se puede eliminar debido a que tiene un análisis de laboratorio asociado.");
-        }
+        msSql = "UPDATE s_tic SET b_alt = 0 " + getSqlWhere();
+        session.getStatement().execute(msSql);
+        msSql = "DELETE FROM " + getSqlTable() + " " + getSqlWhere();
+        session.getStatement().execute(msSql);
     }
     
     public void deleteLabTest(SGuiSession session) throws Exception {

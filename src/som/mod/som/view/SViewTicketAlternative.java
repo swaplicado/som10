@@ -51,7 +51,7 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
 
     private void initComponetsCustom() {
         try {
-            mjbDelete = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_delete.gif")), "Eliminar de SOM Orgánico", this);
+            mjbDelete = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_delete.gif")), "Eliminar de SOM Aguacate", this);
             mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
 
             msItemCodes = SSomUtils.getAlternativeItemCodes(miClient.getSession());
@@ -92,21 +92,32 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
                 else {
                     ticket = (SDbTicketAlternative) miClient.getSession().readRegistry(SModConsts.S_ALT_TIC, gridRow.getRowPrimaryKey());
 
-                    if (miClient.showMsgBoxConfirm("¿Desea eliminar el boleto de SOM Orgánico?") == JOptionPane.YES_OPTION) {
-                        try {
-                            ticket.delete(miClient.getSession());
-
-                            miClient.getSession().notifySuscriptors(mnGridType);
-                            miClient.getSession().notifySuscriptors(mnGridSubtype);
-                            miClient.getSession().notifySuscriptors(SModConsts.SX_TIC_MAN);
-                            miClient.getSession().notifySuscriptors(SModConsts.SX_TIC_MAN_SUP);
+                    if (ticket.getFkLaboratoryId_n() == 0) {
+                        if (miClient.showMsgBoxConfirm("¿Desea eliminar el boleto de SOM Aguacate?") == JOptionPane.YES_OPTION) {
+                            deleteTicket(ticket);
                         }
-                        catch (Exception e) {
-                            SLibUtils.showException(this, e);
+                    }
+                    else {
+                        if (miClient.showMsgBoxConfirm("El boleto tiene resltado de laboratorio\n¿Desea eliminar el boleto de SOM Aguacate junto con el análisis?") == JOptionPane.YES_OPTION) {
+                            deleteTicket(ticket);
                         }
                     }
                 }
             }
+        }
+    }
+    
+    private void deleteTicket(SDbTicketAlternative ticket) {
+        try {
+            ticket.delete(miClient.getSession());
+
+            miClient.getSession().notifySuscriptors(mnGridType);
+            miClient.getSession().notifySuscriptors(mnGridSubtype);
+            miClient.getSession().notifySuscriptors(SModConsts.SX_TIC_MAN);
+            miClient.getSession().notifySuscriptors(SModConsts.SX_TIC_MAN_SUP);
+        }
+        catch (Exception e) {
+            SLibUtils.showException(this, e);
         }
     }
     
@@ -467,7 +478,7 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "b_rev_2", "2a pesada Revuelta");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "w_name", "Almacén descarga");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "w_code", "Almacén descarga código");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "b_alt", "SOM Orgánico");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "b_alt", "SOM Aguacate");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);

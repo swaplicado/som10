@@ -535,9 +535,22 @@
                 <Component class="javax.swing.JLabel" name="jlPackingEmptyQuantityDepartureUnit">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[50, 23]"/>
+                      <Dimension value="[65, 23]"/>
                     </Property>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlWeiNetCalc">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="C&#xe1;lculo carga destino neta:"/>
+                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[110, 23]"/>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[155, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecWeiNetCalc">
                 </Component>
               </SubComponents>
             </Container>
@@ -561,9 +574,22 @@
                 <Component class="javax.swing.JLabel" name="jlWeightAverageUnit">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[50, 23]"/>
+                      <Dimension value="[65, 23]"/>
                     </Property>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlWeiNetTic">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Carga destino neta boleto:"/>
+                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[110, 23]"/>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[155, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecWeiNetTic">
                 </Component>
               </SubComponents>
             </Container>

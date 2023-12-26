@@ -146,10 +146,14 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jlPackingEmptyQuantityDeparture = new javax.swing.JLabel();
         moDecPackingEmptyQuantityDeparture = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlPackingEmptyQuantityDepartureUnit = new javax.swing.JLabel();
+        jlWeiNetCalc = new javax.swing.JLabel();
+        moDecWeiNetCalc = new sa.lib.gui.bean.SBeanFieldDecimal();
         jPanel20 = new javax.swing.JPanel();
         jlWeightAverage = new javax.swing.JLabel();
         moDecWeightAverage = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlWeightAverageUnit = new javax.swing.JLabel();
+        jlWeiNetTic = new javax.swing.JLabel();
+        moDecWeiNetTic = new sa.lib.gui.bean.SBeanFieldDecimal();
         jPanel5 = new javax.swing.JPanel();
         jlNote = new javax.swing.JLabel();
         moTextNote = new sa.lib.gui.bean.SBeanFieldText();
@@ -396,8 +400,14 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jPanel19.add(jlPackingEmptyQuantityDeparture);
         jPanel19.add(moDecPackingEmptyQuantityDeparture);
 
-        jlPackingEmptyQuantityDepartureUnit.setPreferredSize(new java.awt.Dimension(50, 23));
+        jlPackingEmptyQuantityDepartureUnit.setPreferredSize(new java.awt.Dimension(65, 23));
         jPanel19.add(jlPackingEmptyQuantityDepartureUnit);
+
+        jlWeiNetCalc.setText("Cálculo carga destino neta:");
+        jlWeiNetCalc.setMinimumSize(new java.awt.Dimension(110, 23));
+        jlWeiNetCalc.setPreferredSize(new java.awt.Dimension(155, 23));
+        jPanel19.add(jlWeiNetCalc);
+        jPanel19.add(moDecWeiNetCalc);
 
         jPanel2.add(jPanel19);
 
@@ -408,8 +418,14 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jPanel20.add(jlWeightAverage);
         jPanel20.add(moDecWeightAverage);
 
-        jlWeightAverageUnit.setPreferredSize(new java.awt.Dimension(50, 23));
+        jlWeightAverageUnit.setPreferredSize(new java.awt.Dimension(65, 23));
         jPanel20.add(jlWeightAverageUnit);
+
+        jlWeiNetTic.setText("Carga destino neta boleto:");
+        jlWeiNetTic.setMinimumSize(new java.awt.Dimension(110, 23));
+        jlWeiNetTic.setPreferredSize(new java.awt.Dimension(155, 23));
+        jPanel20.add(jlWeiNetTic);
+        jPanel20.add(moDecWeiNetTic);
 
         jPanel2.add(jPanel20);
 
@@ -490,6 +506,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private javax.swing.JLabel jlProducer;
     private javax.swing.JLabel jlScale;
     private javax.swing.JLabel jlTicket;
+    private javax.swing.JLabel jlWeiNetCalc;
+    private javax.swing.JLabel jlWeiNetTic;
     private javax.swing.JLabel jlWeightAverage;
     private javax.swing.JLabel jlWeightAverageUnit;
     private javax.swing.JLabel jlWeightDestinyArrival;
@@ -506,6 +524,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private sa.lib.gui.bean.SBeanFieldDecimal moDecPackingEmptyQuantityDeparture;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecPackingFullQuantityArrival;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecPackingFullQuantityDeparture;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecWeiNetCalc;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecWeiNetTic;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightAverage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightDestinyArrival;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightDestinyDeparture;
@@ -548,6 +568,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moDecPackingEmptyQuantityArrival.setDecimalSettings(SGuiUtils.getLabelName(jlPackingEmptyQuantityArrival.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecPackingFullQuantityDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlPackingFullQuantityDeparture.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecPackingEmptyQuantityDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlPackingEmptyQuantityDeparture.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecWeiNetCalc.setDecimalSettings(SGuiUtils.getLabelName(jlWeiNetCalc.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecWeiNetTic.setDecimalSettings(SGuiUtils.getLabelName(jlWeiNetCalc.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 255, 0);
         
         moFields.addField(moKeyScale);
@@ -604,16 +626,19 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moTextDriver.setEditable(true);
         moDecWeightSource.setEditable(false);
         moBoolWeightSourceAvailable.setEnabled(false);
-        moDecWeightDestinyArrival.setEditable(false);
-        moDecWeightDestinyDeparture.setEditable(false);
-        moDatetimeArrival.setEditable(false);
-        moDatetimeDeparture.setEditable(false);
+        moDecWeightDestinyArrival.setEditable(true);
+        moDecWeightDestinyDeparture.setEditable(true);
+        moDatetimeArrival.setEditable(true);
+        moDatetimeDeparture.setEditable(true);
         moDecPackingFullQuantityArrival.setEditable(false);
         moDecPackingEmptyQuantityArrival.setEditable(false);
-        moDecPackingFullQuantityDeparture.setEditable(false);
-        moDecPackingEmptyQuantityDeparture.setEditable(false);
-        moTextOpeArr.setEnabled(false);
-        moTextOpeDep.setEnabled(false);
+        moDecPackingFullQuantityDeparture.setEditable(true);
+        moDecPackingEmptyQuantityDeparture.setEditable(true);
+        moTextOpeArr.setEnabled(true);
+        moTextOpeDep.setEnabled(true);
+        moDecWeiNetCalc.setEnabled(false);
+        moDecWeiNetTic.setEnabled(false);
+        itemStateKeyItem(false);
     }
 
     private void itemStateKeyProducer() {
@@ -626,18 +651,20 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         }
     }
 
-    private void itemStateKeyItem() {
+    private void itemStateKeyItem(boolean erase) {
         mbIsPacking = false;
         mbIsLaboratory = false;
-        moDecPackingFullQuantityArrival.setValue(0d);
-        moDecPackingEmptyQuantityArrival.setValue(0d);
-        moDecPackingFullQuantityDeparture.setValue(0d);
-        moDecPackingEmptyQuantityDeparture.setValue(0d);
-        jlPackingFullQuantityArrivalUnit.setText("");
-        jlPackingEmptyQuantityArrivalUnit.setText("");
-        jlPackingFullQuantityDepartureUnit.setText("");
-        jlPackingEmptyQuantityDepartureUnit.setText("");
-        jlWeightAverageUnit.setText("");
+        if (erase){
+            moDecPackingFullQuantityArrival.setValue(0d);
+            moDecPackingEmptyQuantityArrival.setValue(0d);
+            moDecPackingFullQuantityDeparture.setValue(0d);
+            moDecPackingEmptyQuantityDeparture.setValue(0d);
+            jlPackingFullQuantityArrivalUnit.setText("");
+            jlPackingEmptyQuantityArrivalUnit.setText("");
+            jlPackingFullQuantityDepartureUnit.setText("");
+            jlPackingEmptyQuantityDepartureUnit.setText("");
+            jlWeightAverageUnit.setText("");
+        }
         moDecPackingFullQuantityArrival.setEditable(mbIsPacking);
         moDecPackingEmptyQuantityArrival.setEditable(mbIsPacking);
         
@@ -693,14 +720,29 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moDecWeightSource.setEditable(moBoolWeightSourceAvailable.getValue());
     }
 
-    private void computeWeightAverage() {
+    private void computeWeight() {
         if (moDecWeightDestinyDeparture.getValue() > 0 && (moDecPackingFullQuantityArrival.getValue() > 0 || moDecPackingFullQuantityDeparture.getValue() > 0)) {
             // tare - packing_net_weight / full_packing_net_quantity:
-            moDecWeightAverage.setValue(((moDecWeightDestinyArrival.getValue() - moDecWeightDestinyDeparture.getValue()) -
+            double average = ((moDecWeightDestinyArrival.getValue() - moDecWeightDestinyDeparture.getValue()) -
                 ((moDecPackingFullQuantityArrival.getValue() + moDecPackingEmptyQuantityArrival.getValue()) * moItem.getPackingWeight()) +
                 ((moDecPackingFullQuantityDeparture.getValue() + moDecPackingEmptyQuantityDeparture.getValue()) * moItem.getPackingWeight())) /
-                (moDecPackingFullQuantityArrival.getValue() - moDecPackingFullQuantityDeparture.getValue()));
+                (moDecPackingFullQuantityArrival.getValue() - moDecPackingFullQuantityDeparture.getValue());
+            if (average == Double.POSITIVE_INFINITY || average == Double.NEGATIVE_INFINITY) {
+                moDecWeightAverage.setValue(0.0);
+            }
+            else {
+                moDecWeightAverage.setValue(average);
+            }
         }
+        
+        double weiPacArr = (moDecPackingFullQuantityArrival.getValue() + moDecPackingEmptyQuantityArrival.getValue()) * moItem.getPackingWeight();
+        double weiPacDep = (moDecPackingFullQuantityDeparture.getValue() + moDecPackingEmptyQuantityDeparture.getValue()) * moItem.getPackingWeight();
+        double weiPacNet = weiPacArr - weiPacDep;
+        
+        double weiGross = moDecWeightDestinyArrival.getValue() - moDecWeightDestinyDeparture.getValue();
+        double weiNet = moDecWeightDestinyDeparture.getValue() == 0.0 ? 0.0 : weiGross - weiPacNet;
+        
+        moDecWeiNetCalc.setValue(weiNet);
     }
 
     private void getSeasonRegion() {
@@ -803,7 +845,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moKeyProducer.setValue(new int[] { moRegistry.getFkProducerId() });
         itemStateKeyProducer();
         moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
-        itemStateKeyItem();
+        itemStateKeyItem(true);
         
         if (moRegistry.getFkInputSourceId() == SModSysConsts.SU_INP_SRC_NA) {
             moKeyInputSource.resetField();
@@ -827,6 +869,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moDecPackingEmptyQuantityArrival.setValue(moRegistry.getPackingEmptyQuantityArrival());
         moDecPackingFullQuantityDeparture.setValue(moRegistry.getPackingFullQuantityDeparture());
         moDecPackingEmptyQuantityDeparture.setValue(moRegistry.getPackingEmptyQuantityDeparture());
+        moDecWeiNetTic.setValue(moRegistry.getWeightDestinyNet_r());
         moTextNote.setValue("");
 
         moTextScale.setValue(moRegistry.getXtaScaleName());
@@ -856,7 +899,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moDecWeightAverage.setEditable(false);
 
         itemStateWeightSourceAvailable();
-        computeWeightAverage();
+        computeWeight();
 
         addAllListeners();
     }
@@ -995,6 +1038,12 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
                         }
                     }
                 }
+                
+                if (validation.isValid()) {
+                    if (!SLibUtils.compareAmount(moDecWeiNetCalc.getValue(), moDecWeiNetTic.getValue())) {
+                        validation.setMessage("No se puede guardar debido a que el cálculo de la carga destino neta no corresponde a la carga destino neta boleto.");
+                    }
+                } 
             }
         }
 
@@ -1004,10 +1053,10 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() instanceof JComboBox && e.getStateChange() == ItemEvent.SELECTED) {
-            JComboBox comboBox = (JComboBox)  e.getSource();
+            JComboBox comboBox = (JComboBox) e.getSource();
 
             if (comboBox == moKeyItem) {
-                itemStateKeyItem();
+                itemStateKeyItem(true);
             }
             else if (comboBox == moKeyProducer) {
                 itemStateKeyProducer();
@@ -1051,7 +1100,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
                 textField == moDecPackingFullQuantityDeparture.getComponent() ||
                 textField == moDecPackingEmptyQuantityDeparture.getComponent()) {
 
-                computeWeightAverage();
+                computeWeight();
             }
         }
     }

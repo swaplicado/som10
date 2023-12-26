@@ -821,10 +821,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 guiReport = new SGuiReport("reps/s_tic.jasper", "Reporte boleto");
                 break;
             case SModConsts.SR_ALT_TIC:
-                guiReport = new SGuiReport("reps/s_alt_tic.jasper", "Boleto SOM Orgánico");
+                guiReport = new SGuiReport("reps/s_alt_tic.jasper", "Boleto SOM Aguacate");
                 break;
             case SModConsts.SR_ALT_LAB:
-                guiReport = new SGuiReport("reps/s_alt_lab.jasper", "Análisis laboratorio SOM Orgánico");
+                guiReport = new SGuiReport("reps/s_alt_lab.jasper", "Análisis laboratorio SOM Aguacate");
                 break;
             case SModConsts.SR_TIC_COMP:
                 guiReport = new SGuiReport("reps/s_tic_comp.jasper", "Reporte comparativo boletos SOM vs. Revuelta");

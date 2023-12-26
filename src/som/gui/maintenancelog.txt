@@ -1,4 +1,11 @@
 ================================================================================
+2023-12-26, 1.0 090.2
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Correcciones generales en SOM Alternativo, entre ello el cambio de etiquetas de "Orgánico" a "Aguacate".
+2) Se habilitaron los campos solicitados en la forma de captura de boletos de SOM Alternativo.
+
+================================================================================
 2023-12-21, 1.0 090.1
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
