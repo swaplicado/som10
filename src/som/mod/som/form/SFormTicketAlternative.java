@@ -157,6 +157,9 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jPanel5 = new javax.swing.JPanel();
         jlNote = new javax.swing.JLabel();
         moTextNote = new sa.lib.gui.bean.SBeanFieldText();
+        jPanel14 = new javax.swing.JPanel();
+        jlNote2 = new javax.swing.JLabel();
+        moTextNote2 = new sa.lib.gui.bean.SBeanFieldText();
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
@@ -441,6 +444,18 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
         jPanel2.add(jPanel5);
 
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlNote2.setText("Observaciones salida:");
+        jlNote2.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel14.add(jlNote2);
+
+        moTextNote2.setText("sBeanFieldText2");
+        moTextNote2.setPreferredSize(new java.awt.Dimension(600, 23));
+        jPanel14.add(moTextNote2);
+
+        jPanel2.add(jPanel14);
+
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -468,6 +483,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
@@ -491,6 +507,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private javax.swing.JLabel jlInputSource;
     private javax.swing.JLabel jlItem;
     private javax.swing.JLabel jlNote;
+    private javax.swing.JLabel jlNote2;
     private javax.swing.JLabel jlOpeArr;
     private javax.swing.JLabel jlOpeDep;
     private javax.swing.JLabel jlPackingEmptyQuantityArrival;
@@ -537,6 +554,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private sa.lib.gui.bean.SBeanFieldKey moKeyScale;
     private sa.lib.gui.bean.SBeanFieldText moTextDriver;
     private sa.lib.gui.bean.SBeanFieldText moTextNote;
+    private sa.lib.gui.bean.SBeanFieldText moTextNote2;
     private sa.lib.gui.bean.SBeanFieldText moTextOpeArr;
     private sa.lib.gui.bean.SBeanFieldText moTextOpeDep;
     private sa.lib.gui.bean.SBeanFieldText moTextPlates;
@@ -545,7 +563,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 960, 600);
+        SGuiUtils.setWindowBounds(this, 1040, 650);
         
         moKeyScale.setKeySettings(miClient, SGuiUtils.getLabelName(jlScale.getText()), true);
         moIntTicket.setIntegerSettings(SGuiUtils.getLabelName(jlTicket.getText()), SGuiConsts.GUI_TYPE_INT_RAW, true);
@@ -570,7 +588,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moDecPackingEmptyQuantityDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlPackingEmptyQuantityDeparture.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecWeiNetCalc.setDecimalSettings(SGuiUtils.getLabelName(jlWeiNetCalc.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecWeiNetTic.setDecimalSettings(SGuiUtils.getLabelName(jlWeiNetCalc.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 255, 0);
+        moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 500, 0);
+        moTextNote2.setTextSettings(SGuiUtils.getLabelName(jlNote2.getText()), 500, 0);
         
         moFields.addField(moKeyScale);
         moFields.addField(moIntTicket);
@@ -870,7 +889,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moDecPackingFullQuantityDeparture.setValue(moRegistry.getPackingFullQuantityDeparture());
         moDecPackingEmptyQuantityDeparture.setValue(moRegistry.getPackingEmptyQuantityDeparture());
         moDecWeiNetTic.setValue(moRegistry.getWeightDestinyNet_r());
-        moTextNote.setValue("");
+        moTextNote.setValue(moRegistry.getScaleCommentsArrival());
+        moTextNote2.setValue(moRegistry.getScaleCommentsDeparture());
 
         moTextScale.setValue(moRegistry.getXtaScaleName());
         mbIsRevImport1 = moRegistry.isRevueltaImport1();
@@ -930,6 +950,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         registry.setWeightDestinyArrival(moDecWeightDestinyArrival.getValue());
         registry.setScaleOperatorArrival(moTextOpeArr.getValue());
         registry.setScaleOperatorDeparture(moTextOpeDep.getValue());
+        registry.setScaleCommentsArrival(moTextNote.getValue());
+        registry.setScaleCommentsDeparture(moTextNote2.getValue());
         
         boolean tared = mnFormSubtype == SModConsts.SX_TIC_TARE_PEND || moRegistry.isTared();
         
