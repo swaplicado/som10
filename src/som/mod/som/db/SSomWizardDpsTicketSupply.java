@@ -143,13 +143,13 @@ public class SSomWizardDpsTicketSupply implements SGridRow {
         mvWizardDpsSupplyTicket.clear();
     }
 
-    public void read(SGuiSession session, String sqlDiogPeriod, int subtype, int nFkUnitid) throws SQLException, Exception {
+    public void read(SGuiSession session, String sqlDiogPeriod, int subtype, int nFkUnitid, int nFkTicOrig, int nFkTicDest, int nFkTicSca) throws SQLException, Exception {
         String sql = "";
         ResultSet resultSet = null;
 
         SSomWizardDpsTicketSupply wizard = null;
 
-        sql = getQuery(sqlDiogPeriod, subtype, nFkUnitid);
+        sql = getQuery(sqlDiogPeriod, subtype, nFkUnitid, nFkTicOrig, nFkTicDest, nFkTicSca);
         resultSet = session.getStatement().executeQuery(sql);
         while (resultSet.next()) {
             wizard = new SSomWizardDpsTicketSupply();
@@ -186,7 +186,7 @@ public class SSomWizardDpsTicketSupply implements SGridRow {
         }
     }
 
-    public String getQuery(String sqlDiogPeriod, int subtype, int nFkUnitid) {
+    public String getQuery(String sqlDiogPeriod, int subtype, int nFkUnitid, int nFkTicOrig, int nFkTicDest, int nFkTicSca) {
         String sql = "";
 
         sql = "SELECT "

@@ -75,6 +75,8 @@ public abstract class SModConsts {
     public static final int SU_SEAS_PROD = 320013;
     public static final int SU_IOD_VAL_RANK = 320014;
     public static final int SU_INP_SRC = 320021;
+    public static final int SU_TIC_ORIG = 320034;
+    public static final int SU_TIC_DEST = 320035;
     public static final int SU_BY_PRODUCT = 320022;
     public static final int SU_GRINDING_PARAM = 320041;
     public static final int SU_GRINDING_LINK_ITEM_PARAM = 320042;
@@ -279,6 +281,8 @@ public abstract class SModConsts {
         TablesMap.put(SU_SEAS_PROD, "su_seas_prod");
         TablesMap.put(SU_IOD_VAL_RANK, "su_iod_val_rank");
         TablesMap.put(SU_INP_SRC, "su_inp_src");
+        TablesMap.put(SU_TIC_ORIG, "su_tic_orig");
+        TablesMap.put(SU_TIC_DEST, "su_tic_dest");
         TablesMap.put(SU_BY_PRODUCT, "su_by_product");
         TablesMap.put(SU_GRINDING_PARAM, "su_grin_param");
         TablesMap.put(SU_GRINDING_LINK_ITEM_PARAM, "su_grin_link_item_param");

@@ -67,6 +67,15 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         jPanel8 = new javax.swing.JPanel();
         jlInputSource = new javax.swing.JLabel();
         moKeySource = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel9 = new javax.swing.JPanel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moKeyTicketOrigin = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel10 = new javax.swing.JPanel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moKeyTicketDestination = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel13 = new javax.swing.JPanel();
+        jlTicketScale = new javax.swing.JLabel();
+        moKeyTicketScale = new sa.lib.gui.bean.SBeanFieldKey();
         moRadProducer = new sa.lib.gui.bean.SBeanFieldRadio();
         moRadSource = new sa.lib.gui.bean.SBeanFieldRadio();
         moRadDetail = new sa.lib.gui.bean.SBeanFieldRadio();
@@ -75,12 +84,12 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros del reporte:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(11, 1, 0, 7));
+        jPanel2.setLayout(new java.awt.GridLayout(14, 1, 0, 5));
 
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateStart.setText("Fecha inicial:*");
-        jlDateStart.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateStart.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel11.add(jlDateStart);
         jPanel11.add(moDateDateStart);
 
@@ -89,7 +98,7 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateEnd.setText("Fecha final:*");
-        jlDateEnd.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateEnd.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel12.add(jlDateEnd);
         jPanel12.add(moDateDateEnd);
 
@@ -98,7 +107,7 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItem.setText("Ítem:");
-        jlItem.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlItem.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel15.add(jlItem);
 
         moKeyItem.setPreferredSize(new java.awt.Dimension(500, 23));
@@ -109,7 +118,7 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 0));
 
         jlProducer.setText("Proveedor:");
-        jlProducer.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlProducer.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel7.add(jlProducer);
 
         moKeyProducer.setPreferredSize(new java.awt.Dimension(500, 23));
@@ -120,13 +129,46 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 0));
 
         jlInputSource.setText("Origen insumo:");
-        jlInputSource.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlInputSource.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel8.add(jlInputSource);
 
         moKeySource.setPreferredSize(new java.awt.Dimension(500, 23));
         jPanel8.add(moKeySource);
 
         jPanel2.add(jPanel8);
+
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 0));
+
+        jlTicketOrigin.setText("Procedencia boleto:");
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel9.add(jlTicketOrigin);
+
+        moKeyTicketOrigin.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel9.add(moKeyTicketOrigin);
+
+        jPanel2.add(jPanel9);
+
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 0));
+
+        jlTicketDestination.setText("Destino boleto:");
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel10.add(jlTicketDestination);
+
+        moKeyTicketDestination.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel10.add(moKeyTicketDestination);
+
+        jPanel2.add(jPanel10);
+
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 0));
+
+        jlTicketScale.setText("Báscula:");
+        jlTicketScale.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel13.add(jlTicketScale);
+
+        moKeyTicketScale.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel13.add(moKeyTicketScale);
+
+        jPanel2.add(jPanel13);
 
         orderByGroup.add(moRadProducer);
         moRadProducer.setText("Ordenar por proveedor");
@@ -152,22 +194,31 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JLabel jlDateEnd;
     private javax.swing.JLabel jlDateStart;
     private javax.swing.JLabel jlInputSource;
     private javax.swing.JLabel jlItem;
     private javax.swing.JLabel jlProducer;
+    private javax.swing.JLabel jlTicketDestination;
+    private javax.swing.JLabel jlTicketOrigin;
+    private javax.swing.JLabel jlTicketScale;
     private sa.lib.gui.bean.SBeanFieldDate moDateDateEnd;
     private sa.lib.gui.bean.SBeanFieldDate moDateDateStart;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProducer;
     private sa.lib.gui.bean.SBeanFieldKey moKeySource;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketScale;
     private sa.lib.gui.bean.SBeanFieldRadio moRadDetail;
     private sa.lib.gui.bean.SBeanFieldRadio moRadProducer;
     private sa.lib.gui.bean.SBeanFieldRadio moRadSource;
@@ -177,7 +228,7 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 640, 400);
+        SGuiUtils.setWindowBounds(this, 800, 500);
 
         moFieldKeyGroup = new SGuiFieldKeyGroup(miClient);
         moDateDateStart.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateStart), true);
@@ -185,6 +236,9 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem), false);
         moKeyProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlProducer), false);
         moKeySource.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputSource), false);
+        moKeyTicketOrigin.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketOrigin), false);
+        moKeyTicketDestination.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketDestination), false);
+        moKeyTicketScale.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketScale), false);
         moRadProducer.setBooleanSettings(SGuiUtils.getLabelName(jlProducer), false);
         moRadSource.setBooleanSettings(SGuiUtils.getLabelName(jlInputSource), false);
         moRadDetail.setBooleanSettings(SGuiUtils.getLabelName(jlProducer), false);
@@ -195,6 +249,9 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         moFields.addField(moKeyItem);
         moFields.addField(moKeyProducer);
         moFields.addField(moKeySource);
+        moFields.addField(moKeyTicketOrigin);
+        moFields.addField(moKeyTicketDestination);
+        moFields.addField(moKeyTicketScale);
         moFields.addField(moRadProducer);
         moFields.addField(moRadSource);
         moFields.addField(moRadDetail);
@@ -212,6 +269,9 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SModSysConsts.SX_ITEM_TP_FRUIT, null);
         miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeySource, SModConsts.SU_INP_SRC, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketScale, SModConsts.SU_SCA, SLibConsts.UNDEFINED, null);
         
         moRadProducer.setSelected(true);
         moRadDetail.setSelected(true);
@@ -266,6 +326,9 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         else {
             moParamsMap.put("bSourceSearch", false);
         }
+        sqlWhere += (moKeyTicketOrigin.getSelectedIndex() <= 0 ? "" : "AND t.fk_tic_orig = " + moKeyTicketOrigin.getValue()[0] + " ");
+        sqlWhere += (moKeyTicketDestination.getSelectedIndex() <= 0 ? "" : "AND t.fk_tic_dest = " + moKeyTicketDestination.getValue()[0] + " ");
+        sqlWhere += (moKeyTicketScale.getSelectedIndex() <= 0 ? "" : "AND t.fk_sca = " + moKeyTicketScale.getValue()[0] + " ");
         
         SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "i");
         String sqlInputCategories = inputCategory.getSqlFilter();
@@ -286,5 +349,8 @@ public final class SDialogRepReceivedFruitHist extends SBeanDialogReport {
         moParamsMap.put("bShowDetails", !moRadSummary.getValue());
         moParamsMap.put("sSqlWhere", sqlWhere);
         moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
+        moParamsMap.put("sTicOrig", moKeyTicketOrigin.getSelectedIndex() > 0 ? moKeyTicketOrigin.getSelectedItem() : "TODOS");
+        moParamsMap.put("sTicDest", moKeyTicketDestination.getSelectedIndex() > 0 ? moKeyTicketDestination.getSelectedItem() : "TODOS");
+        moParamsMap.put("sTicSca", moKeyTicketScale.getSelectedIndex() > 0 ? moKeyTicketScale.getSelectedItem() : "TODAS");
     }
 }

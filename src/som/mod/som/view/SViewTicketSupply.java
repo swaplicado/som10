@@ -46,7 +46,10 @@ public class SViewTicketSupply extends SGridPaneView implements java.awt.event.A
 
     private SPaneFilter moPaneFilter;
     private SPaneFilter moPaneFilterInputCategory;
-
+    private SPaneFilter moPaneFilterTicketOrigin;
+    private SPaneFilter moPaneFilterTicketDestination;
+    private SPaneFilter moPaneFilterScale;
+    
     private javax.swing.JButton jbTicketSupply;
     private javax.swing.JButton jbTicketClose;
     private javax.swing.JButton jbTicketOpen;
@@ -66,6 +69,12 @@ public class SViewTicketSupply extends SGridPaneView implements java.awt.event.A
         moPaneFilter.initFilter(null);
         moPaneFilterInputCategory = new SPaneFilter(this, SModConsts.SU_INP_CT);
         moPaneFilterInputCategory.initFilter(null);
+        moPaneFilterTicketOrigin = new SPaneFilter(this, SModConsts.SU_TIC_ORIG);
+        moPaneFilterTicketOrigin.initFilter(null);
+        moPaneFilterTicketDestination = new SPaneFilter(this, SModConsts.SU_TIC_DEST);
+        moPaneFilterTicketDestination.initFilter(null);
+        moPaneFilterScale = new SPaneFilter(this, SModConsts.SU_SCA);
+        moPaneFilterScale.initFilter(null);
 
         if (mnGridSubtype == SModConsts.SX_TIC_MAN_SUP) {
             moFilterDateCutOff = new SGridFilterDateCutOff(miClient, this);
@@ -103,6 +112,9 @@ public class SViewTicketSupply extends SGridPaneView implements java.awt.event.A
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(new JPopupMenu.Separator());
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterInputCategory);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilter);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketOrigin);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketDestination);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterScale);
     }
 
     private void actionTicketSupply() {
@@ -242,6 +254,21 @@ public class SViewTicketSupply extends SGridPaneView implements java.awt.event.A
         if (filter != null) {
             sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_item" }, (int[]) filter);
         }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_ORIG);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_orig" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_DEST);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_dest" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_SCA);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_sca" }, (int[]) filter);
+        }
 
         msSql = "SELECT "
                 + "v.id_tic AS " + SDbConsts.FIELD_ID + "1, "
@@ -279,6 +306,8 @@ public class SViewTicketSupply extends SGridPaneView implements java.awt.event.A
                 + "v.usr_fre, "
                 + "v.usr_tot_r, "
                 + "vs.name, "
+                + "tor.code, "
+                + "tde.code, "
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
                 + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
                 + "v.b_ass, "
@@ -303,6 +332,8 @@ public class SViewTicketSupply extends SGridPaneView implements java.awt.event.A
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON v.fk_usr_upd = uu.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ua ON v.fk_usr_ass = ua.id_usr "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_ORIG) + " AS tor ON v.fk_tic_orig = tor.id_tic_orig "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_DEST) + " AS tde ON v.fk_tic_dest = tde.id_tic_dest "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS g ON v.id_tic = g.fk_tic_n AND g.b_del = 0 "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_IOG_CT) + " AS ct ON g.fk_iog_ct = ct.id_iog_ct "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_IOG_CL) + " AS cl ON g.fk_iog_ct = cl.id_iog_ct AND g.fk_iog_cl = cl.id_iog_cl "
@@ -320,7 +351,7 @@ public class SViewTicketSupply extends SGridPaneView implements java.awt.event.A
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[mnGridSubtype == SModConsts.SX_TIC_ASSO ? 30 : 28];
+        columns = new SGridColumnView[mnGridSubtype == SModConsts.SX_TIC_ASSO ? 32 : 30];
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sc.code", "Báscula");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, SDbConsts.FIELD_CODE, "Boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, SDbConsts.FIELD_DATE, SGridConsts.COL_TITLE_DATE + " boleto");
@@ -348,6 +379,8 @@ public class SViewTicketSupply extends SGridPaneView implements java.awt.event.A
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla", "Placas");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla_cag", "Placas caja");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, SDbConsts.FIELD_NAME, "Chofer");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tor.code", "Procedencia boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tde.code", "Destino boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);

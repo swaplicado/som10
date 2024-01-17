@@ -29,6 +29,8 @@ import som.mod.som.form.SFormWarehouseCardex;
  */
 public class SViewOilMoiPond extends SGridPaneView implements ActionListener {
     
+    private SPaneFilter moPaneFilterTicketOrigin;
+    private SPaneFilter moPaneFilterTicketDestination;
     private JButton mjbShowDetails;
     
     /**
@@ -42,7 +44,13 @@ public class SViewOilMoiPond extends SGridPaneView implements ActionListener {
     }
     
     private void initComponentsCustom() {
+        moPaneFilterTicketOrigin = new SPaneFilter(this, SModConsts.SU_TIC_ORIG);
+        moPaneFilterTicketOrigin.initFilter(null);
+        moPaneFilterTicketDestination = new SPaneFilter(this, SModConsts.SU_TIC_DEST);
+        moPaneFilterTicketDestination.initFilter(null);
         mjbShowDetails = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_look.gif")), "Ver histórico del almacén", this);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketOrigin);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketDestination);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbShowDetails);
     }
 
@@ -66,7 +74,20 @@ public class SViewOilMoiPond extends SGridPaneView implements ActionListener {
     
     @Override
     public void prepareSqlQuery() {
+        String sql = "";
+        Object filter;
+        
         moPaneSettings = new SGridPaneSettings(3);
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_ORIG);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "t.fk_tic_orig" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_DEST);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "t.fk_tic_dest" }, (int[]) filter);
+        }
         
         msSql = "SELECT " 
                 + "w.id_co AS " + SDbConsts.FIELD_ID + "1, "
@@ -102,7 +123,8 @@ public class SViewOilMoiPond extends SGridPaneView implements ActionListener {
                 + "INNER JOIN su_item AS i ON t.fk_item = i.id_item " 
                 + "LEFT OUTER JOIN s_lab AS l ON t.fk_lab_n = l.id_lab " 
                 + "LEFT OUTER JOIN s_lab_test AS lt ON l.id_lab = lt.id_lab "  
-                + "WHERE NOT t.b_del " 
+                + "WHERE NOT t.b_del "
+                + sql
                 + "GROUP BY l.id_lab, t.fk_wah_unld_co_n, t.fk_wah_unld_cob_n, t.fk_wah_unld_wah_n " 
                 + "ORDER BY t.fk_wah_unld_co_n, t.fk_wah_unld_cob_n, t.fk_wah_unld_wah_n " 
                 + ") " 

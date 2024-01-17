@@ -46,6 +46,9 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     private SPaneUserInputCategory moPaneFilterUserInputCategory;
     private SPaneFilter moPaneFilterInputCategory;
     private SPaneFilter moPaneFilterItem;
+    private SPaneFilter moPaneFilterTicketOrigin;
+    private SPaneFilter moPaneFilterTicketDestination;
+    private SPaneFilter moPaneFilterScale;
     private JButton mjbPreviousStep;
     private JButton mjbNextStep;
     private JButton mjbLaboratoryTest;
@@ -73,6 +76,12 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         moPaneFilterInputCategory = new SPaneFilter(this, SModConsts.SU_INP_CT);
         moPaneFilterItem = new SPaneFilter(this, SModConsts.SU_ITEM);
         moPaneFilterItem.initFilter(null);
+        moPaneFilterTicketOrigin = new SPaneFilter(this, SModConsts.SU_TIC_ORIG);
+        moPaneFilterTicketOrigin.initFilter(null);
+        moPaneFilterTicketDestination = new SPaneFilter(this, SModConsts.SU_TIC_DEST);
+        moPaneFilterTicketDestination.initFilter(null);
+        moPaneFilterScale = new SPaneFilter(this, SModConsts.SU_SCA);
+        moPaneFilterScale.initFilter(null);
 
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
@@ -104,6 +113,9 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterItem);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbManifest);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketOrigin);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketDestination);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterScale);
 
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
@@ -428,6 +440,21 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_item" }, (int[]) filter);
         }
         
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_ORIG);
+        if (filter != null) {
+            sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_orig" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_DEST);
+        if (filter != null) {
+            sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_dest" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_SCA);
+        if (filter != null) {
+            sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_sca" }, (int[]) filter);
+        }
+        
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
                 sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + "v.fk_tic_st = " + mnGridSubtype + " ";
@@ -518,6 +545,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "src.name, "
                 + "sea.id_seas, "
                 + "sea.name, "
+                + "tor.code, "
+                + "tde.code, "
                 + "reg.id_reg, "
                 + "reg.name, "
                 + "lab.num, "
@@ -553,6 +582,10 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.fk_prod = prd.id_prod "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS src ON "
                 + "v.fk_inp_src = src.id_inp_src "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_ORIG) + " AS tor ON "
+                + "v.fk_tic_orig = tor.id_tic_orig "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_DEST) + " AS tde ON "
+                + "v.fk_tic_dest = tde.id_tic_dest "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -575,7 +608,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
 
     @Override
     public void createGridColumns() {
-        int cols = 43;
+        int cols = 45;
 
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
@@ -615,6 +648,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "sea.name", "Temporada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "reg.name", "Región");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tor.code", "Procedencia boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tde.code", "Destino boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "src.name", "Origen insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla", "Placas");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla_cag", "Placas caja");

@@ -23,6 +23,7 @@ import sa.lib.mail.SMailConsts;
 import sa.lib.mail.SMailSender;
 import sa.lib.mail.SMailUtils;
 import sa.lib.xml.SXmlUtils;
+import som.mod.SModSysConsts;
 
 /**
  * Report mailer for monthly reception at scale.
@@ -132,7 +133,7 @@ public class SCliReportMailerSummary {
             // generate mail body:
 
             SReportHtmlScaleSummary htmlScaleSummary = new SReportHtmlScaleSummary(session);
-            String mailBody = htmlScaleSummary.generateReportHtml(itemIds, date);
+            String mailBody = htmlScaleSummary.generateReportHtml(itemIds, date, SModSysConsts.SU_TIC_ORIG_PRV, 0);
             
             // generate mail subject:
             

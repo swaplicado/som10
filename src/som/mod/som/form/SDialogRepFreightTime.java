@@ -33,7 +33,9 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
     private ArrayList<String> maDriversSelected;
 
     /**
-     * Creates new form SDialogRepReceivedSeed
+     * Creates new form SDialogRepFreightTime
+     * @param client
+     * @param title
      */
     public SDialogRepFreightTime(SGuiClient client, String title) {
         setFormSettings(client, SModConsts.SR_FRE_TIME, SLibConsts.UNDEFINED, title);
@@ -62,6 +64,15 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
         jlItem = new javax.swing.JLabel();
         moKeyItem = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel5 = new javax.swing.JPanel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moKeyTicketOrigin = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel10 = new javax.swing.JPanel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moKeyTicketDestination = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel13 = new javax.swing.JPanel();
+        jlTicketScale = new javax.swing.JLabel();
+        moKeyTicketScale = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel14 = new javax.swing.JPanel();
         jbShow = new javax.swing.JButton();
         jbClear = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
@@ -84,30 +95,30 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros del reporte:"));
-        jPanel2.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(7, 1, 0, 5));
 
-        jPanel11.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateStart.setText("Fecha inicial:*");
-        jlDateStart.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateStart.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel11.add(jlDateStart);
         jPanel11.add(moDateDateStart);
 
         jPanel2.add(jPanel11);
 
-        jPanel12.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateEnd.setText("Fecha final:*");
-        jlDateEnd.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateEnd.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel12.add(jlDateEnd);
         jPanel12.add(moDateDateEnd);
 
         jPanel2.add(jPanel12);
 
-        jPanel9.setLayout(new java.awt.FlowLayout(0, 5, 0));
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItem.setText("Ítem:*");
-        jlItem.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlItem.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel9.add(jlItem);
 
         moKeyItem.setPreferredSize(new java.awt.Dimension(300, 23));
@@ -115,17 +126,50 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
 
         jPanel2.add(jPanel9);
 
-        jPanel5.setLayout(new java.awt.FlowLayout(3, 5, 0));
+        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEADING, 5, 0));
+
+        jlTicketOrigin.setText("Procedencia boleto:");
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel5.add(jlTicketOrigin);
+
+        moKeyTicketOrigin.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel5.add(moKeyTicketOrigin);
+
+        jPanel2.add(jPanel5);
+
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketDestination.setText("Destino boleto:");
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel10.add(jlTicketDestination);
+
+        moKeyTicketDestination.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel10.add(moKeyTicketDestination);
+
+        jPanel2.add(jPanel10);
+
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketScale.setText("Báscula:");
+        jlTicketScale.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel13.add(jlTicketScale);
+
+        moKeyTicketScale.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel13.add(moKeyTicketScale);
+
+        jPanel2.add(jPanel13);
+
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jbShow.setText("Mostrar");
         jbShow.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel5.add(jbShow);
+        jPanel14.add(jbShow);
 
         jbClear.setText("Limpiar");
         jbClear.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel5.add(jbClear);
+        jPanel14.add(jbClear);
 
-        jPanel2.add(jPanel5);
+        jPanel2.add(jPanel14);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -153,7 +197,7 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
         jPanel3.add(jspDriverAvailable, java.awt.BorderLayout.CENTER);
 
         jLabel1.setText("Disponibles:");
-        jLabel1.setPreferredSize(new java.awt.Dimension(100, 23));
+        jLabel1.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel3.add(jLabel1, java.awt.BorderLayout.NORTH);
 
         jPanel4.add(jPanel3, java.awt.BorderLayout.WEST);
@@ -204,7 +248,7 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
         jPanel8.add(jspDriverSelected, java.awt.BorderLayout.CENTER);
 
         jLabel2.setText("Seleccionados:");
-        jLabel2.setPreferredSize(new java.awt.Dimension(100, 23));
+        jLabel2.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel8.add(jLabel2, java.awt.BorderLayout.NORTH);
 
         jPanel4.add(jPanel8, java.awt.BorderLayout.EAST);
@@ -231,8 +275,11 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -250,6 +297,9 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
     private javax.swing.JLabel jlDateEnd;
     private javax.swing.JLabel jlDateStart;
     private javax.swing.JLabel jlItem;
+    private javax.swing.JLabel jlTicketDestination;
+    private javax.swing.JLabel jlTicketOrigin;
+    private javax.swing.JLabel jlTicketScale;
     private javax.swing.JList<String> jlstDriverAvailable;
     private javax.swing.JList<String> jlstDriverSelected;
     private javax.swing.JScrollPane jspDriverAvailable;
@@ -257,10 +307,13 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
     private sa.lib.gui.bean.SBeanFieldDate moDateDateEnd;
     private sa.lib.gui.bean.SBeanFieldDate moDateDateStart;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketScale;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 640, 400);
+        SGuiUtils.setWindowBounds(this, 800, 500);
 
         maDriversAvailable = new ArrayList<>();
         maDriversSelected = new ArrayList<>();
@@ -268,17 +321,26 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
         moDateDateStart.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateStart.getText()), true);
         moDateDateEnd.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateEnd.getText()), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem), true);
-
+        moKeyTicketOrigin.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketOrigin), false);
+        moKeyTicketDestination.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketDestination), false);
+        moKeyTicketScale.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketScale), false);
+        
         moFields.addField(moDateDateStart);
         moFields.addField(moDateDateEnd);
         moFields.addField(moKeyItem);
+        moFields.addField(moKeyTicketOrigin);
+        moFields.addField(moKeyTicketDestination);
+        moFields.addField(moKeyTicketScale);
 
         moFields.setFormButton(jbPrint);
 
         moDateDateStart.setValue(SLibTimeUtils.getBeginOfMonth(miClient.getSession().getWorkingDate()));
         moDateDateEnd.setValue(SLibTimeUtils.getEndOfMonth(miClient.getSession().getWorkingDate()));
         miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
-
+        miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketScale, SModConsts.SU_SCA, SLibConsts.UNDEFINED, null);
+        
         jbShow.addActionListener(this);
         jbClear.addActionListener(this);
         jbAdd.addActionListener(this);
@@ -329,6 +391,8 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
                         + "FROM s_tic "
                         + "WHERE fk_item = " + moKeyItem.getValue()[0] + " AND b_del = 0 AND "
                         + "dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(moDateDateStart.getValue()) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(moDateDateEnd.getValue()) + "' "
+                        + (moKeyTicketOrigin.getSelectedIndex() <= 0 ? "" : "AND fk_tic_orig = " + moKeyTicketOrigin.getValue()[0] + " ")
+                        + (moKeyTicketDestination.getSelectedIndex() <= 0 ? "" : "AND t.fk_tic_dest = " + moKeyTicketDestination.getValue()[0] + " ")
                         + "ORDER BY drv;";
                 resultSet = miClient.getSession().getStatement().executeQuery(sql);
                 while (resultSet.next()) {
@@ -438,15 +502,23 @@ public class SDialogRepFreightTime extends SBeanDialogReport implements ActionLi
         String[] driversQry = null;
         String driversTxt = "";
         String driversSql = "";
+        String sqlWhere = "";
 
         moParamsMap = SPrtUtils.createReportParamsMap(miClient.getSession());
-
+        sqlWhere += (moKeyTicketOrigin.getSelectedIndex() <= 0 ? "" : "AND t.fk_tic_orig = " + moKeyTicketOrigin.getValue()[0] + " ");
+        sqlWhere += (moKeyTicketDestination.getSelectedIndex() <= 0 ? "" : "AND t.fk_tic_dest = " + moKeyTicketDestination.getValue()[0] + " ");
+        sqlWhere += (moKeyTicketScale.getSelectedIndex() <= 0 ? "" : "AND t.fk_sca = " + moKeyTicketScale.getValue()[0] + " ");
+        
         moParamsMap.put("sTitle", getTitle().toUpperCase());
         moParamsMap.put("tDateStart", moDateDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
         moParamsMap.put("nItemId", moKeyItem.getValue()[0]);
         moParamsMap.put("sItem", ((SGuiItem) moKeyItem.getComponent().getSelectedItem()).getItem());
-
+        moParamsMap.put("sSqlWhere", sqlWhere);
+        moParamsMap.put("sTicOrig", moKeyTicketOrigin.getSelectedIndex() > 0 ? moKeyTicketOrigin.getSelectedItem() : "TODOS");
+        moParamsMap.put("sTicDest", moKeyTicketDestination.getSelectedIndex() > 0 ? moKeyTicketDestination.getSelectedItem() : "TODOS");
+        moParamsMap.put("sTicSca", moKeyTicketScale.getSelectedIndex() > 0 ? moKeyTicketScale.getSelectedItem() : "TODAS");
+        
         if (maDriversAvailable.isEmpty()) {
             moParamsMap.put("bAllDrivers", true);
         }

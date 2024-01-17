@@ -902,9 +902,13 @@ public abstract class SSomUtils {
      * @param dateEnd End date.
      * @param idReportingGroup ID of reporting group, can be zero.
      * @param idProducer ID of producer, can be zero.
+     * @param idTicOrig
+     * @param idTicDest
      * @return double
+     * @throws java.sql.SQLException
      */
-    public static double obtainWeightDestinyByPeriod(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, final int idReportingGroup, final int idProducer) throws SQLException {
+    public static double obtainWeightDestinyByPeriod(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, 
+            final int idReportingGroup, final int idProducer, final int idTicOrig, final int idTicDest) throws SQLException {
         double weight = 0;
 
         String sql = "SELECT SUM(t.wei_des_net_r) " +
@@ -913,6 +917,8 @@ public abstract class SSomUtils {
             "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " AND " +
             "t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
             (idProducer == 0 ? "" : "AND p.id_prod = " + idProducer + " ") +
+            (idTicOrig == 0 ? "" : "AND t.fk_tic_orig = " + idTicOrig + " ") +
+            (idTicDest == 0 ? "" : "AND t.fk_tic_dest = " + idTicDest + " ") +
             (idReportingGroup == 0 ? "" : "AND p.fk_rep_grp = " + idReportingGroup + " ") + ";";
         ResultSet resultSet = session.getStatement().executeQuery(sql);
 
@@ -930,15 +936,21 @@ public abstract class SSomUtils {
      * @param dateStart Date,
      * @param dateEnd Date,
      * @param idScale int
+     * @param idTicOrig
+     * @param idTicDest
      * @return double
+     * @throws java.sql.SQLException
      */
-    public static double obtainWeightDestinyByScale(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, final int idScale) throws SQLException {
+    public static double obtainWeightDestinyByScale(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, final int idScale,
+            final int idTicOrig, final int idTicDest) throws SQLException {
         double weight = 0;
 
         String sql = "SELECT SUM(t.wei_des_net_r) " +
             "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t " +
             "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS s ON t.fk_sca = s.id_sca " +
             "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " AND " +
+            (idTicOrig == 0 ? "" : "AND t.fk_tic_orig = " + idTicOrig + " ") +
+            (idTicDest == 0 ? "" : "AND t.fk_tic_dest = " + idTicDest + " ") +
             "t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' AND " +
             "t.fk_sca = " + idScale + ";";
         ResultSet resultSet = session.getStatement().executeQuery(sql);
@@ -1360,10 +1372,12 @@ public abstract class SSomUtils {
      * @param session GUI session.
      * @param itemId Item ID.
      * @param date Date.
+     * @param idTicOrig
+     * @param idTicDest
      * @return HTML snippet.
      * @throws Exception 
      */
-    public static String composeHtmlSummaryItem(final SGuiSession session, final int itemId, final Date date) throws Exception {
+    public static String composeHtmlSummaryItem(final SGuiSession session, final int itemId, final Date date, final int idTicOrig, final int idTicDest) throws Exception {
         // REPORT PREPARATION:
 
         double weight;
@@ -1405,7 +1419,7 @@ public abstract class SSomUtils {
 
         dateStart = date;
         dateEnd = date;
-        weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0);
+        weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "día '" + SLibUtils.DateFormatDate.format(date) + "'";
 
         // SECTION 1.1. Current day summary by reporting group:
@@ -1415,7 +1429,7 @@ public abstract class SSomUtils {
         // compute reporting groups:
 
         while (repGroupResultSet.next()) { // first reading, cursor before first row
-            weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0);
+            weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
             if (weight != 0) {
                 body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
             }
@@ -1432,7 +1446,7 @@ public abstract class SSomUtils {
         // compute scales:
 
         while (scaleResultSet.next()) { // first reading, cursor before first row
-            weight = SSomUtils.obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"));
+            weight = SSomUtils.obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             if (weight != 0) {
                 scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
                 scaleRows++;
@@ -1452,7 +1466,7 @@ public abstract class SSomUtils {
 
         dateStart = SLibTimeUtils.getBeginOfMonth(date);
         dateEnd = SLibTimeUtils.getEndOfMonth(date);
-        weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0);
+        weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "mes '" + months[curMonth - 1] + ". " + curYear + "'";
 
         // SECTION 2.1. Current month summary by reporting group:
@@ -1466,7 +1480,7 @@ public abstract class SSomUtils {
         }
 
         while (repGroupResultSet.next()) {
-            weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0);
+            weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
             if (weight != 0) {
                 body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
             }
@@ -1487,7 +1501,7 @@ public abstract class SSomUtils {
         }
 
         while (scaleResultSet.next()) {
-            weight = SSomUtils.obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"));
+            weight = SSomUtils.obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             if (weight != 0) {
                 scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
                 scaleRows++;
@@ -1523,7 +1537,7 @@ public abstract class SSomUtils {
 
         dateStart = dateSeasonStart;
         dateEnd = dateSeasonEnd;
-        weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0);
+        weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "temporada";
 
         // SECTION 3.1 Current season summary by reporting group:
@@ -1537,7 +1551,7 @@ public abstract class SSomUtils {
         }
 
         while (repGroupResultSet.next()) {
-            weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0);
+            weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
             if (weight != 0) {
                 body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
             }
@@ -1558,7 +1572,7 @@ public abstract class SSomUtils {
         }
 
         while (scaleResultSet.next()) {
-            weight = SSomUtils.obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"));
+            weight = SSomUtils.obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             if (weight != 0) {
                 scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
                 scaleRows++;
@@ -1578,7 +1592,7 @@ public abstract class SSomUtils {
 
         dateStart = dateSeasonStart;
         dateEnd = dateSeasonEnd;
-        weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0);
+        weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "temporada";
 
         body += composeHtmlTableKgPctHeader(section, itemName, "Período");
@@ -1597,7 +1611,7 @@ public abstract class SSomUtils {
             dateStart = SLibTimeUtils.createDate(year, month);
             dateEnd = SLibTimeUtils.getEndOfMonth(dateStart);
 
-            weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0);
+            weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
             body += composeHtmlTableKgPctRow("" + year + " " + months[month - 1] + ".", weight, weightTotal);
             month++;
         }
@@ -1617,6 +1631,8 @@ public abstract class SSomUtils {
                 + "FROM S_TIC AS t "
                 + "INNER JOIN SU_ITEM AS i ON t.fk_item = i.id_item "
                 + "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + itemId + " " 
+                + (idTicOrig == 0 ? "" : "AND t.fk_tic_orig = " + idTicOrig + " ") 
+                + (idTicDest == 0 ? "" : "AND t.fk_tic_dest = " + idTicDest + " ") 
                 + "GROUP BY _season "
                 + "ORDER BY _season; ";
 

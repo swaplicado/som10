@@ -66,13 +66,13 @@ public class SPaneUserInputCategory extends JPanel {
 
         jtfOption.setEditable(false);
         jtfOption.setText("OPTION");
-        jtfOption.setToolTipText("Categorías de insumo del usuario");
+        jtfOption.setToolTipText("Categorías insumo  usuario");
         jtfOption.setFocusable(false);
         jtfOption.setPreferredSize(new java.awt.Dimension(100, 23));
         add(jtfOption);
 
         jbOption.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_std_look.gif"))); // NOI18N
-        jbOption.setToolTipText("Ver categorías de insumo del usuario");
+        jbOption.setToolTipText("Ver categorías insumo usuario");
         jbOption.setPreferredSize(new java.awt.Dimension(23, 23));
         jbOption.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

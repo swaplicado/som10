@@ -45,6 +45,8 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SU_SEAS,
             SModConsts.SU_SEAS_REG,
             SModConsts.SU_SEAS_PROD,
+            SModConsts.SU_TIC_ORIG,
+            SModConsts.SU_TIC_DEST,
             SModConsts.S_GRINDING_EVENT,
             SModConsts.S_GRINDING_RESULT,
             SModConsts.S_GRINDING,

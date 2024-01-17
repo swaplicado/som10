@@ -82,13 +82,19 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
         moTextWeight = new sa.lib.gui.bean.SBeanFieldText();
         jlWeightDestinyDepartureUnit = new javax.swing.JLabel();
         jPanel25 = new javax.swing.JPanel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moKeyTicketOrigin = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel18 = new javax.swing.JPanel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moKeyTicketDestination = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel20 = new javax.swing.JPanel();
         jlWarehouse = new javax.swing.JLabel();
         moKeyWarehouse = new sa.lib.gui.bean.SBeanFieldKey();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del boleto:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(11, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(13, 1, 0, 5));
 
         jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -224,14 +230,36 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
 
         jPanel25.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlWarehouse.setText("Almacén descarga:*");
-        jlWarehouse.setPreferredSize(new java.awt.Dimension(115, 23));
-        jPanel25.add(jlWarehouse);
+        jlTicketOrigin.setText("Procedencia boleto:");
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel25.add(jlTicketOrigin);
 
-        moKeyWarehouse.setPreferredSize(new java.awt.Dimension(350, 23));
-        jPanel25.add(moKeyWarehouse);
+        moKeyTicketOrigin.setPreferredSize(new java.awt.Dimension(350, 23));
+        jPanel25.add(moKeyTicketOrigin);
 
         jPanel2.add(jPanel25);
+
+        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketDestination.setText("Destino boleto:");
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel18.add(jlTicketDestination);
+
+        moKeyTicketDestination.setPreferredSize(new java.awt.Dimension(350, 23));
+        jPanel18.add(moKeyTicketDestination);
+
+        jPanel2.add(jPanel18);
+
+        jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlWarehouse.setText("Almacén descarga:*");
+        jlWarehouse.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel20.add(jlWarehouse);
+
+        moKeyWarehouse.setPreferredSize(new java.awt.Dimension(350, 23));
+        jPanel20.add(moKeyWarehouse);
+
+        jPanel2.add(jPanel20);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -245,8 +273,10 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel23;
     private javax.swing.JPanel jPanel25;
@@ -261,10 +291,14 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
     private javax.swing.JLabel jlScale;
     private javax.swing.JLabel jlSeason;
     private javax.swing.JLabel jlTicket;
+    private javax.swing.JLabel jlTicketDestination;
+    private javax.swing.JLabel jlTicketOrigin;
     private javax.swing.JLabel jlWarehouse;
     private javax.swing.JLabel jlWeight;
     private javax.swing.JLabel jlWeightDestinyDepartureUnit;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
     private sa.lib.gui.bean.SBeanFieldKey moKeyWarehouse;
     private sa.lib.gui.bean.SBeanFieldText moTextDriver;
     private sa.lib.gui.bean.SBeanFieldText moTextPlates;
@@ -279,7 +313,7 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 720, 450);
+        SGuiUtils.setWindowBounds(this, 800, 500);
 
         moTextScaleName.setTextSettings(SGuiUtils.getLabelName(jlScale.getText()), 25);
         moTextScaleCode.setTextSettings(SGuiUtils.getLabelName(jlScale.getText()), 25);
@@ -292,6 +326,8 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
         moTextPlatesCage.setTextSettings(SGuiUtils.getLabelName(jlPlatesCage.getText()), 25);
         moTextDriver.setTextSettings(SGuiUtils.getLabelName(jlDriver.getText()), 150);
         moTextWeight.setTextSettings(SGuiUtils.getLabelName(jlWeight.getText()), 25);
+        moKeyTicketOrigin.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketOrigin.getText()), true);
+        moKeyTicketDestination.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketDestination.getText()), true);
         moKeyWarehouse.setKeySettings(miClient, SGuiUtils.getLabelName(jlWarehouse.getText()), true);
         
         moFields.addField(moKeyWarehouse);
@@ -317,6 +353,8 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
         try {
             miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
             miClient.getSession().populateCatalogue(moKeyWarehouse, SModConsts.CU_WAH, SModConsts.SX_TIC_WAH_UNLD, null);
+            miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+            miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
         }
         catch (Exception e) {
             SLibUtils.showException(this, e);
@@ -352,6 +390,8 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
         moTextRegion.setValue(moRegistry.getXtaRegion());
         moKeyItem.setValue(new int[] {moRegistry.getFkItemId() });
         moTextWeight.setValue(moRegistry.getWeightDestinyNet_r() + "");
+        moKeyTicketOrigin.setValue(new int[] { moRegistry.getFkTicketOriginId() });
+        moKeyTicketDestination.setValue(new int[] { moRegistry.getFkTicketDestinationId()});
         moKeyWarehouse.setValue((new int [] {moRegistry.getFkWarehouseUnloadCompanyId_n(), moRegistry.getFkWarehouseUnloadBranchId_n(), moRegistry.getFkWarehouseUnloadWarehouseId_n()}));
         
         setFormEditable(true);
@@ -368,6 +408,8 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
         moTextPlatesCage.setEditable(false);
         moTextDriver.setEditable(false);
         moTextWeight.setEditable(false);
+        moKeyTicketOrigin.setEnabled(false);
+        moKeyTicketDestination.setEnabled(false);
 
         moFields.getFields();
         

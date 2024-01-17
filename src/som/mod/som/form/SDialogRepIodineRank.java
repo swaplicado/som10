@@ -92,16 +92,25 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         jPanel9 = new javax.swing.JPanel();
         jlLimitTop = new javax.swing.JLabel();
         moDecLimitTop = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jPanel16 = new javax.swing.JPanel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moKeyTicketOrigin = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel17 = new javax.swing.JPanel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moKeyTicketDestination = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel18 = new javax.swing.JPanel();
+        jlTicketScale = new javax.swing.JLabel();
+        moKeyTicketScale = new sa.lib.gui.bean.SBeanFieldKey();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros del reporte:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(10, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(13, 1, 0, 5));
 
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlReportType.setText("Tipo reporte:");
-        jlReportType.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlReportType.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel11.add(jlReportType);
 
         bgReportType.add(moRadByInputCategory);
@@ -129,7 +138,7 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateStart.setText("Fecha inicial:*");
-        jlDateStart.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateStart.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel12.add(jlDateStart);
         jPanel12.add(moDateStart);
 
@@ -138,7 +147,7 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateEnd.setText("Fecha final:*");
-        jlDateEnd.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateEnd.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel13.add(jlDateEnd);
         jPanel13.add(moDateEnd);
 
@@ -147,7 +156,7 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlInputCategory.setText("Categoría insumo:");
-        jlInputCategory.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlInputCategory.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel14.add(jlInputCategory);
 
         moKeyInputCategory.setPreferredSize(new java.awt.Dimension(300, 23));
@@ -158,7 +167,7 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlInputClass.setText("Clase insumo:");
-        jlInputClass.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlInputClass.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel4.add(jlInputClass);
 
         moKeyInputClass.setPreferredSize(new java.awt.Dimension(300, 23));
@@ -169,7 +178,7 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlInputType.setText("Tipo insumo:");
-        jlInputType.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlInputType.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel5.add(jlInputType);
 
         moKeyInputType.setPreferredSize(new java.awt.Dimension(300, 23));
@@ -180,7 +189,7 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItem.setText("Ítem:*");
-        jlItem.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlItem.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel6.add(jlItem);
 
         moKeyItem.setPreferredSize(new java.awt.Dimension(300, 23));
@@ -191,7 +200,7 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlIodineValueRank.setText("Rango de yodo:");
-        jlIodineValueRank.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlIodineValueRank.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel15.add(jlIodineValueRank);
 
         moKeyIodineValueRank.setPreferredSize(new java.awt.Dimension(300, 23));
@@ -202,7 +211,7 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlLimitLow.setText("Límite inferior:");
-        jlLimitLow.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlLimitLow.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel8.add(jlLimitLow);
         jPanel8.add(moDecLimitLow);
 
@@ -211,11 +220,44 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlLimitTop.setText("Límite superior:");
-        jlLimitTop.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlLimitTop.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel9.add(jlLimitTop);
         jPanel9.add(moDecLimitTop);
 
         jPanel2.add(jPanel9);
+
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketOrigin.setText("Procedencia boleto:");
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel16.add(jlTicketOrigin);
+
+        moKeyTicketOrigin.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel16.add(moKeyTicketOrigin);
+
+        jPanel2.add(jPanel16);
+
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketDestination.setText("Destino boleto:");
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel17.add(jlTicketDestination);
+
+        moKeyTicketDestination.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel17.add(moKeyTicketDestination);
+
+        jPanel2.add(jPanel17);
+
+        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketScale.setText("Báscula:");
+        jlTicketScale.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel18.add(jlTicketScale);
+
+        moKeyTicketScale.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel18.add(moKeyTicketScale);
+
+        jPanel2.add(jPanel18);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -230,6 +272,9 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -246,6 +291,9 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
     private javax.swing.JLabel jlLimitLow;
     private javax.swing.JLabel jlLimitTop;
     private javax.swing.JLabel jlReportType;
+    private javax.swing.JLabel jlTicketDestination;
+    private javax.swing.JLabel jlTicketOrigin;
+    private javax.swing.JLabel jlTicketScale;
     private sa.lib.gui.bean.SBeanFieldDate moDateEnd;
     private sa.lib.gui.bean.SBeanFieldDate moDateStart;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecLimitLow;
@@ -255,6 +303,9 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
     private sa.lib.gui.bean.SBeanFieldKey moKeyInputType;
     private sa.lib.gui.bean.SBeanFieldKey moKeyIodineValueRank;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketScale;
     private sa.lib.gui.bean.SBeanFieldRadio moRadByInputCategory;
     private sa.lib.gui.bean.SBeanFieldRadio moRadByInputClass;
     private sa.lib.gui.bean.SBeanFieldRadio moRadByInputType;
@@ -262,7 +313,7 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 640, 400);
+        SGuiUtils.setWindowBounds(this, 800, 500);
 
         moFieldKeyGroup = new SGuiFieldKeyGroup(miClient);
         mbRepIodine = mnFormSubtype == SModSysConsts.REP_LAB_TEST_IOD;
@@ -279,7 +330,10 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         moKeyIodineValueRank.setKeySettings(miClient, SGuiUtils.getLabelName(jlIodineValueRank.getText()), false);
         moDecLimitLow.setDecimalSettings(SGuiUtils.getLabelName(jlLimitLow.getText()), SGuiConsts.GUI_TYPE_DEC_PER, false);
         moDecLimitTop.setDecimalSettings(SGuiUtils.getLabelName(jlLimitTop.getText()), SGuiConsts.GUI_TYPE_DEC_PER, false);
-
+        moKeyTicketOrigin.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketOrigin), false);
+        moKeyTicketDestination.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketDestination), false);
+        moKeyTicketScale.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketScale), false);
+        
         moFields.addField(moRadByInputType);
         moFields.addField(moRadByInputClass);
         moFields.addField(moRadByInputCategory);
@@ -292,6 +346,9 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         moFields.addField(moKeyIodineValueRank);
         moFields.addField(moDecLimitLow);
         moFields.addField(moDecLimitTop);
+        moFields.addField(moKeyTicketOrigin);
+        moFields.addField(moKeyTicketDestination);
+        moFields.addField(moKeyTicketScale);
 
         moFields.setFormButton(jbPrint);
 
@@ -394,6 +451,9 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         miClient.getSession().populateCatalogue(moKeyInputCategory, SModConsts.SU_INP_CT, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyInputClass, SModConsts.SU_INP_CL_ALL, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyInputType, SModConsts.SU_INP_TP_ALL, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketScale, SModConsts.SU_SCA, SLibConsts.UNDEFINED, null);
         
         moDecLimitLow.resetField();
         moDecLimitTop.resetField();
@@ -492,6 +552,9 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
             header = "ÍTEM: " + moKeyItem.getSelectedItem().getItem();
             sqlWhere += " AND t.fk_item = " + moKeyItem.getValue()[0] + " ";
         }
+        sqlWhere += (moKeyTicketOrigin.getSelectedIndex() <= 0 ? "" : "AND t.fk_tic_orig = " + moKeyTicketOrigin.getValue()[0] + " ");
+        sqlWhere += (moKeyTicketDestination.getSelectedIndex() <= 0 ? "" : "AND t.fk_tic_dest = " + moKeyTicketDestination.getValue()[0] + " ");
+        sqlWhere += (moKeyTicketScale.getSelectedIndex() <= 0 ? "" : "AND t.fk_sca = " + moKeyTicketScale.getValue()[0] + " ");
         
         moParamsMap.put("tDateStart", moDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateEnd.getValue());
@@ -506,7 +569,10 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         moParamsMap.put("sSqlWhere", sqlWhere);
         moParamsMap.put("sSqlHaving", getSqlHaving());
         moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
-
+        moParamsMap.put("sTicOrig", moKeyTicketOrigin.getSelectedIndex() > 0 ? moKeyTicketOrigin.getSelectedItem() : "TODOS");
+        moParamsMap.put("sTicDest", moKeyTicketDestination.getSelectedIndex() > 0 ? moKeyTicketDestination.getSelectedItem() : "TODOS");
+        moParamsMap.put("sTicSca", moKeyTicketScale.getSelectedIndex() > 0 ? moKeyTicketScale.getSelectedItem() : "TODAS");
+        
         if (mnFormSubtype != SLibConsts.UNDEFINED) {
             moParamsMap.put("bRepIodine", mnFormSubtype == SModSysConsts.REP_LAB_TEST_IOD);
             moParamsMap.put("nTicketStatusId", SModSysConsts.SS_TIC_ST_ADM);

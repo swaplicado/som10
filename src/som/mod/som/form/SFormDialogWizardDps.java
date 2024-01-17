@@ -99,6 +99,15 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
         jlUnit = new javax.swing.JLabel();
         moKeyUnit = new sa.lib.gui.bean.SBeanFieldKey();
         jbSelect = new javax.swing.JButton();
+        jPanel30 = new javax.swing.JPanel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moKeyTicketOrigin = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel31 = new javax.swing.JPanel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moKeyTicketDestination = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel32 = new javax.swing.JPanel();
+        jlTicketScale = new javax.swing.JLabel();
+        moKeyTicketScale = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel6 = new javax.swing.JPanel();
         jpDocuments = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
@@ -112,7 +121,7 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
-        jPanel2.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
 
         jPanel5.setLayout(new java.awt.GridLayout(1, 5));
 
@@ -159,16 +168,49 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
         jPanel29.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlUnit.setText("Unidad: *");
-        jlUnit.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlUnit.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel29.add(jlUnit);
 
-        moKeyUnit.setPreferredSize(new java.awt.Dimension(200, 23));
+        moKeyUnit.setPreferredSize(new java.awt.Dimension(250, 23));
         jPanel29.add(moKeyUnit);
 
         jbSelect.setText("Seleccionar");
         jPanel29.add(jbSelect);
 
         jPanel2.add(jPanel29);
+
+        jPanel30.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketOrigin.setText("Procedencia boleto:");
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel30.add(jlTicketOrigin);
+
+        moKeyTicketOrigin.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel30.add(moKeyTicketOrigin);
+
+        jPanel2.add(jPanel30);
+
+        jPanel31.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketDestination.setText("Destino boleto:");
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel31.add(jlTicketDestination);
+
+        moKeyTicketDestination.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel31.add(moKeyTicketDestination);
+
+        jPanel2.add(jPanel31);
+
+        jPanel32.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketScale.setText("Báscula:");
+        jlTicketScale.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel32.add(jlTicketScale);
+
+        moKeyTicketScale.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel32.add(moKeyTicketScale);
+
+        jPanel2.add(jPanel32);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -215,6 +257,9 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel30;
+    private javax.swing.JPanel jPanel31;
+    private javax.swing.JPanel jPanel32;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -229,6 +274,9 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
     private javax.swing.JLabel jlStage3;
     private javax.swing.JLabel jlStage4;
     private javax.swing.JLabel jlStage5;
+    private javax.swing.JLabel jlTicketDestination;
+    private javax.swing.JLabel jlTicketOrigin;
+    private javax.swing.JLabel jlTicketScale;
     private javax.swing.JLabel jlUnit;
     private javax.swing.JPanel jpDocuments;
     private javax.swing.JPanel jpStage1;
@@ -236,6 +284,9 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
     private javax.swing.JPanel jpStage3;
     private javax.swing.JPanel jpStage4;
     private javax.swing.JPanel jpStage5;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketScale;
     private sa.lib.gui.bean.SBeanFieldKey moKeyUnit;
     // End of variables declaration//GEN-END:variables
 
@@ -262,8 +313,14 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
         jbSave.setVisible(false);
 
         moKeyUnit.setKeySettings(miClient, SGuiUtils.getLabelName(jlUnit), true);
+        moKeyTicketOrigin.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketOrigin), false);
+        moKeyTicketDestination.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketDestination), false);
+        moKeyTicketScale.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketScale), false);
 
         moFields.addField(moKeyUnit);
+        moFields.addField(moKeyTicketOrigin);
+        moFields.addField(moKeyTicketDestination);
+        moFields.addField(moKeyTicketScale);
         moFields.setFormButton(jbSelect);
 
         removeAllListeners();
@@ -622,7 +679,11 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
                 switch (mnStageSelectedId) {
                     case SModConsts.SX_TIC_SUP_RM:
                         moWizardDpsTicketSupply.getWizardDpsSupplyTicket().clear();
-                        moWizardDpsTicketSupply.read(miClient.getSession(), "", SModConsts.SX_TIC_MAN_SUP, moKeyUnit.getValue()[0]);
+                        moWizardDpsTicketSupply.read(miClient.getSession(), "", SModConsts.SX_TIC_MAN_SUP, 
+                                moKeyUnit.getValue()[0], 
+                                moKeyTicketOrigin.getValue()[0], 
+                                moKeyTicketDestination.getValue()[0],
+                                moKeyTicketScale.getValue()[0]);
 
                         for (SSomWizardDpsTicketSupply row : moWizardDpsTicketSupply.getWizardDpsSupplyTicket()) {
                             rows.add(row);
@@ -896,6 +957,9 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
     @Override
     public void reloadCatalogues() {
         miClient.getSession().populateCatalogue(moKeyUnit, SModConsts.SU_UNIT, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketScale, SModConsts.SU_SCA, SLibConsts.UNDEFINED, null);
     }
 
     @Override

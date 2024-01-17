@@ -36,7 +36,9 @@ public class SPaneFilter extends JPanel implements SGridFilter {
     private SDialogFilter moDialogFilter;
     private SGuiParams moParams;
 
-    /** Creates new form SPaneFilter */
+    /** Creates new form SPaneFilter
+     * @param paneView
+     * @param type */
     public SPaneFilter(SGridPaneView paneView, int type) {
         miClient = paneView.getClient();
         moPaneView = paneView;
@@ -45,7 +47,10 @@ public class SPaneFilter extends JPanel implements SGridFilter {
         initComponentsCustom();
     }
     
-    /** Creates new form SPaneFilter */
+    /** Creates new form SPaneFilter
+     * @param paneView
+     * @param type
+     * @param params */
     public SPaneFilter(SGridPaneView paneView, int type, SGuiParams params) {
         miClient = paneView.getClient();
         moPaneView = paneView;
@@ -137,6 +142,18 @@ public class SPaneFilter extends JPanel implements SGridFilter {
             case SModConsts.SU_SEAS:
                 jtfOption.setPreferredSize(new Dimension(50, 23));
                 path = "/som/gui/img/icon_std_filter_cal.gif";
+                break;
+            case SModConsts.SU_TIC_ORIG:
+                jtfOption.setPreferredSize(new Dimension(50, 23));
+                path = "/som/gui/img/icon_std_stk_inv_in_b.gif";
+                break;
+            case SModConsts.SU_TIC_DEST:
+                jtfOption.setPreferredSize(new Dimension(50, 23));
+                path = "/som/gui/img/icon_std_stk_inv_out_b.gif";
+                break;
+            case SModConsts.SU_SCA:
+                jtfOption.setPreferredSize(new Dimension(50, 23));
+                path = "/som/gui/img/icon_std_filter.gif";
                 break;
             case SModConsts.SS_LINK_CFG_ITEMS:
                 jtfOption.setPreferredSize(new java.awt.Dimension(250, 23));

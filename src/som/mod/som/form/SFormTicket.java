@@ -173,6 +173,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jPanel5 = new javax.swing.JPanel();
         jlNote = new javax.swing.JLabel();
         moTextNote = new sa.lib.gui.bean.SBeanFieldText();
+        jPanel14 = new javax.swing.JPanel();
+        jlTicOrig = new javax.swing.JLabel();
+        moKeyTicOrig = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel22 = new javax.swing.JPanel();
+        jlTicDest = new javax.swing.JLabel();
+        moKeyTicDest = new sa.lib.gui.bean.SBeanFieldKey();
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
@@ -186,7 +192,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(19, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(20, 1, 0, 5));
 
         jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -477,6 +483,28 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
         jPanel2.add(jPanel5);
 
+        jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicOrig.setText("Procedencia boleto:*");
+        jlTicOrig.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel14.add(jlTicOrig);
+
+        moKeyTicOrig.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel14.add(moKeyTicOrig);
+
+        jPanel2.add(jPanel14);
+
+        jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicDest.setText("Destino boleto:*");
+        jlTicDest.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel22.add(jlTicDest);
+
+        moKeyTicDest.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel22.add(moKeyTicDest);
+
+        jPanel2.add(jPanel22);
+
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -504,6 +532,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
@@ -512,6 +541,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel22;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -547,6 +577,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JLabel jlPlatesCage;
     private javax.swing.JLabel jlProducer;
     private javax.swing.JLabel jlScale;
+    private javax.swing.JLabel jlTicDest;
+    private javax.swing.JLabel jlTicOrig;
     private javax.swing.JLabel jlTicket;
     private javax.swing.JLabel jlWeightAverage;
     private javax.swing.JLabel jlWeightAverageUnit;
@@ -573,6 +605,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProducer;
     private sa.lib.gui.bean.SBeanFieldKey moKeyScale;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicDest;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicOrig;
     private sa.lib.gui.bean.SBeanFieldText moTextDriver;
     private sa.lib.gui.bean.SBeanFieldText moTextNote;
     private sa.lib.gui.bean.SBeanFieldText moTextOpeArr;
@@ -611,6 +645,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moDecPackingFullQuantityDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlPackingFullQuantityDeparture.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecPackingEmptyQuantityDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlPackingEmptyQuantityDeparture.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 255, 0);
+        moKeyTicOrig.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicOrig.getText()), true);
+        moKeyTicDest.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicDest.getText()), true);
 
         moFields.addField(moKeyScale);
         moFields.addField(moIntTicket);
@@ -634,6 +670,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moFields.addField(moDecPackingFullQuantityDeparture);
         moFields.addField(moDecPackingEmptyQuantityDeparture);
         moFields.addField(moTextNote);
+        moFields.addField(moKeyTicOrig);
+        moFields.addField(moKeyTicDest);
 
         moFields.setFormButton(jbSave);
 
@@ -703,6 +741,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             jbImportTareTicket.setEnabled(enableFields && moConnectionRevuelta != null);
             jbCleanTare.setEnabled(!enableFields);
             jbSaveSend.setEnabled(enableFields && moRegistry != null && moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA);
+            moKeyTicOrig.setEnabled(enableFields);
+            moKeyTicDest.setEnabled(enableFields);
         }
         else {
             if (moRegistry.isRegistryNew()) {
@@ -734,6 +774,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 jbImportTareTicket.setEnabled(false);
                 jbCleanTare.setEnabled(false);
                 jbSaveSend.setEnabled(true);
+                moKeyTicOrig.setEnabled(true);
+                moKeyTicDest.setEnabled(true);
             }
             else {
                 boolean enable = (!mbIsRevImport1 && !moRegistry.isTared());
@@ -766,6 +808,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 jbImportTareTicket.setEnabled(false);
                 jbCleanTare.setEnabled(false);
                 jbSaveSend.setEnabled(true);
+                moKeyTicOrig.setEnabled(!enable);
+                moKeyTicDest.setEnabled(!enable);
             }
         } 
     }
@@ -1151,6 +1195,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         miClient.getSession().populateCatalogue(moKeyScale, SModConsts.CU_USR_SCA, SLibConsts.UNDEFINED, new SGuiParams(new int[] { miClient.getSession().getUser().getPkUserId() }));
         miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicOrig, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicDest, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
     }
 
     @Override
@@ -1184,6 +1230,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         itemStateKeyProducer();
         moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
         itemStateKeyItem();
+        moKeyTicOrig.setValue(new int[] { moRegistry.getFkTicketOriginId() });
+        moKeyTicDest.setValue(new int[] { moRegistry.getFkTicketDestinationId() });
         
         if (moRegistry.getFkInputSourceId() == SModSysConsts.SU_INP_SRC_NA) {
             moKeyInputSource.resetField();
@@ -1328,6 +1376,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         registry.setFkProducerId(moKeyProducer.getValue()[0]);
         registry.setFkInputSourceId(!moKeyInputSource.isEnabled() ? SModSysConsts.SU_INP_SRC_NA : moKeyInputSource.getValue()[0]);
         registry.setFkLaboratoryId_n(registry.isRegistryNew() ? 0 : registry.getFkLaboratoryId_n());
+        registry.setFkTicketOriginId(moKeyTicOrig.getValue()[0]);
+        registry.setFkTicketDestinationId(moKeyTicDest.getValue()[0]);
         //registry.setFkExternalDpsYearId_n(...);
         //registry.setFkExternalDpsDocId_n(...);
         //registry.setFkExternalDpsEntryId_n(...);
@@ -1390,6 +1440,20 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                             }
                         }
                     }
+                    
+//                    if (validation.isValid()) {
+//                        if (moKeyTicOrig.getSelectedIndex() <= 0 || moKeyTicOrig.getValue()[0] == SModSysConsts.SU_TIC_ORIG_NA) {
+//                            validation.setMessage("Debe seleccionar la procedencia del boleto.");
+//                            validation.setComponent(moKeyTicOrig);
+//                        }
+//                    } 
+//                    
+//                    if (validation.isValid()) {
+//                        if (moKeyTicOrig.getSelectedIndex() <= 0 || moKeyTicOrig.getValue()[0] == SModSysConsts.SU_TIC_DEST_NA) {
+//                            validation.setMessage("Debe seleccionar el destino del boleto.");
+//                            validation.setComponent(moKeyTicDest);
+//                        }
+//                    } 
                 }
 
                 if (validation.isValid()) {

@@ -38,10 +38,12 @@ public class SReportHtmlTicketSeasonMonth {
      * @param itemIds List of ID of items.
      * @param yearRef Year reference. Can be one out of two elegible types of values: 1) if it is a 4-digit year and greater or equal than 2001, it is the year to start from; otherwise 2) it is the number of history years besides current year.
      * @param intvlDays Interval days for invocation of this report mailer.
+     * @param ticOrig
+     * @param ticDest
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays) throws Exception {
+    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays, final int ticOrig, final int ticDest) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -183,7 +185,10 @@ public class SReportHtmlTicketSeasonMonth {
 
             String sql = "SELECT SUM(wei_des_net_r) "
                     + "FROM s_tic "
-                    + "WHERE NOT b_del AND b_tar AND fk_item = " + itemId + " AND dt BETWEEN ? AND ?";
+                    + "WHERE NOT b_del AND b_tar AND fk_item = " + itemId + " "
+                    + (ticOrig == 0 ? "" : "AND fk_tic_orig = " + ticOrig + " ")
+                    + (ticDest == 0 ? "" : "AND fk_tic_dest = " + ticDest + " ")
+                    + " AND dt BETWEEN ? AND ?";
             PreparedStatement preparedStatement = moSession.getStatement().getConnection().prepareStatement(sql);
             
             // reception during last interval days:

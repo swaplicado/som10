@@ -103,6 +103,8 @@ public class SDbIog extends SDbRegistryUser {
     protected String msXtaDpsQuantityUnit;
     protected String msXtaItem;
     protected String msXtaUnit;
+    protected String msXtaTicketOrig;
+    protected String msXtaTicketDest;
     protected int mnXtaTicketNumber;
     protected int mnXtaStkDayPkYearId;
     protected Date mtXtaStkDayDate;
@@ -261,7 +263,7 @@ public class SDbIog extends SDbRegistryUser {
     }
 
     private String obtainTicketQuery(final int nPkTicket) {
-        return "SELECT v.id_tic, v.num, v.qty, v.fk_item, COALESCE(it.fk_wah_co_n, 0) AS f_fk_wah_co_n, COALESCE(it.fk_wah_cob_n, 0) AS f_fk_wah_cob_n, " +
+        return "SELECT v.id_tic, v.num, v.qty, v.fk_item, COALESCE(it.fk_wah_co_n, 0) AS f_fk_wah_co_n, COALESCE(it.fk_wah_cob_n, 0) AS f_fk_wah_cob_n, tor.name, tde.name, " +
             "COALESCE(it.fk_wah_wah_n, 0) AS f_fk_wah_wah_n, COALESCE(g.fk_div, 0) AS f_fk_div,  CONCAT(tp.code, '-', g.num) AS f_tp_iog, " +
             "(SELECT COALESCE(SUM(ge.qty), 0) FROM " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS ge WHERE " +
             "ge.b_del = 0 AND ge.fk_tic_n = v.id_tic AND ge.fk_item = v.fk_item AND ge.fk_unit = v.fk_unit) AS f_qty " +
@@ -274,6 +276,10 @@ public class SDbIog extends SDbRegistryUser {
             "v.fk_prod = pr.id_prod " +
             "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS it ON " +
             "v.fk_item = it.id_item " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_ORIG) + " AS tor ON " +
+            "v.fk_tic_orig = tor.id_tic_orig " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_DEST) + " AS tde ON " +
+            "v.fk_tic_dest = tde.id_tic_dest " +
             "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_IOG) + " AS g ON " +
             "v.id_tic = g.fk_tic_n AND g.b_del = 0 " +
             "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SS_IOG_CT) + " AS ct ON " +
@@ -708,6 +714,8 @@ public class SDbIog extends SDbRegistryUser {
     public void setXtaDpsQuantityUnit(String s) { msXtaDpsQuantityUnit = s; }
     public void setXtaItem(String s) { msXtaItem = s; }
     public void setXtaUnit(String s) { msXtaUnit = s; }
+    public void setXtaTicketOrig(String s) { msXtaTicketOrig = s; }
+    public void setXtaTicketDest(String s) { msXtaTicketDest = s; }
     public void setXtaTicketNumber(int n) { mnXtaTicketNumber = n; }
     public void setXtaStkDayPkYearId(int n) { mnXtaStkDayPkYearId = n; }
     public void setXtaStkDayDate(Date t) { mtXtaStkDayDate = t; }
@@ -735,6 +743,8 @@ public class SDbIog extends SDbRegistryUser {
     public String getXtaDpsQuantityUnit() { return msXtaDpsQuantityUnit; }
     public String getXtaItem() { return msXtaItem; }
     public String getXtaUnit() { return msXtaUnit; }
+    public String getXtaTicketOrig() { return msXtaTicketOrig; }
+    public String getXtaTicketDest() { return msXtaTicketDest; }
     public int getXtaTicketNumber() { return mnXtaTicketNumber; }
     public int getXtaStkDayPkYearId() { return mnXtaStkDayPkYearId; }
     public Date getXtaStkDayDate() { return mtXtaStkDayDate; }
@@ -978,6 +988,8 @@ public class SDbIog extends SDbRegistryUser {
         msXtaDpsQuantityUnit = "";
         msXtaItem = "";
         msXtaUnit = "";
+        msXtaTicketOrig = "";
+        msXtaTicketDest = "";
         mnXtaTicketNumber = 0;
         mnXtaStkDayPkYearId = 0;
         mtXtaStkDayDate = null;
@@ -1631,6 +1643,8 @@ public class SDbIog extends SDbRegistryUser {
             mnFkWarehouseBranchId = resultSet.getInt("f_fk_wah_cob_n");
             mnFkWarehouseWarehouseId = resultSet.getInt("f_fk_wah_wah_n");
             mnFkDivisionId = resultSet.getInt("f_fk_div");
+            msXtaTicketOrig = resultSet.getString("tor.name");
+            msXtaTicketDest = resultSet.getString("tde.name");
             mdQuantity = mnPkIogId > 0 ? mdQuantity : (resultSet.getDouble("v.qty") - resultSet.getDouble("f_qty"));
         }
 

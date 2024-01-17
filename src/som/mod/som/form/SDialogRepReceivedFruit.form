@@ -62,7 +62,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Fecha inicial:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
+                      <Dimension value="[115, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -81,7 +81,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Fecha final:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
+                      <Dimension value="[115, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -100,14 +100,14 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="&#xcd;tem:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
+                      <Dimension value="[115, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyItem">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[500, 23]"/>
+                      <Dimension value="[480, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -124,33 +124,105 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Proveedor:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 23]"/>
+                      <Dimension value="[115, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyProducer">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[500, 23]"/>
+                      <Dimension value="[480, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="sa.lib.gui.bean.SBeanFieldRadio" name="moRadDetail">
-              <Properties>
-                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                  <ComponentRef name="reportTypeGroup"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Modalidad detallada"/>
-              </Properties>
-            </Component>
+            <Container class="javax.swing.JPanel" name="jPanel16">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlTicketOrigin">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Procedencia boleto:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[115, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyTicketOrigin">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[250, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanel17">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlTicketDestination">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Destino boleto:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[115, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyTicketDestination">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[250, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanel18">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlTicketScale">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="B&#xe1;scula:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[115, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyTicketScale">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[250, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
             <Component class="sa.lib.gui.bean.SBeanFieldRadio" name="moRadSummary">
               <Properties>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="reportTypeGroup"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Modalidad resumen"/>
+              </Properties>
+            </Component>
+            <Component class="sa.lib.gui.bean.SBeanFieldRadio" name="moRadDetail">
+              <Properties>
+                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                  <ComponentRef name="reportTypeGroup"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Modalidad detallada"/>
               </Properties>
             </Component>
           </SubComponents>

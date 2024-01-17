@@ -198,6 +198,12 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         jPanel26 = new javax.swing.JPanel();
         jlTicketNumber = new javax.swing.JLabel();
         moIntTicketNumber = new sa.lib.gui.bean.SBeanFieldInteger();
+        jPanel43 = new javax.swing.JPanel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moTextTicketOrigin = new sa.lib.gui.bean.SBeanFieldText();
+        jPanel44 = new javax.swing.JPanel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moTextTicketDestination = new sa.lib.gui.bean.SBeanFieldText();
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
@@ -666,6 +672,32 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         jPanel27.add(jPanel26);
 
+        jPanel43.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketOrigin.setText("Procedencia:");
+        jlTicketOrigin.setEnabled(false);
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(80, 23));
+        jPanel43.add(jlTicketOrigin);
+
+        moTextTicketOrigin.setEditable(false);
+        moTextTicketOrigin.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel43.add(moTextTicketOrigin);
+
+        jPanel27.add(jPanel43);
+
+        jPanel44.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketDestination.setText("Destino:");
+        jlTicketDestination.setEnabled(false);
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(80, 23));
+        jPanel44.add(jlTicketDestination);
+
+        moTextTicketDestination.setEditable(false);
+        moTextTicketDestination.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel44.add(moTextTicketDestination);
+
+        jPanel27.add(jPanel44);
+
         jPanel5.add(jPanel27, java.awt.BorderLayout.CENTER);
 
         jPanel1.add(jPanel5, java.awt.BorderLayout.EAST);
@@ -715,6 +747,8 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private javax.swing.JPanel jPanel40;
     private javax.swing.JPanel jPanel41;
     private javax.swing.JPanel jPanel42;
+    private javax.swing.JPanel jPanel43;
+    private javax.swing.JPanel jPanel44;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel62;
@@ -753,7 +787,9 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private javax.swing.JLabel jlQuantityUnit;
     private javax.swing.JLabel jlQuantityUnitDestiny;
     private javax.swing.JLabel jlReference;
+    private javax.swing.JLabel jlTicketDestination;
     private javax.swing.JLabel jlTicketNumber;
+    private javax.swing.JLabel jlTicketOrigin;
     private javax.swing.JLabel jlTicketScale;
     private javax.swing.JLabel jlWarehouse;
     private javax.swing.JLabel jlWarehouseDestiny;
@@ -795,6 +831,8 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private sa.lib.gui.bean.SBeanFieldText moTextNote;
     private sa.lib.gui.bean.SBeanFieldText moTextNumber;
     private sa.lib.gui.bean.SBeanFieldText moTextReference;
+    private sa.lib.gui.bean.SBeanFieldText moTextTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldText moTextTicketOrigin;
     private sa.lib.gui.bean.SBeanFieldText moTextTicketScale;
     private sa.lib.gui.bean.SBeanFieldText moTextXtaStockPeriod;
     private sa.lib.gui.bean.SBeanFieldText moTextXtaStockPeriodDestiny;
@@ -851,7 +889,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moDecDpsQuantityOriginal.setDecimalSettings(SGuiUtils.getLabelName(jlDpsQuantityOriginal), SGuiConsts.GUI_TYPE_DEC_AMT, false);
         moDecDpsQuantitySupDev.setDecimalSettings(SGuiUtils.getLabelName(jlDpsQuantitySupDev), SGuiConsts.GUI_TYPE_DEC_AMT, false);
         moDecDpsQuantityPending.setDecimalSettings(SGuiUtils.getLabelName(jlDpsQuantityPending), SGuiConsts.GUI_TYPE_DEC_AMT, false);
-
+        
         moTextTicketScale.setTextSettings(jlTicketScale.getText(), 200, 0);
         moIntTicketNumber.setIntegerSettings(jlTicketNumber.getText(), SGuiConsts.GUI_TYPE_INT, false);
 
@@ -892,13 +930,16 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
         moFields.addField(moTextTicketScale);
         moFields.addField(moIntTicketNumber);
-
+        
         moFields.setFormButton(jbSave);
 
         jlXtaStockUnit.setText("");
         jlQuantityUnit.setText("");
         jlXtaStockUnitDestiny.setText("");
         jlQuantityUnitDestiny.setText("");
+        
+        moTextTicketOrigin.setEnabled(false);
+        moTextTicketDestination.setEnabled(false);
     }
 
     private void resetComboBoxes() {
@@ -917,7 +958,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         if (moKeyItem.getModel().getSize() == 2) {
             moKeyItem.setSelectedIndex(1);
         }
-
+        
         if (moIogRegistryB != null && moIogRegistryB.getFkWarehouseCompanyId() == 0) {
             moFieldKeyGroupWarehouseDestiny.resetGroup();
         }
@@ -973,6 +1014,8 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moTextNote.setValue(moRegistry.getXtaNote());
         moBoolDeleted.setValue(moRegistry.isDeleted());
         moBoolSystem.setValue(moRegistry.isSystem());
+        moTextTicketOrigin.setValue(moRegistry.getXtaTicketOrig());
+        moTextTicketDestination.setValue(moRegistry.getXtaTicketDest());
 
         moDecXtaStock.setValue(0d);
         moTextXtaStockPeriod.setValue("");

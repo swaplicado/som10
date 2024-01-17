@@ -40,6 +40,10 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
     private SGridFilterDatePeriod moFilterDatePeriod;
     private SGridFilterDateCutOff moFilterDateCutOff;
     private SPaneUserInputCategory moPaneFilterUserInputCategory;
+    
+    private SPaneFilter moPaneFilterTicketOrigin;
+    private SPaneFilter moPaneFilterTicketDestination;
+    private SPaneFilter moPaneFilterScale;
 
     private JButton jbTicketTare;
     private JButton jbMailReceptions;
@@ -58,6 +62,13 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "itm");
         moDialogDailyMail = new SDialogMailReceptions(miClient, SModConsts.SX_DAY_MAIL, "Recepciones del día");
 
+        moPaneFilterTicketOrigin = new SPaneFilter(this, SModConsts.SU_TIC_ORIG);
+        moPaneFilterTicketOrigin.initFilter(null);
+        moPaneFilterTicketDestination = new SPaneFilter(this, SModConsts.SU_TIC_DEST);
+        moPaneFilterTicketDestination.initFilter(null);
+        moPaneFilterScale = new SPaneFilter(this, SModConsts.SU_SCA);
+        moPaneFilterScale.initFilter(null);
+        
         switch (mnGridSubtype) {
             case SModConsts.SX_TIC_TARE:
                 moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
@@ -77,6 +88,10 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
 
         jbTicketTare.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
+    
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketOrigin);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketDestination);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterScale);
     }
 
     private void actionTicketTare() {
@@ -128,7 +143,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
             
             if (moDialogDailyMail.getFormResult() == SGuiConsts.FORM_RESULT_OK) {
                 try {
-                    int count = SSomMailUtils.computeMailReceptions(miClient.getSession(), moDialogDailyMail.getDateStart(), moDialogDailyMail.getDateEnd(), false, false, "", 0, "", "");
+                    int count = SSomMailUtils.computeMailReceptions(miClient.getSession(), moDialogDailyMail.getDateStart(), moDialogDailyMail.getDateEnd(), SModSysConsts.SU_TIC_ORIG_PRV, 0, false, false, "", 0, "", "");
                     miClient.showMsgBoxInformation(SLibConsts.MSG_PROCESS_FINISHED + "\nMails enviados: " + SLibUtils.DecimalFormatInteger.format(count) + ".");
                 }
                 catch (Exception e) {
@@ -186,6 +201,21 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
         if(!sqlFilter.isEmpty()) {
             sql += (sql.isEmpty() ? "" : "AND ") + sqlFilter;
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_ORIG);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_orig" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_DEST);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_dest" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_SCA);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_sca" }, (int[]) filter);
         }
         
         msSql = "SELECT "
@@ -255,6 +285,8 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 + "src.name, "
                 + "sea.id_seas, "
                 + "sea.name, "
+                + "tor.code, "
+                + "tde.code, "
                 + "reg.id_reg, "
                 + "reg.name, "
                 + "w.code, "
@@ -288,6 +320,10 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 + "v.fk_prod = prd.id_prod "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS src ON "
                 + "v.fk_inp_src = src.id_inp_src "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_ORIG) + " AS tor ON "
+                + "v.fk_tic_orig = tor.id_tic_orig "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_DEST) + " AS tde ON "
+                + "v.fk_tic_dest = tde.id_tic_dest "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -306,7 +342,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
 
     @Override
     public void createGridColumns() {
-        int cols = 43;
+        int cols = 45;
 
         switch (mnGridSubtype) {
             case SModConsts.SX_TIC_TARE:
@@ -330,6 +366,8 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "tst.name", "Estatus boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "sea.name", "Temporada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "reg.name", "Región");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tor.code", "Procedencia boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tde.code", "Destino boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "src.name", "Origen insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla", "Placas");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla_cag", "Placas caja");

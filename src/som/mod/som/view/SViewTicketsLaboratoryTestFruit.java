@@ -29,6 +29,10 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
 
     private SGridFilterDateRange moFilterDateRange;
     private SPaneUserInputCategory moPaneFilterUserInputCategory;
+    
+    private SPaneFilter moPaneFilterTicketOrigin;
+    private SPaneFilter moPaneFilterTicketDestination;
+    private SPaneFilter moPaneFilterScale;
 
     public SViewTicketsLaboratoryTestFruit(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.SX_TIC_LAB_TEST_FRUIT, 0, title);
@@ -42,8 +46,18 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_LAB, "itm");
         moFilterDateRange.initFilter(new Date[] { SLibTimeUtils.getBeginOfMonth(miClient.getSession().getWorkingDate()), SLibTimeUtils.getEndOfMonth(miClient.getSession().getWorkingDate()) });
 
+        moPaneFilterTicketOrigin = new SPaneFilter(this, SModConsts.SU_TIC_ORIG);
+        moPaneFilterTicketOrigin.initFilter(null);
+        moPaneFilterTicketDestination = new SPaneFilter(this, SModConsts.SU_TIC_DEST);
+        moPaneFilterTicketDestination.initFilter(null);
+        moPaneFilterScale = new SPaneFilter(this, SModConsts.SU_SCA);
+        moPaneFilterScale.initFilter(null);
+        
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDateRange);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketOrigin);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketDestination);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterScale);
     }
 
     @Override
@@ -60,6 +74,21 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         if(!sqlFilter.isEmpty()) {
             sql += (sql.isEmpty() ? "" : "AND ") + sqlFilter;
         }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_ORIG);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "t.fk_tic_orig" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_DEST);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "t.fk_tic_dest" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_SCA);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "t.fk_sca" }, (int[]) filter);
+        }
 
         msSql = "SELECT "
                 + "t.id_tic AS " + SDbConsts.FIELD_ID + "1, "
@@ -74,6 +103,8 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
                 + "prd.name_trd, "
                 + "src.code, "
                 + "src.name, "
+                + "tor.code, "
+                + "tde.code, "
                 + "l.id_lab, "
                 + "l.num, "
                 + "lt.id_test, "
@@ -100,6 +131,8 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS itm ON t.fk_item = itm.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS prd ON t.fk_prod = prd.id_prod "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS src ON t.fk_inp_src = src.id_inp_src "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_ORIG) + " AS tor ON t.fk_tic_orig = tor.id_tic_orig "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_DEST) + " AS tde ON t.fk_tic_dest = tde.id_tic_dest "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_LAB) + " AS l ON t.fk_lab_n = l.id_lab AND NOT l.b_del "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_LAB_TEST) + " AS lt ON l.id_lab = lt.id_lab "
                 + "WHERE NOT t.b_del AND itm.b_fruit " + (sql.isEmpty() ? "" : "AND " + sql)
@@ -111,7 +144,7 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[29];
+        columns = new SGridColumnView[31];
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca.code", "Báscula");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "t.num", "Boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "t.dt", SGridConsts.COL_TITLE_DATE + " boleto");
@@ -141,6 +174,8 @@ public class SViewTicketsLaboratoryTestFruit extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_oil_per", "Fruta: aceite % *");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "lt.fruit_yield_adj_per", "Ajuste rendimiento fruta %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "_fruit_yield", "Rendimiento esperado % *");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tor.code", "Procedencia boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tde.code", "Destino boleto");
 
         moModel.getGridColumns().addAll(Arrays.asList(columns));
     }

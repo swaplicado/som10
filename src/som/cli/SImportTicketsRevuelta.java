@@ -202,6 +202,8 @@ public class SImportTicketsRevuelta {
                     HashMap originsMap = SSomUtils.getOrigin(moSession, idItem);
                     registry.setFkInputSourceId((originsMap.containsKey(dbProducer.getFkInputSourceId()) ? dbProducer.getFkInputSourceId() : SModSysConsts.SU_INP_SRC_NA));
                     registry.setFkLaboratoryId_n(0);
+                    registry.setFkTicketOriginId(SModSysConsts.SU_TIC_ORIG_NA);
+                    registry.setFkTicketDestinationId(SModSysConsts.SU_TIC_DEST_NA);
                     //registry.setFkExternalDpsYearId_n(...);
                     //registry.setFkExternalDpsDocId_n(...);
                     //registry.setFkExternalDpsEntryId_n(..);

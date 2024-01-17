@@ -38,6 +38,8 @@ import som.mod.som.db.SDbSeasonRegion;
 import som.mod.som.db.SDbSupraRegion;
 import som.mod.som.db.SDbTicket;
 import som.mod.som.db.SDbTicketAlternative;
+import som.mod.som.db.SDbTicketDestination;
+import som.mod.som.db.SDbTicketOrigin;
 import som.mod.som.db.SDbWarehouseStart;
 import som.mod.som.form.SDialogRepFreightTime;
 import som.mod.som.form.SDialogRepFruitYieldByOrigin;
@@ -61,7 +63,9 @@ import som.mod.som.form.SFormSeasonRegion;
 import som.mod.som.form.SFormSupraRegion;
 import som.mod.som.form.SFormTicket;
 import som.mod.som.form.SFormTicketAlternative;
+import som.mod.som.form.SFormTicketDestination;
 import som.mod.som.form.SFormTicketMgmt;
+import som.mod.som.form.SFormTicketOrigin;
 import som.mod.som.form.SFormTicketSeasonRegion;
 import som.mod.som.form.SFormTicketWahUnld;
 import som.mod.som.form.SFormWarehouseStart;
@@ -78,6 +82,8 @@ import som.mod.som.view.SViewSeasonRegion;
 import som.mod.som.view.SViewSupraRegion;
 import som.mod.som.view.SViewTicket;
 import som.mod.som.view.SViewTicketAlternative;
+import som.mod.som.view.SViewTicketDestination;
+import som.mod.som.view.SViewTicketOrigin;
 import som.mod.som.view.SViewTicketTare;
 import som.mod.som.view.SViewTicketWahUnld;
 import som.mod.som.view.SViewTicketsLaboratoryTestFruit;
@@ -102,6 +108,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCatInputCategory;
     private JMenuItem mjCatInputSource;
     private JMenuItem mjCatReportingGroup;
+    private JMenuItem mjCatTicketOrigin;
+    private JMenuItem mjCatTicketDestination;
     private JMenuItem mjCatIodineValueRank;
     private JMenuItem mjCatExternalWarehouses;
     private JMenuItem mjCatUpdateCatalogues;
@@ -169,6 +177,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private SFormTicketSeasonRegion moFormTicketSeasonRegion;
     private SFormSeasonRegion moFormSeasonRegion;
     private SFormSeasonProducer moFormSeasonProducer;
+    private SFormTicketOrigin moFormTicketOrigin;
+    private SFormTicketDestination moFormTicketDestination;
     private SFormDialogAssignSeasonRegion moFormDialogAssignSeasonRegion;
     private SFormMgmtSupplierItem moFormMgmtSupplierItem;
     private SFormMgmtSupplierInputType moFormMgmtSupplierInputType;
@@ -192,6 +202,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
         mjCatInputSource = new JMenuItem("Orígenes de insumos");
         mjCatReportingGroup = new JMenuItem("Agrupadores de reporte");
+        mjCatTicketOrigin = new JMenuItem("Procedencias de boletos");
+        mjCatTicketDestination = new JMenuItem("Destinos de boletos");
         mjCatIodineValueRank = new JMenuItem("Rangos de yodo");
         mjCatExternalWarehouses = new JMenuItem("Almacenes sistema externo");
         mjCatUpdateCatalogues = new JMenuItem("Actualizar catálogos sistema externo...");
@@ -207,6 +219,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCat.add(mjCatInputSource);
         mjCat.add(mjCatReportingGroup);
         mjCat.addSeparator();
+        mjCat.add(mjCatTicketOrigin);
+        mjCat.add(mjCatTicketDestination);
+        mjCat.addSeparator();
         mjCat.add(mjCatIodineValueRank);
         mjCat.addSeparator();
         mjCat.add(mjCatExternalWarehouses);
@@ -221,6 +236,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatInputCategory.addActionListener(this);
         mjCatInputSource.addActionListener(this);
         mjCatReportingGroup.addActionListener(this);
+        mjCatTicketOrigin.addActionListener(this);
+        mjCatTicketDestination.addActionListener(this);
         mjCatIodineValueRank.addActionListener(this);
         mjCatExternalWarehouses.addActionListener(this);
         mjCatUpdateCatalogues.addActionListener(this);
@@ -448,6 +465,12 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SU_SEAS_PROD:
                 registry = new SDbSeasonProducer();
                 break;
+            case SModConsts.SU_TIC_ORIG:
+                registry = new SDbTicketOrigin();
+                break;
+            case SModConsts.SU_TIC_DEST:
+                registry = new SDbTicketDestination();
+                break;
             case SModConsts.SX_SEAS_REG:
                 registry = new SDbSeason();
                 break;
@@ -511,6 +534,16 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 settings = new SGuiCatalogueSettings("Temporada", 1);
                 sql = "SELECT id_seas AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_seas ";
+                break;
+            case SModConsts.SU_TIC_ORIG:
+                settings = new SGuiCatalogueSettings("Procedencia boleto", 1);
+                sql = "SELECT id_tic_orig AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " " 
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name, id_tic_orig ";
+                break;
+            case SModConsts.SU_TIC_DEST:
+                settings = new SGuiCatalogueSettings("Destino boleto", 1);
+                sql = "SELECT id_tic_dest AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " " 
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name, id_tic_dest ";
                 break;
             case SModConsts.SX_PROD_SEAS:
                 settings = new SGuiCatalogueSettings("Temporada", 1);
@@ -590,6 +623,12 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.SU_SEAS_PROD:
                 view = new SViewSeasonProducer(miClient, "Config. proveedores");
+                break;
+            case SModConsts.SU_TIC_ORIG:
+                view = new SViewTicketOrigin(miClient, "Procedencias boletos");
+                break;
+            case SModConsts.SU_TIC_DEST:
+                view = new SViewTicketDestination(miClient, "Destinos boletos");
                 break;
             case SModConsts.S_GRINDING_EVENT:
                 switch (subtype) {
@@ -749,6 +788,14 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 if (moFormSeasonProducer == null) moFormSeasonProducer = new SFormSeasonProducer(miClient, "Configuración de proveedor");
                 form = moFormSeasonProducer;
                 break;
+            case SModConsts.SU_TIC_ORIG:
+                if (moFormTicketOrigin == null) moFormTicketOrigin = new SFormTicketOrigin(miClient, "Procedencia del boleto");
+                form = moFormTicketOrigin;
+                break;
+            case SModConsts.SU_TIC_DEST:
+                if (moFormTicketDestination == null) moFormTicketDestination = new SFormTicketDestination(miClient, "Destino del boleto");
+                form = moFormTicketDestination;
+                break;
             case SModConsts.SX_SEAS_REG:
                 if (moFormDialogAssignSeasonRegion == null) moFormDialogAssignSeasonRegion = new SFormDialogAssignSeasonRegion(miClient, "Clasificar boletos sin temporada y/o región");
                 form = moFormDialogAssignSeasonRegion;
@@ -903,6 +950,12 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatReportingGroup) {
                 miClient.getSession().getModule(SModConsts.MOD_CFG).showView(SModConsts.CU_REP_GRP, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatTicketOrigin) {
+                showView(SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatTicketDestination) {
+                showView(SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatIodineValueRank) {
                 miClient.getSession().showView(SModConsts.SU_IOD_VAL_RANK, SLibConsts.UNDEFINED, null);

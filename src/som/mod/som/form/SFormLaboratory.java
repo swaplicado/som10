@@ -124,7 +124,12 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         jlNote = new javax.swing.JLabel();
         moTextNote = new sa.lib.gui.bean.SBeanFieldText();
         jPanel5 = new javax.swing.JPanel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moKeyTicketOrigin = new sa.lib.gui.bean.SBeanFieldKey();
         moBoolDone = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel17 = new javax.swing.JPanel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moKeyTicketDestination = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel6 = new javax.swing.JPanel();
         jpTest = new javax.swing.JPanel();
 
@@ -132,7 +137,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del boleto:"));
-        jPanel2.setLayout(new java.awt.GridLayout(7, 2, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(8, 2, 0, 5));
 
         jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -300,10 +305,29 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         jPanel2.add(jPanel16);
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketOrigin.setText("Procedencia:");
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel5.add(jlTicketOrigin);
+
+        moKeyTicketOrigin.setPreferredSize(new java.awt.Dimension(350, 23));
+        jPanel5.add(moKeyTicketOrigin);
+
         jPanel2.add(jPanel5);
 
         moBoolDone.setText("Terminado");
         jPanel2.add(moBoolDone);
+
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketDestination.setText("Destino:");
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel17.add(jlTicketDestination);
+
+        moKeyTicketDestination.setPreferredSize(new java.awt.Dimension(350, 23));
+        jPanel17.add(moKeyTicketDestination);
+
+        jPanel2.add(jPanel17);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -327,6 +351,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -350,11 +375,15 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private javax.swing.JLabel jlScale;
     private javax.swing.JLabel jlSeason;
     private javax.swing.JLabel jlTicket;
+    private javax.swing.JLabel jlTicketDestination;
+    private javax.swing.JLabel jlTicketOrigin;
     private javax.swing.JPanel jpTest;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolDone;
     private sa.lib.gui.bean.SBeanFieldDate moDateDate;
     private sa.lib.gui.bean.SBeanFieldInteger moIntNumber;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
     private sa.lib.gui.bean.SBeanFieldText moTextDriver;
     private sa.lib.gui.bean.SBeanFieldText moTextNote;
     private sa.lib.gui.bean.SBeanFieldText moTextPlates;
@@ -388,6 +417,8 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moDateDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlDate.getText()), true);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 255, 0);
         moBoolDone.setBooleanSettings(SGuiUtils.getLabelName(moBoolDone.getText()), false);
+        moKeyTicketOrigin.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketOrigin.getText()), true);
+        moKeyTicketDestination.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketDestination.getText()), true);
 
         moFields.addField(moTextScaleName);
         moFields.addField(moTextScaleCode);
@@ -403,6 +434,8 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moFields.addField(moDateDate);
         moFields.addField(moTextNote);
         moFields.addField(moBoolDone);
+        moFields.addField(moKeyTicketOrigin);
+        moFields.addField(moKeyTicketDestination);
 
         moFields.setFormButton(jbSave);
 
@@ -674,6 +707,8 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         try {
             populateLaboratoryTest();
             miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
+            miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+            miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
         }
         catch (SQLException e) {
             SLibUtils.showException(this, e);
@@ -714,6 +749,8 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moItem.initRegistry(); // must be called before setting item combobox
         mnOldItemId = moRegistry.getFkItemId();
         moKeyItem.setValue(new int[] { mnOldItemId });
+        moKeyTicketOrigin.setValue(new int[] { moRegistry.getFkTicketOriginId() });
+        moKeyTicketDestination.setValue(new int[] { moRegistry.getFkTicketDestinationId() });
         moTextNote.setValue("");
 
         moIntNumber.setValue(0);
@@ -743,6 +780,8 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moIntNumber.setEditable(false);
         moKeyItem.setEnabled(false);
         jbKeyItem.setEnabled(true);
+        moKeyTicketOrigin.setEnabled(false);
+        moKeyTicketDestination.setEnabled(false);
         jbPlates.setEnabled(true);
         jbPlatesCage.setEnabled(true);
 

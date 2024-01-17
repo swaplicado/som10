@@ -40,6 +40,9 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
     private SGridFilterDatePeriod moFilterDatePeriod;
     private String msItemCodes;
     
+    private SPaneFilter moPaneFilterTicketOrigin;
+    private SPaneFilter moPaneFilterTicketDestination;
+    
     private JButton mjbDelete;
     private JButton mjbPrint;
     
@@ -58,8 +61,15 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
             
             moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
             moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
-            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+            moPaneFilterTicketOrigin = new SPaneFilter(this, SModConsts.SU_TIC_ORIG);
+            moPaneFilterTicketOrigin.initFilter(null);
+            moPaneFilterTicketDestination = new SPaneFilter(this, SModConsts.SU_TIC_DEST);
+            moPaneFilterTicketDestination.initFilter(null);
 
+            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketOrigin);
+            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketDestination);
+        
             getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbDelete);
             getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
 
@@ -174,6 +184,16 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
             sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt", (SGuiDate) filter);
         }
         
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_ORIG);
+        if (filter != null) {
+            sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_orig" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_DEST);
+        if (filter != null) {
+            sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_dest" }, (int[]) filter);
+        }
+        
         msSql = "SELECT "
                 + "v.id_tic AS " + SDbConsts.FIELD_ID + "1, "
                 + "v.num AS " + SDbConsts.FIELD_CODE + ", "
@@ -242,6 +262,8 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
                 + "src.name AS src_name, "
                 + "sea.id_seas, "
                 + "sea.name AS sea_name, "
+                + "tor.name AS org_bol, "
+                + "tde.name AS des_bol, "
                 + "reg.id_reg, "
                 + "reg.name AS reg_name, "
                 + "lab.dt AS lab_dt, "
@@ -276,6 +298,10 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
                 + "v.fk_prod = prd.id_prod "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS src ON "
                 + "v.fk_inp_src = src.id_inp_src "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_ORIG) + " AS tor ON "
+                + "v.fk_tic_orig = tor.id_tic_orig "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_DEST) + " AS tde ON "
+                + "v.fk_tic_dest = tde.id_tic_dest "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -364,6 +390,8 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
                 + "src.name AS src_name, "
                 + "sea.id_seas, "
                 + "sea.name AS sea_name, "
+                + "tor.name AS org_bol, "
+                + "tde.name AS des_bol, "
                 + "reg.id_reg, "
                 + "reg.name AS reg_name, "
                 + "lab.dt AS lab_dt, "
@@ -398,6 +426,10 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
                 + "v.fk_prod = prd.id_prod "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) + " AS src ON "
                 + "v.fk_inp_src = src.id_inp_src "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_ORIG) + " AS tor ON "
+                + "v.fk_tic_orig = tor.id_tic_orig "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_DEST) + " AS tde ON "
+                + "v.fk_tic_dest = tde.id_tic_dest "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -422,7 +454,7 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
 
     @Override
     public void createGridColumns() {
-        int cols = 44;
+        int cols = 46;
 
         int col = 0;
         SGridColumnView[] columns = new SGridColumnView[cols];
@@ -443,6 +475,8 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "ts_arr", "TS entrada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "ts_dep", "TS salida");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "b_tar", "Tarado");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "org_bol", "Procedencia boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "des_bol", "Destino boleto");
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "wei_src", "Peso origen (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "wei_des_arr", "Peso entrada (" + SSomConsts.KG + ")");

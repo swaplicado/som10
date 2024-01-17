@@ -117,6 +117,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected int mnFkWarehouseUnloadCompanyId_n;
     protected int mnFkWarehouseUnloadBranchId_n;
     protected int mnFkWarehouseUnloadWarehouseId_n;
+    protected int mnFkTicketOriginId;
+    protected int mnFkTicketDestinationId;
     protected int mnFkExternalDpsYearId_n;
     protected int mnFkExternalDpsDocId_n;
     protected int mnFkExternalDpsEntryId_n;
@@ -214,7 +216,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
                 if (producerId == 0) {
                     // A summary of all receptions is about to be included:
-                    body += SSomUtils.composeHtmlSummaryItem(session, mnFkItemId, mtDate);
+                    body += SSomUtils.composeHtmlSummaryItem(session, mnFkItemId, mtDate, SModSysConsts.SU_TIC_ORIG_PRV, 0);
                 }
                 
                 // Add mail warning:
@@ -324,6 +326,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setFkWarehouseUnloadCompanyId_n(int n) { mnFkWarehouseUnloadCompanyId_n = n; }
     public void setFkWarehouseUnloadBranchId_n(int n) { mnFkWarehouseUnloadBranchId_n = n; }
     public void setFkWarehouseUnloadWarehouseId_n(int n) { mnFkWarehouseUnloadWarehouseId_n = n; }
+    public void setFkTicketOriginId(int n) { mnFkTicketOriginId = n; }
+    public void setFkTicketDestinationId(int n) { mnFkTicketDestinationId = n; }
     public void setFkExternalDpsYearId_n(int n) { mnFkExternalDpsYearId_n = n; }
     public void setFkExternalDpsDocId_n(int n) { mnFkExternalDpsDocId_n = n; }
     public void setFkExternalDpsEntryId_n(int n) { mnFkExternalDpsEntryId_n = n; }
@@ -402,6 +406,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public int getFkWarehouseUnloadCompanyId_n() { return mnFkWarehouseUnloadCompanyId_n; }
     public int getFkWarehouseUnloadBranchId_n() { return mnFkWarehouseUnloadBranchId_n; }
     public int getFkWarehouseUnloadWarehouseId_n() { return mnFkWarehouseUnloadWarehouseId_n; }
+    public int getFkTicketOriginId() { return mnFkTicketOriginId; }
+    public int getFkTicketDestinationId() { return mnFkTicketDestinationId; }
     public int getFkExternalDpsYearId_n() { return mnFkExternalDpsYearId_n; }
     public int getFkExternalDpsDocId_n() { return mnFkExternalDpsDocId_n; }
     public int getFkExternalDpsEntryId_n() { return mnFkExternalDpsEntryId_n; }
@@ -540,6 +546,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mnFkWarehouseUnloadCompanyId_n = 0;
         mnFkWarehouseUnloadBranchId_n = 0;
         mnFkWarehouseUnloadWarehouseId_n = 0;
+        mnFkTicketOriginId = 0;
+        mnFkTicketDestinationId = 0;
         mnFkExternalDpsYearId_n = 0;
         mnFkExternalDpsDocId_n = 0;
         mnFkExternalDpsEntryId_n = 0;
@@ -704,6 +712,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mnFkWarehouseUnloadCompanyId_n = resultSet.getInt("fk_wah_unld_co_n");
             mnFkWarehouseUnloadBranchId_n = resultSet.getInt("fk_wah_unld_cob_n");
             mnFkWarehouseUnloadWarehouseId_n = resultSet.getInt("fk_wah_unld_wah_n");
+            mnFkTicketOriginId = resultSet.getInt("fk_tic_orig");
+            mnFkTicketDestinationId = resultSet.getInt("fk_tic_dest");
             mnFkExternalDpsYearId_n = resultSet.getInt("t.fk_ext_dps_year_n");
             mnFkExternalDpsDocId_n = resultSet.getInt("t.fk_ext_dps_doc_n");
             mnFkExternalDpsEntryId_n = resultSet.getInt("t.fk_ext_dps_ety_n");
@@ -889,6 +899,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     (mnFkWarehouseUnloadCompanyId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadBranchId_n) + ", " + 
                     (mnFkWarehouseUnloadBranchId_n == SLibConsts.UNDEFINED  ? "NULL" : mnFkWarehouseUnloadCompanyId_n) + ", " + 
                     (mnFkWarehouseUnloadWarehouseId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadWarehouseId_n) + ", " + 
+                    mnFkTicketOriginId + ", " + 
+                    mnFkTicketDestinationId + ", " + 
                     (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
                     (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
@@ -974,6 +986,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "fk_wah_unld_co_n = " + (mnFkWarehouseUnloadCompanyId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadBranchId_n) + ", " + 
                     "fk_wah_unld_cob_n = " + (mnFkWarehouseUnloadBranchId_n == SLibConsts.UNDEFINED  ? "NULL" : mnFkWarehouseUnloadCompanyId_n) + ", " +
                     "fk_wah_unld_wah_n = " + (mnFkWarehouseUnloadWarehouseId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadWarehouseId_n) + ", " +
+                    "fk_tic_orig = " + mnFkTicketOriginId + ", " +
+                    "fk_tic_dest = " + mnFkTicketDestinationId + ", " +
                     "fk_ext_dps_year_n = " + (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     "fk_ext_dps_doc_n = " + (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
                     "fk_ext_dps_ety_n = " + (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
@@ -1093,6 +1107,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setFkWarehouseUnloadCompanyId_n(this.getFkWarehouseUnloadCompanyId_n());
         registry.setFkWarehouseUnloadBranchId_n(this.getFkWarehouseUnloadBranchId_n());
         registry.setFkWarehouseUnloadWarehouseId_n(this.getFkWarehouseUnloadWarehouseId_n());
+        registry.setFkTicketOriginId(this.getFkTicketOriginId());
+        registry.setFkTicketDestinationId(this.getFkTicketDestinationId());
         registry.setFkExternalDpsYearId_n(this.getFkExternalDpsYearId_n());
         registry.setFkExternalDpsDocId_n(this.getFkExternalDpsDocId_n());
         registry.setFkExternalDpsEntryId_n(this.getFkExternalDpsEntryId_n());

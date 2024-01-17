@@ -197,6 +197,14 @@ public abstract class SModSysConsts {
     public static final int SU_OIL_GRP_FAM_OTHER_SEEDS = 3;
     public static final int SU_OIL_GRP_FAM_OTHER_AVO = 4;
     
+    public static final int SU_TIC_ORIG_NA = 1;
+    public static final int SU_TIC_ORIG_PRV = 11;
+    public static final int SU_TIC_ORIG_EXW = 12;
+
+    public static final int SU_TIC_DEST_NA = 1;
+    public static final int SU_TIC_DEST_PTA = 11;
+    public static final int SU_TIC_DEST_EXW = 12;
+
     public static final int SX_DEN = 1;
     public static final int SX_IOD_VAL = 2;
     public static final int SX_REF_IND = 3;

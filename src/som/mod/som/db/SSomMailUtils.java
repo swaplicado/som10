@@ -54,7 +54,7 @@ public class SSomMailUtils {
      * @param totLastItemYear Total quantity in current year for last item belonging to input type.
      * @param formatPercentage Decimal format for percentage values.
      */
-    private static String composeInputTypeDetail(final SGuiSession session, final Date dateStart, final Date dateEnd, final int year,
+    private static String composeInputTypeDetail(final SGuiSession session, final Date dateStart, final Date dateEnd, final int year, final int ticOrig, final int ticDest,
             final int[] inputTypeKey, final String notificationBoxes, final int itemUnitId, final double totInputYear, final double totLastItemYear, final DecimalFormat formatPercentage) throws SQLException {
         String html = "";
         
@@ -70,8 +70,10 @@ public class SSomMailUtils {
                     "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t " +
                     "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON " +
                     "t.fk_item = i.id_item " +
-                    "WHERE YEAR(t.dt) = " + year + " AND t.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' AND " +
-                    "t.b_tar = 1 AND i.b_umn = 1 AND t.b_del = 0 AND " +
+                    "WHERE YEAR(t.dt) = " + year + " AND t.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
+                    (ticOrig == 0 ? "" : "AND t.fk_tic_orig = " + ticOrig + " ") +
+                    (ticDest == 0 ? "" : "AND t.fk_tic_dest = " + ticDest + " ") +
+                    "AND t.b_tar = 1 AND i.b_umn = 1 AND t.b_del = 0 AND " +
                     "i.fk_inp_ct = " + inputTypeKey[0] + " AND i.fk_inp_cl = " + inputTypeKey[1] + " AND i.fk_inp_tp = " + inputTypeKey[2] + " AND i.umn_box = '" + notificationBoxes + "' AND " +
                     "t.fk_unit = " + itemUnitId + " " +
                     "GROUP BY i.name_sht, i.id_item " +
@@ -105,7 +107,7 @@ public class SSomMailUtils {
      * @param notificationBoxes Notification mail boxes.
      * @param formatPercentage Decimal format for percentage values.
      */
-    private static String composeInputClassTable(final SGuiSession session, final boolean isByDate, final Date dateStart, final Date dateEnd, final int year, 
+    private static String composeInputClassTable(final SGuiSession session, final boolean isByDate, final Date dateStart, final Date dateEnd, final int year, final int ticOrig, final int ticDest,
             final int[] inputClassKey, final String notificationBoxes, final int unitId, final String unitCode, final DecimalFormat formatPercentage) throws SQLException {
         int count = 0;
         double totalPeriod = 0;
@@ -124,8 +126,10 @@ public class SSomMailUtils {
                 + "t.fk_item = i.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_INP_TP) + " AS it ON "
                 + "i.fk_inp_ct = it.id_inp_ct AND i.fk_inp_cl = it.id_inp_cl AND i.fk_inp_tp = it.id_inp_tp "
-                + "WHERE YEAR(t.dt) = " + year + " AND t.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' AND "
-                + "t.b_tar = 1 AND i.b_umn = 1 AND t.b_del = 0 AND "
+                + "WHERE YEAR(t.dt) = " + year + " AND t.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' "
+                + (ticOrig == 0 ? "" : "AND t.fk_tic_orig = " + ticOrig + " ") 
+                + (ticDest == 0 ? "" : "AND t.fk_tic_dest = " + ticDest + " ") 
+                + "AND t.b_tar = 1 AND i.b_umn = 1 AND t.b_del = 0 AND "
                 + "i.fk_inp_ct = " + inputClassKey[0] + " AND i.fk_inp_cl = " + inputClassKey[1] + " AND i.umn_box = '" + notificationBoxes + "' AND "
                 + "t.fk_unit = " + unitId + " "
                 + "GROUP BY it.name, it.id_inp_ct, it.id_inp_cl, it.id_inp_tp "
@@ -212,7 +216,7 @@ public class SSomMailUtils {
      * @return boolean.
      */
     private static void sendMailReceptions(final SGuiSession session, final String mailSubject, final String mailBodyHtml, final String recipientsTo, final String recipientsBcc, 
-            final boolean isDataAvailable, final boolean isByDate, final Date dateStart, final Date dateEnd, final int year, final DecimalFormat formatPercentage, 
+            final boolean isDataAvailable, final boolean isByDate, final Date dateStart, final Date dateEnd, final int year, final int ticOrig, final int ticDest, final DecimalFormat formatPercentage, 
             final String txtSregion, final String txtItem, final String txtItemUnit, final int itemUnitId, final String txtInput, final int[] inputKey, final String txtInputUnit, 
             final double totRegionCurr, final double totRegionYear, final double totSregionCurr, final double totSregionYear, 
             final double totItemCurr, final double totItemYear, final double totInputCurr, final double totInputYear) throws SQLException, MessagingException {
@@ -310,7 +314,7 @@ public class SSomMailUtils {
                     "<td align='center'><b>" + SLibUtils.textToHtml("Temporada (" + txtInputUnit + ")") + "</b></td>" +
                     "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>" +
                     "</tr>" +
-                    composeInputTypeDetail(session, dateStart, dateEnd, year, inputKey, recipientsTo, itemUnitId, totInputYear, totItemYear, formatPercentage) +
+                    composeInputTypeDetail(session, dateStart, dateEnd, year, ticOrig, ticDest, inputKey, recipientsTo, itemUnitId, totInputYear, totItemYear, formatPercentage) +
                     "<tr bgcolor='" + COLOR_INPUT_FTR + "'>" +
                     "<td align='left'><b>" + SLibUtils.textToHtml("Total insumo") + "</b></td>" +
                     "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(totInputCurr) + "</b></td>" +
@@ -321,14 +325,14 @@ public class SSomMailUtils {
                     "</table>" +
                     "<br>";
             
-            html += composeInputClassTable(session, isByDate, dateStart, dateEnd, year, inputKey, recipientsTo, itemUnitId, txtInputUnit, formatPercentage);
+            html += composeInputClassTable(session, isByDate, dateStart, dateEnd, year, ticOrig, ticDest, inputKey, recipientsTo, itemUnitId, txtInputUnit, formatPercentage);
 
             // END OF SNIPPET HTML CODE #1 (Note: when modified, update aswell all snippets in this class!)
             //================================================================================
         }
         // Year summary
         
-        html += yearSummary(session, year);
+        html += yearSummary(session, year, ticOrig, ticDest);
         
         // Mail footer:
         
@@ -343,7 +347,7 @@ public class SSomMailUtils {
         System.out.println("Correo enviado!");
     }
     
-    private static String yearSummary(final SGuiSession session, final int year) throws SQLException {
+    private static String yearSummary(final SGuiSession session, final int year, final int ticOrig, final int ticDest) throws SQLException {
         DecimalFormat formatPercentage = new DecimalFormat("#,##0.0%");
         
         // TOTALES DEL AÑO
@@ -359,7 +363,10 @@ public class SSomMailUtils {
                 "FROM s_tic AS t " +
                 "INNER JOIN su_item AS i ON t.fk_item = i.id_item " +
                 "INNER JOIN su_inp_tp AS tp ON i.fk_inp_ct = tp.id_inp_ct AND i.fk_inp_cl = tp.id_inp_cl AND i.fk_inp_tp = tp.id_inp_tp " +
-                "WHERE YEAR(t.dt) BETWEEN " + (year - 3) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar;";
+                "WHERE YEAR(t.dt) BETWEEN " + (year - 3) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar " +
+                (ticOrig == 0 ? "" : "AND t.fk_tic_orig = " + ticOrig + " ") +
+                (ticDest == 0 ? "" : "AND t.fk_tic_dest = " + ticDest + " ") +
+                ";";
         ResultSet resultSet = session.getStatement().executeQuery(sql);
         if (resultSet.next()) {
             totalYear = resultSet.getDouble("y");
@@ -392,6 +399,8 @@ public class SSomMailUtils {
                 "INNER JOIN su_item AS i ON t.fk_item = i.id_item " +
                 "INNER JOIN su_inp_tp AS tp ON i.fk_inp_ct = tp.id_inp_ct AND i.fk_inp_cl = tp.id_inp_cl AND i.fk_inp_tp = tp.id_inp_tp " +
                 "WHERE year(t.dt) BETWEEN " + (year - 3) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar " +
+                (ticOrig == 0 ? "" : "AND t.fk_tic_orig = " + ticOrig + " ") +
+                (ticDest == 0 ? "" : "AND t.fk_tic_dest = " + ticDest + " ") +
                 "GROUP BY tp.id_inp_ct, tp.id_inp_cl, tp.id_inp_tp;";
         resultSet = session.getStatement().executeQuery(sql);
         while (resultSet.next()) {
@@ -455,6 +464,8 @@ public class SSomMailUtils {
                 "LEFT JOIN su_reg AS reg ON t.fk_reg_n = reg.id_reg " +
                 "LEFT JOIN su_sup_reg AS sreg ON reg.fk_sup_reg = sreg.id_sup_reg " + 
                 "WHERE year(t.dt) BETWEEN " + (year - 3) + " AND " + year + " AND i.b_umn AND NOT t.b_del AND t.b_tar " +
+                (ticOrig == 0 ? "" : "AND t.fk_tic_orig = " + ticOrig + " ") +
+                (ticDest == 0 ? "" : "AND t.fk_tic_dest = " + ticDest + " ") +
                 "GROUP BY tp.id_inp_ct, tp.id_inp_cl, tp.id_inp_tp, sreg.name " + 
                 "ORDER by tp.name, _order, sreg.sort, supra";
         resultSet = session.getStatement().executeQuery(sql);
@@ -506,7 +517,7 @@ public class SSomMailUtils {
         return html;
     }
     
-    private static int noInformationFound(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isByDate, 
+    private static int noInformationFound(final SGuiSession session, final Date dateStart, final Date dateEnd, final int ticOrig, final int ticDest, final boolean isByDate, 
             final String subject, String message, final int year, final DecimalFormat formatPercentage, int count, String mailTo, String mailBcc) throws Exception {
         // If no information found:
         String html;
@@ -550,7 +561,7 @@ public class SSomMailUtils {
             ResultSet resultSet = session.getStatement().executeQuery(sql);
             while (resultSet.next()) {
                 sendMailReceptions(session, subject, html, resultSet.getString("i.umn_box"), mailBcc, false,
-                        isByDate, dateStart, dateEnd, year, formatPercentage,
+                        isByDate, dateStart, dateEnd, year, ticOrig, ticDest, formatPercentage,
                         "", "", "", 0, "", null, "",
                         0, 0, 0, 0,
                         0, 0, 0, 0);
@@ -559,7 +570,7 @@ public class SSomMailUtils {
         }
         else {
             sendMailReceptions(session, subject, html, mailTo, mailBcc, false,
-                    isByDate, dateStart, dateEnd, year, formatPercentage,
+                    isByDate, dateStart, dateEnd, year, ticOrig, ticDest, formatPercentage,
                     "", "", "", 0, "", null, "",
                     0, 0, 0, 0,
                     0, 0, 0, 0);
@@ -577,6 +588,8 @@ public class SSomMailUtils {
      * @param session SGuiSession.
      * @param dateStart Start date.
      * @param dateEnd End date.
+     * @param ticOrig
+     * @param ticDest
      * @param isMailer
      * @param ordinaryPeriod
      * @param noReceptionMail
@@ -585,8 +598,8 @@ public class SSomMailUtils {
      * @param mailBcc
      * @return int Mails sent.
      */
-    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd, final boolean isMailer, final boolean ordinaryPeriod,
-            final String noReceptionMail, final int daysToSendMail, final String mailTo, final String mailBcc) {
+    public static int computeMailReceptions(final SGuiSession session, final Date dateStart, final Date dateEnd, final int ticOrig, final int ticDest,
+            final boolean isMailer, final boolean ordinaryPeriod, final String noReceptionMail, final int daysToSendMail, final String mailTo, final String mailBcc) {
         int count = 0;
         boolean isByDate;
         boolean sent = false;
@@ -643,6 +656,8 @@ public class SSomMailUtils {
                     "t.fk_item = i.id_item " +
                     "WHERE YEAR(t.dt) = " + year + " AND t.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' AND " +
                     "t.b_tar = 1 AND i.b_umn = 1 AND t.b_del = 0 " +
+                    (ticOrig == 0 ? "" : "AND t.fk_tic_orig = " + ticOrig + " ") +
+                    (ticDest == 0 ? "" : "AND t.fk_tic_dest = " + ticDest + " ") +
                     "GROUP BY i.umn_box, i.fk_inp_ct, i.fk_inp_cl, i.fk_inp_tp, t.fk_unit " +
                     "ORDER BY i.umn_box, i.fk_inp_ct, i.fk_inp_cl, i.fk_inp_tp, t.fk_unit; ";
 
@@ -663,13 +678,17 @@ public class SSomMailUtils {
                     "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t " +
                     "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON " +
                     "t.fk_item = i.id_item " +
-                    "WHERE YEAR(t.dt) = " + year + " AND t.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' AND " +
-                    "t.b_tar = 1 AND i.b_umn = 1 AND t.b_del = 0 AND " +
+                    "WHERE YEAR(t.dt) = " + year + " AND t.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
+                    (ticOrig == 0 ? "" : "AND t.fk_tic_orig = " + ticOrig + " ") +
+                    (ticDest == 0 ? "" : "AND t.fk_tic_dest = " + ticDest + " ") +
+                    "AND t.b_tar = 1 AND i.b_umn = 1 AND t.b_del = 0 AND " +
                     "(i.b_umn_owm = 0 OR i.id_item IN (" +
                     "SELECT DISTINCT xt.fk_item " +
                     "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS xt " +
-                    "WHERE xt.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' AND " +
-                    "xt.b_tar = 1 AND xt.b_del = 0 ORDER BY xt.fk_item)) " +
+                    "WHERE xt.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
+                    (ticOrig == 0 ? "" : "AND xt.fk_tic_orig = " + ticOrig + " ") +
+                    (ticDest == 0 ? "" : "AND xt.fk_tic_dest = " + ticDest + " ") +
+                    "AND xt.b_tar = 1 AND xt.b_del = 0 ORDER BY xt.fk_item)) " +
                     "GROUP BY i.umn_box, t.fk_item, t.fk_unit " +
                     "ORDER BY i.umn_box, t.fk_item, t.fk_unit; ";
 
@@ -707,13 +726,17 @@ public class SSomMailUtils {
                     "t.fk_reg_n = r.id_reg " +
                     "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SUP_REG) + " AS sr ON " +
                     "r.fk_sup_reg = sr.id_sup_reg " +
-                    "WHERE YEAR(t.dt) = " + year + " AND t.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' AND " +
-                    "t.b_tar = 1 AND i.b_umn = 1 AND t.b_del = 0 AND " +
+                    "WHERE YEAR(t.dt) = " + year + " AND t.dt <= '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
+                    (ticOrig == 0 ? "" : "AND t.fk_tic_orig = " + ticOrig + " ") +
+                    (ticDest == 0 ? "" : "AND t.fk_tic_dest = " + ticDest + " ") +
+                    "AND t.b_tar = 1 AND i.b_umn = 1 AND t.b_del = 0 AND " +
                     "(i.b_umn_owm = 0 OR i.id_item IN (" +
                     "SELECT DISTINCT xt.fk_item " +
                     "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS xt " +
-                    "WHERE xt.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' AND " +
-                    "xt.b_tar = 1 AND xt.b_del = 0 ORDER BY xt.fk_item)) " +
+                    "WHERE xt.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
+                    (ticOrig == 0 ? "" : "AND xt.fk_tic_orig = " + ticOrig + " ") +
+                    (ticDest == 0 ? "" : "AND xt.fk_tic_dest = " + ticDest + " ") +
+                    "AND xt.b_tar = 1 AND xt.b_del = 0 ORDER BY xt.fk_item)) " +
                     "GROUP BY i.umn_box, it.name, it.id_inp_ct, it.id_inp_cl, it.id_inp_tp, " +
                     "i.name, i.id_item, u.code, u.id_unit, " +
                     "sr.name, sr.id_sup_reg, r.name, r.id_reg, p.name_trd, p.id_prod " +
@@ -730,7 +753,7 @@ public class SSomMailUtils {
                     
                     if (!html.isEmpty() && !umn_box.isEmpty()) {
                         sendMailReceptions(session, subject, html, umn_box, mailBcc, true,
-                                isByDate, dateStart, dateEnd, year, formatPercentage,
+                                isByDate, dateStart, dateEnd, year, ticOrig, ticDest, formatPercentage,
                                 txtSregion, txtItem, txtItemUnit, itemUnitId, txtInput, inputKey, txtInputUnit,
                                 totRegionCurr, totRegionYear, totSregionCurr, totSregionYear,
                                 totItemCurr, totItemYear, totInputCurr, totInputYear);
@@ -873,7 +896,7 @@ public class SSomMailUtils {
                                 "<td align='center'><b>" + SLibUtils.textToHtml("Temporada (" + txtInputUnit + ")") + "</b></td>" +
                                 "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>" +
                                 "</tr>" +
-                                composeInputTypeDetail(session, dateStart, dateEnd, year, inputKey, umn_box, itemUnitId, totInputYear, totItemYear, formatPercentage) +
+                                composeInputTypeDetail(session, dateStart, dateEnd, year, ticOrig, ticDest, inputKey, umn_box, itemUnitId, totInputYear, totItemYear, formatPercentage) +
                                 "<tr bgcolor='" + COLOR_INPUT_FTR + "'>" +
                                 "<td align='left'><b>" + SLibUtils.textToHtml("Total insumo") + "</b></td>" +
                                 "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(totInputCurr) + "</b></td>" +
@@ -884,7 +907,7 @@ public class SSomMailUtils {
                                 "</table>" +
                                 "<br>";
                         
-                        html += composeInputClassTable(session, isByDate, dateStart, dateEnd, year, inputKey, umn_box, itemUnitId, txtInputUnit, formatPercentage);
+                        html += composeInputClassTable(session, isByDate, dateStart, dateEnd, year, ticOrig, ticDest, inputKey, umn_box, itemUnitId, txtInputUnit, formatPercentage);
                         
                         // END OF SNIPPET HTML CODE #1 (Note: when modified, update aswell all snippets in this class!)
                         //================================================================================
@@ -1121,7 +1144,7 @@ public class SSomMailUtils {
             if (html.isEmpty()) {
                 String message = "(No se encontró información para el " + (isByDate ? "día" : "período") + " solicitado.)";
                 if (!isMailer) {
-                    count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
+                    count = noInformationFound(session, dateStart, dateEnd, ticOrig, ticDest, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
                 }
                 else {
                     if ((ordinaryPeriod && noReceptionMail.equals("1")) || noReceptionMail.equals("2")) {
@@ -1143,12 +1166,12 @@ public class SSomMailUtils {
                                 String dayOfWeek = getDayOfWeek(c.get(Calendar.DAY_OF_WEEK)); 
                                 long daysLastReception = SLibTimeUtils.getDaysDiff(dateStart, lastReception);
                                 message = "(" + (daysLastReception == 1 ? "Va 1 día" : "Van " + daysLastReception + " días") + " sin recepciones de semillas, desde el " + dayOfWeek + " " + SLibUtils.DateFormatDate.format(lastReception) + ".)";
-                                count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
+                                count = noInformationFound(session, dateStart, dateEnd, ticOrig, ticDest, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
                                 sent = true;
                             }
                         }
                         else {
-                            count = noInformationFound(session, dateStart, dateEnd, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
+                            count = noInformationFound(session, dateStart, dateEnd, ticOrig, ticDest, isByDate, subject, message, year, formatPercentage, count, mailTo, mailBcc);
                             sent = true;
                         }
                     }
@@ -1165,7 +1188,7 @@ public class SSomMailUtils {
             }
             else if (!umn_box.isEmpty()) {
                 sendMailReceptions(session, subject, html, umn_box, mailBcc, true,
-                        isByDate, dateStart, dateEnd, year, formatPercentage,
+                        isByDate, dateStart, dateEnd, year, ticOrig, ticDest, formatPercentage,
                         txtSregion, txtItem, txtItemUnit, itemUnitId, txtInput, inputKey, txtInputUnit,
                         totRegionCurr, totRegionYear, totSregionCurr, totSregionYear,
                         totItemCurr, totItemYear, totInputCurr, totInputYear);

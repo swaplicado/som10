@@ -28,10 +28,12 @@ public class SReportHtmlScaleSummary {
      * Generates report in HTML 5 format.
      * @param itemIds List of ID of items.
      * @param date Date.
+     * @param ticOrig
+     * @param ticDest
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final int[] itemIds, final Date date) throws Exception {
+    public String generateReportHtml(final int[] itemIds, final Date date, final int ticOrig, final int ticDest) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -128,7 +130,7 @@ public class SReportHtmlScaleSummary {
             
             // compose summary:
             html += "<h1>" + SLibUtils.textToHtml(item.getName()) + "</h1>\n";
-            html += SSomUtils.composeHtmlSummaryItem(moSession, itemId, date);
+            html += SSomUtils.composeHtmlSummaryItem(moSession, itemId, date, ticOrig, ticDest);
         }
         
         html += SSomMailUtils.composeMailWarning();

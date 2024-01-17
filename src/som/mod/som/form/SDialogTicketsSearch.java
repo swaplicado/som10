@@ -13,6 +13,7 @@ import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import sa.gui.util.SUtilConsts;
+import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
 import sa.lib.gui.SGuiClient;
@@ -85,11 +86,17 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jPanel6 = new javax.swing.JPanel();
         jlInputSource = new javax.swing.JLabel();
         jtfInputSource = new javax.swing.JTextField();
+        blank = new javax.swing.JLabel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moKeyTicketOrigin = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel7 = new javax.swing.JPanel();
         jlPlate = new javax.swing.JLabel();
         jtfPlate = new javax.swing.JTextField();
         jlPlateCage = new javax.swing.JLabel();
         jtfPlateCage = new javax.swing.JTextField();
+        blank1 = new javax.swing.JLabel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moKeyTicketDestination = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel8 = new javax.swing.JPanel();
         jlDriver = new javax.swing.JLabel();
         jtfDriver = new javax.swing.JTextField();
@@ -247,6 +254,17 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jtfInputSource.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel6.add(jtfInputSource);
 
+        blank.setPreferredSize(new java.awt.Dimension(20, 23));
+        jPanel6.add(blank);
+
+        jlTicketOrigin.setText("Procedencia boleto:");
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(120, 23));
+        jPanel6.add(jlTicketOrigin);
+
+        moKeyTicketOrigin.setEnabled(false);
+        moKeyTicketOrigin.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel6.add(moKeyTicketOrigin);
+
         jPanel1.add(jPanel6);
 
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -262,7 +280,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jPanel7.add(jtfPlate);
 
         jlPlateCage.setText(" Placas caja:");
-        jlPlateCage.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlPlateCage.setPreferredSize(new java.awt.Dimension(90, 23));
         jPanel7.add(jlPlateCage);
 
         jtfPlateCage.setEditable(false);
@@ -270,6 +288,17 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jtfPlateCage.setFocusable(false);
         jtfPlateCage.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel7.add(jtfPlateCage);
+
+        blank1.setPreferredSize(new java.awt.Dimension(20, 23));
+        jPanel7.add(blank1);
+
+        jlTicketDestination.setText("Destino boleto:");
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(120, 23));
+        jPanel7.add(jlTicketDestination);
+
+        moKeyTicketDestination.setEnabled(false);
+        moKeyTicketDestination.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel7.add(moKeyTicketDestination);
 
         jPanel1.add(jPanel7);
 
@@ -542,6 +571,8 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel blank;
+    private javax.swing.JLabel blank1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -588,6 +619,8 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
     private javax.swing.JLabel jlPlateCage;
     private javax.swing.JLabel jlProducer;
     private javax.swing.JLabel jlScale;
+    private javax.swing.JLabel jlTicketDestination;
+    private javax.swing.JLabel jlTicketOrigin;
     private javax.swing.JLabel jlTicketStatus;
     private javax.swing.JLabel jlWeightDestinyArrival;
     private javax.swing.JLabel jlWeightDestinyDeparture;
@@ -623,6 +656,8 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
     private javax.swing.JTextField jtfWeightSource;
     private javax.swing.JTextField jtfWeightSourceUnit;
     private sa.lib.gui.bean.SBeanFieldInteger moIntNumberToSearch;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
@@ -652,6 +687,8 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jlAccessWarning.setVisible(false);
         
         mbIsUserScaleSupervisor = ((SDbUser) miClient.getSession().getUser()).hasPrivilege(SModSysConsts.CS_RIG_SUP_SCA);
+        
+        reloadCatalogues();
     }
     
     private void showCurrentTicket() {
@@ -680,6 +717,8 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
             jtfDbUpdate.setText("");
             jchkDeleted.setSelected(false);
             jlCurrentTicket.setText("0/0");
+            moKeyTicketOrigin.setSelectedIndex(0);
+            moKeyTicketDestination.setSelectedIndex(0);
         }
         else {
             SDbTicket ticket = maTickets.get(mnCurrentTicketIndex);
@@ -709,6 +748,8 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
                 jtfDbInsert.setText(SLibUtils.DateFormatDatetime.format(ticket.getTsUserInsert()));
                 jtfDbUpdate.setText(SLibUtils.DateFormatDatetime.format(ticket.getTsUserUpdate()));
                 jchkDeleted.setSelected(ticket.isDeleted());
+                moKeyTicketOrigin.setValue(new int[] { ticket.getFkTicketOriginId() });
+                moKeyTicketDestination.setValue(new int[] { ticket.getFkTicketDestinationId()});
             }
             else {
                 jlAccessWarning.setVisible(true);
@@ -730,6 +771,8 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
                 jtfDbInsert.setText("");
                 jtfDbUpdate.setText("");
                 jchkDeleted.setSelected(false);
+                moKeyTicketOrigin.setSelectedIndex(0);
+                moKeyTicketDestination.setSelectedIndex(0);
             }
             
             jlCurrentTicket.setText((mnCurrentTicketIndex + 1) + "/" + maTickets.size());
@@ -853,6 +896,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
     @Override
     public void resetForm() {
         actionPerformedReset();
+        reloadCatalogues();
     }
     
     @Override
@@ -879,7 +923,8 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
 
     @Override
     public void reloadCatalogues() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
     }
 
     @Override

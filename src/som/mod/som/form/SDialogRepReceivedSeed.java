@@ -52,6 +52,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
     private void initComponents() {
 
         bgReportType = new javax.swing.ButtonGroup();
+        bgReportMode = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -87,17 +88,28 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         jPanel7 = new javax.swing.JPanel();
         jlItem = new javax.swing.JLabel();
         moKeyItem = new sa.lib.gui.bean.SBeanFieldKey();
-        moBoolSummary = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jPanel10 = new javax.swing.JPanel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moKeyTicketOrigin = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel16 = new javax.swing.JPanel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moKeyTicketDestination = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel5 = new javax.swing.JPanel();
+        jlTicketScale = new javax.swing.JLabel();
+        moKeyTicketScale = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel17 = new javax.swing.JPanel();
+        moRadDetail = new sa.lib.gui.bean.SBeanFieldRadio();
+        moRadSummary = new sa.lib.gui.bean.SBeanFieldRadio();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Parámetros del reporte:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(11, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(14, 1, 0, 5));
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlYear.setText("Ejercicio:*");
-        jlYear.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlYear.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel3.add(jlYear);
 
         moIntYear.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -113,7 +125,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlReportType.setText("Tipo reporte:");
-        jlReportType.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlReportType.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel4.add(jlReportType);
 
         bgReportType.add(moRadByItem);
@@ -141,7 +153,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateStart.setText("Fecha inicial:*");
-        jlDateStart.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateStart.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel11.add(jlDateStart);
         jPanel11.add(moDateDateStart);
 
@@ -150,7 +162,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateEnd.setText("Fecha final:*");
-        jlDateEnd.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlDateEnd.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel12.add(jlDateEnd);
         jPanel12.add(moDateDateEnd);
 
@@ -159,7 +171,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlRegion.setText("Región:");
-        jlRegion.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlRegion.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel13.add(jlRegion);
 
         moKeyRegion.setPreferredSize(new java.awt.Dimension(250, 23));
@@ -170,7 +182,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlProducer.setText("Proveedor:");
-        jlProducer.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlProducer.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel15.add(jlProducer);
 
         moKeyProducer.setPreferredSize(new java.awt.Dimension(500, 23));
@@ -181,7 +193,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlInputCategory.setText("Categoría insumo:");
-        jlInputCategory.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlInputCategory.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel14.add(jlInputCategory);
 
         moKeyInputCategory.setPreferredSize(new java.awt.Dimension(250, 23));
@@ -197,7 +209,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlInputClass.setText("Clase insumo:");
-        jlInputClass.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlInputClass.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel8.add(jlInputClass);
 
         moKeyInputClass.setPreferredSize(new java.awt.Dimension(250, 23));
@@ -213,7 +225,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlInputType.setText("Tipo insumo:");
-        jlInputType.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlInputType.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel9.add(jlInputType);
 
         moKeyInputType.setPreferredSize(new java.awt.Dimension(250, 23));
@@ -229,7 +241,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlItem.setText("Ítem:");
-        jlItem.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlItem.setPreferredSize(new java.awt.Dimension(115, 23));
         jPanel7.add(jlItem);
 
         moKeyItem.setPreferredSize(new java.awt.Dimension(500, 23));
@@ -237,8 +249,53 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
 
         jPanel2.add(jPanel7);
 
-        moBoolSummary.setText("Modalidad resumen");
-        jPanel2.add(moBoolSummary);
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketOrigin.setText("Procedencia boleto:");
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel10.add(jlTicketOrigin);
+
+        moKeyTicketOrigin.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel10.add(moKeyTicketOrigin);
+
+        jPanel2.add(jPanel10);
+
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketDestination.setText("Destino boleto:");
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel16.add(jlTicketDestination);
+
+        moKeyTicketDestination.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel16.add(moKeyTicketDestination);
+
+        jPanel2.add(jPanel16);
+
+        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketScale.setText("Báscula:");
+        jlTicketScale.setPreferredSize(new java.awt.Dimension(115, 23));
+        jPanel5.add(jlTicketScale);
+
+        moKeyTicketScale.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel5.add(moKeyTicketScale);
+
+        jPanel2.add(jPanel5);
+
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        bgReportMode.add(moRadDetail);
+        moRadDetail.setSelected(true);
+        moRadDetail.setText("Modalidad a detalle");
+        moRadDetail.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel17.add(moRadDetail);
+
+        bgReportMode.add(moRadSummary);
+        moRadSummary.setText("Modalidad resumen");
+        moRadSummary.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel17.add(moRadSummary);
+
+        jPanel2.add(jPanel17);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -301,16 +358,21 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgReportMode;
     private javax.swing.ButtonGroup bgReportType;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
@@ -323,8 +385,10 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
     private javax.swing.JLabel jlProducer;
     private javax.swing.JLabel jlRegion;
     private javax.swing.JLabel jlReportType;
+    private javax.swing.JLabel jlTicketDestination;
+    private javax.swing.JLabel jlTicketOrigin;
+    private javax.swing.JLabel jlTicketScale;
     private javax.swing.JLabel jlYear;
-    private sa.lib.gui.bean.SBeanFieldBoolean moBoolSummary;
     private sa.lib.gui.bean.SBeanFieldDate moDateDateEnd;
     private sa.lib.gui.bean.SBeanFieldDate moDateDateStart;
     private sa.lib.gui.bean.SBeanFieldInteger moIntYear;
@@ -334,14 +398,19 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProducer;
     private sa.lib.gui.bean.SBeanFieldKey moKeyRegion;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketScale;
     private sa.lib.gui.bean.SBeanFieldRadio moRadByInputCategory;
     private sa.lib.gui.bean.SBeanFieldRadio moRadByInputClass;
     private sa.lib.gui.bean.SBeanFieldRadio moRadByInputType;
     private sa.lib.gui.bean.SBeanFieldRadio moRadByItem;
+    private sa.lib.gui.bean.SBeanFieldRadio moRadDetail;
+    private sa.lib.gui.bean.SBeanFieldRadio moRadSummary;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 640, 400);
+        SGuiUtils.setWindowBounds(this, 800, 500);
 
         moFieldKeyGroup = new SGuiFieldKeyGroup(miClient);
 
@@ -358,7 +427,11 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         moKeyInputClass.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputClass), false);
         moKeyInputType.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputType), false);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem), false);
-        moBoolSummary.setBooleanSettings(SGuiUtils.getLabelName(jlProducer), false);
+        moKeyTicketOrigin.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketOrigin), false);
+        moKeyTicketDestination.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketDestination), false);
+        moKeyTicketScale.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketScale), false);
+        moRadDetail.setBooleanSettings(moRadDetail.getText(), true);
+        moRadSummary.setBooleanSettings(moRadSummary.getText(), false);
 
         moFields.addField(moIntYear);
         moFields.addField(moRadByItem);
@@ -373,7 +446,11 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         moFields.addField(moKeyInputClass);
         moFields.addField(moKeyInputType);
         moFields.addField(moKeyItem);
-        moFields.addField(moBoolSummary);
+        moFields.addField(moKeyTicketOrigin);
+        moFields.addField(moKeyTicketDestination);
+        moFields.addField(moKeyTicketScale);
+        moFields.addField(moRadDetail);
+        moFields.addField(moRadSummary);
 
         moFields.setFormButton(jbPrint);
 
@@ -392,7 +469,8 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
             jlDateEnd.setEnabled(false);
             moDateDateEnd.setEnabled(false);
             
-            moBoolSummary.setEnabled(false);
+            moRadDetail.setEnabled(false);
+            moRadSummary.setEnabled(false);
         }
         else {
             jlYear.setEnabled(false);
@@ -409,7 +487,8 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
             jlDateEnd.setEnabled(true);
             moDateDateEnd.setEnabled(true);
             
-            moBoolSummary.setEnabled(true);
+            moRadDetail.setEnabled(true);
+            moRadSummary.setEnabled(true);
         }
         
         moIntYear.setValue(SLibTimeUtils.digestYear(miClient.getSession().getWorkingDate())[0]);
@@ -428,6 +507,11 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         miClient.getSession().populateCatalogue(moKeyRegion, SModConsts.SU_REG, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketScale, SModConsts.SU_SCA, SLibConsts.UNDEFINED, null);
+        
+        moRadDetail.setSelected(true);
     }
 
     private void setDate(int year) {
@@ -459,6 +543,9 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         sqlWhere += (moKeyItem.getSelectedIndex() <= 0 ? "" : " AND t.fk_item = " + moKeyItem.getValue()[0] + " ");
         sqlWhere += (moKeyRegion.getSelectedIndex() <= 0 ? "" : " AND t.fk_reg_n = " + moKeyRegion.getValue()[0] + " ");
         sqlWhere += (moKeyProducer.getSelectedIndex() <= 0 ? "" : " AND t.fk_prod = " + moKeyProducer.getValue()[0] + " ");
+        sqlWhere += (moKeyTicketOrigin.getSelectedIndex() <= 0 ? "" : "AND t.fk_tic_orig = " + moKeyTicketOrigin.getValue()[0] + " ");
+        sqlWhere += (moKeyTicketDestination.getSelectedIndex() <= 0 ? "" : "AND t.fk_tic_dest = " + moKeyTicketDestination.getValue()[0] + " ");
+        sqlWhere += (moKeyTicketScale.getSelectedIndex() <= 0 ? "" : "AND t.fk_sca = " + moKeyTicketScale.getValue()[0] + " ");
         
         SPaneUserInputCategory inputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "it");
         String sqlInputCategories = inputCategory.getSqlFilter();
@@ -486,7 +573,7 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         String db_ext = ((SGuiClientSessionCustom)miClient.getSession().getSessionCustom()).getCompany().getExternalDatabaseCo();
         moParamsMap.put("tDateStart", moDateDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateDateEnd.getValue());
-        moParamsMap.put("bShowDetails", !moBoolSummary.getValue());
+        moParamsMap.put("bShowDetails", !moRadSummary.isSelected());
         moParamsMap.put("sInputCategory", moKeyInputCategory.getSelectedIndex() > 0 ? moKeyInputCategory.getSelectedItem() : "(TODAS)");
         moParamsMap.put("sInputClass", moKeyInputClass.getSelectedIndex() > 0 ? moKeyInputClass.getSelectedItem() : "(TODAS)");
         moParamsMap.put("sInputType", moKeyInputType.getSelectedIndex() > 0 ? moKeyInputType.getSelectedItem() : "(TODOS)");
@@ -495,5 +582,8 @@ public class SDialogRepReceivedSeed extends SBeanDialogReport {
         moParamsMap.put("sSqlOrderBy", sqlOrderBy);
         moParamsMap.put("sDatabaseCoExtName", db_ext);
         moParamsMap.put("sMessageFilter", inputCategory.getReportMessageFilter());
+        moParamsMap.put("sTicOrig", moKeyTicketOrigin.getSelectedIndex() > 0 ? moKeyTicketOrigin.getSelectedItem() : "TODOS");
+        moParamsMap.put("sTicDest", moKeyTicketDestination.getSelectedIndex() > 0 ? moKeyTicketDestination.getSelectedItem() : "TODOS");
+        moParamsMap.put("sTicSca", moKeyTicketScale.getSelectedIndex() > 0 ? moKeyTicketScale.getSelectedItem() : "TODAS");
     }
 }

@@ -22,6 +22,7 @@ import sa.lib.mail.SMailConsts;
 import sa.lib.mail.SMailSender;
 import sa.lib.mail.SMailUtils;
 import sa.lib.xml.SXmlUtils;
+import som.mod.SModSysConsts;
 
 /**
  * Report mailer for monthly reception at scale.
@@ -60,6 +61,7 @@ public class SCliReportMailer {
     //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
     //private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
+    //private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
     private static final String DEF_MAIL_TO = "gortiz@aeth.mx;sflores@swaplicado.com.mx";
 
     /**
@@ -127,7 +129,7 @@ public class SCliReportMailer {
             // generate mail body:
 
             SReportHtmlTicketSeasonMonth reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonth(session);
-            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(itemIds, yearRef, intvlDays);
+            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(itemIds, yearRef, intvlDays, SModSysConsts.SU_TIC_ORIG_PRV, 0);
             
             // generate mail subject:
             

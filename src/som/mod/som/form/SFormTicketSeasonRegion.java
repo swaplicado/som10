@@ -66,6 +66,12 @@ public class SFormTicketSeasonRegion extends SBeanForm {
         jPanel15 = new javax.swing.JPanel();
         jlRegion = new javax.swing.JLabel();
         moKeyRegion = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel16 = new javax.swing.JPanel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moKeyTicketOrigin = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel17 = new javax.swing.JPanel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moKeyTicketDestination = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jlPlates = new javax.swing.JLabel();
@@ -84,7 +90,7 @@ public class SFormTicketSeasonRegion extends SBeanForm {
 
         jPanel3.setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
 
         jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -163,9 +169,31 @@ public class SFormTicketSeasonRegion extends SBeanForm {
 
         jPanel1.add(jPanel15);
 
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketOrigin.setText("Procedencia:");
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel16.add(jlTicketOrigin);
+
+        moKeyTicketOrigin.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel16.add(moKeyTicketOrigin);
+
+        jPanel1.add(jPanel16);
+
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketDestination.setText("Destino:");
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel17.add(jlTicketDestination);
+
+        moKeyTicketDestination.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel17.add(moKeyTicketDestination);
+
+        jPanel1.add(jPanel17);
+
         jPanel3.add(jPanel1, java.awt.BorderLayout.WEST);
 
-        jPanel5.setLayout(new java.awt.GridLayout(6, 1, 0, 5));
+        jPanel5.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -225,6 +253,8 @@ public class SFormTicketSeasonRegion extends SBeanForm {
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -242,8 +272,12 @@ public class SFormTicketSeasonRegion extends SBeanForm {
     private javax.swing.JLabel jlScale;
     private javax.swing.JLabel jlSeason;
     private javax.swing.JLabel jlTicket;
+    private javax.swing.JLabel jlTicketDestination;
+    private javax.swing.JLabel jlTicketOrigin;
     private sa.lib.gui.bean.SBeanFieldKey moKeyRegion;
     private sa.lib.gui.bean.SBeanFieldKey moKeySeason;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
     private sa.lib.gui.bean.SBeanFieldText moTextDriver;
     private sa.lib.gui.bean.SBeanFieldText moTextItem;
     private sa.lib.gui.bean.SBeanFieldText moTextPlates;
@@ -269,6 +303,8 @@ public class SFormTicketSeasonRegion extends SBeanForm {
         moTextPlates.setTextSettings(SGuiUtils.getLabelName(jlPlates.getText()), 25);
         moTextPlatesCage.setTextSettings(SGuiUtils.getLabelName(jlPlatesCage.getText()), 25);
         moTextDriver.setTextSettings(SGuiUtils.getLabelName(jlDriver.getText()), 150);
+        moKeyTicketOrigin.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketOrigin.getText()), true);
+        moKeyTicketDestination.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketDestination.getText()), true);
 
         moFields.addField(moTextScaleName);
         moFields.addField(moTextScaleCode);
@@ -280,6 +316,8 @@ public class SFormTicketSeasonRegion extends SBeanForm {
         moFields.addField(moTextPlates);
         moFields.addField(moTextPlatesCage);
         moFields.addField(moTextDriver);
+        moFields.addField(moKeyTicketOrigin);
+        moFields.addField(moKeyTicketDestination);
 
         moFields.setFormButton(jbSave);
 
@@ -311,6 +349,9 @@ public class SFormTicketSeasonRegion extends SBeanForm {
         moFieldKeyGroup.addFieldKey(moKeySeason, SModConsts.SX_TIC_SEAS, SLibConsts.UNDEFINED, params);
         moFieldKeyGroup.addFieldKey(moKeyRegion, SModConsts.SX_TIC_REG, SLibConsts.UNDEFINED, params);
         moFieldKeyGroup.populateCatalogues();
+        
+        miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
     }
 
     @Override
@@ -341,6 +382,8 @@ public class SFormTicketSeasonRegion extends SBeanForm {
         moTextPlates.setValue(moRegistry.getPlate());
         moTextPlatesCage.setValue(moRegistry.getPlateCage());
         moTextDriver.setValue(moRegistry.getDriver());
+        moKeyTicketOrigin.setValue(new int[] { moRegistry.getFkTicketOriginId() });
+        moKeyTicketDestination.setValue(new int[] { moRegistry.getFkTicketDestinationId()});
 
         setFormEditable(true);
 
@@ -353,6 +396,8 @@ public class SFormTicketSeasonRegion extends SBeanForm {
         moTextPlates.setEditable(false);
         moTextPlatesCage.setEditable(false);
         moTextDriver.setEditable(false);
+        moKeyTicketOrigin.setEnabled(false);
+        moKeyTicketDestination.setEnabled(false);
 
         addAllListeners();
     }

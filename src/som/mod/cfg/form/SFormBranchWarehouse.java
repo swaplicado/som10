@@ -409,7 +409,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         else {
             idCompany = moRegistry.getPkCompanyId();
             idBranch = moRegistry.getPkBranchId();
-            orientation = moRegistry.getFkOrientationId();
+            orientation = moRegistry.getFkWarehouseOrientationId();
         }
         
         if (moRegistry.isRegistryNew()) {
@@ -439,7 +439,7 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
             moRadHorizontal.setSelected(true);
         }
         
-        moKeyVolCalcType.setValue(new int[] { moRegistry.getFkVolumeCalculationId() });
+        moKeyVolCalcType.setValue(new int[] { moRegistry.getFkWarehouseOrientationId() });
         moKeyProductionLine.setValue(new int[] { moRegistry.getFkProductionLineId() });
 
         setFormEditable(true);
@@ -471,13 +471,13 @@ public class SFormBranchWarehouse extends sa.lib.gui.bean.SBeanForm {
         registry.setFkWarehouseTypeId(moKeyWarehouseType.getValue()[0]);
         
         if (moRadVertical.isSelected()) {
-            registry.setFkOrientationId(SModSysConsts.SS_WHS_OR_VERTICAL);
+            registry.setFkWarehouseOrientationId(SModSysConsts.SS_WHS_OR_VERTICAL);
         }
         else {
-            registry.setFkOrientationId(SModSysConsts.SS_WHS_OR_HORIZONTAL);
+            registry.setFkWarehouseOrientationId(SModSysConsts.SS_WHS_OR_HORIZONTAL);
         }
         
-        registry.setFkVolumeCalculationId(moKeyVolCalcType.getValue()[0]);
+        registry.setFkWarehouseCalculationTypeId(moKeyVolCalcType.getValue()[0]);
         registry.setFkProductionLineId(moKeyProductionLine.getValue()[0]);
 
         return registry;

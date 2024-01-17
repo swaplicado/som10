@@ -43,8 +43,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
     protected boolean mbSystem;
     */
     protected int mnFkWarehouseTypeId;
-    protected int mnFkOrientationId;
-    protected int mnFkVolumeCalculationId;
+    protected int mnFkWarehouseOrientationId;
+    protected int mnFkWarehouseCalculationTypeId;
     protected int mnFkProductionLineId;
     /*
     protected int mnFkUserInsertId;
@@ -77,8 +77,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
     public void setFkWarehouseTypeId(int n) { mnFkWarehouseTypeId = n; }
-    public void setFkOrientationId(int n) { mnFkOrientationId = n; }
-    public void setFkVolumeCalculationId(int n) { mnFkVolumeCalculationId = n; }
+    public void setFkWarehouseOrientationId(int n) { mnFkWarehouseOrientationId = n; }
+    public void setFkWarehouseCalculationTypeId(int n) { mnFkWarehouseCalculationTypeId = n; }
     public void setFkProductionLineId(int n) { mnFkProductionLineId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
@@ -104,8 +104,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
     public int getFkWarehouseTypeId() { return mnFkWarehouseTypeId; }
-    public int getFkOrientationId() { return mnFkOrientationId; }
-    public int getFkVolumeCalculationId() { return mnFkVolumeCalculationId; }
+    public int getFkWarehouseOrientationId() { return mnFkWarehouseOrientationId; }
+    public int getFkWarehouseCalculationTypeId() { return mnFkWarehouseCalculationTypeId; }
     public int getFkProductionLineId() { return mnFkProductionLineId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
@@ -147,8 +147,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
         mbDeleted = false;
         mbSystem = false;
         mnFkWarehouseTypeId = 0;
-        mnFkOrientationId = 0;
-        mnFkVolumeCalculationId = 0;
+        mnFkWarehouseOrientationId = 0;
+        mnFkWarehouseCalculationTypeId = 0;
         mnFkProductionLineId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
@@ -223,8 +223,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkWarehouseTypeId = resultSet.getInt("fk_wah_tp");
-            mnFkOrientationId = resultSet.getInt("fk_orient");
-            mnFkVolumeCalculationId = resultSet.getInt("fk_vol_cal_tp");
+            mnFkWarehouseOrientationId = resultSet.getInt("fk_wah_ori");
+            mnFkWarehouseCalculationTypeId = resultSet.getInt("fk_wah_calc_tp");
             mnFkProductionLineId = resultSet.getInt("fk_line");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
@@ -273,8 +273,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
                     (mbDeleted ? 1 : 0) + ", " +
                     (mbSystem ? 1 : 0) + ", " +
                     mnFkWarehouseTypeId + ", " +
-                    mnFkOrientationId + ", " + 
-                    mnFkVolumeCalculationId + ", " + 
+                    mnFkWarehouseOrientationId + ", " + 
+                    mnFkWarehouseCalculationTypeId + ", " + 
                     mnFkProductionLineId + ", " +
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
@@ -305,8 +305,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
                     "fk_wah_tp = " + mnFkWarehouseTypeId + ", " +
-                    "fk_orient = " + mnFkOrientationId + ", " +
-                    "fk_vol_cal_tp = " + mnFkVolumeCalculationId + ", " +
+                    "fk_wah_ori = " + mnFkWarehouseOrientationId + ", " +
+                    "fk_wah_calc_tp = " + mnFkWarehouseCalculationTypeId + ", " +
                     "fk_line = " + mnFkProductionLineId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
@@ -343,8 +343,8 @@ public class SDbBranchWarehouse extends SDbRegistryUser implements SGridRow{
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
         registry.setFkWarehouseTypeId(this.getFkWarehouseTypeId());
-        registry.setFkOrientationId(this.getFkOrientationId());
-        registry.setFkVolumeCalculationId(this.getFkVolumeCalculationId());
+        registry.setFkWarehouseOrientationId(this.getFkWarehouseOrientationId());
+        registry.setFkWarehouseCalculationTypeId(this.getFkWarehouseCalculationTypeId());
         registry.setFkProductionLineId(this.getFkProductionLineId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());

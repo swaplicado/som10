@@ -769,10 +769,10 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
                 moBranchWarehouse.read(miClient.getSession(), moKeyWarehouse.getValue());
                 moDecWarehouseHeight.setValue(moBranchWarehouse.getDimensionHeight());
                 moDecWarehouseVolume.setValue(moBranchWarehouse.getCapacityRealLiter());
-                moKeyOrientation.setValue(new int[] { moBranchWarehouse.getFkOrientationId() });
-                moKeyCalcType.setValue(new int[] { moBranchWarehouse.getFkVolumeCalculationId() });
+                moKeyOrientation.setValue(new int[] { moBranchWarehouse.getFkWarehouseOrientationId() });
+                moKeyCalcType.setValue(new int[] { moBranchWarehouse.getFkWarehouseCalculationTypeId() });
                 
-                switch (moBranchWarehouse.getFkVolumeCalculationId()) {
+                switch (moBranchWarehouse.getFkWarehouseCalculationTypeId()) {
                     case SModSysConsts.CS_WAH_CALC_TP_EMPTY_MSRE:
                         moTxtEmptinessUnit.setValue("m");
                         moTextUnitName.setValue("Vacío*:");
@@ -824,7 +824,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
             setStockDifferenceSkipped();
         }
         else {
-            if (moBranchWarehouse.getFkVolumeCalculationId() == SModSysConsts.CS_WAH_CALC_TP_DIR_DATA) {
+            if (moBranchWarehouse.getFkWarehouseCalculationTypeId() == SModSysConsts.CS_WAH_CALC_TP_DIR_DATA) {
                 moDecEmptiness.setEnabled(false);
                 moDecPhisicalInventoryCaptured.setEnabled(true);
             }
@@ -845,7 +845,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         double volNet = 0;
         double qtyByUnit = 0;
 
-        switch (moBranchWarehouse.getFkVolumeCalculationId()) {
+        switch (moBranchWarehouse.getFkWarehouseCalculationTypeId()) {
             case SModSysConsts.CS_WAH_CALC_TP_EMPTY_MSRE:
                 if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > moDecWarehouseHeightAvailable.getValue()) {
                     miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor al del campo '" +
@@ -979,7 +979,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         }
         
         moDecPhisicalInventoryVolume.setValue(SLibUtils.round(qtyByUnit, SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
-        if (moBranchWarehouse.getFkVolumeCalculationId() != SModSysConsts.CS_WAH_CALC_TP_DIR_DATA) {
+        if (moBranchWarehouse.getFkWarehouseCalculationTypeId() != SModSysConsts.CS_WAH_CALC_TP_DIR_DATA) {
             moDecPhisicalInventory.setValue(SLibUtils.round(
                     moDecPhisicalInventoryVolume.getValue() * moItem.getDensity(), SLibUtils.DecimalFormatValue2D.getMaximumFractionDigits()));
         }
@@ -1316,7 +1316,7 @@ public class SFormStockDay extends sa.lib.gui.bean.SBeanForm implements ItemList
         }
 
         if (validation.isValid()) {
-            switch (moBranchWarehouse.getFkVolumeCalculationId()) {
+            switch (moBranchWarehouse.getFkWarehouseCalculationTypeId()) {
                 case SModSysConsts.CS_WAH_CALC_TP_EMPTY_MSRE:
                     if (!moBoolEmpty.isSelected() && moDecEmptiness.getValue() > moDecWarehouseHeightAvailable.getValue()) {
                         validation.setMessage(SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + SGuiUtils.getLabelName(moTextUnitName.getValue()) + "' no puede ser mayor al del campo '" +

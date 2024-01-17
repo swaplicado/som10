@@ -41,6 +41,9 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
     private SGridFilterDateRange moFilterDateRange;
     private SPaneFilter moPaneFilterInputCategory;
     private SPaneFilter moPaneFilter;
+    private SPaneFilter moPaneFilterTicketOrigin;
+    private SPaneFilter moPaneFilterTicketDestination;
+    private SPaneFilter moPaneFilterScale;
     private SPaneUserInputCategory moPaneFilterUserInputCategory;
     private JButton mjbPrint;
 
@@ -61,6 +64,13 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
         moPaneFilter = new SPaneFilter(this, SModConsts.SU_ITEM);
         moPaneFilter.initFilter(null);
         
+        moPaneFilterTicketOrigin = new SPaneFilter(this, SModConsts.SU_TIC_ORIG);
+        moPaneFilterTicketOrigin.initFilter(null);
+        moPaneFilterTicketDestination = new SPaneFilter(this, SModConsts.SU_TIC_DEST);
+        moPaneFilterTicketDestination.initFilter(null);
+        moPaneFilterScale = new SPaneFilter(this, SModConsts.SU_SCA);
+        moPaneFilterScale.initFilter(null);
+        
         moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "vi");
 
         mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
@@ -70,6 +80,9 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterInputCategory);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilter);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketOrigin);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketDestination);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterScale);
     }
 
     private void actionPrint() {
@@ -129,7 +142,22 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
         if(!sqlFilter.isEmpty()) {
             sql += (sql.isEmpty() ? "" : "AND ") + sqlFilter;
         }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_ORIG);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_orig" }, (int[]) filter);
+        }
+        
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_DEST);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_dest" }, (int[]) filter);
+        }
 
+        filter = (int[]) moFiltersMap.get(SModConsts.SU_SCA);
+        if (filter != null) {
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_sca" }, (int[]) filter);
+        }
+        
         msSql = "SELECT v.id_tic AS " + SDbConsts.FIELD_ID + "1, "
                 + "v.num AS " + SDbConsts.FIELD_CODE + ", "
                 + "v.num AS " + SDbConsts.FIELD_NAME + ", "
@@ -139,12 +167,16 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
                 + "(v.pac_qty_arr - v.pac_qty_dep) AS f_pac_qty, "
                 + "v.wei_des_net_r, "
                 + "v.b_tar, "
+                + "tor.code, "
+                + "tde.code, "
                 + "vp.code, "
                 + "vp.name, "
                 + "vp.name_trd "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS v "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS vi ON v.fk_item = vi.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS vp ON v.fk_prod = vp.id_prod "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_ORIG) + " AS tor ON v.fk_tic_orig = tor.id_tic_orig "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_DEST) + " AS tde ON v.fk_tic_dest = tde.id_tic_dest "
                 + (sql.isEmpty() ? "" : "WHERE " + sql)
                 + "ORDER BY " + SDbConsts.FIELD_CODE + ", v.dt, v.id_tic ";
     }
@@ -154,7 +186,7 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[10];
+        columns = new SGridColumnView[12];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, SDbConsts.FIELD_CODE, "Boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt", SGridConsts.COL_TITLE_DATE + " boleto");
@@ -170,6 +202,8 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_net_r", "Carga destino neto (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_tar", "Tarado");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tor.code", "Procedencia boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tde.code", "Destino boleto");
 
         moModel.getGridColumns().addAll(Arrays.asList(columns));
     }

@@ -1,4 +1,11 @@
 ================================================================================
+2024-01-17, 1.0 091.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Adición de los nuevos catálogos de procedencias y destinos de boletos.
+2) Adición de los campos y filtros en las vistas, formas y reportes que involucren boletos de "procedencia, destino y báscula".
+
+================================================================================
 2023-12-26, 1.0 090.3
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

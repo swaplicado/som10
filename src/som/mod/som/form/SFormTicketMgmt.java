@@ -104,6 +104,13 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         jlRegion = new javax.swing.JLabel();
         moTextRegion = new sa.lib.gui.bean.SBeanFieldText();
         jpDummy3 = new javax.swing.JPanel();
+        jPanel50 = new javax.swing.JPanel();
+        jlTicketOrigin = new javax.swing.JLabel();
+        moKeyTicketOrigin = new sa.lib.gui.bean.SBeanFieldKey();
+        jPanel51 = new javax.swing.JPanel();
+        jPanel52 = new javax.swing.JPanel();
+        jlTicketDestination = new javax.swing.JLabel();
+        moKeyTicketDestination = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel6 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -209,7 +216,7 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del boleto:"));
-        jPanel2.setLayout(new java.awt.GridLayout(6, 2, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(8, 2, 0, 5));
 
         jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -341,6 +348,31 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
 
         jPanel2.add(jPanel15);
         jPanel2.add(jpDummy3);
+
+        jPanel50.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketOrigin.setText("Procedencia:");
+        jlTicketOrigin.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel50.add(jlTicketOrigin);
+
+        moKeyTicketOrigin.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel50.add(moKeyTicketOrigin);
+
+        jPanel2.add(jPanel50);
+
+        jPanel51.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel2.add(jPanel51);
+
+        jPanel52.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlTicketDestination.setText("Destino:");
+        jlTicketDestination.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel52.add(jlTicketDestination);
+
+        moKeyTicketDestination.setPreferredSize(new java.awt.Dimension(200, 23));
+        jPanel52.add(moKeyTicketDestination);
+
+        jPanel2.add(jPanel52);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -790,6 +822,9 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
     private javax.swing.JPanel jPanel48;
     private javax.swing.JPanel jPanel49;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel50;
+    private javax.swing.JPanel jPanel51;
+    private javax.swing.JPanel jPanel52;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
@@ -819,6 +854,8 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
     private javax.swing.JLabel jlSystemPricePerTon;
     private javax.swing.JLabel jlSystemTotal;
     private javax.swing.JLabel jlTicket;
+    private javax.swing.JLabel jlTicketDestination;
+    private javax.swing.JLabel jlTicketOrigin;
     private javax.swing.JLabel jlUnitWeiDes;
     private javax.swing.JLabel jlUnitWeiPaySys;
     private javax.swing.JLabel jlUnitWeiPayUsr;
@@ -864,6 +901,8 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightSource;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightSystemPayment;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProducer;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
     private sa.lib.gui.bean.SBeanFieldText moTextDriver;
     private sa.lib.gui.bean.SBeanFieldText moTextItem;
     private sa.lib.gui.bean.SBeanFieldText moTextPlates;
@@ -912,6 +951,8 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         moTextItem.setTextSettings(SGuiUtils.getLabelName(jlItem.getText()), 25);
         moKeyProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlProducer.getText()), true);
         moTextSeason.setTextSettings(SGuiUtils.getLabelName(jlSeason.getText()), 25);
+        moKeyTicketOrigin.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketOrigin.getText()), true);
+        moKeyTicketDestination.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketDestination.getText()), true);
         moTextRegion.setTextSettings(SGuiUtils.getLabelName(jlRegion.getText()), 25);
         moTextPlates.setTextSettings(SGuiUtils.getLabelName(jlPlates.getText()), 25);
         moTextPlatesCage.setTextSettings(SGuiUtils.getLabelName(jlPlatesCage.getText()), 25);
@@ -960,6 +1001,8 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         moFields.addField(moTextItem);
         moFields.addField(moKeyProducer);
         moFields.addField(moTextSeason);
+        moFields.addField(moKeyTicketOrigin);
+        moFields.addField(moKeyTicketDestination);
         moFields.addField(moTextRegion);
         moFields.addField(moTextPlates);
         moFields.addField(moTextPlatesCage);
@@ -1124,6 +1167,8 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
     @Override
     public void reloadCatalogues() {
         miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
     }
 
     @Override
@@ -1177,6 +1222,8 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         moTextSeason.setValue(moRegistry.getXtaSeason());
         moTextRegion.setValue(moRegistry.getXtaRegion());
         moKeyProducer.setValue(new int[] { mnProducerId = moRegistry.getFkProducerId() });
+        moKeyTicketOrigin.setValue(new int[] { moRegistry.getFkTicketOriginId() });
+        moKeyTicketDestination.setValue(new int[] { moRegistry.getFkTicketDestinationId()});
 
         jlUnitWeiSrc.setText(unit);
         jlUnitWeiDes.setText(unit);
@@ -1196,6 +1243,9 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
 
         moKeyProducer.setEnabled(false);
         jbKeyProducer.setEnabled(true);
+        
+        moKeyTicketOrigin.setEnabled(false);
+        moKeyTicketDestination.setEnabled(false);
 
         moDecUserPayment.setEditable(false);
         moTextUserCurCodePay.setEditable(false);

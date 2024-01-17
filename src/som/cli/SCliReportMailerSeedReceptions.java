@@ -15,6 +15,7 @@ import sa.lib.db.SDbDatabase;
 import sa.lib.gui.SGuiSession;
 import sa.lib.xml.SXmlUtils;
 import som.gui.SGuiClientSessionCustom;
+import som.mod.SModSysConsts;
 import som.mod.cfg.db.SDbCompany;
 import som.mod.som.db.SSomMailUtils;
 
@@ -113,7 +114,7 @@ public class SCliReportMailerSeedReceptions {
         
         if (receptionMail.equals("1")) {
             int daysToSendMail = ordinaryPeriod ? noReceptionIn : noReceptionOut;
-            SSomMailUtils.computeMailReceptions(moSession, date, date, true, ordinaryPeriod, noReceptionMail, daysToSendMail, mailTo, mailBcc);
+            SSomMailUtils.computeMailReceptions(moSession, date, date, SModSysConsts.SU_TIC_ORIG_PRV, 0, true, ordinaryPeriod, noReceptionMail, daysToSendMail, mailTo, mailBcc);
         }
         else {
             int maxId = 0;
