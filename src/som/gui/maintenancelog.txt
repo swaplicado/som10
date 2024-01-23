@@ -15,8 +15,8 @@ Isabel Danae GARCÍA SERVÍN
 2023-12-26, 1.0 090.2
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
-1) Correcciones generales en SOM Alternativo, entre ello el cambio de etiquetas de "Orgánico" a "Aguacate".
-2) Se habilitaron los campos solicitados en la forma de captura de boletos de SOM Alternativo.
+1) Correcciones generales en SOM Alterno, entre ello el cambio de etiquetas de "Orgánico" a "Aguacate".
+2) Se habilitaron los campos solicitados en la forma de captura de boletos de SOM Alterno.
 
 ================================================================================
 2023-12-21, 1.0 090.1
@@ -44,7 +44,7 @@ Isabel Danae GARCÍA SERVÍN
 
 ================================================================================
 2023-09-04, 1.0 088.2
-Edwin CARMONA
+Edwin Omar CARMONA FIGUEROA
 --------------------------------------------------------------------------------
 1) FIX: Modificación de la comparación de objetos Integer en la estimación de la producción.
 
@@ -53,13 +53,13 @@ Edwin CARMONA
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
 1) Adición de columnas del usuario que ingresó y modificó en la vista del stock diario.
-2) Creación del método read por orden alfabético de los tanques en los resultados de laboratorio de aceites.
+2) Creación del método read() por orden alfabético de los tanques en los resultados de laboratorio de aceites.
 
 ================================================================================
 2023-03-24, 1.0 088.0
 Edwin Omar CARMONA FIGUEROA
 --------------------------------------------------------------------------------
-1) Separación por plantas y los cambios en el cuerpo del correo para la molienda
+1) Separación por plantas y los cambios en el cuerpo del correo para la molienda.
 
 ================================================================================
 2023-03-14, 1.0 087.0
