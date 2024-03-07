@@ -59,7 +59,7 @@ public class SCliReportMailerSummary {
 
     private static final int[] DEF_ITEM_IDS = new int[] { ID_AVO_FRUIT, /*ID_AVO_FRUIT_ORG,*/ ID_AVO_MARC, ID_AVO_KERNEL };
     private static final Date DEF_DATE = SLibTimeUtils.createDate(2021, 1, 18);
-    private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
+    private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx;isabel.garcia@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "gortiz@aeth.mx";
     private static final String DEF_MAIL_BCC = "sflores@swaplicado.com.mx";
 

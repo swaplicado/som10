@@ -306,11 +306,11 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicManSupplierInputType.addActionListener(this);
         mjTicRank.addActionListener(this);
         mjTicSearch.addActionListener(this);
-        mjGrinding = new JMenu("Molienda");
+        mjGrinding = new JMenu("Molienda oleaginosas");
         mjGriEvents = new JMenuItem("Eventos de molienda");
         mjGriResume = new JMenuItem("Resumen de molienda");
         mjGriResults = new JMenuItem("Resultados de molienda");
-        mjGrindingAvo = new JMenu("Aguacatera");
+        mjGrindingAvo = new JMenu("Molienda aguacatera");
         mjGriEventsAvo = new JMenuItem("Eventos de aguacatera");
         mjGriResumeAvo = new JMenuItem("Resumen de aguacatera");
         mjGriResultsAvo = new JMenuItem("Resultados de aguacatera");
@@ -420,8 +420,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicRank.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
         mjTicSearch.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_SCA, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_REP_RM }));
         
-        mjGrinding.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB }));
-        mjGrindingAvo.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB }));
+        mjGrinding.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
+        mjGrindingAvo.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
 
         mjQa.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
         mjQaWahStart.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
