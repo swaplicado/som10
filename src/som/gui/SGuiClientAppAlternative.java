@@ -72,7 +72,7 @@ public class SGuiClientAppAlternative extends JFrame implements SGuiClient, Acti
     public static final String APP_NAME = "SOM ORG. 1.0";
     public static final String APP_RELEASE = APP_NAME + " " + SGuiClientApp.APP_RELEASE_NUM;
     public static final String APP_COPYRIGHT = SGuiClientApp.APP_COPYRIGHT;
-    public static final String APP_PROVIDER = "Software Aplicado SA de CV";
+    public static final String APP_PROVIDER = SGuiClientApp.APP_PROVIDER;
 
     public static final String VENDOR = APP_PROVIDER;
     public static final String VENDOR_COPYRIGHT = APP_NAME + " ©" + APP_COPYRIGHT + " " + VENDOR;
