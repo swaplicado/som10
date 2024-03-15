@@ -1439,22 +1439,22 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                                 validation.setComponent(((JSpinner.DefaultEditor) moDatetimeDeparture.getComponent().getEditor()).getTextField());
                             }
                         }
-                    }
-                    
-//                    if (validation.isValid()) {
-//                        if (moKeyTicOrig.getSelectedIndex() <= 0 || moKeyTicOrig.getValue()[0] == SModSysConsts.SU_TIC_ORIG_NA) {
-//                            validation.setMessage("Debe seleccionar la procedencia del boleto.");
-//                            validation.setComponent(moKeyTicOrig);
-//                        }
-//                    } 
-//                    
-//                    if (validation.isValid()) {
-//                        if (moKeyTicOrig.getSelectedIndex() <= 0 || moKeyTicOrig.getValue()[0] == SModSysConsts.SU_TIC_DEST_NA) {
-//                            validation.setMessage("Debe seleccionar el destino del boleto.");
-//                            validation.setComponent(moKeyTicDest);
-//                        }
-//                    } 
+                    }  
                 }
+                
+                if (validation.isValid()) {
+                    if (moKeyTicOrig.getSelectedIndex() <= 0 || moKeyTicOrig.getValue()[0] == SModSysConsts.SU_TIC_ORIG_NA) {
+                        validation.setMessage("Debe seleccionar la procedencia del boleto.");
+                        validation.setComponent(moKeyTicOrig);
+                    }
+                } 
+
+                if (validation.isValid()) {
+                    if (moKeyTicDest.getSelectedIndex() <= 0 || moKeyTicDest.getValue()[0] == SModSysConsts.SU_TIC_DEST_NA) {
+                        validation.setMessage("Debe seleccionar el destino del boleto.");
+                        validation.setComponent(moKeyTicDest);
+                    }
+                } 
 
                 if (validation.isValid()) {
                     if (moDecPackingFullQuantityArrival.isEditable() && moDecPackingFullQuantityArrival.getValue() == 0) {

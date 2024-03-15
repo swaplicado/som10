@@ -130,7 +130,7 @@ public class SDbUserRightAlternative extends SDbRegistry implements SGridRow {
         if (mbRegistryNew) {
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkUserId + ", " +
-                    mnPkRightId + " " +
+                    mnPkRightId + ", " +
                     mnFkUserId + ", " + 
                     "NOW()" + " " + 
                     ")";

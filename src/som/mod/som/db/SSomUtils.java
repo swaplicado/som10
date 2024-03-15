@@ -948,11 +948,11 @@ public abstract class SSomUtils {
         String sql = "SELECT SUM(t.wei_des_net_r) " +
             "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t " +
             "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS s ON t.fk_sca = s.id_sca " +
-            "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " AND " +
+            "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " " +
             (idTicOrig == 0 ? "" : "AND t.fk_tic_orig = " + idTicOrig + " ") +
             (idTicDest == 0 ? "" : "AND t.fk_tic_dest = " + idTicDest + " ") +
-            "t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' AND " +
-            "t.fk_sca = " + idScale + ";";
+            "AND t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
+            "AND t.fk_sca = " + idScale + ";";
         ResultSet resultSet = session.getStatement().executeQuery(sql);
 
         if (resultSet.next()) {
