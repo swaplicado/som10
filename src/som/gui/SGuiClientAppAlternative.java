@@ -69,8 +69,8 @@ import som.mod.som.form.SDialogRepItemTickets;
  */
 public class SGuiClientAppAlternative extends JFrame implements SGuiClient, ActionListener {
 
-    public static final String APP_NAME = SGuiClientApp.APP_NAME;
-    public static final String APP_RELEASE = SGuiClientApp.APP_RELEASE;
+    public static final String APP_NAME = "SOM ORG. 1.0";
+    public static final String APP_RELEASE = APP_NAME + " " + SGuiClientApp.APP_RELEASE_NUM;
     public static final String APP_COPYRIGHT = SGuiClientApp.APP_COPYRIGHT;
     public static final String APP_PROVIDER = "Software Aplicado SA de CV";
 
