@@ -116,20 +116,26 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                 }
                 else {
                     ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
+                    
+                    if (!ticket.isAlternative()) {
+                        if (ticket.getFkTicketStatusId() < SModSysConsts.SS_TIC_ST_ADM) {
+                            if (miClient.showMsgBoxConfirm("¿Está seguro(a) que desea destarar el boleto?") == JOptionPane.YES_OPTION) {
+                                miClient.getSession().saveField(SModConsts.S_TIC, gridRow.getRowPrimaryKey(), SDbTicket.FIELD_TARED, false);
 
-                    if (ticket.getFkTicketStatusId() < SModSysConsts.SS_TIC_ST_ADM) {
-                        if (miClient.showMsgBoxConfirm("¿Está seguro(a) que desea destarar el boleto?") == JOptionPane.YES_OPTION) {
-                            miClient.getSession().saveField(SModConsts.S_TIC, gridRow.getRowPrimaryKey(), SDbTicket.FIELD_TARED, false);
-
-                            miClient.getSession().notifySuscriptors(mnGridType);
-                            miClient.getSession().notifySuscriptors(mnGridSubtype);
-                            miClient.getSession().notifySuscriptors(SModConsts.S_TIC);
-                            miClient.getSession().notifySuscriptors(SModConsts.SX_TIC_MAN);
-                            miClient.getSession().notifySuscriptors(SModConsts.SX_TIC_MAN_SUP);
+                                miClient.getSession().notifySuscriptors(mnGridType);
+                                miClient.getSession().notifySuscriptors(mnGridSubtype);
+                                miClient.getSession().notifySuscriptors(SModConsts.S_TIC);
+                                miClient.getSession().notifySuscriptors(SModConsts.SX_TIC_MAN);
+                                miClient.getSession().notifySuscriptors(SModConsts.SX_TIC_MAN_SUP);
+                            }
+                        }
+                        else {
+                            miClient.showMsgBoxWarning("Es necesario que el boleto esté con estatus en báscula o en laboratorio.");
                         }
                     }
                     else {
-                        miClient.showMsgBoxWarning("Es necesario que el boleto esté con estatus en báscula o en laboratorio.");
+                        miClient.showMsgBoxWarning("El boleto no se puede modificar debido a que ya tiene un registro en el sistema de SOM Orgánico con el folio " + ticket.getXtaNumAlternative() + ".\n"
+                                + "Es necesario eliminar el registro.");
                     }
                 }
             }

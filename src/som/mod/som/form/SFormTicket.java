@@ -712,15 +712,120 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     }
 
     private void setEnabledFields(final boolean enableFields) {
-        if (mnFormSubtype == SModConsts.SX_TIC_TARE_PEND) {
+        if (!moRegistry.isAlternative()) {
+            if (mnFormSubtype == SModConsts.SX_TIC_TARE_PEND) {
+                moBoolTared.setEditable(false);
+                moIntTicket.setEditable(false);
+                jbImportTicket.setEnabled(false);
+                jbCleanTicket.setEnabled(false);
+                moKeyProducer.setEnabled(false);
+                moKeyItem.setEnabled(false);
+                moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+                jbInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+                moTextPlates.setEditable(false);
+                moTextPlatesCage.setEditable(false);
+                moTextDriver.setEditable(false);
+                moTextOpeArr.setEnabled(false);
+                moTextOpeDep.setEnabled(false);
+                moDecWeightSource.setEditable(false);
+                moBoolWeightSourceAvailable.setEnabled(false);
+                moDecWeightDestinyArrival.setEditable(false);
+                moDecWeightDestinyDeparture.setEditable(enableFields);
+                moDatetimeArrival.setEditable(false);
+                moDatetimeDeparture.setEditable(enableFields);
+                moDecPackingFullQuantityArrival.setEditable(false);
+                jbPackingFullQuantityArrival.setEnabled(mbIsPacking);
+                moDecPackingEmptyQuantityArrival.setEditable(false);
+                jbPackingEmptyQuantityArrival.setEnabled(mbIsPacking);
+                moDecPackingFullQuantityDeparture.setEditable(mbIsPacking);
+                moDecPackingEmptyQuantityDeparture.setEditable(mbIsPacking);
+                jbImportTareTicket.setEnabled(enableFields && moConnectionRevuelta != null);
+                jbCleanTare.setEnabled(!enableFields);
+                jbSaveSend.setEnabled(enableFields && moRegistry != null && moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA);
+                moKeyTicOrig.setEnabled(enableFields);
+                moKeyTicDest.setEnabled(enableFields);
+            }
+            else {
+                if (moRegistry.isRegistryNew()) {
+                    moBoolTared.setEditable(false);
+                    moIntTicket.setEditable(enableFields);
+                    jbImportTicket.setEnabled(enableFields && moConnectionRevuelta != null);
+                    jbCleanTicket.setEnabled(!enableFields);
+                    moKeyProducer.setEnabled(enableFields);
+                    moKeyItem.setEnabled(enableFields);
+                    moKeyInputSource.setEnabled(enableFields && moKeyInputSource.getItemCount() > 1);
+                    jbInputSource.setEnabled(enableFields && moKeyInputSource.getItemCount() > 1); 
+                    moTextPlates.setEditable(enableFields);
+                    moTextPlatesCage.setEditable(true);
+                    moTextDriver.setEditable(enableFields);
+                    moDecWeightSource.setEditable(moBoolWeightSourceAvailable.getValue());
+                    moBoolWeightSourceAvailable.setEnabled(true);
+                    moDecWeightDestinyArrival.setEditable(enableFields);
+                    moDecWeightDestinyDeparture.setEditable(false);
+                    moTextOpeArr.setEnabled(false);
+                    moTextOpeDep.setEnabled(false);
+                    moDatetimeArrival.setEditable(enableFields);
+                    moDatetimeDeparture.setEditable(false);
+                    moDecPackingFullQuantityArrival.setEditable(false);
+                    jbPackingFullQuantityArrival.setEnabled(false);
+                    moDecPackingEmptyQuantityArrival.setEditable(false);
+                    jbPackingEmptyQuantityArrival.setEnabled(false);
+                    moDecPackingFullQuantityDeparture.setEditable(false);
+                    moDecPackingEmptyQuantityDeparture.setEditable(false);
+                    jbImportTareTicket.setEnabled(false);
+                    jbCleanTare.setEnabled(false);
+                    jbSaveSend.setEnabled(true);
+                    moKeyTicOrig.setEnabled(true);
+                    moKeyTicDest.setEnabled(true);
+                }
+                else {
+                    boolean enable = (!mbIsRevImport1 && !moRegistry.isTared());
+
+                    moBoolTared.setEditable(false);
+                    moIntTicket.setEditable(enable);
+                    jbImportTicket.setEnabled(enable && moConnectionRevuelta != null);
+                    jbCleanTicket.setEnabled(!enable && !moRegistry.isTared());
+                    moKeyProducer.setEnabled(enable);
+                    moKeyItem.setEnabled(enable);
+                    moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+                    jbInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+                    moTextPlates.setEditable(enable);
+                    moTextPlatesCage.setEditable(!moRegistry.isTared());
+                    moTextDriver.setEditable(enable);
+                    moDecWeightSource.setEditable(!moRegistry.isTared() && moBoolWeightSourceAvailable.getValue());
+                    moBoolWeightSourceAvailable.setEnabled(!moRegistry.isTared());
+                    moDecWeightDestinyArrival.setEditable(enable);
+                    moDecWeightDestinyDeparture.setEditable(false);
+                    moTextOpeArr.setEnabled(false);
+                    moTextOpeDep.setEnabled(false);
+                    moDatetimeArrival.setEditable(enable);
+                    moDatetimeDeparture.setEditable(false);
+                    moDecPackingFullQuantityArrival.setEditable(mbIsPacking && !moRegistry.isTared());
+                    jbPackingFullQuantityArrival.setEnabled(false);
+                    moDecPackingEmptyQuantityArrival.setEditable(mbIsPacking && !moRegistry.isTared());
+                    jbPackingEmptyQuantityArrival.setEnabled(false);
+                    moDecPackingFullQuantityDeparture.setEditable(false);
+                    moDecPackingEmptyQuantityDeparture.setEditable(false);
+                    jbImportTareTicket.setEnabled(false);
+                    jbCleanTare.setEnabled(false);
+                    jbSaveSend.setEnabled(true);
+                    moKeyTicOrig.setEnabled(!enable);
+                    moKeyTicDest.setEnabled(!enable);
+                }
+            }
+        }
+        else {
+            miClient.showMsgBoxInformation("No se puede modificar el boleto debido a que tiene un registro en el sistema de SOM Orgánico.\n"
+                    + "Elimine el registro " + moRegistry.getXtaNumAlternative() + " en SOM Orgánico para modificar.\n"
+                    + "Para enviar al estado siguiente hacerlo desde la vista de boletos");
             moBoolTared.setEditable(false);
             moIntTicket.setEditable(false);
             jbImportTicket.setEnabled(false);
             jbCleanTicket.setEnabled(false);
             moKeyProducer.setEnabled(false);
             moKeyItem.setEnabled(false);
-            moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
-            jbInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+            moKeyInputSource.setEnabled(false);
+            jbInputSource.setEnabled(false);
             moTextPlates.setEditable(false);
             moTextPlatesCage.setEditable(false);
             moTextDriver.setEditable(false);
@@ -729,89 +834,23 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moDecWeightSource.setEditable(false);
             moBoolWeightSourceAvailable.setEnabled(false);
             moDecWeightDestinyArrival.setEditable(false);
-            moDecWeightDestinyDeparture.setEditable(enableFields);
+            moDecWeightDestinyDeparture.setEditable(false);
             moDatetimeArrival.setEditable(false);
-            moDatetimeDeparture.setEditable(enableFields);
+            moDatetimeDeparture.setEditable(false);
             moDecPackingFullQuantityArrival.setEditable(false);
-            jbPackingFullQuantityArrival.setEnabled(mbIsPacking);
+            jbPackingFullQuantityArrival.setEnabled(false);
             moDecPackingEmptyQuantityArrival.setEditable(false);
-            jbPackingEmptyQuantityArrival.setEnabled(mbIsPacking);
-            moDecPackingFullQuantityDeparture.setEditable(mbIsPacking);
-            moDecPackingEmptyQuantityDeparture.setEditable(mbIsPacking);
-            jbImportTareTicket.setEnabled(enableFields && moConnectionRevuelta != null);
-            jbCleanTare.setEnabled(!enableFields);
-            jbSaveSend.setEnabled(enableFields && moRegistry != null && moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA);
-            moKeyTicOrig.setEnabled(enableFields);
-            moKeyTicDest.setEnabled(enableFields);
+            jbPackingEmptyQuantityArrival.setEnabled(false);
+            moDecPackingFullQuantityDeparture.setEditable(false);
+            moDecPackingEmptyQuantityDeparture.setEditable(false);
+            jbImportTareTicket.setEnabled(false);
+            jbCleanTare.setEnabled(false);
+            jbSaveSend.setEnabled(false);
+            moKeyTicOrig.setEnabled(false);
+            moKeyTicDest.setEnabled(false);
+            jbSave.setEnabled(false);
+            moTextNote.setEnabled(false);
         }
-        else {
-            if (moRegistry.isRegistryNew()) {
-                moBoolTared.setEditable(false);
-                moIntTicket.setEditable(enableFields);
-                jbImportTicket.setEnabled(enableFields && moConnectionRevuelta != null);
-                jbCleanTicket.setEnabled(!enableFields);
-                moKeyProducer.setEnabled(enableFields);
-                moKeyItem.setEnabled(enableFields);
-                moKeyInputSource.setEnabled(enableFields && moKeyInputSource.getItemCount() > 1);
-                jbInputSource.setEnabled(enableFields && moKeyInputSource.getItemCount() > 1); 
-                moTextPlates.setEditable(enableFields);
-                moTextPlatesCage.setEditable(true);
-                moTextDriver.setEditable(enableFields);
-                moDecWeightSource.setEditable(moBoolWeightSourceAvailable.getValue());
-                moBoolWeightSourceAvailable.setEnabled(true);
-                moDecWeightDestinyArrival.setEditable(enableFields);
-                moDecWeightDestinyDeparture.setEditable(false);
-                moTextOpeArr.setEnabled(false);
-                moTextOpeDep.setEnabled(false);
-                moDatetimeArrival.setEditable(enableFields);
-                moDatetimeDeparture.setEditable(false);
-                moDecPackingFullQuantityArrival.setEditable(false);
-                jbPackingFullQuantityArrival.setEnabled(false);
-                moDecPackingEmptyQuantityArrival.setEditable(false);
-                jbPackingEmptyQuantityArrival.setEnabled(false);
-                moDecPackingFullQuantityDeparture.setEditable(false);
-                moDecPackingEmptyQuantityDeparture.setEditable(false);
-                jbImportTareTicket.setEnabled(false);
-                jbCleanTare.setEnabled(false);
-                jbSaveSend.setEnabled(true);
-                moKeyTicOrig.setEnabled(true);
-                moKeyTicDest.setEnabled(true);
-            }
-            else {
-                boolean enable = (!mbIsRevImport1 && !moRegistry.isTared());
-
-                moBoolTared.setEditable(false);
-                moIntTicket.setEditable(enable);
-                jbImportTicket.setEnabled(enable && moConnectionRevuelta != null);
-                jbCleanTicket.setEnabled(!enable && !moRegistry.isTared());
-                moKeyProducer.setEnabled(enable);
-                moKeyItem.setEnabled(enable);
-                moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
-                jbInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
-                moTextPlates.setEditable(enable);
-                moTextPlatesCage.setEditable(!moRegistry.isTared());
-                moTextDriver.setEditable(enable);
-                moDecWeightSource.setEditable(!moRegistry.isTared() && moBoolWeightSourceAvailable.getValue());
-                moBoolWeightSourceAvailable.setEnabled(!moRegistry.isTared());
-                moDecWeightDestinyArrival.setEditable(enable);
-                moDecWeightDestinyDeparture.setEditable(false);
-                moTextOpeArr.setEnabled(false);
-                moTextOpeDep.setEnabled(false);
-                moDatetimeArrival.setEditable(enable);
-                moDatetimeDeparture.setEditable(false);
-                moDecPackingFullQuantityArrival.setEditable(mbIsPacking && !moRegistry.isTared());
-                jbPackingFullQuantityArrival.setEnabled(false);
-                moDecPackingEmptyQuantityArrival.setEditable(mbIsPacking && !moRegistry.isTared());
-                jbPackingEmptyQuantityArrival.setEnabled(false);
-                moDecPackingFullQuantityDeparture.setEditable(false);
-                moDecPackingEmptyQuantityDeparture.setEditable(false);
-                jbImportTareTicket.setEnabled(false);
-                jbCleanTare.setEnabled(false);
-                jbSaveSend.setEnabled(true);
-                moKeyTicOrig.setEnabled(!enable);
-                moKeyTicDest.setEnabled(!enable);
-            }
-        } 
     }
 
     private void itemStateKeyProducer() {
@@ -1126,7 +1165,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
             }
             catch (Exception e){
-                miClient.showMsgBoxError(e.getMessage());
+                miClient.showMsgBoxError("No hay origenes disponibles.");
             }
         }
     }

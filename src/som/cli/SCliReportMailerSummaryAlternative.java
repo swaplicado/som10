@@ -27,22 +27,22 @@ import som.mod.SModSysConsts;
 
 /**
  * Report mailer for monthly reception at scale.
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
-public class SCliReportMailerSummary {
+public class SCliReportMailerSummaryAlternative {
     
     public static final int ID_AVO_FRUIT = 6; // fruta
     public static final int ID_AVO_FRUIT_ORG = 64; // fruta orgánica
-    public static final int ID_AVO_MARC = 23; // bagazo
-    public static final int ID_AVO_KERNEL = 100; // hueso y cáscara
+//    public static final int ID_AVO_MARC = 23; // bagazo
+//    public static final int ID_AVO_KERNEL = 100; // hueso y cáscara
     
     public static final HashMap<Integer, String> ItemDescriptions = new HashMap<>();
     
     static {
         ItemDescriptions.put(ID_AVO_FRUIT, "Fruta");
         ItemDescriptions.put(ID_AVO_FRUIT_ORG, "Fruta Orgánica");
-        ItemDescriptions.put(ID_AVO_MARC, "Bagazo");
-        ItemDescriptions.put(ID_AVO_KERNEL, "Hueso y Cáscara");
+//        ItemDescriptions.put(ID_AVO_MARC, "Bagazo");
+//        ItemDescriptions.put(ID_AVO_KERNEL, "Hueso y Cáscara");
     }
     
     /** Argument index for list of ID of items. */
@@ -57,16 +57,16 @@ public class SCliReportMailerSummary {
     private static final String ARG_DATE_TODAY = "TODAY";
     private static final String ARG_DATE_YESTERDAY = "YESTERDAY";
 
-    private static final int[] DEF_ITEM_IDS = new int[] { ID_AVO_FRUIT, /*ID_AVO_FRUIT_ORG,*/ ID_AVO_MARC, ID_AVO_KERNEL };
+    private static final String[] DEF_ITEM_IDS = new String[] { ID_AVO_FRUIT + "-" + ID_AVO_FRUIT_ORG };
     private static final Date DEF_DATE = SLibTimeUtils.createDate(2024, 3, 12);
-    private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx;isabel.garcia@swaplicado.com.mx";
+    private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "gortiz@aeth.mx";
-    private static final String DEF_MAIL_BCC = "sflores@swaplicado.com.mx";
+    //private static final String DEF_MAIL_BCC;
 
     /**
      * @param args the command line arguments
      * Four arguments expected:
-     * 1: List of ID of items (separated with semicolon, without blanks between them, obviously).
+     * 1: Lista de IDs de ítems a reportar con su id convencional y su id orgánico separado por guion, para reportar otro ítem debe ir separado por punto y coma. ej: 6-64;
      * 2: Date. Date for report.
      * 3: List of mail-To recipients (separated with semicolon, without blanks between them, obviously).
      * 4: List of mail-Bcc recipients (separated with semicolon, without blanks between them, obviously).
@@ -75,13 +75,13 @@ public class SCliReportMailerSummary {
         try {
             // define arguments of program:
             
-            int[] itemIds = DEF_ITEM_IDS;
+            String[] itemIds = DEF_ITEM_IDS;
             Date date = DEF_DATE;
             String mailTo = DEF_MAIL_TO;
-            String mailBcc = DEF_MAIL_BCC;
+            String mailBcc = DEF_MAIL_TO;
             
             if (args.length >= 1) {
-                itemIds = SLibUtils.textExplodeAsIntArray(args[ARG_IDX_ITEM_IDS], ";");
+                itemIds = args[ARG_IDX_ITEM_IDS].split(";");
             }
             if (args.length >= 2) {
                 String dateArg = args[ARG_IDX_DATE];
@@ -132,12 +132,12 @@ public class SCliReportMailerSummary {
             
             // generate mail body:
 
-            SReportHtmlScaleSummary htmlScaleSummary = new SReportHtmlScaleSummary(session);
+            SReportHtmlScaleSummaryAlternative htmlScaleSummary = new SReportHtmlScaleSummaryAlternative(session);
             String mailBody = htmlScaleSummary.generateReportHtml(itemIds, date, SModSysConsts.SU_TIC_ORIG_PRV, 0);
             
             // generate mail subject:
             
-            String mailSubject = "[SOM] Resumen bascula " + SLibUtils.DateFormatDate.format(date);
+            String mailSubject = "[SOM ORG.] Resumen bascula " + SLibUtils.DateFormatDate.format(date);
             
             // prepare mail recepients:
             

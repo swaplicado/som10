@@ -152,6 +152,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected String msXtaInputSource;
     protected String msXtaProducer;
     protected String msXtaProducerFiscalId;
+    protected String msXtaNumAlternative;
 
     protected boolean mbAuxMoveNextOnSave;
     protected boolean mbAuxRequirePriceComputation;
@@ -221,7 +222,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 
                 // Add mail warning:
 
-                body += SSomMailUtils.composeMailWarning();
+                body += SSomMailUtils.composeSomMailWarning();
 
                 // Send mail to recipients:
 
@@ -433,6 +434,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setXtaInputSource(String s) { msXtaInputSource = s;  }
     public void setXtaProducer(String s) { msXtaProducer = s;  }
     public void setXtaProviderFiscalId(String s) { msXtaProducerFiscalId = s;  }
+    public void setXtaNumAlternative(String s) { msXtaNumAlternative = s;  }
 
     public void setAuxMoveNextOnSend(boolean b) { mbAuxMoveNextOnSave = b; }
     public void setAuxRequirePriceComputation(boolean b) { mbAuxRequirePriceComputation = b; }
@@ -452,6 +454,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public String getXtaInputSource() { return msXtaInputSource;  }
     public String getXtaProducer() { return msXtaProducer; }
     public String getXtaProducerFiscalId() { return msXtaProducerFiscalId; }
+    public String getXtaNumAlternative() { return msXtaNumAlternative; }
 
     public boolean isAuxMoveNextOnSend() { return mbAuxMoveNextOnSave; }
     public boolean isAuxRequirePriceComputation() { return mbAuxRequirePriceComputation; }
@@ -577,6 +580,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         msXtaInputSource = "";
         msXtaProducer = "";
         msXtaProducerFiscalId = "";
+        msXtaNumAlternative = "";
 
         mbAuxMoveNextOnSave = false;
         mbAuxRequirePriceComputation = false;
@@ -626,7 +630,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         initQueryMembers();
         mnQueryResultId = SDbConsts.READ_ERROR;
 
-        msSql = "SELECT t.*, sc.name, sc.code, p.name, p.fis_id, i.name, i.fk_unit, it.id_inp_ct, it.id_inp_cl, it.name, src.name, s.name, r.name " +
+        msSql = "SELECT t.*, sc.name, sc.code, p.name, p.fis_id, i.name, i.fk_unit, it.id_inp_ct, it.id_inp_cl, it.name, src.name, s.name, r.name, a.num " +
                 "FROM " + getSqlTable() + " AS t "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS sc ON "
                 + "t.fk_sca = sc.id_sca "
@@ -642,7 +646,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 + "t.fk_seas_n = s.id_seas "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_REG) + " AS r ON "
                 + "t.fk_reg_n = r.id_reg "
-                + getSqlWhere(pk);
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_ALT_TIC) + " AS a ON "
+                + "a.id_tic = t.id_tic "
+                + "WHERE t.id_tic = " + pk[0] + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (!resultSet.next()) {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
@@ -749,6 +755,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             msXtaInputSource = resultSet.getString("src.name");
             msXtaProducer = resultSet.getString("p.name");
             msXtaProducerFiscalId = resultSet.getString("p.fis_id");
+            msXtaNumAlternative = resultSet.getString("a.num");
 
             // Read aswell child registries:
 
@@ -1138,6 +1145,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setXtaInputSource(this.getXtaInputSource());
         registry.setXtaProducer(this.getXtaProducer());
         registry.setXtaProviderFiscalId(this.getXtaProducerFiscalId());
+        registry.setXtaNumAlternative(this.getXtaNumAlternative());
 
         registry.setAuxMoveNextOnSend(this.isAuxMoveNextOnSend());
         registry.setAuxRequirePriceComputation(this.isAuxRequirePriceComputation());
