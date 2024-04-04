@@ -66,7 +66,7 @@ public class SPaneUserInputCategory extends JPanel {
 
         jtfOption.setEditable(false);
         jtfOption.setText("OPTION");
-        jtfOption.setToolTipText("Categorías insumo  usuario");
+        jtfOption.setToolTipText("Categorías insumo usuario");
         jtfOption.setFocusable(false);
         jtfOption.setPreferredSize(new java.awt.Dimension(100, 23));
         add(jtfOption);
