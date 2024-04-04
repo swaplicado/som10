@@ -18,6 +18,7 @@ import sa.lib.mail.SMail;
 import sa.lib.mail.SMailConsts;
 import sa.lib.mail.SMailSender;
 import som.gui.SGuiClientApp;
+import som.gui.SGuiClientAppAlternative;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
 import som.mod.cfg.db.SDbCompany;
@@ -336,7 +337,7 @@ public class SSomMailUtils {
         
         // Mail footer:
         
-        html += composeMailWarning();
+        html += composeSomMailWarning();
 
         mail = new SMail(sender, mailSubject, html, new ArrayList<String>(Arrays.asList(SLibUtils.textExplode(recipientsTo, ";"))));
         if (!recipientsBcc.isEmpty()) {
@@ -1213,7 +1214,7 @@ public class SSomMailUtils {
         return count;
     }
     
-    public static String composeMailWarning() {
+    public static String composeSomMailWarning() {
         return "<hr>" +
                 "<p>" +
                 "<font size='2'>" +
@@ -1226,6 +1227,23 @@ public class SSomMailUtils {
                 "<br>" +
                 "<font size='1'>" +
                 SGuiClientApp.APP_RELEASE +
+                "</font>" +
+                "</p>";
+    }
+    
+    public static String composeSomAlternativeMailWarning() {
+        return "<hr>" +
+                "<p>" +
+                "<font size='2'>" +
+                SLibUtils.textToHtml("Favor de no responder este mail, fue generado de forma automática.") +
+                "<br>" +
+                SGuiClientAppAlternative.APP_NAME + " &copy;" + SGuiClientAppAlternative.APP_COPYRIGHT + " " + SGuiClientAppAlternative.APP_PROVIDER +
+                "<br>" +
+                SGuiClientAppAlternative.VENDOR_WEBSITE +
+                "</font>" +
+                "<br>" +
+                "<font size='1'>" +
+                SGuiClientAppAlternative.APP_RELEASE +
                 "</font>" +
                 "</p>";
     }

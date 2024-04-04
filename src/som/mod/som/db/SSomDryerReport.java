@@ -462,7 +462,7 @@ public class SSomDryerReport {
         file.delete();
         
         html += "<img src='" + encoding + "'><br>" +
-                SSomMailUtils.composeMailWarning() +
+                SSomMailUtils.composeSomMailWarning() +
                 "</body>" +
                 "</html>";
         

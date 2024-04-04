@@ -226,7 +226,7 @@ public class SSomWahLabTestReport {
         
         html += "</table>" + 
                 "<br>" +
-                SSomMailUtils.composeMailWarning() +
+                SSomMailUtils.composeSomMailWarning() +
                 "</body>" +
                 "</html>";
         return html;

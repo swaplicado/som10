@@ -786,7 +786,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
                 moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
             }
             catch (Exception e){
-                miClient.showMsgBoxError(e.getMessage());
+                miClient.showMsgBoxError("No hay origenes disponibles");
             }
         }
     }

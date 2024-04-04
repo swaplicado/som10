@@ -22,6 +22,7 @@ import sa.lib.grid.SGridFilterDateCutOff;
 import sa.lib.grid.SGridFilterDatePeriod;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
+import sa.lib.grid.SGridRow;
 import sa.lib.grid.SGridRowView;
 import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
@@ -385,6 +386,50 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                     map.put("nTicketId", gridRow.getRowPrimaryKey()[0]);
 
                     miClient.getSession().printReport(SModConsts.SR_TIC_METRRME, SLibConsts.UNDEFINED, null, map);
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void actionRowDelete(){
+        if (jbRowDelete.isEnabled()) {
+            if (jtTable.getSelectedRowCount() == 0) {
+                miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROWS);
+            }
+            else if (miClient.showMsgBoxConfirm(SGridConsts.MSG_CONFIRM_REG_DEL) == JOptionPane.YES_OPTION) {
+                boolean updates = false;
+                SGridRow[] gridRows = getSelectedGridRows();
+
+                for (SGridRow gridRow : gridRows) {
+                    if (((SGridRowView) gridRow).getRowType() != SGridConsts.ROW_TYPE_DATA) {
+                        miClient.showMsgBoxWarning(SGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                    }
+                    else if (((SGridRowView) gridRow).isRowSystem()) {
+                        miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_IS_SYSTEM);
+                    }
+                    else if (!((SGridRowView) gridRow).isDeletable()) {
+                        miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_NON_DELETABLE);
+                    }
+                    else {
+                        try { 
+                            SDbTicket ticket = new SDbTicket();
+                            ticket.read(miClient.getSession(), gridRow.getRowPrimaryKey());
+                            if (!ticket.isAlternative()) {
+                                ticket.delete(miClient.getSession());
+                                updates = true;
+                            }
+                            else {
+                                miClient.showMsgBoxWarning("El boleto no se puede modificar debido a que ya tiene un registro en el sistema de SOM Orgánico con el folio " + ticket.getXtaNumAlternative() + ".\n"
+                                + "Es necesario eliminar el registro.");
+                            }
+                        }
+                        catch (Exception e) {}
+                    }
+                }
+
+                if (updates) {
+                    miClient.getSession().notifySuscriptors(mnGridType);
                 }
             }
         }

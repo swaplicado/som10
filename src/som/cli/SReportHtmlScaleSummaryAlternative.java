@@ -14,13 +14,13 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
-public class SReportHtmlScaleSummary {
+public class SReportHtmlScaleSummaryAlternative {
     
     private final SGuiSession moSession;
     
-    public SReportHtmlScaleSummary(final SGuiSession session) {
+    public SReportHtmlScaleSummaryAlternative(final SGuiSession session) {
         moSession = session;
     }
     
@@ -33,7 +33,7 @@ public class SReportHtmlScaleSummary {
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final int[] itemIds, final Date date, final int ticOrig, final int ticDest) throws Exception {
+    public String generateReportHtml(final String[] itemIds, final Date date, final int ticOrig, final int ticDest) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -98,6 +98,9 @@ public class SReportHtmlScaleSummary {
                 + " font-size: 0.75em;"
                 + " font-family: sans-serif;"
                 + "} "
+                + "td.Forms {"
+                + "white-space: nowrap;"
+                + "}"
                 + "td.coldatapctmax {"
                 + " text-align: center;"
                 + " font-size: 0.75em;"
@@ -123,17 +126,20 @@ public class SReportHtmlScaleSummary {
         
         // process list of items for report:
 
-        for (int itemId : itemIds) {
+        for (String itemId : itemIds) {
+            String[] ids = itemId.split("-");
+            int convId = SLibUtils.parseInt(ids[0]);
+            int altId = SLibUtils.parseInt(ids[1]);
             // read requested item for report:
             SDbItem item = new SDbItem();
-            item.read(moSession, new int[] { itemId });
+            item.read(moSession, new int[] { convId });
             
             // compose summary:
-            html += "<h1>" + SLibUtils.textToHtml(item.getName()) + "</h1>\n";
-            html += SSomUtils.composeHtmlSummaryItem(moSession, itemId, date, ticOrig, ticDest);
+            html += "<h1>" + SLibUtils.textToHtml("AGUACATE CONVENCIONAL Y ORGÁNICO") + "</h1>\n";
+            html += SSomUtils.composeHtmlSummaryItemAlternative(moSession, convId, altId, date, ticOrig, ticDest);
         }
         
-        html += SSomMailUtils.composeSomMailWarning();
+        html += SSomMailUtils.composeSomAlternativeMailWarning();
         
         html += "</body>\n";
         

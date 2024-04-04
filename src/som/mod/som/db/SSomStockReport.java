@@ -849,7 +849,7 @@ public class SSomStockReport {
                     "</table>";
         }
         html += "<br>" +
-                SSomMailUtils.composeMailWarning() +
+                SSomMailUtils.composeSomMailWarning() +
                 "</body>" +
                 "</html>";
         

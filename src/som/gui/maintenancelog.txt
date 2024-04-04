@@ -6,10 +6,18 @@ Sergio Abraham FLORES GUTIÉRREZ
 
 ================================================================================
 2024-01-17, 1.0 091.1
+2024-03-25, 1.0 091.2
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
-1) Modificación en etiquetas de menús
-2) Correción al guardar la configuración
+1) Creación de los reportes Histórico mensual y Resumen báscula para el sistema de SOM Orgánico.
+2) Restricción para no poder modificar boletos de SOM Convencional mientras haya una contraparte en SOM Orgánico.
+
+================================================================================
+2024-03-17, 1.0 091.1
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Modificación en etiquetas de menús.
+2) Correción al guardar la configuración.
 
 ================================================================================
 2024-01-17, 1.0 091.0
