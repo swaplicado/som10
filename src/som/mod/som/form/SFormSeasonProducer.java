@@ -31,7 +31,7 @@ import som.mod.som.db.SDbSeasonRegion;
 
 /**
  *
- * @author Juan Barajas, Sergio Flores
+ * @author Juan Barajas, Sergio Flores, Isabel Servín
  */
 public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements ItemListener, ChangeListener, ActionListener {
 
@@ -43,6 +43,8 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
 
     /**
      * Creates new form SFormSeasonProducer
+     * @param client
+     * @param title
      */
     public SFormSeasonProducer(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SU_SEAS_PROD, SLibConsts.UNDEFINED, title);
@@ -91,6 +93,8 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
         jlPriceFreight = new javax.swing.JLabel();
         moDecPriceFreight = new sa.lib.gui.bean.SBeanFieldDecimal();
         moTextCurrencyCodeFreight = new sa.lib.gui.bean.SBeanFieldText();
+        jPanel13 = new javax.swing.JPanel();
+        moBoolDefault = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel10 = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -104,7 +108,7 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
-        jPanel2.setLayout(new java.awt.GridLayout(8, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(9, 1, 0, 5));
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -219,6 +223,14 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
 
         jPanel2.add(jPanel14);
 
+        jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        moBoolDefault.setText("Región predeterminada para misma temporada, ítem y proveedor");
+        moBoolDefault.setPreferredSize(new java.awt.Dimension(500, 23));
+        jPanel13.add(moBoolDefault);
+
+        jPanel2.add(jPanel13);
+
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Actualización por cambio en precio:"));
@@ -267,6 +279,7 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
@@ -287,6 +300,7 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
     private javax.swing.JLabel jlProducer;
     private javax.swing.JLabel jlRegion;
     private javax.swing.JLabel jlSeason;
+    private sa.lib.gui.bean.SBeanFieldBoolean moBoolDefault;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolFreight;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolPrcTon;
     private sa.lib.gui.bean.SBeanFieldDate moDateDate;
@@ -326,6 +340,7 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
         moRadUpdateTicketsAsOfDate.setBooleanSettings(SGuiUtils.getLabelName(moRadUpdateTicketsAsOfDate.getText()), false);
         moDateDate.setDateSettings(miClient, SGuiUtils.getLabelName(moRadUpdateTicketsAsOfDate.getText()), true);
         moRadUpdateTicketsAll.setBooleanSettings(SGuiUtils.getLabelName(moRadUpdateTicketsAll.getText()), false);
+        moBoolDefault.setBooleanSettings(SGuiUtils.getLabelName(moBoolDefault.getText()), false);
 
         moFields.addField(moKeySeason);
         moFields.addField(moKeyRegion);
@@ -340,14 +355,14 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
         moFields.addField(moRadUpdateTicketsAsOfDate);
         moFields.addField(moDateDate);
         moFields.addField(moRadUpdateTicketsAll);
-        
+        moFields.addField(moBoolDefault);
 
         moFields.setFormButton(jbSave);
     }
     
     private void setPriceTonRegion() {
         double priceRegion = 0;
-        SDbSeasonRegion region = null;
+        SDbSeasonRegion region;
         
         try {
             if (moKeySeason.getSelectedIndex() > 0 && moKeyRegion.getSelectedIndex() > 0 && moKeyItem.getSelectedIndex() > 0) {
@@ -450,7 +465,7 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
 
     @Override
     public void setRegistry(SDbRegistry registry) throws Exception {
-        int[] key = null;
+        int[] key;
         moRegistry = (SDbSeasonProducer) registry;
 
         mnFormResult = SLibConsts.UNDEFINED;
@@ -474,6 +489,7 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
         moKeyItem.setValue(new int[] { key[0], key[1], key[2] });
         moKeyProducer.setValue(new int[] { key[3] });
         moDecPriceFreight.setValue(mdAuxPriceFreight = moRegistry.getPriceFreight());
+        moBoolDefault.setValue(moRegistry.isDefault());
         moTextCurrencyCodeFreight.setValue(((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getLocalCurrencyCode());
         moDecPricePerTon.setValue(mdAuxPricePerTon = moRegistry.getPricePerTon());
         moTextCurrencyCodePrcTon.setValue(((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getLocalCurrencyCode());
@@ -541,6 +557,7 @@ public class SFormSeasonProducer extends sa.lib.gui.bean.SBeanForm implements It
             registry.setPricePerTon(0d);
         }
 
+        registry.setDefault(moBoolDefault.getValue());
         registry.setPricePerTon(moBoolPrcTon.getValue());
         registry.setFreightPayment(moBoolFreight.getValue());
         

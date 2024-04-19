@@ -64,6 +64,7 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SX_PROD_SEAS,
             SModConsts.SX_PROD_REG,
             SModConsts.SX_PROD_ITEM,
+            SModConsts.SX_PROD_REG_ITEM_SEAS,
             SModConsts.SX_TIC_SEAS,
             SModConsts.SX_TIC_REG,
             SModConsts.SX_QA_OIL_MOI_POND,

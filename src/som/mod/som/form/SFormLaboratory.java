@@ -119,7 +119,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moDateDate = new sa.lib.gui.bean.SBeanFieldDate();
         jPanel15 = new javax.swing.JPanel();
         jlRegion = new javax.swing.JLabel();
-        moTextRegion = new sa.lib.gui.bean.SBeanFieldText();
+        moKeyRegion = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel16 = new javax.swing.JPanel();
         jlNote = new javax.swing.JLabel();
         moTextNote = new sa.lib.gui.bean.SBeanFieldText();
@@ -284,10 +284,8 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         jlRegion.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel15.add(jlRegion);
 
-        moTextRegion.setEditable(false);
-        moTextRegion.setText("sBeanFieldText2");
-        moTextRegion.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel15.add(moTextRegion);
+        moKeyRegion.setPreferredSize(new java.awt.Dimension(202, 23));
+        jPanel15.add(moKeyRegion);
 
         jPanel2.add(jPanel15);
 
@@ -382,6 +380,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private sa.lib.gui.bean.SBeanFieldDate moDateDate;
     private sa.lib.gui.bean.SBeanFieldInteger moIntNumber;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyRegion;
     private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
     private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
     private sa.lib.gui.bean.SBeanFieldText moTextDriver;
@@ -389,7 +388,6 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private sa.lib.gui.bean.SBeanFieldText moTextPlates;
     private sa.lib.gui.bean.SBeanFieldText moTextPlatesCage;
     private sa.lib.gui.bean.SBeanFieldText moTextProducer;
-    private sa.lib.gui.bean.SBeanFieldText moTextRegion;
     private sa.lib.gui.bean.SBeanFieldText moTextScaleCode;
     private sa.lib.gui.bean.SBeanFieldText moTextScaleName;
     private sa.lib.gui.bean.SBeanFieldText moTextSeason;
@@ -409,7 +407,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moTextProducer.setTextSettings(SGuiUtils.getLabelName(jlProducer.getText()), 25);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
         moTextSeason.setTextSettings(SGuiUtils.getLabelName(jlSeason.getText()), 25);
-        moTextRegion.setTextSettings(SGuiUtils.getLabelName(jlRegion.getText()), 25);
+        moKeyRegion.setKeySettings(miClient, SGuiUtils.getLabelName(jlRegion.getText()), true);
         moTextPlates.setTextSettings(SGuiUtils.getLabelName(jlPlates.getText()), 25);
         moTextPlatesCage.setTextSettings(SGuiUtils.getLabelName(jlPlatesCage.getText()), 25);
         moTextDriver.setTextSettings(SGuiUtils.getLabelName(jlDriver.getText()), 150);
@@ -426,7 +424,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moFields.addField(moTextProducer);
         moFields.addField(moKeyItem);
         moFields.addField(moTextSeason);
-        moFields.addField(moTextRegion);
+        moFields.addField(moKeyRegion);
         moFields.addField(moTextPlates);
         moFields.addField(moTextPlatesCage);
         moFields.addField(moTextDriver);
@@ -536,6 +534,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
             else {
                 readItem();
             }
+            getNewSeasonRegion();
         }
     }
     
@@ -616,8 +615,20 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         try {
             mnNewSeasonId = SSomUtils.getProperSeasonId(miClient.getSession(), moRegistry.getDatetimeArrival(), moKeyItem.getValue()[0], moRegistry.getFkProducerId());
 
-            if (mnNewSeasonId != SLibConsts.UNDEFINED) {
-                mnNewRegionId = SSomUtils.getProperRegionId(miClient.getSession(), mnNewSeasonId, moKeyItem.getValue()[0], moRegistry.getFkProducerId());
+            SGuiParams params = new SGuiParams();
+            params.getParamsMap().put(SModConsts.SU_SEAS, mnNewSeasonId);
+            params.getParamsMap().put(SModConsts.SU_ITEM, moKeyItem.getValue()[0]);
+            params.getParamsMap().put(SModConsts.SU_PROD, moRegistry.getFkProducerId());
+            miClient.getSession().populateCatalogue(moKeyRegion, SModConsts.SX_PROD_REG_ITEM_SEAS, SLibConsts.UNDEFINED, params);
+            if (moKeyRegion.getItemCount() <= 1) {
+                moKeyRegion.setEnabled(false);
+            }
+            else if (moKeyRegion.getItemCount() == 2) {
+                moKeyRegion.setEnabled(false);
+                moKeyRegion.setSelectedIndex(1);
+            }
+            else {
+                moKeyRegion.setEnabled(true);
             }
         }
         catch (Exception e) {
@@ -709,6 +720,12 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
             miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
             miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
             miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
+            
+            SGuiParams params = new SGuiParams();
+            params.getParamsMap().put(SModConsts.SU_SEAS, moRegistry.getFkSeasonId_n());
+            params.getParamsMap().put(SModConsts.SU_ITEM, moRegistry.getFkItemId());
+            params.getParamsMap().put(SModConsts.SU_PROD, moRegistry.getFkProducerId());
+            miClient.getSession().populateCatalogue(moKeyRegion, SModConsts.SX_PROD_REG_ITEM_SEAS, SLibConsts.UNDEFINED, params);
         }
         catch (SQLException e) {
             SLibUtils.showException(this, e);
@@ -745,7 +762,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moTextDriver.setValue(moRegistry.getDriver());
         moTextProducer.setValue(moRegistry.getXtaProducer());
         moTextSeason.setValue(moRegistry.getXtaSeason());
-        moTextRegion.setValue(moRegistry.getXtaRegion());
+        moKeyRegion.setValue(new int[] { moRegistry.getFkRegionId_n() });
         moItem.initRegistry(); // must be called before setting item combobox
         mnOldItemId = moRegistry.getFkItemId();
         moKeyItem.setValue(new int[] { mnOldItemId });
@@ -790,7 +807,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moTextTicket.setEditable(false);
         moTextProducer.setEditable(false);
         moTextSeason.setEditable(false);
-        moTextRegion.setEditable(false);
+        moKeyRegion.setEnabled(false);
         moTextPlates.setEditable(false);
         moTextPlatesCage.setEditable(false);
         moTextDriver.setEditable(false);
@@ -844,7 +861,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         if (mnOldItemId != moKeyItem.getValue()[0]) {
             getNewSeasonRegion();
             registry.setFkSeasonId_n(mnNewSeasonId);
-            registry.setFkRegionId_n(mnNewRegionId);
+            registry.setFkRegionId_n(moKeyRegion.getValue()[0]);
             registry.setRevueltaImport1(false);
         }
         else if (!msOldPlates.equalsIgnoreCase(moTextPlates.getValue()) || !msOldPlatesCage.equalsIgnoreCase(moTextPlatesCage.getValue())) {

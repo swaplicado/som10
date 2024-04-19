@@ -14,6 +14,7 @@ import sa.lib.gui.bean.SBeanDialogReport;
 import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.som.db.SSomUtils;
+import som.mod.som.view.SPaneUserInputCategory;
 
 /**
  *
@@ -21,6 +22,7 @@ import som.mod.som.db.SSomUtils;
  */
 public class SDialogRepItemTickets extends SBeanDialogReport {
     
+    private SPaneUserInputCategory moPaneFilterUserInputCategory;
     private String msItemCodes;
 
     /**
@@ -94,6 +96,7 @@ public class SDialogRepItemTickets extends SBeanDialogReport {
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 400, 200);
 
+        moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "itm");
         
         moDateStart.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateStart.getText()), true);
         moDateEnd.setDateSettings(miClient, SGuiUtils.getLabelName(jlDateEnd.getText()), true);
@@ -144,6 +147,11 @@ public class SDialogRepItemTickets extends SBeanDialogReport {
         sqlWhere = "v.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(moDateStart.getValue()) + "' " + 
                 "AND '" + SLibUtils.DbmsDateFormatDate.format(moDateEnd.getValue()) + "'" +
                 "AND v.fk_item IN (" + msItemCodes + ") ";
+        
+        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
+        if(!sqlFilter.isEmpty()) {
+            sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + sqlFilter;
+        }
         
         moParamsMap.put("tDateStart", moDateStart.getValue());
         moParamsMap.put("tDateEnd", moDateEnd.getValue());

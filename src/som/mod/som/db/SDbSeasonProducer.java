@@ -26,6 +26,7 @@ public class SDbSeasonProducer extends SDbRegistryUser {
     protected int mnPkProducerId;
     protected double mdPricePerTon;
     protected double mdPriceFreight;
+    protected boolean mbDefault;
     protected boolean mbPricePerTon;
     protected boolean mbFreightPayment;
     /*
@@ -56,6 +57,7 @@ public class SDbSeasonProducer extends SDbRegistryUser {
     public void setPkProducerId(int n) { mnPkProducerId = n; }
     public void setPricePerTon(double d) { mdPricePerTon = d; }
     public void setPriceFreight(double d) { mdPriceFreight = d; }
+    public void setDefault(boolean b) { mbDefault = b; }
     public void setPricePerTon(boolean b) { mbPricePerTon = b; }
     public void setFreightPayment(boolean b) { mbFreightPayment = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -79,6 +81,7 @@ public class SDbSeasonProducer extends SDbRegistryUser {
     public int getPkProducerId() { return mnPkProducerId; }
     public double getPricePerTon() { return mdPricePerTon; }
     public double getPriceFreight() { return mdPriceFreight; }
+    public boolean isDefault() { return mbDefault; }
     public boolean isPricePerTon() { return mbPricePerTon; }
     public boolean isFreightPayment() { return mbFreightPayment; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -115,6 +118,7 @@ public class SDbSeasonProducer extends SDbRegistryUser {
         mnPkProducerId = 0;
         mdPricePerTon = 0;
         mdPriceFreight = 0;
+        mbDefault = false;
         mbPricePerTon = false;
         mbFreightPayment = false;
         mbUpdatable = false;
@@ -173,6 +177,7 @@ public class SDbSeasonProducer extends SDbRegistryUser {
             mnPkProducerId = resultSet.getInt("id_prod");
             mdPricePerTon = resultSet.getDouble("prc_ton");
             mdPriceFreight = resultSet.getDouble("prc_fre");
+            mbDefault = resultSet.getBoolean("b_default");
             mbPricePerTon = resultSet.getBoolean("b_prc_ton");
             mbFreightPayment = resultSet.getBoolean("b_fre_pay");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -221,6 +226,7 @@ public class SDbSeasonProducer extends SDbRegistryUser {
                     mnPkProducerId + ", " +
                     mdPricePerTon + ", " +
                     mdPriceFreight + ", " +
+                    (mbDefault ? 1 : 0) + ", " + 
                     (mbPricePerTon ? 1 : 0) + ", " +
                     mbFreightPayment + ", " +
                     (mbUpdatable ? 1 : 0) + ", " +
@@ -245,6 +251,7 @@ public class SDbSeasonProducer extends SDbRegistryUser {
                     //"id_prod = " + mnPkProducerId + ", " +
                     "prc_ton = " + mdPricePerTon + ", " +
                     "prc_fre = " + mdPriceFreight + ", " +
+                    "b_default = " + (mbDefault ? 1 : 0) + ", " +
                     "b_prc_ton = " + (mbPricePerTon ? 1 : 0) + ", " +
                     "b_fre_pay = " + mbFreightPayment + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -286,8 +293,9 @@ public class SDbSeasonProducer extends SDbRegistryUser {
         registry.setPkProducerId(this.getPkProducerId());
         registry.setPricePerTon(this.getPricePerTon());
         registry.setPriceFreight(this.getPriceFreight());
+        registry.setDefault(this.isDefault());
         registry.setPricePerTon(this.isPricePerTon());
-        registry.setFreightPayment(this.isFreightPayment());
+        registry.setFreightPayment(this.isFreightPayment());        
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());

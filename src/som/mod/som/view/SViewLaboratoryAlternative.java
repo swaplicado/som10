@@ -40,6 +40,7 @@ import som.mod.som.db.SSomUtils;
 public class SViewLaboratoryAlternative extends SGridPaneView implements ActionListener {
 
     private SGridFilterDatePeriod moFilterDatePeriod;
+    private SPaneUserInputCategory moPaneFilterUserInputCategory;
     private JButton mjbPrint;
     
     private String msItemCodes;
@@ -54,13 +55,16 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
         try {
             moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
             moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
-
+            
+            moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "itm");
+            
             mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
 
             if (mnGridSubtype == SModConsts.SX_ALT_W_LAB) {
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
             }
+            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
             
             msItemCodes = SSomUtils.getAlternativeItemCodes(miClient.getSession());
         }
@@ -148,6 +152,11 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
         }
         else if (mnGridSubtype == SModConsts.SX_ALT_WO_LAB) {
             sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + "v.fk_lab_n IS NULL ";
+        }
+        
+        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
+        if(!sqlFilter.isEmpty()) {
+            sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + sqlFilter;
         }
         
         msSql = "SELECT " 

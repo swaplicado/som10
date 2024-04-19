@@ -110,7 +110,7 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlCode.setText("Código:*");
-        jlCode.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlCode.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel6.add(jlCode);
 
         moTextCode.setText("sBeanFieldText2");
@@ -121,7 +121,7 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlName.setText("Nombre:*");
-        jlName.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlName.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel4.add(jlName);
 
         moTextName.setText("sBeanFieldText1");
@@ -133,7 +133,7 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateStart.setText("Fecha inicial:*");
-        jlDateStart.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlDateStart.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel11.add(jlDateStart);
         jPanel11.add(moDateDateStart);
 
@@ -142,7 +142,7 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
         jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlDateEnd.setText("Fecha final:*");
-        jlDateEnd.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlDateEnd.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel12.add(jlDateEnd);
         jPanel12.add(moDateDateEnd);
 
@@ -160,7 +160,7 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
         jPanel14.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlRecMonthStart.setText("Mes inicial*:");
-        jlRecMonthStart.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlRecMonthStart.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel14.add(jlRecMonthStart);
         jPanel14.add(moMonthRecMonthStart);
 
@@ -172,7 +172,7 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
         jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlRecMonthEnd.setText("Mes final:*");
-        jlRecMonthEnd.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlRecMonthEnd.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel15.add(jlRecMonthEnd);
         jPanel15.add(moMonthRecMonthEnd);
 
@@ -183,9 +183,10 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
 
         jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlSmnRec.setText("Mail recepción:*");
-        jlSmnRec.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlSmnRec.setText("Envío mail recepción de semillas:*");
+        jlSmnRec.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel16.add(jlSmnRec);
+        jlSmnRec.getAccessibleContext().setAccessibleName("Envío mail recepción de semillas:*");
 
         moKeySmnRec.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel16.add(moKeySmnRec);
@@ -194,8 +195,8 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
 
         jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlSmnNoRec.setText("Mail no recepción:*");
-        jlSmnNoRec.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlSmnNoRec.setText("Envío mail no recepción de semillas:*");
+        jlSmnNoRec.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel17.add(jlSmnNoRec);
 
         moKeySmnNoRec.setPreferredSize(new java.awt.Dimension(200, 23));
@@ -206,8 +207,8 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlIntervale.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
-        jlIntervale.setText("Intervalo en días mail no recepción");
-        jlIntervale.setPreferredSize(new java.awt.Dimension(250, 23));
+        jlIntervale.setText("Intervalo en días del envío de mail no recepción de semillas");
+        jlIntervale.setPreferredSize(new java.awt.Dimension(400, 23));
         jPanel18.add(jlIntervale);
 
         jPanel2.add(jPanel18);
@@ -215,7 +216,7 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
         jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlSmnNoRecIn.setText("Dentro del período:*");
-        jlSmnNoRecIn.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlSmnNoRecIn.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel19.add(jlSmnNoRecIn);
 
         moIntSmnNoRecIn.setPreferredSize(new java.awt.Dimension(50, 23));
@@ -226,7 +227,7 @@ public class SFormSeason extends SBeanForm implements ChangeListener {
         jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         jlSmnNoRecOut.setText("Fuera del período:*");
-        jlSmnNoRecOut.setPreferredSize(new java.awt.Dimension(150, 23));
+        jlSmnNoRecOut.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel20.add(jlSmnNoRecOut);
 
         moIntSmnNoRecOut.setPreferredSize(new java.awt.Dimension(50, 23));

@@ -1,4 +1,11 @@
 ================================================================================
+2024-03-19, 1.0 092.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Adición del filtro de categorías de insumo a las vistas y al reporte de SOM Orgánico.
+2) Adición del campo "Región" en la captura de boletos del SOM Original, mientras haya mas de una para un solo proveedor, ítem y temporada.
+
+================================================================================
 2024-04-04, 1.0 091.3
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

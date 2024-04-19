@@ -139,6 +139,7 @@ public abstract class SModConsts {
     public static final int SX_SEAS_REG = 340001;
     public static final int SX_PROD_SEAS = 340002;
     public static final int SX_PROD_REG = 340003;
+    public static final int SX_PROD_REG_ITEM_SEAS = 340004;
     public static final int SX_PROD_ITEM = 340011;
     public static final int SX_TIC_SEAS = 340012;
     public static final int SX_TIC_REG = 340013;

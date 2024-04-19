@@ -39,6 +39,7 @@ import som.mod.som.db.SSomUtils;
 public class SViewTicketAlternative extends SGridPaneView implements ActionListener {
 
     private SGridFilterDatePeriod moFilterDatePeriod;
+    private SPaneUserInputCategory moPaneFilterUserInputCategory;
     private String msItemCodes;
     
     private SPaneFilter moPaneFilterTicketOrigin;
@@ -55,10 +56,12 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
 
     private void initComponetsCustom() {
         try {
-            mjbDelete = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_delete.gif")), "Eliminar de SOM Aguacate", this);
+            mjbDelete = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_delete.gif")), "Eliminar de SOM Orgánico", this);
             mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
 
             msItemCodes = SSomUtils.getAlternativeItemCodes(miClient.getSession());
+            
+            moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "itm");
             
             moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
             moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
@@ -68,6 +71,7 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
             moPaneFilterTicketDestination.initFilter(null);
 
             getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
             getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketOrigin);
             getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketDestination);
         
@@ -104,12 +108,12 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
                     ticket = (SDbTicketAlternative) miClient.getSession().readRegistry(SModConsts.S_ALT_TIC, gridRow.getRowPrimaryKey());
 
                     if (ticket.getFkLaboratoryId_n() == 0) {
-                        if (miClient.showMsgBoxConfirm("¿Desea eliminar el boleto de SOM Aguacate?") == JOptionPane.YES_OPTION) {
+                        if (miClient.showMsgBoxConfirm("¿Desea eliminar el boleto de SOM Orgánico?") == JOptionPane.YES_OPTION) {
                             deleteTicket(ticket);
                         }
                     }
                     else {
-                        if (miClient.showMsgBoxConfirm("El boleto tiene resultado de laboratorio\n¿Desea eliminar el boleto de SOM Aguacate junto con el análisis?") == JOptionPane.YES_OPTION) {
+                        if (miClient.showMsgBoxConfirm("El boleto tiene resultado de laboratorio\n¿Desea eliminar el boleto de SOM Orgánico junto con el análisis?") == JOptionPane.YES_OPTION) {
                             deleteTicket(ticket);
                         }
                     }
@@ -193,6 +197,11 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
         filter = (int[]) moFiltersMap.get(SModConsts.SU_TIC_DEST);
         if (filter != null) {
             sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_tic_dest" }, (int[]) filter);
+        }
+        
+        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
+        if(!sqlFilter.isEmpty()) {
+            sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + sqlFilter;
         }
         
         msSql = "SELECT "
