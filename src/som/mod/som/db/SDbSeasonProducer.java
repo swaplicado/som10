@@ -177,7 +177,7 @@ public class SDbSeasonProducer extends SDbRegistryUser {
             mnPkProducerId = resultSet.getInt("id_prod");
             mdPricePerTon = resultSet.getDouble("prc_ton");
             mdPriceFreight = resultSet.getDouble("prc_fre");
-            mbDefault = resultSet.getBoolean("b_default");
+            mbDefault = resultSet.getBoolean("b_def");
             mbPricePerTon = resultSet.getBoolean("b_prc_ton");
             mbFreightPayment = resultSet.getBoolean("b_fre_pay");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -251,7 +251,7 @@ public class SDbSeasonProducer extends SDbRegistryUser {
                     //"id_prod = " + mnPkProducerId + ", " +
                     "prc_ton = " + mdPricePerTon + ", " +
                     "prc_fre = " + mdPriceFreight + ", " +
-                    "b_default = " + (mbDefault ? 1 : 0) + ", " +
+                    "b_def = " + (mbDefault ? 1 : 0) + ", " +
                     "b_prc_ton = " + (mbPricePerTon ? 1 : 0) + ", " +
                     "b_fre_pay = " + mbFreightPayment + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +

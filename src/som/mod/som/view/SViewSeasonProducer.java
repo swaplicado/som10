@@ -84,6 +84,7 @@ public class SViewSeasonProducer extends SGridPaneView {
                 + "v.prc_fre, "
                 + "v.b_prc_ton, "
                 + "v.b_fre_pay, "
+                + "v.b_def, "
                 + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
                 + "v.b_can_dis AS " + SDbConsts.FIELD_CAN_DIS + ", "
                 + "v.b_can_del AS " + SDbConsts.FIELD_CAN_DEL + ", "
@@ -118,7 +119,7 @@ public class SViewSeasonProducer extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = null;
         
-        columns = new SGridColumnView[17];
+        columns = new SGridColumnView[18];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, SDbConsts.FIELD_NAME, "Temporada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vr.name", "Región");
@@ -130,6 +131,7 @@ public class SViewSeasonProducer extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "v.prc_ton", "Precio ton $");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_fre_pay", "Se paga flete");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_prc_ton", "Aplica precio ton");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_def", "Región predeterminada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
