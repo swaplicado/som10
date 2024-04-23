@@ -70,6 +70,9 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
     protected boolean mbGrindingDate;
     protected boolean mbFruit;
     protected boolean mbPrintInputType;
+    protected boolean mbAlternativeYieldPercentage;
+    protected boolean mbAlternativeMoisiturePercentage;
+    protected boolean mbAlternativeAcidityPercentage;
     /*
     protected boolean mbUpdatable;
     protected boolean mbDisableable;
@@ -193,6 +196,9 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
     public void setGrindingDate(boolean b) { mbGrindingDate = b; }
     public void setFruit(boolean b) { mbFruit = b; }
     public void setPrintInputType(boolean b) { mbPrintInputType = b; }
+    public void setAlternativeYieldPercentage(boolean b) { mbAlternativeYieldPercentage = b; }
+    public void setAlternativeMoisiturePercentage(boolean b) { mbAlternativeMoisiturePercentage = b; }
+    public void setAlternativeAcidityPercentage(boolean b) { mbAlternativeAcidityPercentage = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
     public void setDeletable(boolean b) { mbDeletable = b; }
@@ -262,6 +268,9 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
     public boolean isGrindingDate() { return mbGrindingDate; }
     public boolean isFruit() { return mbFruit; }
     public boolean isPrintInputType() { return mbPrintInputType; }
+    public boolean isAlternativeYieldPercentage() { return mbAlternativeYieldPercentage; }
+    public boolean isAlternativeMoisiturePercentage() { return mbAlternativeMoisiturePercentage; }
+    public boolean isAlternativeAcidityPercentage() { return mbAlternativeAcidityPercentage; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
     public boolean isDeletable() { return mbDeletable; }
@@ -349,6 +358,9 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
         mbGrindingDate = false;
         mbFruit = false;
         mbPrintInputType = false;
+        mbAlternativeYieldPercentage = false;
+        mbAlternativeMoisiturePercentage = false;
+        mbAlternativeAcidityPercentage = false;
         mbUpdatable = false;
         mbDisableable = false;
         mbDeletable = false;
@@ -463,6 +475,9 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
             mbGrindingDate = resultSet.getBoolean("b_grinding_dt");
             mbFruit = resultSet.getBoolean("b_fruit");
             mbPrintInputType = resultSet.getBoolean("b_prt_inp_tp");
+            mbAlternativeYieldPercentage = resultSet.getBoolean("b_alt_yield_per");
+            mbAlternativeMoisiturePercentage = resultSet.getBoolean("b_alt_moi_per");
+            mbAlternativeAcidityPercentage = resultSet.getBoolean("b_alt_aci_per");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
             mbDeletable = resultSet.getBoolean("b_can_del");
@@ -557,6 +572,9 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
                     (mbGrindingDate ? 1 : 0) + ", " + 
                     (mbFruit ? 1 : 0) + ", " + 
                     (mbPrintInputType ? 1 : 0) + ", " + 
+                    (mbAlternativeYieldPercentage ? 1 : 0) + ", " + 
+                    (mbAlternativeMoisiturePercentage ? 1 : 0) + ", " + 
+                    (mbAlternativeAcidityPercentage ? 1 : 0) + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
                     (mbDeletable ? 1 : 0) + ", " +
@@ -631,6 +649,9 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
                     "b_grinding_dt = " + (mbGrindingDate ? 1 : 0) + ", " +
                     "b_fruit = " + (mbFruit ? 1 : 0) + ", " +
                     "b_prt_inp_tp = " + (mbPrintInputType ? 1 : 0) + ", " +
+                    "b_alt_yield_per = " + (mbAlternativeYieldPercentage ? 1 : 0) + ", " +
+                    "b_alt_moi_per = " + (mbAlternativeMoisiturePercentage ? 1 : 0) + ", " +
+                    "b_alt_aci_per = " + (mbAlternativeAcidityPercentage ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
                     "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
@@ -713,6 +734,9 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
         registry.setGrindingDate(this.isGrindingDate());
         registry.setFruit(this.isFruit());
         registry.setPrintInputType(this.isPrintInputType());
+        registry.setAlternativeYieldPercentage(this.isAlternativeYieldPercentage());
+        registry.setAlternativeMoisiturePercentage(this.isAlternativeMoisiturePercentage());
+        registry.setAlternativeAcidityPercentage(this.isAlternativeAcidityPercentage());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());
         registry.setDeletable(this.isDeletable());

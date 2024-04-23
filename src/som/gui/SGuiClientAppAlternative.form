@@ -299,7 +299,7 @@
                 <Property name="horizontalAlignment" type="int" value="11"/>
                 <Property name="text" type="java.lang.String" value="RELEASE"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[100, 20]"/>
+                  <Dimension value="[150, 20]"/>
                 </Property>
               </Properties>
             </Component>

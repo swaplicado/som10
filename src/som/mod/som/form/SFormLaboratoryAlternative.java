@@ -34,7 +34,7 @@ public class SFormLaboratoryAlternative extends SBeanForm {
     boolean isLabNew;
     
     /**
-     * Creates new form SFormLaboratory
+     * Creates new form SFormLaboratoryAlternative
      * @param client
      * @param title
      */
@@ -90,7 +90,12 @@ public class SFormLaboratoryAlternative extends SBeanForm {
         jlRegion = new javax.swing.JLabel();
         moTextRegion = new sa.lib.gui.bean.SBeanFieldText();
         jPanel16 = new javax.swing.JPanel();
+        jlMoisiturePercentage = new javax.swing.JLabel();
+        moDecMoisiturePercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
         jPanel5 = new javax.swing.JPanel();
+        jPanel17 = new javax.swing.JPanel();
+        jlAcidityPercentage = new javax.swing.JLabel();
+        moDecAcidityPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -234,10 +239,26 @@ public class SFormLaboratoryAlternative extends SBeanForm {
 
         jPanel16.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlMoisiturePercentage.setText("Humedad (%):");
+        jlMoisiturePercentage.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel16.add(jlMoisiturePercentage);
+        jPanel16.add(moDecMoisiturePercentage);
+
         jPanel2.add(jPanel16);
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         jPanel2.add(jPanel5);
+
+        jPanel17.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlAcidityPercentage.setText("Acidez (%):");
+        jlAcidityPercentage.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel17.add(jlAcidityPercentage);
+        jPanel17.add(moDecAcidityPercentage);
+
+        jPanel2.add(jPanel17);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
@@ -253,6 +274,7 @@ public class SFormLaboratoryAlternative extends SBeanForm {
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -260,9 +282,11 @@ public class SFormLaboratoryAlternative extends SBeanForm {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JLabel jlAcidityPercentage;
     private javax.swing.JLabel jlDate;
     private javax.swing.JLabel jlDriver;
     private javax.swing.JLabel jlItem;
+    private javax.swing.JLabel jlMoisiturePercentage;
     private javax.swing.JLabel jlPlates;
     private javax.swing.JLabel jlPlatesCage;
     private javax.swing.JLabel jlProducer;
@@ -272,6 +296,8 @@ public class SFormLaboratoryAlternative extends SBeanForm {
     private javax.swing.JLabel jlTicket;
     private javax.swing.JLabel jlYieldPercentage;
     private sa.lib.gui.bean.SBeanFieldDate moDateDate;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecAcidityPercentage;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecMoisiturePercentage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecYieldPercentage;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     private sa.lib.gui.bean.SBeanFieldText moTextDriver;
@@ -301,6 +327,8 @@ public class SFormLaboratoryAlternative extends SBeanForm {
         moTextDriver.setTextSettings(SGuiUtils.getLabelName(jlDriver.getText()), 150);
         moDateDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlDate.getText()), true);
         moDecYieldPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlYieldPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, true);
+        moDecMoisiturePercentage.setDecimalSettings(SGuiUtils.getLabelName(jlMoisiturePercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, true);
+        moDecAcidityPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlAcidityPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, true);
         
         moFields.addField(moTextScaleName);
         moFields.addField(moTextScaleCode);
@@ -314,6 +342,8 @@ public class SFormLaboratoryAlternative extends SBeanForm {
         moFields.addField(moTextDriver);
         moFields.addField(moDateDate);
         moFields.addField(moDecYieldPercentage);
+        moFields.addField(moDecMoisiturePercentage);
+        moFields.addField(moDecAcidityPercentage);
 
         moFields.setFormButton(jbSave);
         
@@ -344,10 +374,14 @@ public class SFormLaboratoryAlternative extends SBeanForm {
             isLabNew = true;
             moDateDate.setValue(miClient.getSession().getSystemDate());
             moDecYieldPercentage.setValue(0.0);
+            moDecMoisiturePercentage.setValue(0.0);
+            moDecAcidityPercentage.setValue(0.0);
         }
         else {
             moDateDate.setValue(moLabAlternative.getDate());
             moDecYieldPercentage.setValue(moLabAlternative.getYieldPercentage());
+            moDecMoisiturePercentage.setValue(moLabAlternative.getMoisturePercentage());
+            moDecAcidityPercentage.setValue(moLabAlternative.getAcidityPercentage());
         }
 
         mnFormResult = SLibConsts.UNDEFINED;
@@ -395,7 +429,11 @@ public class SFormLaboratoryAlternative extends SBeanForm {
         moTextPlates.setEditable(false);
         moTextPlatesCage.setEditable(false);
         moTextDriver.setEditable(false);
-
+        
+        moDecYieldPercentage.setEnabled(moRegistry.getDbmsItem().isAlternativeYieldPercentage());
+        moDecMoisiturePercentage.setEnabled(moRegistry.getDbmsItem().isAlternativeMoisiturePercentage());
+        moDecAcidityPercentage.setEnabled(moRegistry.getDbmsItem().isAlternativeAcidityPercentage());
+        
         addAllListeners();
     }
 
@@ -416,6 +454,8 @@ public class SFormLaboratoryAlternative extends SBeanForm {
 
         registryLab.setDate(moDateDate.getValue());
         registryLab.setYieldPercentage(moDecYieldPercentage.getValue());
+        registryLab.setMoisturePercentage(moDecMoisiturePercentage.getValue());
+        registryLab.setAcidityPercentage(moDecAcidityPercentage.getValue());
         
         registry.setDbmsLaboratoryAlt(registryLab);
 

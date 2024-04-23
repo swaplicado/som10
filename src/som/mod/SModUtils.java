@@ -33,7 +33,8 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SU_IOD_VAL_RANK,
             SModConsts.SU_EXT_WAH,
             SModConsts.SU_INP_CL_ALL,
-            SModConsts.SU_INP_TP_ALL
+            SModConsts.SU_INP_TP_ALL,
+            SModConsts.SX_ITEM_ALT
         });
     }
 

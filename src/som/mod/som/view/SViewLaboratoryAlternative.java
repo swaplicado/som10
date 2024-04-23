@@ -165,6 +165,8 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
                 + "v.num AS " + SDbConsts.FIELD_NAME + ", " 
                 + "vl.dt, " 
                 + "vl.yield_per, "
+                + "vl.moi_per, "
+                + "vl.aci_per, "
                 + "v.dt, " 
                 + "sc.id_sca, " 
                 + "sc.code, " 
@@ -203,7 +205,7 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
         int col = 0;
         SGridColumnView[] columns;
         if (mnGridSubtype == SModConsts.SX_ALT_W_LAB) {
-            columns = new SGridColumnView[14];
+            columns = new SGridColumnView[16];
         }
         else {
             columns = new SGridColumnView[8];
@@ -220,6 +222,8 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
         if (mnGridSubtype == SModConsts.SX_ALT_W_LAB) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "vl.dt", "Fecha de análisis");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "vl.yield_per", "Rendimiento (%)");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "vl.moi_per", "Humedad (%)");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "vl.aci_per", "Acidez (%)");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, SDbConsts.FIELD_USER_INS_TS, SGridConsts.COL_TITLE_USER_INS_TS);
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_UPD_NAME, SGridConsts.COL_TITLE_USER_UPD_NAME);

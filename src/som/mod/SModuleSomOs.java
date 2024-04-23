@@ -124,6 +124,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjCatProducer;
     private JMenuItem mjCatItem;
     private JMenuItem mjCatItemBatch;
+    private JMenuItem mjCatItemAlternative;
     private JMenuItem mjCatInputType;
     private JMenuItem mjCatInputClass;
     private JMenuItem mjCatInputCategory;
@@ -242,6 +243,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCatProducer = new JMenuItem("Proveedores");
         mjCatItem = new JMenuItem("Ítems");
         mjCatItemBatch = new JMenuItem("Lotes de ítems");
+        mjCatItemAlternative = new JMenuItem("Ítems alternos");
         mjCatInputType = new JMenuItem("Tipos de insumo");
         mjCatInputClass = new JMenuItem("Clases de insumo");
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
@@ -263,6 +265,8 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCat.add(mjCatProducer);
         mjCat.add(mjCatItem);
         mjCat.add(mjCatItemBatch);
+        mjCat.addSeparator();
+        mjCat.add(mjCatItemAlternative);
         mjCat.addSeparator();
         mjCat.add(mjCatInputType);
         mjCat.add(mjCatInputClass);
@@ -289,6 +293,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         mjCatProducer.addActionListener(this);
         mjCatItem.addActionListener(this);
         mjCatItemBatch.addActionListener(this);
+        mjCatItemAlternative.addActionListener(this);
         mjCatInputType.addActionListener(this);
         mjCatInputClass.addActionListener(this);
         mjCatInputCategory.addActionListener(this);
@@ -1242,6 +1247,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatItemBatch) {
                 miClient.getSession().showView(SModConsts.S_PRC_BATCH, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatItemAlternative) {
+                miClient.getSession().showView(SModConsts.SX_ITEM_ALT, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatInputType) {
                 miClient.getSession().showView(SModConsts.SU_INP_TP, SLibConsts.UNDEFINED, null);
