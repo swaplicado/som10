@@ -522,7 +522,7 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "b_rev_2", "2a pesada Revuelta");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "w_name", "Almacén descarga");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "w_code", "Almacén descarga código");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "b_alt", "SOM Aguacate");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "b_alt", "SOM Orgánico");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
