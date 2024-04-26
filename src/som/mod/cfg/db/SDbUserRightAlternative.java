@@ -128,6 +128,7 @@ public class SDbUserRightAlternative extends SDbRegistry implements SGridRow {
         verifyRegistryNew(session);
 
         if (mbRegistryNew) {
+            mnFkUserId = session.getUser().getPkUserId();
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkUserId + ", " +
                     mnPkRightId + ", " +

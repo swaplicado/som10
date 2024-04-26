@@ -233,7 +233,7 @@ public class SGuiClientAppAlternative extends JFrame implements SGuiClient, Acti
         jlAppRelease.setForeground(new java.awt.Color(0, 153, 153));
         jlAppRelease.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jlAppRelease.setText("RELEASE");
-        jlAppRelease.setPreferredSize(new java.awt.Dimension(100, 20));
+        jlAppRelease.setPreferredSize(new java.awt.Dimension(150, 20));
         jpStatusBar2.add(jlAppRelease);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);

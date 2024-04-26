@@ -39,6 +39,7 @@ import som.mod.som.form.SFormInputType;
 import som.mod.som.form.SFormIodineValueRank;
 import som.mod.som.form.SFormItem;
 import som.mod.som.form.SFormGrindingLot;
+import som.mod.som.form.SFormItemAlternative;
 import som.mod.som.form.SFormProducer;
 import som.mod.som.form.SFormScale;
 import som.mod.som.view.SViewExternalWarehouse;
@@ -49,6 +50,7 @@ import som.mod.som.view.SViewInputType;
 import som.mod.som.view.SViewIodineValueRank;
 import som.mod.som.view.SViewItem;
 import som.mod.som.view.SViewGrindingLots;
+import som.mod.som.view.SViewItemAlternative;
 import som.mod.som.view.SViewProducer;
 import som.mod.som.view.SViewScale;
 
@@ -68,6 +70,7 @@ public class SModuleSom extends SGuiModule {
     private SFormScale moFormScale;
     private SFormProducer moFormProducer;
     private SFormIodineValueRank moFormIodineValueRank;
+    private SFormItemAlternative moFormItemAlternative;
 
     public SModuleSom(SGuiClient client) {
         super(client, SModConsts.MOD_SOM, SLibConsts.UNDEFINED);
@@ -108,6 +111,7 @@ public class SModuleSom extends SGuiModule {
                 registry = new SDbUnit();
                 break;
             case SModConsts.SU_ITEM:
+            case SModConsts.SX_ITEM_ALT:
                 registry = new SDbItem();
                 break;
             case SModConsts.S_GRINDING_LOT:
@@ -376,6 +380,9 @@ public class SModuleSom extends SGuiModule {
             case SModConsts.SU_IOD_VAL_RANK:
                 view = new SViewIodineValueRank(miClient, "Rangos yodo");
                 break;
+            case SModConsts.SX_ITEM_ALT:
+                view = new SViewItemAlternative(miClient, "Ítems alternos");
+                break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -432,6 +439,10 @@ public class SModuleSom extends SGuiModule {
             case SModConsts.SU_IOD_VAL_RANK:
                 if (moFormIodineValueRank == null) moFormIodineValueRank = new SFormIodineValueRank(miClient, "Rango de yodo");
                 form = moFormIodineValueRank;
+                break;
+            case SModConsts.SX_ITEM_ALT:
+                if(moFormItemAlternative == null) moFormItemAlternative = new SFormItemAlternative(miClient, "Ítem alterno");
+                form = moFormItemAlternative;
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);

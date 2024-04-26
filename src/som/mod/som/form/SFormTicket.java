@@ -25,6 +25,8 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
@@ -48,7 +50,7 @@ import som.mod.som.db.SSomUtils;
  *
  * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
-public class SFormTicket extends SBeanForm implements ActionListener, ItemListener, FocusListener {
+public class SFormTicket extends SBeanForm implements ActionListener, ItemListener, FocusListener, ChangeListener {
 
     private Connection moConnectionRevuelta;
 
@@ -113,6 +115,9 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jlInputSource = new javax.swing.JLabel();
         moKeyInputSource = new sa.lib.gui.bean.SBeanFieldKey();
         jbInputSource = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jlRegion = new javax.swing.JLabel();
+        moKeyRegion = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel6 = new javax.swing.JPanel();
         jlPlates = new javax.swing.JLabel();
         moTextPlates = new sa.lib.gui.bean.SBeanFieldText();
@@ -272,6 +277,16 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jbInputSource.setToolTipText("Seleccionar origen insumo del proveedor");
         jbInputSource.setPreferredSize(new java.awt.Dimension(23, 23));
         jPanel21.add(jbInputSource);
+
+        jLabel6.setPreferredSize(new java.awt.Dimension(5, 23));
+        jPanel21.add(jLabel6);
+
+        jlRegion.setText("Región:*");
+        jlRegion.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel21.add(jlRegion);
+
+        moKeyRegion.setPreferredSize(new java.awt.Dimension(202, 23));
+        jPanel21.add(moKeyRegion);
 
         jPanel2.add(jPanel21);
 
@@ -527,6 +542,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -576,6 +592,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JLabel jlPlates;
     private javax.swing.JLabel jlPlatesCage;
     private javax.swing.JLabel jlProducer;
+    private javax.swing.JLabel jlRegion;
     private javax.swing.JLabel jlScale;
     private javax.swing.JLabel jlTicDest;
     private javax.swing.JLabel jlTicOrig;
@@ -604,6 +621,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private sa.lib.gui.bean.SBeanFieldKey moKeyInputSource;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProducer;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyRegion;
     private sa.lib.gui.bean.SBeanFieldKey moKeyScale;
     private sa.lib.gui.bean.SBeanFieldKey moKeyTicDest;
     private sa.lib.gui.bean.SBeanFieldKey moKeyTicOrig;
@@ -628,6 +646,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moKeyProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlProducer.getText()), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
         moKeyInputSource.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputSource.getText()), true);
+        moKeyRegion.setKeySettings(miClient, SGuiUtils.getLabelName(jlRegion.getText()), true);
         moTextPlates.setTextSettings(SGuiUtils.getLabelName(jlPlates.getText()), 25);
         moTextPlatesCage.setTextSettings(SGuiUtils.getLabelName(jlPlatesCage.getText()), 25, 0);
         moTextDriver.setTextSettings(SGuiUtils.getLabelName(jlDriver.getText()), 150);
@@ -653,6 +672,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moFields.addField(moKeyProducer);
         moFields.addField(moKeyItem);
         moFields.addField(moKeyInputSource);
+        moFields.addField(moKeyRegion);
         moFields.addField(moTextPlates);
         moFields.addField(moTextPlatesCage);
         moFields.addField(moTextDriver);
@@ -744,6 +764,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 jbSaveSend.setEnabled(enableFields && moRegistry != null && moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA);
                 moKeyTicOrig.setEnabled(enableFields);
                 moKeyTicDest.setEnabled(enableFields);
+                if (moKeyRegion.getItemCount() <= 2) {
+                    moKeyRegion.setEnabled(false);
+                }
+                else {
+                    moKeyRegion.setEnabled(true);
+                }
             }
             else {
                 if (moRegistry.isRegistryNew()) {
@@ -777,6 +803,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                     jbSaveSend.setEnabled(true);
                     moKeyTicOrig.setEnabled(true);
                     moKeyTicDest.setEnabled(true);
+                    if (moKeyRegion.getItemCount() <= 2) {
+                        moKeyRegion.setEnabled(false);
+                    }
+                    else {
+                        moKeyRegion.setEnabled(true);
+                    }
                 }
                 else {
                     boolean enable = (!mbIsRevImport1 && !moRegistry.isTared());
@@ -811,6 +843,17 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                     jbSaveSend.setEnabled(true);
                     moKeyTicOrig.setEnabled(!enable);
                     moKeyTicDest.setEnabled(!enable);
+                    if (enable) {
+                        if (moKeyRegion.getItemCount() <= 2) {
+                            moKeyRegion.setEnabled(false);
+                        }
+                        else {
+                            moKeyRegion.setEnabled(true);
+                        }
+                    }
+                    else {
+                        moKeyRegion.setEnabled(false);                        
+                    }
                 }
             }
         }
@@ -850,6 +893,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moKeyTicDest.setEnabled(false);
             jbSave.setEnabled(false);
             moTextNote.setEnabled(false);
+            moKeyRegion.setEnabled(false);
         }
     }
 
@@ -860,6 +904,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         else {
             moProducer = (SDbProducer) miClient.getSession().readRegistry(SModConsts.SU_PROD, moKeyProducer.getValue());
             moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
+            readRegion();
         }
     }
 
@@ -907,6 +952,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 if (moProducer != null) {
                     moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
                 }
+                
+                readRegion();
             }
             catch (SQLException e) {
                 SLibUtils.showException(this, e);
@@ -1111,15 +1158,42 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         }
     }
 
-    private void getSeasonRegion() {
+//    private void getSeasonRegion() {
+//        mnSeasonId = 0;
+//        mnRegionId = 0;
+//
+//        try {
+//            mnSeasonId = SSomUtils.getProperSeasonId(miClient.getSession(), moDatetimeArrival.getValue(), moKeyItem.getValue()[0], moKeyProducer.getValue()[0]);
+//
+//            if (mnSeasonId != SLibConsts.UNDEFINED) {
+//                mnRegionId = SSomUtils.getProperRegionId(miClient.getSession(), mnSeasonId, moKeyItem.getValue()[0], moKeyProducer.getValue()[0]);
+//            }
+//        }
+//        catch (Exception e) {
+//             SLibUtils.showException(this, e);
+//        }
+//    }
+    
+    private void readRegion() {
         mnSeasonId = 0;
         mnRegionId = 0;
 
         try {
-            mnSeasonId = SSomUtils.getProperSeasonId(miClient.getSession(), moDatetimeArrival.getValue(), moKeyItem.getValue()[0], moKeyProducer.getValue()[0]);
+            if (moKeyItem.getValue().length != 0) {
+                mnSeasonId = SSomUtils.getProperSeasonId(miClient.getSession(), moDatetimeArrival.getValue(), moKeyItem.getValue()[0], moKeyProducer.getValue()[0]);
 
-            if (mnSeasonId != SLibConsts.UNDEFINED) {
-                mnRegionId = SSomUtils.getProperRegionId(miClient.getSession(), mnSeasonId, moKeyItem.getValue()[0], moKeyProducer.getValue()[0]);
+                SGuiParams params = new SGuiParams();
+                params.getParamsMap().put(SModConsts.SU_SEAS, mnSeasonId);
+                params.getParamsMap().put(SModConsts.SU_ITEM, moKeyItem.getValue()[0]);
+                params.getParamsMap().put(SModConsts.SU_PROD, moKeyProducer.getValue()[0]);
+                miClient.getSession().populateCatalogue(moKeyRegion, SModConsts.SX_PROD_REG_ITEM_SEAS, SLibConsts.UNDEFINED, params);
+                
+                setEnabledFields(moKeyItem.isEnabled());
+                
+                if (moKeyRegion.getItemCount() == 2) {
+                    moKeyRegion.setEnabled(false);
+                    moKeyRegion.setSelectedIndex(1);
+                }
             }
         }
         catch (Exception e) {
@@ -1206,6 +1280,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moDecPackingEmptyQuantityArrival.addFocusListener(this);
         moDecPackingFullQuantityDeparture.addFocusListener(this);
         moDecPackingEmptyQuantityDeparture.addFocusListener(this);
+        moDatetimeArrival.getComponent().addChangeListener(this);
     }
 
     @Override
@@ -1227,6 +1302,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moDecPackingEmptyQuantityArrival.removeFocusListener(this);
         moDecPackingFullQuantityDeparture.removeFocusListener(this);
         moDecPackingEmptyQuantityDeparture.removeFocusListener(this);
+        moDatetimeArrival.getComponent().removeChangeListener(this);
     }
 
     @Override
@@ -1330,6 +1406,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
         itemStateWeightSourceAvailable();
         computeWeightAverage();
+        readRegion();
+        moKeyRegion.setValue(new int[] { moRegistry.getFkRegionId_n()} );
 
         addAllListeners();
     }
@@ -1343,7 +1421,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             // nothing to do by now
         }
 
-        getSeasonRegion();
+        //getSeasonRegion();
+        //readRegion();
 
         registry.setNumber(moIntTicket.getValue());
         registry.setDate(moDatetimeArrival.getValue());
@@ -1409,7 +1488,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         registry.setFkScaleId(moKeyScale.isVisible() ? moKeyScale.getValue()[0] : registry.getFkScaleId());
         registry.setFkTicketStatusId(registry.isRegistryNew() ? SModSysConsts.SS_TIC_ST_SCA : registry.getFkTicketStatusId());
         registry.setFkSeasonId_n(mnSeasonId);
-        registry.setFkRegionId_n(mnRegionId);
+        registry.setFkRegionId_n(!moKeyRegion.isEnabled() ? 0 : moKeyRegion.getValue()[0]);
         registry.setFkItemId(moKeyItem.getValue()[0]);
         registry.setFkUnitId(moKeyItem.getSelectedItem().getForeignKey()[0]);
         registry.setFkProducerId(moKeyProducer.getValue()[0]);
@@ -1609,6 +1688,17 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 textField == moDecPackingEmptyQuantityDeparture.getComponent()) {
 
                 computeWeightAverage();
+            }
+        }
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (e.getSource() instanceof javax.swing.JSpinner) {
+            JSpinner spinner = (JSpinner) e.getSource();
+            
+            if (spinner == moDatetimeArrival.getComponent()) {
+                readRegion();
             }
         }
     }

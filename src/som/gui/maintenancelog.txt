@@ -1,4 +1,19 @@
 ================================================================================
+2024-04-23, 1.0 093.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Adición de los campos "humedad y acidez" en los resultados de laboratorio del SOM Alterno.
+2) Se agrega la funcionalidad en el SOM Original de elegir cuales son los parámetros de laboratorio en SOM alterno para los ítems configurados como alternos.
+
+================================================================================
+2024-04-19, 1.0 092.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Adición del filtro de categorías de insumo a las vistas y al reporte de SOM Alterno.
+2) Adición del campo "Región" en la captura de boletos del SOM Original, mientras haya mas de una para un solo proveedor, ítem y temporada.
+3) Se agrega en el SOM Original la interfaz de configuración de roles en el SOM Alterno.
+
+================================================================================
 2024-04-04, 1.0 091.3
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
@@ -8,7 +23,7 @@ Sergio Abraham FLORES GUTIÉRREZ
 2024-03-25, 1.0 091.2
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
-1) Creación de los reportes Histórico mensual y Resumen báscula para el sistema de SOM Orgánico.
+1) Creación de los reportes Histórico mensual y Resumen báscula para el sistema de SOM Alterno.
 2) Restricción para no poder modificar boletos de SOM Convencional mientras haya una contraparte en SOM Orgánico.
 
 ================================================================================

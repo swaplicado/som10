@@ -46,6 +46,7 @@ import som.mod.som.form.SFormGrindingLinkItemParam;
 import som.mod.cfg.form.SFormProductionLine;
 import som.mod.cfg.form.SFormReportingGroup;
 import som.mod.cfg.form.SFormUser;
+import som.mod.cfg.form.SFormUserAlternative;
 import som.mod.cfg.form.SFormYear;
 import som.mod.cfg.view.SViewBranchPlant;
 import som.mod.cfg.view.SViewBranchWarehouse;
@@ -56,6 +57,8 @@ import som.mod.som.view.SViewGrindingLinkItmParam;
 import som.mod.som.view.SViewGrindingParameters;
 import som.mod.cfg.view.SViewReportingGroup;
 import som.mod.cfg.view.SViewUser;
+import som.mod.cfg.view.SViewUserAlternative;
+import som.mod.cfg.view.SViewUserAlternativeRight;
 import som.mod.cfg.view.SViewUserInputCategories;
 import som.mod.cfg.view.SViewUserRight;
 import som.mod.cfg.view.SViewUserScale;
@@ -83,6 +86,8 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
     private JMenuItem mjUsrUserRights;
     private JMenuItem mjUsrUserScales;
     private JMenuItem mjUsrUserInputCategories;
+    private JMenuItem mjUsrUserAlt;
+    private JMenuItem mjUsrUserAltRights;
     private JMenu mjCtr;
     private JMenuItem mjCtrYear;
 
@@ -96,6 +101,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
     private SFormReportingGroup moFormReportingGroup;
     private SFormUser moFormUser;
     private SFormYear moFormYear;
+    private SFormUserAlternative moFormUserAlternative;
 
     public SModuleCfg(SGuiClient client) {
         super(client, SModConsts.MOD_CFG, SLibConsts.UNDEFINED);
@@ -140,17 +146,25 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
         mjUsrUserRights = new JMenuItem("Usuarios vs. derechos (Q)");
         mjUsrUserScales = new JMenuItem("Usuarios vs. básculas (Q)");
         mjUsrUserInputCategories = new JMenuItem("Usuarios vs. categorías de insumo (Q)");
+        mjUsrUserAlt = new JMenuItem("Usuarios alternos");
+        mjUsrUserAltRights = new JMenuItem("Usuarios alternos vs. derechos (Q)");
 
         mjUsr.add(mjUsrUser);
         mjUsr.addSeparator();
         mjUsr.add(mjUsrUserRights);
         mjUsr.add(mjUsrUserScales);
         mjUsr.add(mjUsrUserInputCategories);
+        mjUsr.addSeparator();
+        mjUsr.add(mjUsrUserAlt);
+        mjUsr.addSeparator();
+        mjUsr.add(mjUsrUserAltRights);
 
         mjUsrUser.addActionListener(this);
         mjUsrUserRights.addActionListener(this);
         mjUsrUserScales.addActionListener(this);
         mjUsrUserInputCategories.addActionListener(this);
+        mjUsrUserAlt.addActionListener(this);
+        mjUsrUserAltRights.addActionListener(this);
 
         mjUsr.setEnabled(miClient.getSession().getUser().isSupervisor());
 
@@ -244,6 +258,9 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.CU_REP_GRP:
                 registry = new SDbReportingGroup();
+                break;
+            case SModConsts.CU_USR_ALT_RIG:
+                registry = new SDbUser();
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -500,6 +517,12 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.CU_REP_GRP:
                 view = new SViewReportingGroup(miClient, "Agrupadores reporte");
                 break;
+            case SModConsts.CU_USR_ALT_RIG:
+                switch (subtype) {
+                    case SModConsts.CS_ALT_RIG: view = new SViewUserAlternativeRight(miClient, "Usuarios alt. vs. derechos (Q)"); break;
+                    case SLibConsts.UNDEFINED: view = new SViewUserAlternative(miClient, "Usuarios alternos"); break;
+                }
+            break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -557,6 +580,10 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 if (moFormYear == null) moFormYear = new SFormYear(miClient, "Ejercicio");
                 form = moFormYear;
                 break;
+            case SModConsts.CU_USR_ALT_RIG:
+                if (moFormUserAlternative == null) moFormUserAlternative = new SFormUserAlternative(miClient, "Usuario alterno");
+                form = moFormUserAlternative;
+                break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -609,6 +636,12 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjUsrUserInputCategories) {
                 showView(SModConsts.CU_USR_INP_CT, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjUsrUserAlt) {
+                showView(SModConsts.CU_USR_ALT_RIG, SLibConsts.UNDEFINED, null);                
+            }
+            else if (menuItem == mjUsrUserAltRights) {
+                showView(SModConsts.CU_USR_ALT_RIG, SModConsts.CS_ALT_RIG, null);                
             }
             else if (menuItem == mjCtrYear) {
                 showView(SModConsts.CU_YEAR, SLibConsts.UNDEFINED, null);

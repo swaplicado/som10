@@ -103,6 +103,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCatProducer;
     private JMenuItem mjCatItem;
     private JMenuItem mjCatLot;
+    private JMenuItem mjCatItemAlternative;
     private JMenuItem mjCatInputType;
     private JMenuItem mjCatInputClass;
     private JMenuItem mjCatInputCategory;
@@ -197,6 +198,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatProducer = new JMenuItem("Proveedores");
         mjCatItem = new JMenuItem("Ítems");
         mjCatLot = new JMenuItem("Lotes");
+        mjCatItemAlternative = new JMenuItem("Ítems alternos");
         mjCatInputType = new JMenuItem("Tipos de insumo");
         mjCatInputClass = new JMenuItem("Clases de insumo");
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
@@ -211,6 +213,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCat.add(mjCatProducer);
         mjCat.add(mjCatItem);
         mjCat.add(mjCatLot);
+        mjCat.addSeparator();
+        mjCat.add(mjCatItemAlternative);
         mjCat.addSeparator();
         mjCat.add(mjCatInputType);
         mjCat.add(mjCatInputClass);
@@ -231,6 +235,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatProducer.addActionListener(this);
         mjCatItem.addActionListener(this);
         mjCatLot.addActionListener(this);
+        mjCatItemAlternative.addActionListener(this);
         mjCatInputType.addActionListener(this);
         mjCatInputClass.addActionListener(this);
         mjCatInputCategory.addActionListener(this);
@@ -589,6 +594,22 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                         + "WHERE s.b_del = 0 AND s.b_dis = 0 "
                         + "ORDER BY re.name, s.id_seas, s.id_reg, s.id_item, s.id_prod ";
                 break;
+            case SModConsts.SX_PROD_REG_ITEM_SEAS:
+                settings = new SGuiCatalogueSettings("Región", 1);
+                int itemId = 0;
+                int prodId = 0;
+                int seasId = 0;
+                if (params != null) {
+                    itemId = (int) params.getParamsMap().get(SModConsts.SU_ITEM);
+                    prodId = (int) params.getParamsMap().get(SModConsts.SU_PROD);
+                    seasId = (int) params.getParamsMap().get(SModConsts.SU_SEAS);
+                }
+                sql = "SELECT s.id_reg AS " + SDbConsts.FIELD_ID + "1, re.name AS " + SDbConsts.FIELD_ITEM + " " 
+                        + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_PROD) + " AS s "
+                        + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_REG) + " AS re ON s.id_reg = re.id_reg "
+                        + "WHERE s.b_del = 0 AND s.b_dis = 0 AND s.id_seas = " + seasId + " AND s.id_item = " + itemId + " AND s.id_prod = " + prodId + " " 
+                        + "ORDER BY re.name, s.id_seas, s.id_reg, s.id_item, s.id_prod ";
+                break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -935,6 +956,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatLot) {
                 miClient.getSession().showView(SModConsts.S_GRINDING_LOT, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatItemAlternative) {
+                miClient.getSession().showView(SModConsts.SX_ITEM_ALT, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatInputType) {
                 miClient.getSession().showView(SModConsts.SU_INP_TP, SLibConsts.UNDEFINED, null);

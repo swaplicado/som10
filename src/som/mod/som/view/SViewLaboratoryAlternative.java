@@ -40,6 +40,7 @@ import som.mod.som.db.SSomUtils;
 public class SViewLaboratoryAlternative extends SGridPaneView implements ActionListener {
 
     private SGridFilterDatePeriod moFilterDatePeriod;
+    private SPaneUserInputCategory moPaneFilterUserInputCategory;
     private JButton mjbPrint;
     
     private String msItemCodes;
@@ -54,13 +55,16 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
         try {
             moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
             moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
-
+            
+            moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "itm");
+            
             mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
 
             if (mnGridSubtype == SModConsts.SX_ALT_W_LAB) {
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
                 getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
             }
+            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
             
             msItemCodes = SSomUtils.getAlternativeItemCodes(miClient.getSession());
         }
@@ -150,12 +154,19 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
             sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + "v.fk_lab_n IS NULL ";
         }
         
+        String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
+        if(!sqlFilter.isEmpty()) {
+            sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + sqlFilter;
+        }
+        
         msSql = "SELECT " 
                 + "v.id_tic AS " + SDbConsts.FIELD_ID + "1, " 
                 + "v.num AS " + SDbConsts.FIELD_CODE + ", " 
                 + "v.num AS " + SDbConsts.FIELD_NAME + ", " 
                 + "vl.dt, " 
                 + "vl.yield_per, "
+                + "vl.moi_per, "
+                + "vl.aci_per, "
                 + "v.dt, " 
                 + "sc.id_sca, " 
                 + "sc.code, " 
@@ -194,7 +205,7 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
         int col = 0;
         SGridColumnView[] columns;
         if (mnGridSubtype == SModConsts.SX_ALT_W_LAB) {
-            columns = new SGridColumnView[14];
+            columns = new SGridColumnView[16];
         }
         else {
             columns = new SGridColumnView[8];
@@ -211,6 +222,8 @@ public class SViewLaboratoryAlternative extends SGridPaneView implements ActionL
         if (mnGridSubtype == SModConsts.SX_ALT_W_LAB) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "vl.dt", "Fecha de análisis");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "vl.yield_per", "Rendimiento (%)");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "vl.moi_per", "Humedad (%)");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "vl.aci_per", "Acidez (%)");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, SDbConsts.FIELD_USER_INS_TS, SGridConsts.COL_TITLE_USER_INS_TS);
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_UPD_NAME, SGridConsts.COL_TITLE_USER_UPD_NAME);

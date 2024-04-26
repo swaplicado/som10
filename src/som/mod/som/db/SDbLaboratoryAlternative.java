@@ -24,6 +24,8 @@ public class SDbLaboratoryAlternative extends SDbRegistryUser {
     protected int mnPkAlternativeLaboratoryId;
     protected Date mtDate;
     protected double mdYieldPercentage;
+    protected double mdMoisturePercentage;
+    protected double mdAcidityPercentage;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -39,6 +41,8 @@ public class SDbLaboratoryAlternative extends SDbRegistryUser {
     public void setPkAlternativeLaboratoryId(int n) { mnPkAlternativeLaboratoryId = n; }
     public void setDate(Date t) { mtDate = t; }
     public void setYieldPercentage(double d) { mdYieldPercentage = d; }
+    public void setMoisturePercentage(double d) { mdMoisturePercentage = d; }
+    public void setAcidityPercentage(double d) { mdAcidityPercentage = d; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
@@ -47,6 +51,8 @@ public class SDbLaboratoryAlternative extends SDbRegistryUser {
     public int getPkAlternativeLaboratoryId() { return mnPkAlternativeLaboratoryId; }
     public Date getDate() { return mtDate; }
     public double getYieldPercentage() { return mdYieldPercentage; }
+    public double getMoisturePercentage() { return mdMoisturePercentage; }
+    public double getAcidityPercentage() { return mdAcidityPercentage; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -69,6 +75,8 @@ public class SDbLaboratoryAlternative extends SDbRegistryUser {
         mnPkAlternativeLaboratoryId = 0;
         mtDate = null;
         mdYieldPercentage = 0;
+        mdMoisturePercentage = 0;
+        mdAcidityPercentage = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -120,6 +128,8 @@ public class SDbLaboratoryAlternative extends SDbRegistryUser {
             mnPkAlternativeLaboratoryId = resultSet.getInt("id_alt_lab");
             mtDate = resultSet.getDate("dt");
             mdYieldPercentage = resultSet.getDouble("yield_per");
+            mdMoisturePercentage = resultSet.getDouble("moi_per");
+            mdAcidityPercentage = resultSet.getDouble("aci_per");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -151,6 +161,8 @@ public class SDbLaboratoryAlternative extends SDbRegistryUser {
                     mnPkAlternativeLaboratoryId + ", " + 
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " + 
                     mdYieldPercentage + ", " + 
+                    mdMoisturePercentage + ", " + 
+                    mdAcidityPercentage + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -164,6 +176,8 @@ public class SDbLaboratoryAlternative extends SDbRegistryUser {
                     //"id_alt_lab = " + mnPkAlternativeLaboratoryId + ", " +
                     "dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " +
                     "yield_per = " + mdYieldPercentage + ", " +
+                    "moi_per = " + mdMoisturePercentage + ", " +
+                    "aci_per = " + mdAcidityPercentage + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -190,6 +204,8 @@ public class SDbLaboratoryAlternative extends SDbRegistryUser {
         registry.setPkAlternativeLaboratoryId(this.getPkAlternativeLaboratoryId());
         registry.setDate(this.getDate());
         registry.setYieldPercentage(this.getYieldPercentage());
+        registry.setMoisturePercentage(this.getMoisturePercentage());
+        registry.setAcidityPercentage(this.getAcidityPercentage());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

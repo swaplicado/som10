@@ -21,6 +21,7 @@ import sa.lib.db.SDbRegistry;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
+import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanFieldDecimal;
@@ -28,7 +29,6 @@ import sa.lib.gui.bean.SBeanForm;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
 import som.mod.som.db.SDbLaboratory;
-import som.mod.som.db.SDbRegion;
 import som.mod.som.db.SDbSeason;
 import som.mod.som.db.SDbTicket;
 import som.mod.som.db.SSomUtils;
@@ -102,7 +102,7 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         moBoolMfgOutsourcing = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel15 = new javax.swing.JPanel();
         jlRegion = new javax.swing.JLabel();
-        moTextRegion = new sa.lib.gui.bean.SBeanFieldText();
+        moKeyRegion = new sa.lib.gui.bean.SBeanFieldKey();
         jpDummy3 = new javax.swing.JPanel();
         jPanel50 = new javax.swing.JPanel();
         jlTicketOrigin = new javax.swing.JLabel();
@@ -341,10 +341,8 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         jlRegion.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel15.add(jlRegion);
 
-        moTextRegion.setEditable(false);
-        moTextRegion.setText("sBeanFieldText2");
-        moTextRegion.setPreferredSize(new java.awt.Dimension(200, 23));
-        jPanel15.add(moTextRegion);
+        moKeyRegion.setPreferredSize(new java.awt.Dimension(202, 23));
+        jPanel15.add(moKeyRegion);
 
         jPanel2.add(jPanel15);
         jPanel2.add(jpDummy3);
@@ -901,13 +899,13 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightSource;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightSystemPayment;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProducer;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyRegion;
     private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
     private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
     private sa.lib.gui.bean.SBeanFieldText moTextDriver;
     private sa.lib.gui.bean.SBeanFieldText moTextItem;
     private sa.lib.gui.bean.SBeanFieldText moTextPlates;
     private sa.lib.gui.bean.SBeanFieldText moTextPlatesCage;
-    private sa.lib.gui.bean.SBeanFieldText moTextRegion;
     private sa.lib.gui.bean.SBeanFieldText moTextScaleCode;
     private sa.lib.gui.bean.SBeanFieldText moTextScaleName;
     private sa.lib.gui.bean.SBeanFieldText moTextSeason;
@@ -953,7 +951,7 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         moTextSeason.setTextSettings(SGuiUtils.getLabelName(jlSeason.getText()), 25);
         moKeyTicketOrigin.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketOrigin.getText()), true);
         moKeyTicketDestination.setKeySettings(miClient, SGuiUtils.getLabelName(jlTicketDestination.getText()), true);
-        moTextRegion.setTextSettings(SGuiUtils.getLabelName(jlRegion.getText()), 25);
+        moKeyRegion.setKeySettings(miClient, SGuiUtils.getLabelName(jlRegion.getText()), true);
         moTextPlates.setTextSettings(SGuiUtils.getLabelName(jlPlates.getText()), 25);
         moTextPlatesCage.setTextSettings(SGuiUtils.getLabelName(jlPlatesCage.getText()), 25);
         moTextDriver.setTextSettings(SGuiUtils.getLabelName(jlDriver.getText()), 150);
@@ -1003,7 +1001,7 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         moFields.addField(moTextSeason);
         moFields.addField(moKeyTicketOrigin);
         moFields.addField(moKeyTicketDestination);
-        moFields.addField(moTextRegion);
+        moFields.addField(moKeyRegion);
         moFields.addField(moTextPlates);
         moFields.addField(moTextPlatesCage);
         moFields.addField(moTextDriver);
@@ -1042,12 +1040,24 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         try {
             mnSeasonId = SSomUtils.getProperSeasonId(miClient.getSession(), moRegistry.getDatetimeArrival(), moRegistry.getFkItemId(), moKeyProducer.getValue()[0]);
 
-            if (mnSeasonId != SLibConsts.UNDEFINED) {
-                mnRegionId = SSomUtils.getProperRegionId(miClient.getSession(), mnSeasonId, moRegistry.getFkItemId(), moKeyProducer.getValue()[0]);
+            SGuiParams params = new SGuiParams();
+            params.getParamsMap().put(SModConsts.SU_SEAS, mnSeasonId);
+            params.getParamsMap().put(SModConsts.SU_ITEM, moRegistry.getFkItemId());
+            params.getParamsMap().put(SModConsts.SU_PROD, moKeyProducer.getValue()[0]);
+            miClient.getSession().populateCatalogue(moKeyRegion, SModConsts.SX_PROD_REG_ITEM_SEAS, SLibConsts.UNDEFINED, params);
+            if (moKeyRegion.getItemCount() <= 1) {
+                moKeyRegion.setEnabled(false);
+            }
+            else if (moKeyRegion.getItemCount() == 2) {
+                moKeyRegion.setEnabled(false);
+                moKeyRegion.setSelectedIndex(1);
+            }
+            else {
+                moKeyRegion.setEnabled(true);
             }
 
             moTextSeason.setValue(mnSeasonId == SLibConsts.UNDEFINED ? "" : miClient.getSession().readField(SModConsts.SU_SEAS, new int[] { mnSeasonId }, SDbSeason.FIELD_NAME));
-            moTextRegion.setValue(mnRegionId == SLibConsts.UNDEFINED ? "" : miClient.getSession().readField(SModConsts.SU_REG, new int[] { mnRegionId }, SDbRegion.FIELD_NAME));
+        
         }
         catch (Exception e) {
              SLibUtils.showException(this, e);
@@ -1169,6 +1179,12 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
+    
+        SGuiParams params = new SGuiParams();
+        params.getParamsMap().put(SModConsts.SU_SEAS, moRegistry.getFkSeasonId_n());
+        params.getParamsMap().put(SModConsts.SU_ITEM, moRegistry.getFkItemId());
+        params.getParamsMap().put(SModConsts.SU_PROD, moRegistry.getFkProducerId());
+        miClient.getSession().populateCatalogue(moKeyRegion, SModConsts.SX_PROD_REG_ITEM_SEAS, SLibConsts.UNDEFINED, params);
     }
 
     @Override
@@ -1220,7 +1236,7 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         moTextDriver.setValue(moRegistry.getDriver());
         moTextItem.setValue(moRegistry.getXtaItem());
         moTextSeason.setValue(moRegistry.getXtaSeason());
-        moTextRegion.setValue(moRegistry.getXtaRegion());
+        moKeyRegion.setValue(new int[] { moRegistry.getFkRegionId_n() });
         moKeyProducer.setValue(new int[] { mnProducerId = moRegistry.getFkProducerId() });
         moKeyTicketOrigin.setValue(new int[] { moRegistry.getFkTicketOriginId() });
         moKeyTicketDestination.setValue(new int[] { moRegistry.getFkTicketDestinationId()});
@@ -1268,7 +1284,7 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         moTextTicket.setEditable(false);
         moTextItem.setEditable(false);
         moTextSeason.setEditable(false);
-        moTextRegion.setEditable(false);
+        moKeyRegion.setEnabled(false);
         moTextPlates.setEditable(false);
         moTextPlatesCage.setEditable(false);
         moTextDriver.setEditable(false);
@@ -1309,7 +1325,6 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         registry.setXtaScaleName(moTextScaleName.getValue());
         registry.setXtaScaleCode(moTextScaleCode.getValue());
         registry.setXtaSeason(moTextSeason.getValue());
-        registry.setXtaRegion(moTextRegion.getValue());
         registry.setXtaItem(moTextItem.getValue());
         registry.setXtaProducer(moKeyProducer.getSelectedItem().getItem());
         registry.setMfgOutsourcing(moBoolMfgOutsourcing.getValue());
@@ -1317,10 +1332,9 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         registry.setAuxRequirePriceComputation(false);
 
         if (mnProducerId != moKeyProducer.getValue()[0]) {
-            getSeasonRegion();
-
+            
             registry.setFkSeasonId_n(mnSeasonId);
-            registry.setFkRegionId_n(mnRegionId);
+            registry.setFkRegionId_n(moKeyRegion.getValue()[0]);
             registry.setAuxRequirePriceComputation(true);
             registry.setRevueltaImport1(false);
         }

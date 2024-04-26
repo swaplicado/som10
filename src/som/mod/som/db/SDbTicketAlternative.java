@@ -109,6 +109,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     protected Date mtTsUserAssorted;
     
     protected SDbLaboratoryAlternative moDbmsLaboratoryAlt;
+    protected SDbItem moDbmsItem;
 
     protected boolean mbOldTared;
     protected boolean mbOldPayed;
@@ -296,6 +297,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     public Date getTsUserAssorted() { return mtTsUserAssorted; }
     
     public void setDbmsLaboratoryAlt(SDbLaboratoryAlternative o) { moDbmsLaboratoryAlt = o; }
+    public void setDbmsItem(SDbItem o) { moDbmsItem = o; }
 
     public void setXtaScaleName(String s) { msXtaScaleName = s;  }
     public void setXtaScaleCode(String s) { msXtaScaleCode = s;  }
@@ -310,6 +312,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     public void setXtaProviderFiscalId(String s) { msXtaProducerFiscalId = s;  }
     
     public SDbLaboratoryAlternative getDbmsLaboratoryAlt() { return moDbmsLaboratoryAlt; }
+    public SDbItem getDbmsItem() { return moDbmsItem; }
 
     public String getXtaScaleName() { return msXtaScaleName; }
     public String getXtaScaleCode() { return msXtaScaleCode; }
@@ -449,6 +452,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
         mbOldAssorted = false;
         
         moDbmsLaboratoryAlt = null;
+        moDbmsItem = null;
     
         msXtaScaleName = "";
         msXtaScaleCode = "";
@@ -628,6 +632,9 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
                 moDbmsLaboratoryAlt = new SDbLaboratoryAlternative();
                 moDbmsLaboratoryAlt.read(session, new int[] { mnFkLaboratoryId_n });
             }
+            
+            moDbmsItem = new SDbItem();
+            moDbmsItem.read(session, new int [] { mnFkItemId });
 
             // Finish registry reading:
 
@@ -970,6 +977,9 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
         registry.setXtaInputSource(this.getXtaInputSource());
         registry.setXtaProducer(this.getXtaProducer());
         registry.setXtaProviderFiscalId(this.getXtaProducerFiscalId());
+        
+        registry.setDbmsLaboratoryAlt(this.getDbmsLaboratoryAlt());
+        registry.setDbmsItem(this.getDbmsItem());
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;

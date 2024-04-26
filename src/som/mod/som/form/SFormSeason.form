@@ -58,7 +58,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="C&#xf3;digo:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -80,7 +80,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Nombre:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -105,7 +105,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Fecha inicial:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -124,7 +124,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Fecha final:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -163,7 +163,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Mes inicial*:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -189,7 +189,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Mes final:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -213,11 +213,14 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jlSmnRec">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Mail recepci&#xf3;n:*"/>
+                    <Property name="text" type="java.lang.String" value="Env&#xed;o mail recepci&#xf3;n de semillas:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
+                  <AccessibilityProperties>
+                    <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Env&#xed;o mail recepci&#xf3;n de semillas:*"/>
+                  </AccessibilityProperties>
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeySmnRec">
                   <Properties>
@@ -237,9 +240,9 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jlSmnNoRec">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Mail no recepci&#xf3;n:*"/>
+                    <Property name="text" type="java.lang.String" value="Env&#xed;o mail no recepci&#xf3;n de semillas:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -264,9 +267,9 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Dialog" size="12" style="3"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Intervalo en d&#xed;as mail no recepci&#xf3;n"/>
+                    <Property name="text" type="java.lang.String" value="Intervalo en d&#xed;as del env&#xed;o de mail no recepci&#xf3;n de semillas"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[250, 23]"/>
+                      <Dimension value="[400, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -283,7 +286,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Dentro del per&#xed;odo:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -307,7 +310,7 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Fuera del per&#xed;odo:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>

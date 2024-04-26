@@ -51,7 +51,8 @@ public abstract class SSomUtils {
         sql = "SELECT s.id_seas " +
                 "FROM " + SModConsts.TablesMap.get(SModConsts.SU_SEAS) + " AS s " +
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_PROD) + " AS sp ON s.id_seas = sp.id_seas AND sp.id_item = " + itemId + " AND sp.id_prod = " + producerId + " " +
-                "WHERE s.b_del = 0 AND s.b_dis = 0 AND s.b_clo = 0 AND dt_sta <= '" + SLibUtils.DbmsDateFormatDate.format(date) + "' AND dt_end >= '" + SLibUtils.DbmsDateFormatDate.format(date) + "' ";
+                "WHERE s.b_del = 0 AND s.b_dis = 0 AND s.b_clo = 0 " +
+                "AND dt_sta <= '" + SLibUtils.DbmsDateFormatDate.format(date) + "' AND dt_end >= '" + SLibUtils.DbmsDateFormatDate.format(date) + "' ORDER BY s.id_seas";
         
         resultSet = session.getStatement().executeQuery(sql);
         if (resultSet.next()) {
@@ -68,6 +69,7 @@ public abstract class SSomUtils {
      * @param itemId Item ID.
      * @param producerId Producer ID.
      * @return Proper region ID.
+     * @throws java.lang.Exception
      */
     public static int getProperRegionId(SGuiSession session, int seasonId, int itemId, int producerId) throws Exception {
         int regionId = 0;
@@ -76,14 +78,14 @@ public abstract class SSomUtils {
 
         sql = "SELECT id_reg " +
                 "FROM " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_PROD) + " " +
-                "WHERE b_del = 0 AND b_dis = 0 AND id_seas = " + seasonId + " AND id_item = " + itemId + " AND id_prod = " + producerId + " ";
+                "WHERE b_del = 0 AND b_dis = 0 AND id_seas = " + seasonId + " AND id_item = " + itemId + " AND id_prod = " + producerId + " ORDER BY b_def DESC";
         
         resultSet = session.getStatement().executeQuery(sql);
         if (resultSet.next()) {
             regionId = resultSet.getInt(1);
         }
 
-        return  regionId;
+        return regionId;
     }
 
     /**
@@ -2098,13 +2100,28 @@ public abstract class SSomUtils {
     }
     
     /**
-     * Devuelve los codigos en formato de cadena de los ítems que seran mostrados en el sistema alternativo.
+     * Devuelve los codigos en formato de cadena de los ítems que seran mostrados en el sistema alterno.
      * @param session
      * @return
      * @throws Exception 
      */
     public static String getAlternativeItemCodes(final SGuiSession session) throws Exception {
         String sql = "SELECT alt_item_ids FROM " + SModConsts.TablesMap.get(SModConsts.CU_CO);
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            return resultSet.getString(1).replace(";", ",");
+        }
+        return "";
+    }
+    
+    /**
+     * Devuelve los codigos en formato de cadena de los ítems que se puede modificar el peso en los boletos del sistema alterno.
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    public static String getAlternativeItemWeigthChangeCodes(final SGuiSession session) throws Exception {
+        String sql = "SELECT alt_item_ids_wei_chg FROM " + SModConsts.TablesMap.get(SModConsts.CU_CO);
         ResultSet resultSet = session.getStatement().executeQuery(sql);
         if (resultSet.next()) {
             return resultSet.getString(1);

@@ -4,6 +4,7 @@
  */
 package som.mod.som.form;
 
+import erp.lib.SLibUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -52,6 +53,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private boolean mbIsLaboratory;
     private boolean mbIsRevImport1;
     private boolean mbIsRevImport2;
+    
+    String arrWeiChgIds[];
 
     private boolean mbFirstTime;
     
@@ -829,6 +832,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
             miClient.getSession().populateCatalogue(moKeyScale, SModConsts.CU_USR_SCA, SLibConsts.UNDEFINED, new SGuiParams(new int[] { miClient.getSession().getUser().getPkUserId() }));
             miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, params);
             miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
+            
+            arrWeiChgIds = SSomUtils.getAlternativeItemWeigthChangeCodes(miClient.getSession()).split(";");
         }
         catch (Exception e) {
             miClient.showMsgBoxError(e.getMessage());
@@ -914,7 +919,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
             moTextScale.setVisible(true);
             moTextScale.setEditable(false);
         }
-
+        
         moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
         moDecWeightAverage.setEditable(false);
 
@@ -1061,7 +1066,14 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
                     }
                 }
                 
-                if (validation.isValid()) {
+                boolean weiChg = false;
+                for (String id : arrWeiChgIds) {
+                    if (SLibUtilities.parseInt(id) == moKeyItem.getValue()[0]) {
+                        weiChg = true;
+                    }
+                }
+                
+                if (validation.isValid() && !weiChg) {
                     if (!SLibUtils.compareAmount(moDecWeiNetCalc.getValue(), moDecWeiNetTic.getValue())) {
                         validation.setMessage("No se puede guardar debido a que el cálculo de la carga destino neta no corresponde a la carga destino neta boleto.");
                     }
