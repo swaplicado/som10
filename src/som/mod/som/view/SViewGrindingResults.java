@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTextField;
-import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
@@ -32,12 +31,12 @@ import sa.lib.gui.SGuiParams;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.cfg.db.SDbBranchPlant;
-import som.mod.som.db.SDbGrindingLinkItemParameter;
-import som.mod.som.db.SDbGrindingResult;
-import som.mod.som.db.SDbProcessingBatch;
 import som.mod.som.data.SGrindingData;
 import som.mod.som.data.SGrindingReport;
 import som.mod.som.data.SGrindingResultsUtils;
+import som.mod.som.db.SDbGrindingLinkItemParameter;
+import som.mod.som.db.SDbGrindingResult;
+import som.mod.som.db.SDbProcessingBatch;
 import som.mod.som.form.SDialogEvents;
 import som.mod.som.form.SDialogGrindingData;
 import som.mod.som.form.SFormGrindingResultHr;
@@ -384,10 +383,10 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
                 String title = "";
                 switch (this.mnGridSubtype) {
                     case SModSysConsts.CU_PLA_INT_PYE:
-                        title = "Captura resultados Molienda";
+                        title = "Captura resultados oleaginosas";
                         break;
                     case SModSysConsts.CU_PLA_INT_AGU:
-                        title = "Captura resultados Aguacatera";
+                        title = "Captura resultados aguacate";
                         break;
                 }
                 
@@ -416,10 +415,10 @@ public class SViewGrindingResults extends SGridPaneView implements ActionListene
         String title = "";
         switch (this.mnGridSubtype) {
             case SModSysConsts.CU_PLA_INT_PYE:
-                title = "Captura resultados Molienda";
+                title = "Captura resultados oleaginosas";
                 break;
             case SModSysConsts.CU_PLA_INT_AGU:
-                title = "Captura resultados Aguacatera";
+                title = "Captura resultados aguacate";
                 break;
         }
         SFormGrindingResultNew form = new SFormGrindingResultNew(miClient, title);

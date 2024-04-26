@@ -132,14 +132,14 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjTicManSupplierInputType;
     private JMenuItem mjTicRank;
     private JMenuItem mjTicSearch;
-    private JMenu mjGrinding;   // Molienda
-    private JMenuItem mjGriEvents;
-    private JMenuItem mjGriResume;
-    private JMenuItem mjGriResults;
-    private JMenu mjGrindingAvo;   // Aguacatera
-    private JMenuItem mjGriEventsAvo;
-    private JMenuItem mjGriResumeAvo;
-    private JMenuItem mjGriResultsAvo;
+    private JMenu mjGrindingSeed;   // Molienda oleaginosas
+    private JMenuItem mjGriSeedEvents;
+    private JMenuItem mjGriSeedResume;
+    private JMenuItem mjGriSeedResults;
+    private JMenu mjGrindingAvoc;   // Molienda aguacate
+    private JMenuItem mjGriAvocEvents;
+    private JMenuItem mjGriAvocResume;
+    private JMenuItem mjGriAvocResults;
     private JMenu mjQa;    // Quality Assurrance
     private JMenuItem mjQaLabTest;
     private JMenuItem mjQaLabTestDet;
@@ -306,30 +306,30 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicManSupplierInputType.addActionListener(this);
         mjTicRank.addActionListener(this);
         mjTicSearch.addActionListener(this);
-        mjGrinding = new JMenu("Molienda oleaginosas");
-        mjGriEvents = new JMenuItem("Eventos de molienda");
-        mjGriResume = new JMenuItem("Resumen de molienda");
-        mjGriResults = new JMenuItem("Resultados de molienda");
-        mjGrindingAvo = new JMenu("Molienda aguacatera");
-        mjGriEventsAvo = new JMenuItem("Eventos de aguacatera");
-        mjGriResumeAvo = new JMenuItem("Resumen de aguacatera");
-        mjGriResultsAvo = new JMenuItem("Resultados de aguacatera");
+        mjGrindingSeed = new JMenu("Molienda oleaginosas");
+        mjGriSeedEvents = new JMenuItem("Eventos de molienda");
+        mjGriSeedResume = new JMenuItem("Resumen de molienda");
+        mjGriSeedResults = new JMenuItem("Resultados de molienda");
+        mjGrindingAvoc = new JMenu("Molienda aguacate");
+        mjGriAvocEvents = new JMenuItem("Eventos de aguacate");
+        mjGriAvocResume = new JMenuItem("Resumen de aguacate");
+        mjGriAvocResults = new JMenuItem("Resultados de aguacate");
         
-        mjGrinding.add(mjGriEvents);
-        mjGrinding.add(mjGriResume);
-        mjGrinding.add(mjGriResults);
+        mjGrindingSeed.add(mjGriSeedEvents);
+        mjGrindingSeed.add(mjGriSeedResume);
+        mjGrindingSeed.add(mjGriSeedResults);
         
-        mjGrindingAvo.add(mjGriEventsAvo);
-        mjGrindingAvo.add(mjGriResumeAvo);
-        mjGrindingAvo.add(mjGriResultsAvo);
+        mjGrindingAvoc.add(mjGriAvocEvents);
+        mjGrindingAvoc.add(mjGriAvocResume);
+        mjGrindingAvoc.add(mjGriAvocResults);
         
-        mjGriEvents.addActionListener(this);
-        mjGriResume.addActionListener(this);
-        mjGriResults.addActionListener(this);
+        mjGriSeedEvents.addActionListener(this);
+        mjGriSeedResume.addActionListener(this);
+        mjGriSeedResults.addActionListener(this);
         
-        mjGriEventsAvo.addActionListener(this);
-        mjGriResumeAvo.addActionListener(this);
-        mjGriResultsAvo.addActionListener(this);
+        mjGriAvocEvents.addActionListener(this);
+        mjGriAvocResume.addActionListener(this);
+        mjGriAvocResults.addActionListener(this);
 
         mjQa = new JMenu("Control calidad");
         mjQaLabTest = new JMenuItem("Análisis de laboratorio");
@@ -420,8 +420,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicRank.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
         mjTicSearch.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_SCA, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_REP_RM }));
         
-        mjGrinding.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
-        mjGrindingAvo.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
+        mjGrindingSeed.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
+        mjGrindingAvoc.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
 
         mjQa.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
         mjQaWahStart.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
@@ -436,7 +436,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
 
     @Override
     public JMenu[] getMenus() {
-        return new JMenu[] { mjCat, mjCfg, mjTic, mjGrinding, mjGrindingAvo, mjQa, mjRep };
+        return new JMenu[] { mjCat, mjCfg, mjTic, mjGrindingSeed, mjGrindingAvoc, mjQa, mjRep };
     }
 
     @Override
@@ -633,10 +633,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.S_GRINDING_EVENT:
                 switch (subtype) {
                     case SModSysConsts.CU_PLA_INT_PYE:
-                        view = new SViewGrindingEvents(miClient, subtype, params.getKey(), "Eventos de prensas y ext.");
+                        view = new SViewGrindingEvents(miClient, subtype, params.getKey(), "Eventos oleaginosas");
                         break;
                     case SModSysConsts.CU_PLA_INT_AGU:
-                        view = new SViewGrindingEvents(miClient, subtype, params.getKey(), "Eventos de aguacatera");
+                        view = new SViewGrindingEvents(miClient, subtype, params.getKey(), "Eventos aguacate");
                         break;
                     default:
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -645,10 +645,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SX_GRINDING_RESUME:
                 switch (subtype) {
                     case SModSysConsts.CU_PLA_INT_PYE:
-                        view = new SViewGrindingResume(miClient, subtype, params.getKey(), "Resumen de prensas y ext.");
+                        view = new SViewGrindingResume(miClient, subtype, params.getKey(), "Resumen oleaginosas");
                         break;
                     case SModSysConsts.CU_PLA_INT_AGU:
-                        view = new SViewGrindingResume(miClient, subtype, params.getKey(), "Resumen de aguacatera");
+                        view = new SViewGrindingResume(miClient, subtype, params.getKey(), "Resumen aguacate");
                         break;
                     default:
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -657,10 +657,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.S_GRINDING_RESULT:
                 switch (subtype) {
                     case SModSysConsts.CU_PLA_INT_PYE:
-                        view = new SViewGrindingResults(miClient, subtype, params.getKey(), "Resultados de prensas y ext.");
+                        view = new SViewGrindingResults(miClient, subtype, params.getKey(), "Resultados oleaginosas");
                         break;
                     case SModSysConsts.CU_PLA_INT_AGU:
-                        view = new SViewGrindingResults(miClient, subtype, params.getKey(), "Resultados de aguacatera");
+                        view = new SViewGrindingResults(miClient, subtype, params.getKey(), "Resultados aguacate");
                         break;
                     default:
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -975,22 +975,22 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             else if (menuItem == mjCfgSeasonProducer) {
                 showView(SModConsts.SU_SEAS_PROD, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == mjGriEvents) {
+            else if (menuItem == mjGriSeedEvents) {
                 showView(SModConsts.S_GRINDING_EVENT, SModSysConsts.CU_PLA_INT_PYE, new SGuiParams(SModSysConsts.CU_PLA_PYE));
             }
-            else if (menuItem == mjGriResume) {
+            else if (menuItem == mjGriSeedResume) {
                 showView(SModConsts.SX_GRINDING_RESUME, SModSysConsts.CU_PLA_INT_PYE, new SGuiParams(SModSysConsts.CU_PLA_PYE));
             }
-            else if (menuItem == mjGriResults) {
+            else if (menuItem == mjGriSeedResults) {
                 showView(SModConsts.S_GRINDING_RESULT, SModSysConsts.CU_PLA_INT_PYE, new SGuiParams(SModSysConsts.CU_PLA_PYE));
             }
-            else if (menuItem == mjGriEventsAvo) {
+            else if (menuItem == mjGriAvocEvents) {
                 showView(SModConsts.S_GRINDING_EVENT, SModSysConsts.CU_PLA_INT_AGU, new SGuiParams(SModSysConsts.CU_PLA_AGU));
             }
-            else if (menuItem == mjGriResumeAvo) {
+            else if (menuItem == mjGriAvocResume) {
                 showView(SModConsts.SX_GRINDING_RESUME, SModSysConsts.CU_PLA_INT_AGU, new SGuiParams(SModSysConsts.CU_PLA_AGU));
             }
-            else if (menuItem == mjGriResultsAvo) {
+            else if (menuItem == mjGriAvocResults) {
                 showView(SModConsts.S_GRINDING_RESULT, SModSysConsts.CU_PLA_INT_AGU, new SGuiParams(SModSysConsts.CU_PLA_AGU));
             }
             else if (menuItem == mjCfgRegions) {

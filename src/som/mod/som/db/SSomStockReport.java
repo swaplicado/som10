@@ -588,7 +588,7 @@ public class SSomStockReport {
                         "FROM s_stk_record AS sr " +
                         "INNER JOIN su_item AS i ON sr.id_item = i.id_item " +
                         "WHERE sr.dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
-                        "AND COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_AVO + " " + // AGUACATERA
+                        "AND COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_AVO + " " + // aguacate
                         "AND COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) = " + oilTp + " " +
                         "AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_AVO + " " +
                         "AND NOT sr.b_del " +
@@ -695,9 +695,9 @@ public class SSomStockReport {
                     "FROM s_stk_record AS sr " +
                     "INNER JOIN su_item AS i ON sr.id_item = i.id_item " +
                     "WHERE dt = '" + SLibUtils.DbmsDateFormatDate.format(date) + "' " +
-                    "AND (COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_PRE_EXT + " " + // PRENSAS Y EXTRACCIÓN
-                    "OR (COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_AVO + " " + // AGUACATERA
-                    "AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_OTHER_AVO + ")) " + // OTROS ACEITES DE AGUACATE
+                    "AND (COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_PRE_EXT + " " + // oleaginosas
+                    "OR (COALESCE(sr.fk_oil_cl_n, i.fk_oil_cl_n) = " + SModSysConsts.SU_OIL_CL_AVO + " " + // aguacate
+                    "AND i.fk_oil_grp_family_n = " + SModSysConsts.SU_OIL_GRP_FAM_OTHER_AVO + ")) " + // otros aguacate
                     "AND COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) <> " + SModSysConsts.SU_OIL_TP_REF + " " +
                     "AND COALESCE(sr.fk_oil_tp_n, i.fk_oil_tp_n) <> " + SModSysConsts.SU_OIL_TP_RES + " " +
                     "AND stock <> 0 " +

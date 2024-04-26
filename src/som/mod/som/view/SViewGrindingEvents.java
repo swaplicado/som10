@@ -187,11 +187,11 @@ public class SViewGrindingEvents extends SGridPaneView implements ActionListener
         String title = "";
         switch(this.mnGridSubtype) {
             case SModSysConsts.CU_PLA_INT_PYE:
-                title = "Evento de prensas y ext.";
+                title = "Evento oleaginosas";
                 break;
                 
             case SModSysConsts.CU_PLA_INT_AGU:
-                title = "Evento de aguacatera.";
+                title = "Evento aguacate";
                 break;
         }
         

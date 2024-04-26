@@ -59,12 +59,12 @@ public abstract class SModSysConsts {
     
     public static final int[] CU_PLA_NA = new int[] { 1, 1, 1 }; // valor por defecto de planta NA
     public static final int[] CU_PLA_PYE = new int[] { 1, 1, 2 }; // valor por defecto de planta Prensas y Extracción
-    public static final int[] CU_PLA_AGU = new int[] { 1, 1, 3 }; // valor por defecto de planta Aguacatera
+    public static final int[] CU_PLA_AGU = new int[] { 1, 1, 3 }; // valor por defecto de planta Aguacate
     public static final int[] CU_PLA_REF = new int[] { 1, 1, 4 }; // valor por defecto de planta Refinería
     
     public static final int CU_PLA_INT_NA = 1; // valor por defecto de planta NA
     public static final int CU_PLA_INT_PYE = 2; // valor por defecto de planta Prensas y Extracción
-    public static final int CU_PLA_INT_AGU = 3; // valor por defecto de planta Aguacatera
+    public static final int CU_PLA_INT_AGU = 3; // valor por defecto de planta Aguacate
     public static final int CU_PLA_INT_REF = 4; // valor por defecto de planta Refinería
     
     public static final int SS_TIC_ST_SCA = 1;
