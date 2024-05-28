@@ -596,6 +596,7 @@ public class SDbIogExportation extends SDbRegistryUser {
                     diogEntry.setFkMfgOrderId_n();
                     diogEntry.setFkMfgChargeId_n(); */
                     diogEntry.setFkMaintAreaId(SModSysConsts.TRN_MAINT_AREA_NA);
+                    diogEntry.setFkCostCenterId(SModSysConsts.FIN_CC_NA);
                     diogEntry.setFkUserNewId(SUtilConsts.USR_NA_ID);
                     diogEntry.setFkUserEditId(SUtilConsts.USR_NA_ID);
                     diogEntry.setFkUserDeleteId(SUtilConsts.USR_NA_ID);
