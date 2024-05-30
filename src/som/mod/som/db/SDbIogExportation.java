@@ -7,6 +7,7 @@ package som.mod.som.db;
 
 import erp.data.SDataConstantsSys;
 import erp.lib.SLibTimeUtilities;
+import erp.mcfg.data.SCfgUtils;
 import erp.mod.SModSysConsts;
 import erp.mtrn.data.SDataDiog;
 import erp.mtrn.data.SDataDiogEntry;
@@ -510,6 +511,8 @@ public class SDbIogExportation extends SDbRegistryUser {
                 externalDiogTypeKey = SSomUtils.getExternalDiogType(iogType);
                 statement = session.getDatabase().getConnection().createStatement();
                 resultSet = statement.executeQuery(msSql);
+                Statement statementExt = ((SGuiClientSessionCustom) session.getSessionCustom()).getExtStatementCo();
+                String param = SCfgUtils.getParamValue(statementExt, SDataConstantsSys.CFG_PARAM_TRN_DIOG_OUT_DEF_CC);
                 while (resultSet.next()) {
 
                     // Create diog header:
@@ -595,8 +598,8 @@ public class SDbIogExportation extends SDbRegistryUser {
                     /*diogEntry.setFkMfgYearId_n();
                     diogEntry.setFkMfgOrderId_n();
                     diogEntry.setFkMfgChargeId_n(); */
-                    diogEntry.setFkMaintAreaId(SModSysConsts.TRN_MAINT_AREA_NA);
-                    diogEntry.setFkCostCenterId(SModSysConsts.FIN_CC_NA);
+                    diogEntry.setFkMaintAreaId(SModSysConsts.TRN_MAINT_AREA_NA); 
+                    diogEntry.setFkCostCenterId(SLibUtils.parseInt(param));
                     diogEntry.setFkUserNewId(SUtilConsts.USR_NA_ID);
                     diogEntry.setFkUserEditId(SUtilConsts.USR_NA_ID);
                     diogEntry.setFkUserDeleteId(SUtilConsts.USR_NA_ID);
@@ -647,7 +650,7 @@ public class SDbIogExportation extends SDbRegistryUser {
                 }
 
                 if (diog != null) {
-
+                    
                     if (diog.save(((SGuiClientSessionCustom) session.getSessionCustom()).getExtDatabaseCo().getConnection()) == som.mod.SModSysConsts.EXT_DB_ACTION_SAVE_OK) {
 
                         // Assign diog entry id to iog:
