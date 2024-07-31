@@ -38,12 +38,13 @@ public class SReportHtmlTicketSeasonMonth {
      * @param itemIds List of ID of items.
      * @param yearRef Year reference. Can be one out of two elegible types of values: 1) if it is a 4-digit year and greater or equal than 2001, it is the year to start from; otherwise 2) it is the number of history years besides current year.
      * @param intvlDays Interval days for invocation of this report mailer.
+     * @param today Today date.
      * @param ticOrig
      * @param ticDest
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays, final int ticOrig, final int ticDest) throws Exception {
+    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays, final Date today, final int ticOrig, final int ticDest) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -124,7 +125,6 @@ public class SReportHtmlTicketSeasonMonth {
         
         // define start and end date for report:
         
-        Date today = new Date();
         int[] todayDigestion = SLibTimeUtils.digestDate(today);
         int todayYear = todayDigestion[0];
         int todayMonth = todayDigestion[1];

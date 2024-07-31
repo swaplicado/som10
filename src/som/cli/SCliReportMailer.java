@@ -57,7 +57,7 @@ public class SCliReportMailer {
     private static final int ARG_IDX_MAIL_BCC = 4;
 
     private static final int[] DEF_ITEM_IDS = new int[] { ID_AVO_FRUIT, /*ID_AVO_FRUIT_ORG,*/ ID_AVO_MARC, ID_AVO_KERNEL, ID_AVO_PULP };
-    private static final int DEF_YEAR_REF = 2010; // año/temporada tope hacia atrás
+    private static final int DEF_YEAR_BASE = 2010; // año/temporada tope hacia atrás
     //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
     //private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
@@ -77,26 +77,26 @@ public class SCliReportMailer {
         try {
             // define arguments of program:
             
-            int[] itemIds = DEF_ITEM_IDS;
-            int yearRef = DEF_YEAR_REF;
-            int intvlDays = DEF_INTVL_DAYS;
-            String mailTo = DEF_MAIL_TO;
-            String mailBcc = DEF_MAIL_TO;
+            int[] argItemIds = DEF_ITEM_IDS;
+            int artYearBase = DEF_YEAR_BASE;
+            int argIntvlDays = DEF_INTVL_DAYS;
+            String argMailTo = DEF_MAIL_TO;
+            String argMailBcc = DEF_MAIL_TO;
             
             if (args.length >= 1) {
-                itemIds = SLibUtils.textExplodeAsIntArray(args[ARG_IDX_ITEM_IDS], ";");
+                argItemIds = SLibUtils.textExplodeAsIntArray(args[ARG_IDX_ITEM_IDS], ";");
             }
             if (args.length >= 2) {
-                yearRef = SLibUtils.parseInt(args[ARG_IDX_YEAR_REF]);
+                artYearBase = SLibUtils.parseInt(args[ARG_IDX_YEAR_REF]);
             }
             if (args.length >= 3) {
-                intvlDays = SLibUtils.parseInt(args[ARG_IDX_INTVL_DAYS]);
+                argIntvlDays = SLibUtils.parseInt(args[ARG_IDX_INTVL_DAYS]);
             }
             if (args.length >= 4) {
-                mailTo = args[ARG_IDX_MAIL_TO];
+                argMailTo = args[ARG_IDX_MAIL_TO];
             }
             if (args.length >= 5) {
-                mailBcc = args[ARG_IDX_MAIL_BCC];
+                argMailBcc = args[ARG_IDX_MAIL_BCC];
             }
             
             // connect database:
@@ -128,17 +128,18 @@ public class SCliReportMailer {
             
             // generate mail body:
 
+            Date today = new Date();
             SReportHtmlTicketSeasonMonth reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonth(session);
-            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(itemIds, yearRef, intvlDays, SModSysConsts.SU_TIC_ORIG_PRV, 0);
+            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(argItemIds, artYearBase, argIntvlDays, today, SModSysConsts.SU_TIC_ORIG_PRV, 0);
             
             // generate mail subject:
             
-            String mailSubject = "[SOM] Historico mensual bascula " + SLibUtils.DateFormatDate.format(new Date());
+            String mailSubject = "[SOM] Historico mensual bascula " + SLibUtils.DateFormatDate.format(today);
             
             // prepare mail recepients:
             
-            ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailTo, ";")));
-            ArrayList<String> recipientsBcc = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailBcc, ";")));
+            ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(argMailTo, ";")));
+            ArrayList<String> recipientsBcc = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(argMailBcc, ";")));
             
             // send mail:
             
