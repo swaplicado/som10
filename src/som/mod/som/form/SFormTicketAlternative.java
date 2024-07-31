@@ -974,7 +974,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         }
         
         //registry.setWeightDestinyGross_r(...);
-        //registry.setWeightDestinyNet_r(...);
+        registry.setWeightDestinyNet_r(moDecWeiNetCalc.getValue());
         //registry.setSystemPenaltyPercentage(...);
         //registry.setSystemWeightPayment(...);
         //registry.setSystemPricePerTon(...);

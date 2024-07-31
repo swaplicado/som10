@@ -572,6 +572,8 @@ public class SSomStockReport {
                         "<th style='width:300px' align='right'><b>" + SLibUtils.textToHtml("FAMILIA") + "</b></th>" + 
                         "<th align='center'><b>" + SLibUtils.textToHtml("INVENTARIO") + "</b></th>" + 
                         "<th align='left'><b>" + SLibUtils.textToHtml("ACIDEZ PONDERADA") + "</b></th>" +
+                        "<th align='left'><b>" + SLibUtils.textToHtml("OLEICO PONDERADO") + "</b></th>" +
+                        "<th align='left'><b>" + SLibUtils.textToHtml("LINOLEICO PONDERADO") + "</b></th>" +
                         "</tr>";
                 double avoTp = 0;
                 ArrayList<SOil> maAvocadoOils = new ArrayList();
@@ -629,6 +631,8 @@ public class SSomStockReport {
                         if (oil.name.equals(itemName)) {
                             oil.stock += resultSet.getDouble("stock");
                             oil.stkAcidity += test.getAcidityPercentage_n() == null ? 0 : test.getAcidityPercentage_n() * resultSet.getDouble("stock");
+                            oil.stkOleic += test.getOleicAcidPercentage_n() == null ? 0 : test.getOleicAcidPercentage_n() * resultSet.getDouble("stock");
+                            oil.stkLinoleic += test.getLinoleicAcidPercentage_n() == null ? 0 : test.getLinoleicAcidPercentage_n() * resultSet.getDouble("stock");
                             avoTp += resultSet.getDouble("stock");
                             found = true;
                             break;
@@ -639,19 +643,30 @@ public class SSomStockReport {
                         oil.name = itemName;
                         oil.stock = resultSet.getDouble("stock");
                         oil.stkAcidity = test.getAcidityPercentage_n() == null ? 0 : test.getAcidityPercentage_n() * resultSet.getDouble("stock");
+                        oil.stkOleic = test.getOleicAcidPercentage_n() == null ? 0 : test.getOleicAcidPercentage_n() * resultSet.getDouble("stock");
+                        oil.stkLinoleic = test.getLinoleicAcidPercentage_n() == null ? 0 : test.getLinoleicAcidPercentage_n() * resultSet.getDouble("stock");
                         avoTp += resultSet.getDouble("stock");
                         maAvocadoOils.add(oil);
                     }
                 }
+                //Calcular promedio acidez
+                double promAci = 0;
+                promAci = maAvocadoOils.stream().map((oil) -> ((oil.stkAcidity / oil.stock) * oil.stock)).reduce(promAci, (accumulator, _item) -> accumulator + _item);
+                
+                // Detalle y totales en azul
 
                 html = maAvocadoOils.stream().map((oil) -> "<tr>" + 
                         "<td align='right' style='width:300px'>" + SLibUtils.textToHtml(oil.name) + "</td>" +
                         "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(oil.stock / 1000)) + " Tons") + "</td>" +
                         "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatPercentage2D.format(oil.stkAcidity / oil.stock)) + "</td>" +
+                        "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatPercentage2D.format(oil.stkOleic / oil.stock)) + "</td>" +
+                        "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatPercentage2D.format(oil.stkLinoleic / oil.stock)) + "</td>" +
                         "</tr>").reduce(html, String::concat);
                 html += "<tr style='background-color: blue'><b>" + 
                         "<td align='right' style='width:300px'>" + SLibUtils.textToHtml("AGUACATE " + SModSysConsts.SU_OIL_TP_DESC.get(oilTp).toUpperCase()) + "</td>" + 
                         "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(avoTp / 1000))  + " Tons") + "</td>" +
+                        "<td align='right'>" + SLibUtils.textToHtml(oilTp == SU_OIL_TP_IDS[0] ? SLibUtils.DecimalFormatPercentage2D.format(promAci / avoTp) : "") + "</td>" +
+                        "<td align='right'>" + SLibUtils.textToHtml("") + "</td>" +
                         "<td align='right'>" + SLibUtils.textToHtml("") + "</td>" +
                         "</b></tr>";
                 html += "</table>"
@@ -678,6 +693,8 @@ public class SSomStockReport {
                     "<th style='width:300px' align='right'><b>" + SLibUtils.textToHtml("ACEITE") + "</b></th>" + 
                     "<th align='center'><b>" + SLibUtils.textToHtml("INVENTARIO") + "</b></th>" + 
                     "<th align='center'><b>" + SLibUtils.textToHtml("ACIDEZ PONDERADA") + "</b></th>" + 
+                    "<th align='center'><b>" + SLibUtils.textToHtml("OLEICO PONDERADO") + "</b></th>" +
+                    "<th align='center'><b>" + SLibUtils.textToHtml("LINOLEICO PONDERADO") + "</b></th>" +
                     "</tr>";
 
             ArrayList<SOil> maOils = new ArrayList();
@@ -716,11 +733,12 @@ public class SSomStockReport {
                 
                 boolean found = false;
                 
-                
                 for (SOil oil : maOils) {
                     if (oil.name.equals(resultSet.getString("i.name"))) {
                         oil.stock += resultSet.getDouble("stock");
                         oil.stkAcidity += test.getAcidityPercentage_n() == null ? 0 : test.getAcidityPercentage_n() * resultSet.getDouble("stock");
+                        oil.stkOleic += test.getOleicAcidPercentage_n() == null ? 0 : test.getOleicAcidPercentage_n() * resultSet.getDouble("stock");
+                        oil.stkLinoleic += test.getLinoleicAcidPercentage_n() == null ? 0 : test.getLinoleicAcidPercentage_n() * resultSet.getDouble("stock");
                         stkOtherOils += resultSet.getDouble("stock");
                         found = true;
                         break;
@@ -731,6 +749,8 @@ public class SSomStockReport {
                     oil.name = resultSet.getString("i.name");
                     oil.stock = resultSet.getDouble("stock");
                     oil.stkAcidity = test.getAcidityPercentage_n() == null ? 0 : test.getAcidityPercentage_n() * resultSet.getDouble("stock");
+                    oil.stkOleic = test.getOleicAcidPercentage_n() == null ? 0 : test.getOleicAcidPercentage_n() * resultSet.getDouble("stock");
+                    oil.stkLinoleic = test.getLinoleicAcidPercentage_n() == null ? 0 : test.getLinoleicAcidPercentage_n() * resultSet.getDouble("stock");
                     stkOtherOils += resultSet.getDouble("stock");
                     maOils.add(oil);
                 }
@@ -739,6 +759,8 @@ public class SSomStockReport {
                         "<td align='right' style='width:300px'>" + SLibUtils.textToHtml(oil.name) + "</td>" +
                         "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatValue0D.format(Math.round(oil.stock / 1000)) + " Tons") + "</td>" +
                         "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatPercentage2D.format(oil.stkAcidity / oil.stock)) + "</td>" +
+                        "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatPercentage2D.format(oil.stkOleic / oil.stock)) + "</td>" +
+                        "<td align='right'>" + SLibUtils.textToHtml(SLibUtils.DecimalFormatPercentage2D.format(oil.stkLinoleic / oil.stock)) + "</td>" +
                         "</tr>").reduce(html, String::concat);
             html += "<tr style='background-color: yellow'><b>" + 
                     "<td align='right' style='width:300px'>" + SLibUtils.textToHtml("TOTAL RESTO DE ACEITES") + "</td>" +
@@ -748,9 +770,9 @@ public class SSomStockReport {
             html += "</td>" +
                     "<td>";
 
-            // DETALLE REFINADOS
+            // TOTAL DE REFINADOS
 
-            html += "<h3>Detalle refinados</h3>";
+            html += "<h3>Total de refinados</h3>";
 
             double stkRefOils = 0;
             double stkAvoRefOils = 0;
@@ -941,5 +963,7 @@ class SOil {
     public String name;
     public double stock;
     public double stkAcidity;
+    public double stkOleic;
+    public double stkLinoleic;
     
 }
