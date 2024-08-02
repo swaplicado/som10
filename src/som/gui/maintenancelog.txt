@@ -35,7 +35,7 @@ Isabel Danae GARCÍA SERVÍN
 2024-04-04, 1.0 091.3
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
-1) Corrección de tool tip text del pánel del filtro de categorías de insumos de usuario.
+1) Corrección de tooltip text del pánel del filtro de categorías de insumos de usuario.
 
 ================================================================================
 2024-03-25, 1.0 091.2
