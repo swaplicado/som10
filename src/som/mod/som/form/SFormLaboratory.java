@@ -861,7 +861,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         if (mnOldItemId != moKeyItem.getValue()[0]) {
             getNewSeasonRegion();
             registry.setFkSeasonId_n(mnNewSeasonId);
-            registry.setFkRegionId_n(moKeyRegion.getValue()[0]);
+            registry.setFkRegionId_n(moKeyRegion.getSelectedIndex()<= 0 ? 0 : moKeyRegion.getValue()[0]);
             registry.setRevueltaImport1(false);
         }
         else if (!msOldPlates.equalsIgnoreCase(moTextPlates.getValue()) || !msOldPlatesCage.equalsIgnoreCase(moTextPlatesCage.getValue())) {
