@@ -141,7 +141,7 @@ public class SCliReportMailerXlsx {
             
             // generate html:
             SReportHtmlTicketSeasonMonth reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonth(session);
-            String htmlBody = reportHtmlTicketSeasonMonth.generateReportHtml(argItemIds, artYearBase, argIntvlDays, lastDayAsDate, SModSysConsts.SU_TIC_ORIG_PRV, 0);
+            String htmlBody = reportHtmlTicketSeasonMonth.generateReportHtml(argItemIds, artYearBase, argIntvlDays, lastDayAsDate, lastDayAsDate, SModSysConsts.SU_TIC_ORIG_PRV, 0);
             
             // Generar el archivo excel
             

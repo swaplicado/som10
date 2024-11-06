@@ -152,7 +152,8 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
                 access = isAdministrator() ||
                         hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_RM) || hasPrivilege(SModSysConsts.CS_RIG_REP_RM) ||
                         hasPrivilege(SModSysConsts.CS_RIG_SUP_SCA) || hasPrivilege(SModSysConsts.CS_RIG_SCA) ||
-                        hasPrivilege(SModSysConsts.CS_RIG_SUP_LAB) || hasPrivilege(SModSysConsts.CS_RIG_LAB);
+                        hasPrivilege(SModSysConsts.CS_RIG_SUP_LAB) || hasPrivilege(SModSysConsts.CS_RIG_LAB) ||
+                        hasPrivilege(SModSysConsts.CS_RIG_RMEC) || hasPrivilege(SModSysConsts.CS_RIG_RMES) || hasPrivilege(SModSysConsts.CS_RIG_RMEA);
                 break;
             case SModConsts.MOD_SOM_OS:
                 access = isAdministrator() ||

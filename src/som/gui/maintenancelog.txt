@@ -1,4 +1,12 @@
 ================================================================================
+2024-11-06, 1.0 094.0
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Adición de una fecha de corte en el reporte del histórico mensual bascula en Excel.
+2) Creación de la vista de análisis de laboratorio de aceites a detalle.
+3) Creación del control de inventarios de materias primas.
+
+================================================================================
 2024-09-06, 1.0 093.5
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

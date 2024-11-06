@@ -11,6 +11,14 @@ import java.util.HashMap;
  * @author Sergio Flores, Isabel Servín, Edwin Carmona
  */
 public abstract class SModSysConsts {
+    
+    public static final String C_PARAM_MAT_WAH_DEF = "MAT_WAH_DEF";
+    public static final String C_PARAM_MAT_ITEMS = "MAT_ITEMS";
+    public static final String C_PARAM_MAT_STK_DAYS_SIGNAL = "MAT_STK_DAYS_SIGNAL";
+    public static final String C_PARAM_MAT_DAY_CUTOFF_HR = "MAT_DAY_CUTOFF_HR";
+    public static final String C_PARAM_MAT_WEEK_START_DAY = "MAT_WEEK_START_DAY";
+    public static final String C_PARAM_MAT_UNIT_DEF = "MAT_UNIT_DEF";
+    public static final String C_PARAM_MAT_SCA_DEF = "MAT_SCA_DEF";
 
     public static final int CS_WAH_TP_WAH = 1;
     public static final int CS_WAH_TP_SIL = 2;
@@ -46,6 +54,9 @@ public abstract class SModSysConsts {
     public static final int CS_RIG_DIS_RM = 12; // discharge raw materials
     public static final int CS_RIG_LOG = 13;    // logistics
     public static final int CS_RIG_VLR = 14;    // validation laboratory results
+    public static final int CS_RIG_RMEC = 15;   // raw material existences capturist
+    public static final int CS_RIG_RMES = 16;   // raw material existences supervisor
+    public static final int CS_RIG_RMEA = 17;   // raw material existences administrator
 
     public static final int CS_ALT_RIG_PUR = 1; // purchase
     public static final int CS_ALT_RIG_QTY = 2; // quality
@@ -219,7 +230,35 @@ public abstract class SModSysConsts {
 
     public static final int SX_LAB_TEST = 1;
     public static final int SX_LAB_TEST_DET = 2;
-
+    
+    public static final int[] MS_MVT_CL_IN_REC = new int[] { 1, 1 };
+    public static final int[] MS_MVT_CL_IN_PRD = new int[] { 1, 6 };
+    public static final int[] MS_MVT_CL_IN_CNV = new int[] { 1, 8 };
+    public static final int[] MS_MVT_CL_IN_ADJ = new int[] { 1, 9 };
+    public static final int[] MS_MVT_CL_IN_INV = new int[] { 1, 10 };
+    public static final int[] MS_MVT_CL_OUT_REC = new int[] { 2, 1 };
+    public static final int[] MS_MVT_CL_OUT_PRD = new int[] { 2, 6 };
+    public static final int[] MS_MVT_CL_OUT_CNV = new int[] { 2, 8 };
+    public static final int[] MS_MVT_CL_OUT_ADJ = new int[] { 2, 9 };
+    public static final int[] MS_MVT_CL_OUT_INV = new int[] { 2, 10 };
+    
+    public static final int MS_TIC_ST_CLS_REC = 1;
+    
+    public static final int MS_EMP_TP_NA = 1;
+    public static final int MS_EMP_TP_WAH_MAN = 2;
+    public static final int MS_EMP_TP_MFG_SUP = 3;
+    
+    public static final int MX_MVT = 1; // Vista de movimientos
+    public static final int MX_MVT_DETAIL = 2; // Vista de movimientos a detalle
+    public static final int MX_MONTHS_PERIOD = 1; // cantidad de meses hacia atras en los que se puede capturar movimientos
+    public static final int MX_LIMIT_MONTH_TRANS_STK = 1; // ¿cual es el mes limite para hacer inv inicial? 1 = enero, 2 = febrero, etc...
+    public static final int MX_TIC_WO_MVT_REC = 1;
+    public static final int MX_TIC_W_MVT_REC = 2;
+    
+    public static final String M_NOTE_TP_MVT = "MVT"; // Movimiento de almacén
+    public static final String M_NOTE_TP_STK = "STK"; // Stock
+    public static final String M_NOTE_TP_TIC = "TIC"; // Ticket
+    
     // External system:
 
     public static final int EXT_BPSS_CT_BP_SUP = 2;

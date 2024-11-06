@@ -39,12 +39,13 @@ public class SReportHtmlTicketSeasonMonth {
      * @param yearRef Year reference. Can be one out of two elegible types of values: 1) if it is a 4-digit year and greater or equal than 2001, it is the year to start from; otherwise 2) it is the number of history years besides current year.
      * @param intvlDays Interval days for invocation of this report mailer.
      * @param today Today date.
+     * @param cutOff
      * @param ticOrig
      * @param ticDest
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays, final Date today, final int ticOrig, final int ticDest) throws Exception {
+    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays, final Date today, final Date cutOff, final int ticOrig, final int ticDest) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -218,15 +219,37 @@ public class SReportHtmlTicketSeasonMonth {
                 }
 
                 for (int col = 0; col < tableTotals.length; col++) {
+                    boolean executeQuery = true;
                     Date start = SLibTimeUtils.createDate(year - col, month, 1);
                     Date end = SLibTimeUtils.getEndOfMonth(start);
 
-                    preparedStatement.setDate(1, new java.sql.Date(start.getTime()));
-                    preparedStatement.setDate(2, new java.sql.Date(end.getTime()));
+                    if (cutOff != null) {
+                        if (SLibTimeUtils.getDaysDiff(cutOff, end) < 0) {
+                            end = cutOff;
+                        }
+                        if (SLibTimeUtils.getDaysDiff(cutOff, start) < 0) {
+                            executeQuery = false;
+                        }
+                    }
                     
-                    resultSet = preparedStatement.executeQuery();
-                    if (resultSet.next()) {
-                        double value = resultSet.getDouble(1);
+                    if (executeQuery) {
+                        preparedStatement.setDate(1, new java.sql.Date(start.getTime()));
+                        preparedStatement.setDate(2, new java.sql.Date(end.getTime()));
+
+                        resultSet = preparedStatement.executeQuery();
+                        if (resultSet.next()) {
+                            double value = resultSet.getDouble(1);
+                            tableTotals[col] += value;
+                            tableValues[col][row] = value;
+
+                            Integer rowOfMaxValue = maxValues.get(col);
+                            if (rowOfMaxValue == null || value > tableValues[col][rowOfMaxValue]) {
+                                maxValues.put(col, row);
+                            }
+                        }
+                    }
+                    else {
+                        double value = 0;
                         tableTotals[col] += value;
                         tableValues[col][row] = value;
 

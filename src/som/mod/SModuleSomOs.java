@@ -184,6 +184,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
     private JMenuItem mjOilIogExpLog;
     private JMenu mjQuality;
     private JMenuItem mjQualityWahLab;
+    private JMenuItem mjQualityWahLabDet;
     private JMenu mjStk;
     private JMenuItem mjStkStock;
     private JMenuItem mjStkStockDiv;
@@ -450,18 +451,21 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         
         mjQuality = new JMenu("Control calidad");
         mjQualityWahLab = new JMenuItem("Análisis de laboratorio de aceites");
+        mjQualityWahLabDet = new JMenuItem("Análisis de laboratorio de aceites a detalle");
         
         mjQuality.add(mjQualityWahLab);
+        mjQuality.add(mjQualityWahLabDet);
         
         mjQualityWahLab.addActionListener(this);
+        mjQualityWahLabDet.addActionListener(this);
         
         mjStk = new JMenu("Existencias");
-        mjStkStock = new JMenuItem("Existencias");
-        mjStkStockDiv = new JMenuItem("Existencias por división");
-        mjStkStockWh = new JMenuItem("Existencias por almacén");
-        mjStkStockWhDiv = new JMenuItem("Existencias por almacén, división");
-        mjStkStockDaily = new JMenuItem("Existencias por almacén diario");
-        mjStkStockReport = new JMenuItem("Reporte de existencias de tanques");
+        mjStkStock = new JMenuItem("Existencias de aceites");
+        mjStkStockDiv = new JMenuItem("Existencias de aceites por división");
+        mjStkStockWh = new JMenuItem("Existencias de aceites por almacén");
+        mjStkStockWhDiv = new JMenuItem("Existencias de aceites por almacén, división");
+        mjStkStockDaily = new JMenuItem("Existencias diarias de aceites por almacén");
+        mjStkStockReport = new JMenuItem("Reporte de existencias de aceites por tanques");
         
         mjStk.add(mjStkStock);
         mjStk.add(mjStkStockDiv);
@@ -564,6 +568,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
         
         mjQuality.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_LAB }));
         mjQualityWahLab.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_LAB));
+        mjQualityWahLabDet.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_LAB));
         
         mjStk.setEnabled(miClient.getSession().getUser().hasPrivilege(new int [] { SModSysConsts.CS_RIG_MAN_OM, SModSysConsts.CS_RIG_WHS_OM, SModSysConsts.CS_RIG_REP_OM }));
         
@@ -769,7 +774,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis " + aux + " ORDER BY name;";
                 break;
             case SModConsts.SU_OIL_GRP_FAM:
-                settings = new SGuiCatalogueSettings("Agrupador familia aceite", 1);
+                settings = new SGuiCatalogueSettings("Agrupador de familia aceite", 1);
                 sql = "SELECT id_oil_grp_fam AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", " 
                         + "code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis " + aux + " ORDER BY name;";
@@ -812,7 +817,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name;";
                 break;
             case SModConsts.SX_EXT_DPS:
-                settings = new SGuiCatalogueSettings("Partida documento CV", 3);
+                settings = new SGuiCatalogueSettings("Partida del documento CV", 3);
                 sql = "SELECT v.id_year AS " + SDbConsts.FIELD_ID + "1, v.id_doc AS " + SDbConsts.FIELD_ID + "2, v.id_ety AS " + SDbConsts.FIELD_ID + "3, d.fid_bp_r, "
                     + "CONCAT(d.num_ser, IF(length(d.num_ser) = 0, '', '-'), d.num, '; ', d.dt, '; ', "
                     + "i.item, ' (', i.item_key, '); ', ' Cant ', v.orig_qty, '; Surt ', "
@@ -884,16 +889,16 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             case SModConsts.S_STK:
                 switch (subtype) {
                     case SModConsts.SX_STK_STK:
-                        view = new SViewStock(miClient, subtype, "Existencias");
+                        view = new SViewStock(miClient, subtype, "Existencias aceites");
                         break;
                     case SModConsts.SX_STK_DIV:
-                        view = new SViewStock(miClient, subtype, "Existencias x división");
+                        view = new SViewStock(miClient, subtype, "Existencias aceites x división");
                         break;
                     case SModConsts.SX_STK_WAH_WAH:
-                        view = new SViewStock(miClient, subtype, "Existencias x almacén");
+                        view = new SViewStock(miClient, subtype, "Existencias aceites x almacén");
                         break;
                     case SModConsts.SX_STK_WAH_DIV:
-                        view = new SViewStock(miClient, subtype, "Existencias x almacén, división");
+                        view = new SViewStock(miClient, subtype, "Existencias aceites x almacén, división");
                         break;
                     default:
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -931,7 +936,14 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 }
                 break;
             case SModConsts.S_WAH_LAB:
-                view = new SViewWahLab(miClient, "Análisis laboratorio aceites");
+                switch (subtype) {
+                    case SModConsts.SX_WAH_LAB_DET:
+                        view = new SViewWahLab(miClient, subtype, "Análisis lab aceites (detalle)");
+                        break;
+                    case SLibConsts.UNDEFINED:
+                        view = new SViewWahLab(miClient, subtype, "Análisis lab aceites");
+                        break;
+                }
                 break;
             case SModConsts.SX_IOG_PROD:
                 switch (subtype) {
@@ -944,25 +956,25 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 view = new SViewMfgEstimation(miClient, "Bit. estimación prod.");
                 break;
             case SModConsts.S_MFG_EST_ETY:
-                view = new SViewMfgEstimationEty(miClient, "Estimación por almacén");
+                view = new SViewMfgEstimationEty(miClient, "Estimación almacén");
                 break;
             case SModConsts.S_MFG_EST_PL:
-                view = new SViewMfgEstimationProductionLine(miClient, "Estimación por línea de producción");
+                view = new SViewMfgEstimationProductionLine(miClient, "Estimación línea producción");
                 break;
             case SModConsts.S_MFG_EST_RM_CON:
-                view = new SViewMfgEstimationRm(miClient, "Estimación de consumo por ítem");
+                view = new SViewMfgEstimationRm(miClient, "Estimación consumo ítem");
                 break;
             case SModConsts.S_MIX:
                 view = new SViewMix(miClient, "Doctos. mezclas");
                 break;
             case SModConsts.S_PRC_BATCH:
-                view = new SViewProcessingBatch(miClient, "Lotes de ítems");
+                view = new SViewProcessingBatch(miClient, "Lotes ítems");
                 break;
             case SModConsts.S_STK_REPORT:
-                view = new SViewStockReport(miClient, "Reporte de existencias");
+                view = new SViewStockReport(miClient, "Reporte existencias aceites");
                 break;
             case SModConsts.S_DRYER_REP:
-                view = new SViewDryerReport(miClient, "Reporte de secador");
+                view = new SViewDryerReport(miClient, "Reporte secador");
                 break;
             case SModConsts.SX_STK_DAYS:
                 view = new SViewStockDays(miClient, "Inv. físicos diarios");
@@ -1043,7 +1055,7 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
                 }
                 break;
             case SModConsts.SX_STK_DAILY:
-                view = new SViewStockDaily(miClient, "Existencias por almacén diario");
+                view = new SViewStockDaily(miClient, "Existencias diarias aceites x almacén");
                 break;
             case SModConsts.SU_BY_PRODUCT:
                 view = new SViewByProduct(miClient, "Procesos");
@@ -1406,6 +1418,9 @@ public class SModuleSomOs extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjQualityWahLab) {
                 showView(SModConsts.S_WAH_LAB, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjQualityWahLabDet) {
+                showView(SModConsts.S_WAH_LAB, SModConsts.SX_WAH_LAB_DET, null);
             }
             else if (menuItem == mjStkStock) {
                 showView(SModConsts.S_STK, SModConsts.SX_STK_STK, null);

@@ -40,7 +40,6 @@ public class SDbOilAcidity extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
 
-
     protected ArrayList<SDbOilAcidityEntry> maChildEntries;
     
     public SDbOilAcidity() {
@@ -64,7 +63,6 @@ public class SDbOilAcidity extends SDbRegistryUser {
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-
     public int getPkOilAcidityId() { return mnPkOilAcidityId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
@@ -79,7 +77,6 @@ public class SDbOilAcidity extends SDbRegistryUser {
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
-
 
     public ArrayList<SDbOilAcidityEntry> getChildEntries() { return maChildEntries; }
     

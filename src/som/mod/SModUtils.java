@@ -81,7 +81,17 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.SR_ITEM_FRUIT_HIST,
             SModConsts.SR_FRUIT_YIELD_ORIG,
             SModConsts.SR_ITEM_FRUIT_ACI,
-            SModConsts.SR_ITM_TIC
+            SModConsts.SR_ITM_TIC,
+            SModConsts.MS_MVT_CL,
+            SModConsts.MS_EMP_TP,
+            SModConsts.MU_MAT_COND,
+            SModConsts.MU_SHIFT,
+            SModConsts.MU_EMP,
+            SModConsts.M_MVT,
+            SModConsts.M_STK,
+            SModConsts.MX_TIC_MVT,
+            SModConsts.MX_TIC_REC,
+            SModConsts.MX_STK_TRANS
         });
     }
 

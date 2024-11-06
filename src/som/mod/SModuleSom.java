@@ -142,7 +142,7 @@ public class SModuleSom extends SGuiModule {
 
         switch (type) {
             case SModConsts.SS_ITEM_TP:
-                settings = new SGuiCatalogueSettings("Tipo ítem", 1);
+                settings = new SGuiCatalogueSettings("Tipo de ítem", 1);
                 sql = "SELECT id_item_tp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
@@ -152,37 +152,37 @@ public class SModuleSom extends SGuiModule {
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_ext_wah ";
                 break;
             case SModConsts.SU_INP_CT:
-                settings = new SGuiCatalogueSettings("Categoría insumo", 1);
+                settings = new SGuiCatalogueSettings("Categoría de insumo", 1);
                 sql = "SELECT id_inp_ct AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_inp_ct ";
                 break;
             case SModConsts.SU_INP_CL:
-                settings = new SGuiCatalogueSettings("Clase insumo", 2, 1);
+                settings = new SGuiCatalogueSettings("Clase de insumo", 2, 1);
                 sql = "SELECT id_inp_ct AS " + SDbConsts.FIELD_ID + "1, id_inp_cl AS " + SDbConsts.FIELD_ID + "2, name AS " + SDbConsts.FIELD_ITEM + ", "
                         + "id_inp_ct AS " + SDbConsts.FIELD_FK + "1 "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_inp_ct, id_inp_cl ";
                 break;
             case SModConsts.SU_INP_TP:
-                settings = new SGuiCatalogueSettings("Tipo insumo", 3, 2);
+                settings = new SGuiCatalogueSettings("Tipo de insumo", 3, 2);
                 sql = "SELECT id_inp_ct AS " + SDbConsts.FIELD_ID + "1, id_inp_cl AS " + SDbConsts.FIELD_ID + "2, id_inp_tp AS " + SDbConsts.FIELD_ID + "3, name AS " + SDbConsts.FIELD_ITEM + ", "
                         + "id_inp_ct AS " + SDbConsts.FIELD_FK + "1, id_inp_cl AS " + SDbConsts.FIELD_FK + "2 "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_inp_ct, id_inp_cl, id_inp_tp ";
                 break;
             case SModConsts.SU_INP_CL_ALL:
-                settings = new SGuiCatalogueSettings("Clase insumo", 2);
+                settings = new SGuiCatalogueSettings("Clase de insumo", 2);
                 sql = "SELECT cl.id_inp_ct AS " + SDbConsts.FIELD_ID + "1, cl.id_inp_cl AS " + SDbConsts.FIELD_ID + "2, CONCAT(ct.name, ' - ', cl.name) AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM su_inp_cl AS cl " 
                         + "INNER JOIN su_inp_ct AS ct ON cl.id_inp_ct = ct.id_inp_ct;";
                 break;
             case SModConsts.SU_INP_TP_ALL:
-                settings = new SGuiCatalogueSettings("Tipo insumo", 3);
+                settings = new SGuiCatalogueSettings("Tipo de insumo", 3);
                 sql = "SELECT tp.id_inp_ct AS " + SDbConsts.FIELD_ID + "1, tp.id_inp_cl AS " + SDbConsts.FIELD_ID + "2, tp.id_inp_tp AS " + SDbConsts.FIELD_ID + "3, CONCAT(ct.name, ' - ', cl.name, ' - ', tp.name) AS " + SDbConsts.FIELD_ITEM + " " 
                         + "FROM su_inp_tp AS tp " 
                         + "INNER JOIN su_inp_cl AS cl ON tp.id_inp_cl = cl.id_inp_cl " 
                         + "INNER JOIN su_inp_ct AS ct ON cl.id_inp_ct = ct.id_inp_ct;";
                 break;
             case SModConsts.SU_INP_SRC:
-                settings = new SGuiCatalogueSettings("Origen insumo", 1);
+                settings = new SGuiCatalogueSettings("Origen de insumo", 1);
                 sql = "SELECT id_inp_src AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 "
                         + (subtype == SSomConsts.OPC_ALL ? "" : "AND id_inp_src <> " + SModSysConsts.SU_INP_SRC_NA + " ")

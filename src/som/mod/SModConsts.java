@@ -49,7 +49,8 @@ public abstract class SModConsts {
     public static final int CU_REP_GRP = 220016;
     public static final int SS_LINK_CFG_ITEMS = 220020;
 
-    public static final int C_USR_GUI = 230001;
+    public static final int C_PARAM = 230001;
+    public static final int C_USR_GUI = 230002;
 
     public static final int SS_TIC_ST = 310001;
     public static final int SS_IOG_CT = 310002;
@@ -201,6 +202,7 @@ public abstract class SModConsts {
     public static final int SX_ALT_WO_LAB = 340112;
     public static final int SX_ALT_W_LAB = 340113;
     public static final int SX_ITEM_ALT = 340114;
+    public static final int SX_WAH_LAB_DET = 340115;
 
     public static final int SR_TIC = 350001;
     public static final int SR_ALT_TIC = 350025;
@@ -225,9 +227,31 @@ public abstract class SModConsts {
     public static final int SR_PRC_RAW_MAT_AVO = 350023;
     public static final int SR_PRC_RAW_MAT_SEED = 350024;
     public static final int SR_ITM_TIC = 350027;
+    
+    public static final int MS_MVT_CL = 410001;
+    public static final int MS_TIC_ST = 410011;
+    public static final int MS_EMP_TP = 410022;
 
-    public static final int E_TIC_REV = 430001;
+    public static final int MU_WAH = 420001;
+    public static final int MU_MAT_COND = 420006;
+    public static final int MU_SHIFT = 420021;
+    public static final int MU_EMP = 420022;
 
+    public static final int M_MVT = 430001;
+    public static final int M_MVT_ETY = 430002;
+    public static final int M_STK = 430006;
+    public static final int M_TIC_ST = 430011;
+    public static final int M_NOTE = 430051;
+
+    public static final int E_TIC_REV = 450001;
+    
+    public static final int MX_TIC_MVT = 460001;
+    public static final int MX_TIC_REC = 460002;
+    public static final int MX_STK_TRANS = 460003;
+    public static final int MX_STK_CARDEX = 460004;
+    public static final int MX_NOTE_CARDEX = 460005;
+    public static final int MX_REF_PICKER = 460007;
+    
     public static final HashMap<Integer, String> TablesMap = new HashMap<>();
 
     static {
@@ -257,6 +281,7 @@ public abstract class SModConsts {
         TablesMap.put(CU_DIV, "cu_div");
         TablesMap.put(CU_PROD_LINES, "cu_line");
         TablesMap.put(CU_REP_GRP, "cu_rep_grp");
+        TablesMap.put(C_PARAM, "c_param");
         TablesMap.put(C_USR_GUI, "c_usr_gui");
 
         TablesMap.put(SS_TIC_ST, "ss_tic_st");
@@ -339,6 +364,19 @@ public abstract class SModConsts {
         TablesMap.put(S_MIX, "s_mix");
         TablesMap.put(S_MIX_NOTE, "s_mix_note");
         TablesMap.put(S_DRYER_REP, "s_dryer_rep");
+        
+        TablesMap.put(MS_MVT_CL, "ms_mvt_cl");
+        TablesMap.put(MS_TIC_ST, "ms_tic_st");
+        TablesMap.put(MS_EMP_TP, "ms_emp_tp");
+        TablesMap.put(MU_WAH, "mu_wah");
+        TablesMap.put(MU_MAT_COND, "mu_mat_cond");
+        TablesMap.put(MU_SHIFT, "mu_shift");
+        TablesMap.put(MU_EMP, "mu_emp");
+        TablesMap.put(M_MVT, "m_mvt");
+        TablesMap.put(M_MVT_ETY, "m_mvt_ety");
+        TablesMap.put(M_STK, "m_stk");
+        TablesMap.put(M_TIC_ST, "m_tic_st");
+        TablesMap.put(M_NOTE, "m_note");
         
         TablesMap.put(E_TIC_REV, "e_tic_rev");
     }

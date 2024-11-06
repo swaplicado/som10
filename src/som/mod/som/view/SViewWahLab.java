@@ -8,20 +8,20 @@ package som.mod.som.view;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import sa.lib.SLibConsts;
+import sa.lib.SLibTimeUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
 import sa.lib.grid.SGridConsts;
-import sa.lib.grid.SGridFilterDatePeriod;
+import sa.lib.grid.SGridFilterDateRange;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
 import sa.lib.grid.SGridRowView;
 import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
-import sa.lib.gui.SGuiDate;
 import som.mod.SModConsts;
 import som.mod.som.db.SSomWahLabTestReport;
 import som.mod.som.form.SDialogReportMails;
@@ -32,25 +32,33 @@ import som.mod.som.form.SDialogReportMails;
  */
 public class SViewWahLab extends SGridPaneView implements ActionListener {
     
-    private SGridFilterDatePeriod moFilterDatePeriod;
+    private final boolean mbIsViewDetail;
+    
+    private SGridFilterDateRange moFilterDateRange;
     private JButton mjNewWithLastTest;
     private JButton mjSendReport;
     
-    public SViewWahLab(SGuiClient client, String title) {
-        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_WAH_LAB, SLibConsts.UNDEFINED, title);
+    public SViewWahLab(SGuiClient client, int subType, String title) {
+        super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_WAH_LAB, subType, title);
+        mbIsViewDetail = mnGridSubtype == SModConsts.SX_WAH_LAB_DET; 
+        if (mbIsViewDetail) {
+            setRowButtonsEnabled(false);
+        }
         initComponentsCustom();
     }
 
     private void initComponentsCustom() {
-        moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE);
-        moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_YEAR, miClient.getSession().getWorkingDate().getTime()));
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
+        moFilterDateRange = new SGridFilterDateRange(miClient, this);
+        moFilterDateRange.initFilter(SLibTimeUtils.getWholeYear(miClient.getSession().getWorkingDate()));
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDateRange);
         
-        mjNewWithLastTest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_new_main.gif")), "Analisis nuevo con resultados de análisis anterior", this);
-        mjSendReport = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mail.gif")), "Enviar registro de resultados", this);
-        
-        getPanelCommandsSys(SGuiConsts.PANEL_LEFT).add(mjNewWithLastTest, 1);
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjSendReport);
+        if (!mbIsViewDetail) {
+            mjNewWithLastTest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_new_main.gif")), "Analisis nuevo con resultados de análisis anterior", this);
+            mjSendReport = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_mail.gif")), "Enviar registro de resultados", this);
+
+            getPanelCommandsSys(SGuiConsts.PANEL_LEFT).add(mjNewWithLastTest, 1);
+            getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjSendReport);
+        }
     }
     
     private void actionNewWithLastTest() {
@@ -98,20 +106,43 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
             sql += (sql.isEmpty() ? "" : "AND ") + "v.b_del = 0 ";
         }
         
-        filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
+        filter = (Date[]) moFiltersMap.get(SGridConsts.FILTER_DATE_RANGE);
         if (filter != null) {
-            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDate("v.dt_start", (SGuiDate) filter);
+            sql += (sql.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterDateRange("v.dt_start", (Date[]) filter);
         }
         
         msSql = "SELECT "
                 + "v.id_wah_lab AS " + SDbConsts.FIELD_ID + "1, "
-                + "v.val, "
                 + "v.year AS " + SDbConsts.FIELD_CODE + ", "
                 + "v.week AS " + SDbConsts.FIELD_NAME + ", " 
                 + "v.dt_start, "
                 + "v.dt_end, "
+                + "v.val, "
                 + "v.b_done, "
                 + "v.b_val, "
+                + (mbIsViewDetail ? "w.code AS wah, "
+                + "w.name AS wah_name, "
+                + "i.name AS item, "
+                + "t.dt AS dt_test, "
+                + "t.aci_per_n AS aci, "
+                + "t.b_aci_per_overange AS aci_o, "
+                + "t.per_ind_n AS ind, "
+                + "t.b_per_ind_overange AS ind_o, "
+                + "t.moi_per_n AS moi, "
+                + "t.b_moi_per_overange AS moi_o, "
+                + "t.sol_per_n AS sol, "
+                + "t.b_sol_per_overange AS sol_o, "
+                + "t.lin_per_n AS lin, "
+                + "t.b_lin_per_overange AS lin_o, "
+                + "t.ole_per_n AS ole, "
+                + "t.b_ole_per_overange AS ole_o, "
+                + "t.llc_per_n AS llc, "
+                + "t.b_llc_per_overange AS llc_o, "
+                + "t.ste_per_n AS ste, "
+                + "t.b_ste_per_overange AS ste_o, "
+                + "t.pal_per_n AS pal, "
+                + "t.b_pal_per_overange AS pal_o, "
+                + "t.note, " : "")
                 + "v.b_del AS " + SDbConsts.FIELD_IS_DEL + ", "
                 + "v.b_sys AS " + SDbConsts.FIELD_IS_SYS + ", "
                 + "v.fk_usr_done AS usr_done_id, "
@@ -127,6 +158,12 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
                 + "ui.name AS " + SDbConsts.FIELD_USER_INS_NAME + ", "
                 + "uu.name AS " + SDbConsts.FIELD_USER_UPD_NAME + " "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.S_WAH_LAB) + " AS v "
+                + (mbIsViewDetail ? "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.S_WAH_LAB_TEST) + " AS t ON "
+                + "v.id_wah_lab = t.id_wah_lab "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS w ON "
+                + "t.fk_wah_co = w.id_co AND t.fk_wah_cob = w.id_cob AND t.fk_wah_wah = w.id_wah "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
+                + "t.fk_item = i.id_item " : "")
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ud ON "
                 + "v.fk_usr_done = ud.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uv ON "
@@ -142,8 +179,15 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[17];
-
+        SGridColumnView[] columns;
+        
+        if (mbIsViewDetail) {
+            columns = new SGridColumnView[40];
+        }
+        else {
+            columns = new SGridColumnView[17];
+        }
+        
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_CAL_YEAR, SDbConsts.FIELD_CODE, "Año");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_0D, SDbConsts.FIELD_NAME, "Semana");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "dt_start", "Fecha inicial");
@@ -151,6 +195,31 @@ public class SViewWahLab extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_0D, "val", "Validaciones");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "v.b_done", "Terminado");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "v.b_val", "Validado");
+        if (mbIsViewDetail) {
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "wah", "Almacén");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "wah_name", "Nombre almacén");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, "item", "Ítem");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "dt_test", "Fecha análisis");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "aci", "Acidez %");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "aci_o", "FR acidez");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "ind", "I. peróxidos");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "ind_o", "FR i. peróxidos");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "moi", "Humedad %");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "moi_o", "FR humedad");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "sol", "Sólidos %");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "sol_o", "FR sólidos");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "lin", "Linoleico %");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "lin_o", "FR linoleico");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "ole", "Oléico %");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "ole_o", "FR oléico");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "llc", "Linoléico %");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "llc_o", "FR linoléico");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "ste", "Esteárico %");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "ste_o", "FR esteárico");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "pal", "Palmítico %");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, "pal_o", "FR palmítico");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_L, "note", "Observaciones");
+        }
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, "usr_done", "Usr ter");

@@ -141,8 +141,6 @@ public class SFormUserAlternative extends SBeanForm implements ActionListener {
         moGridUserRights.setForm(null);
         moGridUserRights.setPaneFormOwner(null);
         jpUserRights.add(moGridUserRights, BorderLayout.CENTER);
-
-        
     }
 
     private void populateUserRights() throws SQLException {

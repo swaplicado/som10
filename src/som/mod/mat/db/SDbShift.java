@@ -1,15 +1,14 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-package som.mod.som.db;
+package som.mod.mat.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import sa.gui.util.SUtilConsts;
-import sa.lib.SLibConsts;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
@@ -17,11 +16,11 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas
+ * @author Isabel Servín
  */
-public class SDbUnit extends SDbRegistryUser {
+public class SDbShift extends SDbRegistryUser {
 
-    protected int mnPkUnit;
+    protected int mnPkShiftId;
     protected String msCode;
     protected String msName;
     protected int mnSortingPos;
@@ -32,21 +31,17 @@ public class SDbUnit extends SDbRegistryUser {
     protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
-    */
-    protected int mnFkExternalUnitId_n;
-    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
-
-    public SDbUnit() {
-        super(SModConsts.SU_UNIT);
-        initRegistry();
+    
+    public SDbShift() {
+        super(SModConsts.MU_SHIFT);
     }
-
-    public void setPkUnitId(int n) { mnPkUnit = n; }
+    
+    public void setPkShiftId(int n) { mnPkShiftId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
     public void setSortingPos(int n) { mnSortingPos = n; }
@@ -56,13 +51,12 @@ public class SDbUnit extends SDbRegistryUser {
     public void setDisabled(boolean b) { mbDisabled = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
-    public void setFkExternalUnitId_n(int n) { mnFkExternalUnitId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkUnitId() { return mnPkUnit; }
+    public int getPkShiftId() { return mnPkShiftId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
     public int getSortingPos() { return mnSortingPos; }
@@ -72,7 +66,6 @@ public class SDbUnit extends SDbRegistryUser {
     public boolean isDisabled() { return mbDisabled; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
-    public int getFkExternalUnitId_n() { return mnFkExternalUnitId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -80,19 +73,19 @@ public class SDbUnit extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkUnit = pk[0];
+        mnPkShiftId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkUnit };
+        return new int[] { mnPkShiftId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
-
-        mnPkUnit = 0;
+        
+        mnPkShiftId = 0;
         msCode = "";
         msName = "";
         mnSortingPos = 0;
@@ -102,7 +95,6 @@ public class SDbUnit extends SDbRegistryUser {
         mbDisabled = false;
         mbDeleted = false;
         mbSystem = false;
-        mnFkExternalUnitId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -116,31 +108,31 @@ public class SDbUnit extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_unit = " + mnPkUnit + " ";
+        return "WHERE id_shift = " + mnPkShiftId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_unit = " + pk[0] + " ";
+        return "WHERE id_shift = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
-        ResultSet resultSet = null;
-
-        mnPkUnit = 0;
-
-        msSql = "SELECT COALESCE(MAX(id_unit), 0) + 1 FROM " + getSqlTable() + " ";
+        ResultSet resultSet;
+        
+        mnPkShiftId = 0;
+        
+        msSql = "SELECT COALESCE(MAX(id_shift), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkUnit = resultSet.getInt(1);
+            mnPkShiftId = resultSet.getInt(1);
         }
     }
 
     @Override
     public void read(SGuiSession session, int[] pk) throws SQLException, Exception {
-        ResultSet resultSet = null;
-
+        ResultSet resultSet;
+        
         initRegistry();
         initQueryMembers();
         mnQueryResultId = SDbConsts.READ_ERROR;
@@ -151,7 +143,7 @@ public class SDbUnit extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkUnit = resultSet.getInt("id_unit");
+            mnPkShiftId = resultSet.getInt("id_shift");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
             mnSortingPos = resultSet.getInt("sort");
@@ -161,17 +153,14 @@ public class SDbUnit extends SDbRegistryUser {
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkExternalUnitId_n = resultSet.getInt("fk_ext_unit_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
-
-            // Finish registry reading:
-
+            
             mbRegistryNew = false;
         }
-
+        
         mnQueryResultId = SDbConsts.READ_OK;
     }
 
@@ -179,7 +168,7 @@ public class SDbUnit extends SDbRegistryUser {
     public void save(SGuiSession session) throws SQLException, Exception {
         initQueryMembers();
         mnQueryResultId = SDbConsts.SAVE_ERROR;
-
+        
         if (mbRegistryNew) {
             computePrimaryKey(session);
             mbUpdatable = true;
@@ -190,30 +179,29 @@ public class SDbUnit extends SDbRegistryUser {
             mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
-
+            
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkUnit + ", " +
-                    "'" + msCode + "', " +
-                    "'" + msName + "', " +
-                    mnSortingPos + ", " +
-                    (mbUpdatable ? 1 : 0) + ", " +
-                    (mbDisableable ? 1 : 0) + ", " +
-                    (mbDeletable ? 1 : 0) + ", " +
-                    (mbDisabled ? 1 : 0) + ", " +
-                    (mbDeleted ? 1 : 0) + ", " +
-                    (mbSystem ? 1 : 0) + ", " +
-                    (mnFkExternalUnitId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalUnitId_n) + ", " +
-                    mnFkUserInsertId + ", " +
-                    mnFkUserUpdateId + ", " +
-                    "NOW()" + ", " +
-                    "NOW()" + " " +
+                    mnPkShiftId + ", " + 
+                    "'" + msCode + "', " + 
+                    "'" + msName + "', " + 
+                    mnSortingPos + ", " + 
+                    (mbUpdatable ? 1 : 0) + ", " + 
+                    (mbDisableable ? 1 : 0) + ", " + 
+                    (mbDeletable ? 1 : 0) + ", " + 
+                    (mbDisabled ? 1 : 0) + ", " + 
+                    (mbDeleted ? 1 : 0) + ", " + 
+                    (mbSystem ? 1 : 0) + ", " + 
+                    mnFkUserInsertId + ", " + 
+                    mnFkUserUpdateId + ", " + 
+                    "NOW()" + ", " + 
+                    "NOW()" + " " + 
                     ")";
         }
         else {
             mnFkUserUpdateId = session.getUser().getPkUserId();
-
-            msSql = "UPDATE " + getSqlTable() + " SET " +
-                    //"id_unit = " + mnPkUnit + ", " +
+            
+            msSql = "UPDATE " + getSqlTable() + " SET " + 
+                    //"id_shift = " + mnPkShiftId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
                     "sort = " + mnSortingPos + ", " +
@@ -223,27 +211,23 @@ public class SDbUnit extends SDbRegistryUser {
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_ext_unit_n = " + (mnFkExternalUnitId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalUnitId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
                     "ts_usr_upd = " + "NOW()" + " " +
                     getSqlWhere();
         }
-
+        
         session.getStatement().execute(msSql);
-
-        // Finish registry updating:
-
         mbRegistryNew = false;
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
-    public SDbUnit clone() throws CloneNotSupportedException {
-        SDbUnit registry = new SDbUnit();
-
-        registry.setPkUnitId(this.getPkUnitId());
+    public SDbShift clone() throws CloneNotSupportedException {
+        SDbShift registry = new SDbShift();
+        
+        registry.setPkShiftId(this.getPkShiftId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
         registry.setSortingPos(this.getSortingPos());
@@ -253,7 +237,6 @@ public class SDbUnit extends SDbRegistryUser {
         registry.setDisabled(this.isDisabled());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
-        registry.setFkExternalUnitId_n(this.getFkExternalUnitId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

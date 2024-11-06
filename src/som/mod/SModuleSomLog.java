@@ -132,10 +132,10 @@ public class SModuleSomLog extends SGuiModule implements ActionListener {
         
         switch (type) {
             case SModConsts.SX_PROD_LOG:
-                view = new SViewProducerLog(miClient, "Proveedores logística");
+                view = new SViewProducerLog(miClient, "Proveedores de logística");
                 break;
             case SModConsts.SU_VEH_CONT_TYPE:
-                view = new SViewVehicleContainerType(miClient, "Tipo vehículo contenedor");
+                view = new SViewVehicleContainerType(miClient, "Tipo de vehículo contenedor");
                 break;
             case SModConsts.S_TIC:
                 switch (subtype) {

@@ -130,7 +130,7 @@ public class SCliReportMailer {
 
             Date today = new Date();
             SReportHtmlTicketSeasonMonth reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonth(session);
-            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(argItemIds, artYearBase, argIntvlDays, today, SModSysConsts.SU_TIC_ORIG_PRV, 0);
+            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(argItemIds, artYearBase, argIntvlDays, today, null, SModSysConsts.SU_TIC_ORIG_PRV, 0);
             
             // generate mail subject:
             

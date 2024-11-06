@@ -278,32 +278,32 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
 
         switch (type) {
             case SModConsts.CS_WAH_TP:
-                settings = new SGuiCatalogueSettings("Tipo almacén", 1);
+                settings = new SGuiCatalogueSettings("Tipo de almacén", 1);
                 sql = "SELECT id_wah_tp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
             case SModConsts.CS_WAH_ORI:
-                settings = new SGuiCatalogueSettings("Orientación almacén", 1);
+                settings = new SGuiCatalogueSettings("Orientación del almacén", 1);
                 sql = "SELECT id_wah_ori AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
             case SModConsts.CS_WAH_CALC_TP:
-                settings = new SGuiCatalogueSettings("Tipo cálculo almacén", 1);
+                settings = new SGuiCatalogueSettings("Tipo de cálculo de almacén", 1);
                 sql = "SELECT id_wah_calc_tp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
             case SModConsts.CS_PLA_TP:
-                settings = new SGuiCatalogueSettings("Tipo planta", 1);
+                settings = new SGuiCatalogueSettings("Tipo de planta", 1);
                 sql = "SELECT id_pla_tp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
             case SModConsts.CS_USR_TP:
-                settings = new SGuiCatalogueSettings("Tipo usuario", 1);
+                settings = new SGuiCatalogueSettings("Tipo de usuario", 1);
                 sql = "SELECT id_usr_tp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;
             case SModConsts.CS_RIG:
-                settings = new SGuiCatalogueSettings("Derecho usuario", 1);
+                settings = new SGuiCatalogueSettings("Derecho de usuario", 1);
                 sql = "SELECT id_rig AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY sort ";
                 break;

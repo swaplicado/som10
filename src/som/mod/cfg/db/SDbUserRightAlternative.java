@@ -194,10 +194,10 @@ public class SDbUserRightAlternative extends SDbRegistry implements SGridRow {
     }
 
     @Override
-    public Object getRowValueAt(int row) {
+    public Object getRowValueAt(int col) {
         Object value = null;
 
-        switch (row) {
+        switch (col) {
             case 0:
                 value = msXtaRight;
                 break;

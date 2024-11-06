@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package som.mod.som.db;
+package som.mod.mat.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,93 +18,90 @@ import som.mod.SModConsts;
  *
  * @author Isabel Servín
  */
-public class SDbOilAcidityEntry extends SDbRegistryUser {
-    
-    protected int mnPkOilAcidityId;
-    protected int mnPkEntryId;
-    protected String msCode;
-    protected String msName;
-    protected double mdValueMin;
-    protected double mdValueMax;
+public class SDbNote extends SDbRegistryUser {
+
+    protected int mnPkNoteId;
+    protected String msNote;
+    protected String msNoteType;
+    protected String msReference;
     /*
-    protected boolean mbUpdatable;
-    protected boolean mbDisableable;
-    protected boolean mbDeletable;
-    protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
+    */
+    protected int mnFkStockMovementId_n;
+    protected int mnFkItemId_n;
+    protected int mnFkUnitId_n;
+    protected int mnFkMaterialConditionId_n;
+    protected int mnFkTicketId_n;
+    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
-
-    public SDbOilAcidityEntry() {
-        super(SModConsts.SU_OIL_ACI_ETY);
-        initRegistry();
+    
+    public SDbNote() {
+        super(SModConsts.M_NOTE);
     }
     
-    public void setPkOilAcidityId(int n) { mnPkOilAcidityId = n; }
-    public void setPkEntryId(int n) { mnPkEntryId = n; }
-    public void setCode(String s) { msCode = s; }
-    public void setName(String s) { msName = s; }
-    public void setValueMin(double d) { mdValueMin = d; }
-    public void setValueMax(double d) { mdValueMax = d; }
-    public void setUpdatable(boolean b) { mbUpdatable = b; }
-    public void setDisableable(boolean b) { mbDisableable = b; }
-    public void setDeletable(boolean b) { mbDeletable = b; }
-    public void setDisabled(boolean b) { mbDisabled = b; }
+    public void setPkNoteId(int n) { mnPkNoteId = n; }
+    public void setNote(String s) { msNote = s; }
+    public void setNoteType(String s) { msNoteType = s; }
+    public void setReference(String s) { msReference = s; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
+    public void setFkStockMovementId_n(int n) { mnFkStockMovementId_n = n; }
+    public void setFkItemId_n(int n) { mnFkItemId_n = n; }
+    public void setFkUnitId_n(int n) { mnFkUnitId_n = n; }
+    public void setFkMaterialConditionId_n(int n) { mnFkMaterialConditionId_n = n; }
+    public void setFkTicketId_n(int n) { mnFkTicketId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
-    
-    public int getPkOilAcidityId() { return mnPkOilAcidityId; }
-    public int getPkEntryId() { return mnPkEntryId; }
-    public String getCode() { return msCode; }
-    public String getName() { return msName; }
-    public double getValueMin() { return mdValueMin; }
-    public double getValueMax() { return mdValueMax; }
-    public boolean isUpdatable() { return mbUpdatable; }
-    public boolean isDisableable() { return mbDisableable; }
-    public boolean isDeletable() { return mbDeletable; }
-    public boolean isDisabled() { return mbDisabled; }
+
+    public int getPkNoteId() { return mnPkNoteId; }
+    public String getNote() { return msNote; }
+    public String getNoteType() { return msNoteType; }
+    public String getReference() { return msReference; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
+    public int getFkStockMovementId_n() { return mnFkStockMovementId_n; }
+    public int getFkItemId_n() { return mnFkItemId_n; }
+    public int getFkUnitId_n() { return mnFkUnitId_n; }
+    public int getFkMaterialConditionId_n() { return mnFkMaterialConditionId_n; }
+    public int getFkTicketId_n() { return mnFkTicketId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
+
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkOilAcidityId = pk[0];
-        mnPkEntryId = pk[1];
+        mnPkNoteId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkOilAcidityId, mnPkEntryId };
+        return new int[] { mnPkNoteId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
         
-        mnPkOilAcidityId = 0;
-        mnPkEntryId = 0;
-        msCode = "";
-        msName = "";
-        mdValueMin = 0;
-        mdValueMax = 0;
-        mbUpdatable = false;
-        mbDisableable = false;
-        mbDeletable = false;
-        mbDisabled = false;
+        mnPkNoteId = 0;
+        msNote = "";
+        msNoteType = "";
+        msReference = "";
         mbDeleted = false;
         mbSystem = false;
+        mnFkStockMovementId_n = 0;
+        mnFkItemId_n = 0;
+        mnFkUnitId_n = 0;
+        mnFkMaterialConditionId_n = 0;
+        mnFkTicketId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -115,27 +112,27 @@ public class SDbOilAcidityEntry extends SDbRegistryUser {
     public String getSqlTable() {
         return SModConsts.TablesMap.get(mnRegistryType);
     }
-    
+
     @Override
     public String getSqlWhere() {
-        return "WHERE id_oil_aci = " + mnPkOilAcidityId + " AND id_ety = " + mnPkEntryId + " ";
+        return "WHERE id_note = " + mnPkNoteId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_oil_aci = " + pk[0] + " AND id_ety = " + pk[1] + " ";
+        return "WHERE id_note = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet;
         
-        mnPkEntryId = 0;
+        mnPkNoteId = 0;
         
-        msSql = "SELECT COALESCE(MAX(id_ety), 0) + 1 FROM " + getSqlTable() + " WHERE id_oil_aci = " + mnPkOilAcidityId + " ";
+        msSql = "SELECT COALESCE(MAX(id_note), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkEntryId = resultSet.getInt(1);
+            mnPkNoteId = resultSet.getInt(1);
         }
     }
 
@@ -146,30 +143,29 @@ public class SDbOilAcidityEntry extends SDbRegistryUser {
         initRegistry();
         initQueryMembers();
         mnQueryResultId = SDbConsts.READ_ERROR;
-        
+
         msSql = "SELECT * " + getSqlFromWhere(pk);
         resultSet = session.getStatement().executeQuery(msSql);
         if (!resultSet.next()) {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkOilAcidityId = resultSet.getInt("id_oil_aci");
-            mnPkEntryId = resultSet.getInt("id_ety");
-            msCode = resultSet.getString("code");
-            msName = resultSet.getString("name");
-            mdValueMin = resultSet.getDouble("val_min");
-            mdValueMax = resultSet.getDouble("val_max");
-            mbUpdatable = resultSet.getBoolean("b_can_upd");
-            mbDisableable = resultSet.getBoolean("b_can_dis");
-            mbDeletable = resultSet.getBoolean("b_can_del");
-            mbDisabled = resultSet.getBoolean("b_dis");
+            mnPkNoteId = resultSet.getInt("id_note");
+            msNote = resultSet.getString("note");
+            msNoteType = resultSet.getString("note_tp");
+            msReference = resultSet.getString("ref");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
+            mnFkStockMovementId_n = resultSet.getInt("fk_mvt_n");
+            mnFkItemId_n = resultSet.getInt("fk_item_n");
+            mnFkUnitId_n = resultSet.getInt("fk_unit_n");
+            mnFkMaterialConditionId_n = resultSet.getInt("fk_mat_cond_n");
+            mnFkTicketId_n = resultSet.getInt("fk_tic_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
             mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
-
+            
             mbRegistryNew = false;
         }
         
@@ -184,24 +180,26 @@ public class SDbOilAcidityEntry extends SDbRegistryUser {
         if (mbRegistryNew) {
             computePrimaryKey(session);
             mbUpdatable = true;
-            mbDisableable = false;
+            mbDisableable = true;
             mbDeletable = true;
+            mbDisabled = false;
+            mbDeleted = false;
+            mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
-            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" + 
-                    mnPkOilAcidityId + ", " + 
-                    mnPkEntryId + ", " + 
-                    "'" + msCode + "', " + 
-                    "'" + msName + "', " + 
-                    mdValueMin + ", " + 
-                    mdValueMax + ", " + 
-                    (mbUpdatable ? 1 : 0) + ", " + 
-                    (mbDisableable ? 1 : 0) + ", " + 
-                    (mbDeletable ? 1 : 0) + ", " + 
-                    (mbDisabled ? 1 : 0) + ", " + 
+            msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
+                    mnPkNoteId + ", " + 
+                    "'" + msNote + "', " + 
+                    "'" + msNoteType + "', " + 
+                    "'" + msReference + "', " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
+                    (mnFkStockMovementId_n == 0 ? "NULL, " : mnFkStockMovementId_n + ", ") + 
+                    (mnFkItemId_n == 0 ? "NULL, " : mnFkItemId_n + ", ") + 
+                    (mnFkUnitId_n == 0 ? "NULL, " : mnFkUnitId_n + ", ") + 
+                    (mnFkMaterialConditionId_n == 0 ? "NULL, " : mnFkMaterialConditionId_n + ", ") + 
+                    (mnFkTicketId_n == 0 ? "NULL, " : mnFkTicketId_n + ", ") + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -212,18 +210,17 @@ public class SDbOilAcidityEntry extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
             
             msSql = "UPDATE " + getSqlTable() + " SET " + 
-                    //"id_oil_aci = " + mnPkOilAcidityId + ", " +
-                    //"id_ety = " + mnPkEntryId + ", " +
-                    "code = '" + msCode + "', " +
-                    "name = '" + msName + "', " +
-                    "val_min = " + mdValueMin + ", " +
-                    "val_max = " + mdValueMax + ", " +
-                    "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
-                    "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
-                    "b_can_del = " + (mbDeletable ? 1 : 0) + ", " +
-                    "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
+                    //"id_note = " + mnPkNoteId + ", " +
+                    "note = '" + msNote + "', " +
+                    "note_tp = '" + msNoteType + "', " +
+                    "ref = '" + msReference + "', " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
-                    "b_sys = " + (mbSystem ? 1 : 0) + ", " +
+                    //"b_sys = " + (mbSystem ? 1 : 0) + ", " +
+                    "fk_mvt_n = " + (mnFkStockMovementId_n == 0 ? "NULL, " : mnFkStockMovementId_n + ", ") +
+                    "fk_item_n = " + (mnFkItemId_n == 0 ? "NULL, " : mnFkItemId_n + ", ") +
+                    "fk_unit_n = " + (mnFkUnitId_n == 0 ? "NULL, " : mnFkUnitId_n + ", ") +
+                    "fk_mat_cond_n = " + (mnFkMaterialConditionId_n == 0 ? "NULL, " : mnFkMaterialConditionId_n + ", ") + 
+                    "fk_tic_n = " + (mnFkTicketId_n == 0 ? "NULL, " : mnFkTicketId_n + ", ") + 
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -237,29 +234,26 @@ public class SDbOilAcidityEntry extends SDbRegistryUser {
     }
 
     @Override
-    public SDbOilAcidityEntry clone() throws CloneNotSupportedException {
-        SDbOilAcidityEntry registry = new SDbOilAcidityEntry();
+    public SDbNote clone() throws CloneNotSupportedException {
+        SDbNote registry = new SDbNote();
         
-        registry.setPkOilAcidityId(this.getPkOilAcidityId());
-        registry.setPkEntryId(this.getPkEntryId());
-        registry.setCode(this.getCode());
-        registry.setName(this.getName());
-        registry.setValueMin(this.getValueMin());
-        registry.setValueMax(this.getValueMax());
-        registry.setUpdatable(this.isUpdatable());
-        registry.setDisableable(this.isDisableable());
-        registry.setDeletable(this.isDeletable());
-        registry.setDisabled(this.isDisabled());
+        registry.setPkNoteId(this.getPkNoteId());
+        registry.setNote(this.getNote());
+        registry.setNoteType(this.getNoteType());
+        registry.setReference(this.getReference());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
+        registry.setFkStockMovementId_n(this.getFkStockMovementId_n());
+        registry.setFkItemId_n(this.getFkItemId_n());
+        registry.setFkUnitId_n(this.getFkUnitId_n());
+        registry.setFkMaterialConditionId_n(this.getFkMaterialConditionId_n());
+        registry.setFkTicketId_n(this.getFkTicketId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());
         registry.setTsUserUpdate(this.getTsUserUpdate());
-        
-        registry.setRegistryNew(this.isRegistryNew());
 
+        registry.setRegistryNew(this.isRegistryNew());
         return registry;
     }
-    
 }
