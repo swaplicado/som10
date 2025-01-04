@@ -8,7 +8,10 @@ package som.mod.som.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
 import sa.lib.SLibTimeUtils;
@@ -176,6 +179,9 @@ public class SSomProductionEstimate extends SDbRegistry {
                 (by_product ? "GROUP BY i.id_item" : "") + " ";
         }
         else {
+            
+            LocalDate localDate = mtDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            int year = localDate.getDayOfYear() == 1 ? localDate.getYear() - 1 : localDate.getYear();
 
             // Stock system global, by product or by product to currently day:
 
@@ -208,7 +214,7 @@ public class SSomProductionEstimate extends SDbRegistry {
                 "s.id_item = i.id_item AND i.fk_item_tp = " + SModSysConsts.SS_ITEM_TP_FG + " " +
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON " +
                 "s.id_unit = u.id_unit AND s.id_unit = 3 " + // mnFkUnitId
-                "WHERE s.b_del = 0 AND s.id_year = " + SLibTimeUtils.digestYear(mtDate)[0] + " AND s.dt < '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' " +
+                "WHERE s.b_del = 0 AND s.id_year = " + year + " AND s.dt < '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' " +
                 (by_product ? "GROUP BY i.id_item" : "") + " " +
                 "HAVING f_stock <> 0 ";
         }
@@ -643,6 +649,9 @@ public class SSomProductionEstimate extends SDbRegistry {
                 }
 
                 if (mnQueryResultId == SDbConsts.READ_OK) {
+                    
+                    LocalDate localDate = mtDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    int year = localDate.getDayOfYear() == 1 ? localDate.getYear() - 1 : localDate.getYear();
 
                     sql = "SELECT s.id_co, s.id_cob, s.id_wah, s.id_item, s.id_unit, " +
                         "SUM(s.mov_in - s.mov_out) - " +
@@ -663,7 +672,7 @@ public class SSomProductionEstimate extends SDbRegistry {
                         "s.id_item = i.id_item AND i.fk_item_tp = " + SModSysConsts.SS_ITEM_TP_FG + " " +
                         "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON " +
                         "s.id_unit = u.id_unit " +
-                        "WHERE s.b_del = 0 AND s.id_year = " + SLibTimeUtils.digestYear(mtDate)[0] + " AND s.dt < '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' " +
+                        "WHERE s.b_del = 0 AND s.id_year = " + year + " AND s.dt < '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "' " +
                         "GROUP BY s.id_co, s.id_cob, s.id_wah, s.id_item, s.id_unit " +
                         "HAVING f_stock <> 0 " +
                         "ORDER BY wah.code, wah.name, i.name, i.code, u.code ";

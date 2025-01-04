@@ -8,7 +8,10 @@ package som.mod.som.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -355,7 +358,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         else {
 
             // Stock system global, by warehouse product or by warehouse product to currently day:
-
+            LocalDate localDate = mtDateStockDay.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            int year = localDate.getDayOfYear() == 1 ? localDate.getYear() - 1 : localDate.getYear();
+            
             sql = "SELECT " +
 //XXX
                 (msAuxStockDaySkippedItem.isEmpty() ? "SUM(s.mov_in - s.mov_out) " :
@@ -397,7 +402,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                 "s.id_item = i.id_item AND i.fk_item_tp = " + SModSysConsts.SS_ITEM_TP_FG + " " +
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON " +
                 "s.id_unit = u.id_unit AND s.id_unit = " + mnFkUnitId + " " +
-                "WHERE s.b_del = 0 AND s.id_year = " + SLibTimeUtils.digestYear(mtDateStockDay)[0] + " AND s.dt < '" + SLibUtils.DbmsDateFormatDate.format(mtDateStockDay) + "' " +
+                "WHERE s.b_del = 0 AND s.id_year = " + year + " AND s.dt < '" + SLibUtils.DbmsDateFormatDate.format(mtDateStockDay) + "' " +
                 (by_warehouse_product ? "GROUP BY s.id_year, s.id_item, s.id_unit, s.id_co, s.id_cob, s.id_wah " : "") + " " +
                 "HAVING f_stock <> 0 " +
                 (by_warehouse_product ? "ORDER BY w.cap_real_lt, i.code, i.name, i.id_item " : "") + " ";
@@ -1060,6 +1065,9 @@ public class SDbMfgEstimation extends SDbRegistryUser {
         }
 
         if (mnQueryResultId == SDbConsts.READ_OK) {
+            
+            LocalDate localDate = mtDateStockDay.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            int year = localDate.getDayOfYear() == 1 ? localDate.getYear() - 1 : localDate.getYear();
 
             sql = "SELECT s.id_co, s.id_cob, s.id_wah, s.id_item, s.id_unit, " +
                 "SUM(s.mov_in - s.mov_out) - " +
@@ -1079,7 +1087,7 @@ public class SDbMfgEstimation extends SDbRegistryUser {
                 "s.id_item = i.id_item AND i.fk_item_tp = " + SModSysConsts.SS_ITEM_TP_FG + " " +
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON " +
                 "s.id_unit = u.id_unit AND s.id_unit = " + mnFkUnitId + " " +
-                "WHERE s.b_del = 0 AND s.id_year = " + SLibTimeUtils.digestYear(mtDateStockDay)[0] + " AND s.dt < '" + SLibUtils.DbmsDateFormatDate.format(mtDateStockDay) + "' " +
+                "WHERE s.b_del = 0 AND s.id_year = " + year + " AND s.dt < '" + SLibUtils.DbmsDateFormatDate.format(mtDateStockDay) + "' " +
                 "GROUP BY s.id_co, s.id_cob, s.id_wah, s.id_item, s.id_unit " +
                 "HAVING f_stock <> 0 " +
                 "ORDER BY w.code, w.name, i.name, i.code, u.code ";
