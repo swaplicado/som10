@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -40,7 +41,7 @@ import som.mod.som.db.SSomStockDays;
 
 /**
  *
- * @author Néstor Ávalos, Sergio Flores
+ * @author Néstor Ávalos, Sergio Flores, Edwin Carmona
  */
 public class SFormStockDays extends SBeanForm implements ActionListener {
 
@@ -394,11 +395,16 @@ public class SFormStockDays extends SBeanForm implements ActionListener {
                 }
 
                 if (actionConfirmUnit(nXtaFkUnitId)) {
+                    Calendar calendar = Calendar.getInstance();
+                    Date stkDayDate = moDateDate.getValue();
+                    calendar.setTime(stkDayDate);
+                    int idYear = calendar.get(Calendar.YEAR);
                     for (int[] rec : recs) {
                         stockDay = new SDbStockDay();
                         stockDay.read(miClient.getSession(), rec);
+                        stockDay.setPkYearId(idYear);
                         stockDay.setPkDayId(0);
-                        stockDay.setDate(moDateDate.getValue());
+                        stockDay.setDate(stkDayDate);
                         stockDay.setRegistryNew(true);
                         stockDay.setXtaCopy(true);
                         moRegistry.getStockDays().add(stockDay);

@@ -171,7 +171,7 @@ public abstract class SMaterialUtils {
     }
     
     public static ArrayList<SRowReferencePicker> getReferenceTicketRows(SGuiSession session, int ticId) {
-        ArrayList<SRowReferencePicker> rows = new ArrayList();
+        ArrayList<SRowReferencePicker> rows = new ArrayList<>();
         try {
             String sql = "SELECT CONCAT(m.ref, ':00') ref, MIN(m.dt), c.name, ui.name, m.ts_usr_ins, uu.name, m.ts_usr_upd FROM m_mvt m " +
                 "INNER JOIN ms_mvt_cl c ON m.fk_iog_ct = c.id_iog_ct AND m.fk_mvt_cl = c.id_mvt_cl " +
