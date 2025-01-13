@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,12 +22,14 @@ import sa.lib.grid.SGridConsts;
 import sa.lib.grid.SGridFilterDate;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
+import sa.lib.grid.SGridRowView;
 import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiDate;
 import sa.lib.gui.SGuiParams;
 import sa.lib.gui.bean.SBeanFieldDatetime;
+import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.cfg.db.SCfgUtils;
@@ -50,6 +53,7 @@ public class SViewStock extends SGridPaneView implements ActionListener {
     private JButton jbMvtCardex;
     private JButton jbNoteCardex;
     private JButton jbEndOfYear;
+    private JButton jbPrintBallot;
     
     private SGridFilterDate moFilterDate;
     private SBeanFieldDatetime moDateTime;
@@ -77,6 +81,7 @@ public class SViewStock extends SGridPaneView implements ActionListener {
         jbMovConv = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_stk_cnv.gif")), "Actualización de estado de MP", this);
         jbMvtCardex = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_kardex.gif")), "Ver cárdex de movimientos", this);
         jbNoteCardex = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_notes.gif")), "Ver comentarios", this);
+        jbPrintBallot = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), "Imprimir papeleta de almacén de MP", this);
         jbEndOfYear = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_cal_date_year.gif")), "Último día del año", this);
         
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbMovInRep);
@@ -91,6 +96,8 @@ public class SViewStock extends SGridPaneView implements ActionListener {
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(new JPopupMenu.Separator());
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbMvtCardex);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbNoteCardex);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(new JPopupMenu.Separator());
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbPrintBallot);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(new JPopupMenu.Separator());
         
         moLabelCutoff = new JLabel("Fecha corte:");
@@ -273,6 +280,35 @@ public class SViewStock extends SGridPaneView implements ActionListener {
         }
     }
     
+    private void actionPrintBallot() {
+        if (jbPrintBallot.isEnabled()) {
+            try {
+                if (jtTable.getSelectedRowCount() != 1) {
+                    miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
+                }
+                else {
+                    SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
+                    if (gridRow.getRowType() != SGridConsts.ROW_TYPE_DATA) {
+                        miClient.showMsgBoxWarning(SGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                    }
+                    else {
+                        SDbStock stk = new SDbStock();
+                        stk.read(miClient.getSession(), gridRow.getRowPrimaryKey());
+                        HashMap<String, Object> map = SPrtUtils.createReportParamsMap(miClient.getSession());
+                        
+                        map.put("nTicket", stk.getFkTicketId_n());
+                        map.put("sReference", stk.getReference());
+                        
+                        miClient.getSession().printReport(SModConsts.M_STK, SLibConsts.UNDEFINED, null, map);
+                    }
+                }
+            }
+            catch (Exception e) {
+                miClient.showMsgBoxError(e.getMessage());
+            }
+        }
+    }
+    
     private void actionEndOfYear() {
         moFilterDate.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_DATE, SLibTimeUtils.getEndOfYear(miClient.getSession().getSystemDate()).getTime()));
         refreshGridWithRefresh();
@@ -418,6 +454,9 @@ public class SViewStock extends SGridPaneView implements ActionListener {
             }
             else if (button == jbMovOutAdj) {
                 actionMovOutAdj();
+            }
+            else if (button == jbPrintBallot) {
+                actionPrintBallot();
             }
             else if (button == jbEndOfYear) {
                 actionEndOfYear();

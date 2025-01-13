@@ -1528,7 +1528,7 @@ public abstract class SSomUtils {
 
         sql = "SELECT id_rep_grp, name, sort "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_REP_GRP) + " AS r "
-                + "ORDER BY sort, name, id_rep_grp ";
+                + "ORDER BY name, sort, id_rep_grp ";
 
         Statement repGroupStatement = session.getDatabase().getConnection().createStatement(); // prevent other result sets from being closed
         ResultSet repGroupResultSet = repGroupStatement.executeQuery(sql);

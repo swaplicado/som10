@@ -304,9 +304,12 @@ public class SFormWarehouseMovements extends SBeanForm implements ActionListener
         jlReference.setText("Referencia:*");
         jlReference.setPreferredSize(new java.awt.Dimension(140, 23));
         jpMovRow3.add(jlReference);
+
+        moDateReference.setEnabled(false);
         jpMovRow3.add(moDateReference);
 
         moIntHourReference.setText("23");
+        moIntHourReference.setEnabled(false);
         moIntHourReference.setPreferredSize(new java.awt.Dimension(30, 23));
         jpMovRow3.add(moIntHourReference);
 
@@ -316,6 +319,7 @@ public class SFormWarehouseMovements extends SBeanForm implements ActionListener
         jpMovRow3.add(jlTwoPoints);
 
         moIntMinuteReference.setText("59");
+        moIntMinuteReference.setEnabled(false);
         moIntMinuteReference.setPreferredSize(new java.awt.Dimension(30, 23));
         jpMovRow3.add(moIntMinuteReference);
 
@@ -325,11 +329,13 @@ public class SFormWarehouseMovements extends SBeanForm implements ActionListener
 
         jbEditReference.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_std_edit.gif"))); // NOI18N
         jbEditReference.setToolTipText("Modificar referencia");
+        jbEditReference.setEnabled(false);
         jbEditReference.setPreferredSize(new java.awt.Dimension(23, 23));
         jpMovRow3.add(jbEditReference);
 
         jbSearchReference.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_std_look.gif"))); // NOI18N
         jbSearchReference.setToolTipText("Seleccionar referencia previa");
+        jbSearchReference.setEnabled(false);
         jbSearchReference.setPreferredSize(new java.awt.Dimension(23, 23));
         jpMovRow3.add(jbSearchReference);
 
@@ -1012,9 +1018,9 @@ public class SFormWarehouseMovements extends SBeanForm implements ActionListener
                     }
                     moIntHourReference.setValue(SLibUtilities.parseInt(hour.format(now)));
                     moIntMinuteReference.setValue(SLibUtilities.parseInt(min.format(now)));
-                    moDateReference.setEnabled(true);
-                    moIntHourReference.setEnabled(true);
-                    moIntMinuteReference.setEnabled(true);
+//                    moDateReference.setEnabled(true);
+//                    moIntHourReference.setEnabled(true);
+//                    moIntMinuteReference.setEnabled(true);
                     jbEditReference.setEnabled(false);
                     jbSearchReference.setEnabled(false);
                 }
@@ -1026,8 +1032,8 @@ public class SFormWarehouseMovements extends SBeanForm implements ActionListener
                     moDateReference.setEnabled(false);
                     moIntHourReference.setEnabled(false);
                     moIntMinuteReference.setEnabled(false);
-                    jbEditReference.setEnabled(true);
-                    jbSearchReference.setEnabled(true);
+//                    jbEditReference.setEnabled(true);
+//                    jbSearchReference.setEnabled(true);
                 }
             }
             else {

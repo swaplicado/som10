@@ -27,7 +27,6 @@ import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiDate;
 import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
-import som.mod.SModSysConsts;
 import som.mod.som.db.SDbTicketAlternative;
 import som.mod.som.db.SSomConsts;
 import som.mod.som.db.SSomUtils;
@@ -329,7 +328,7 @@ public class SViewTicketAlternative extends SGridPaneView implements ActionListe
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS w ON " 
                 + "v.fk_wah_unld_co_n = w.id_co AND v.fk_wah_unld_cob_n = w.id_cob AND v.fk_wah_unld_wah_n = w.id_wah "                
                 + (sqlWhere.isEmpty() ? "" : "WHERE " + sqlWhere)
-                + "AND NOT v.b_alt AND v.b_tar AND v.fk_tic_orig = " + SModSysConsts.SU_TIC_ORIG_PRV + " "
+                + "AND NOT v.b_alt AND v.b_tar "
                 + "AND v.fk_item IN (" + msItemCodes + ") "
                 + "UNION "
                 + "SELECT "

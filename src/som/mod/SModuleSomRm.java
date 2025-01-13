@@ -1152,6 +1152,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SR_ITM_TIC:
                 guiReport = new SGuiReport("reps/s_itm_tic.jasper", "Reporte de lista de boletos de báscula por producto");
                 break;
+            case SModConsts.M_STK:
+                guiReport = new SGuiReport("reps/m_stk_ballot.jasper", "Papeleta de almacén MP");
+                break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
