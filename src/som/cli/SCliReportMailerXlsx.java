@@ -7,17 +7,10 @@ package som.cli;
 
 /**
  *
- * @author Isabel Servin
+ * @author Isabel Servín
  */
 import erp.lib.SLibUtilities;
 import java.io.File;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -27,9 +20,15 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import sa.gui.util.SUtilConfigXml;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibUtils;
@@ -151,11 +150,15 @@ public class SCliReportMailerXlsx {
             int tableTitle = 0;
             int rowNum = 0;        
             
-            byte[] headerRgb = new byte[] { (byte)47, (byte)79, (byte)79 };
-            byte[] maxRgb = new byte[] { (byte)175, (byte)238, (byte)238 };
+            byte[] headerRgb = new byte[] { (byte)0, (byte)128, (byte)128 };
+            byte[] maxRgb = new byte[] { (byte)0, (byte)255, (byte)255 };
+            byte[] seasonRgb = new byte[] { (byte)128, (byte)191, (byte)191 };
+            byte[] accumRgb = new byte[] { (byte)229, (byte)231, (byte)233 };
             
             XSSFColor headerColor = new XSSFColor(headerRgb);
             XSSFColor maxColor = new XSSFColor(maxRgb);
+            XSSFColor seasonColor = new XSSFColor(seasonRgb);
+            XSSFColor accumColor = new XSSFColor(accumRgb);
                         
             CellStyle titleStyle = getCellStyle(true, false, null, IndexedColors.BLACK.getIndex(), 16);
             
@@ -164,7 +167,7 @@ public class SCliReportMailerXlsx {
             headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
             
             CellStyle metaDataStyle = getCellStyle(false, true, null, IndexedColors.BLACK.getIndex(), 10.5);
-            CellStyle metaBoldStyle = getCellStyle(true, true, null, IndexedColors.BLACK.getIndex(), 10.5);
+            CellStyle metaBoldSeasonStyle = getCellStyle(true, true, seasonColor, IndexedColors.BLACK.getIndex(), 10.5);
             
             CellStyle dataStyle = getCellStyle(false, true, null, IndexedColors.BLACK.getIndex(), 10.5);
             dataStyle.setAlignment(HorizontalAlignment.RIGHT);
@@ -176,10 +179,17 @@ public class SCliReportMailerXlsx {
             CellStyle pctMaxStyle = getCellStyle(false, true, maxColor, IndexedColors.BLACK.getIndex(), 8);
             pctMaxStyle.setAlignment(HorizontalAlignment.CENTER);
             
-            CellStyle dataBoldStyle = getCellStyle(true, true, null, IndexedColors.BLACK.getIndex(), 10.5);
-            dataBoldStyle.setAlignment(HorizontalAlignment.RIGHT);
-            CellStyle pctBoldStyle = getCellStyle(true, true, null, IndexedColors.BLACK.getIndex(), 8);
-            pctBoldStyle.setAlignment(HorizontalAlignment.CENTER);
+            CellStyle dataBoldSeasonStyle = getCellStyle(true, true, seasonColor, IndexedColors.BLACK.getIndex(), 10.5);
+            dataBoldSeasonStyle.setAlignment(HorizontalAlignment.RIGHT);
+            CellStyle pctBoldSeasonStyle = getCellStyle(true, true, seasonColor, IndexedColors.BLACK.getIndex(), 8);
+            pctBoldSeasonStyle.setAlignment(HorizontalAlignment.CENTER);
+            
+            CellStyle metaDataStyleAccum = getCellStyle(false, true, accumColor, IndexedColors.BLACK.getIndex(), 10.5);
+            
+            CellStyle dataStyleAccum = getCellStyle(false, true, accumColor, IndexedColors.BLACK.getIndex(), 10.5);
+            dataStyleAccum.setAlignment(HorizontalAlignment.RIGHT);
+            CellStyle pctStyleAccum = getCellStyle(false, true, accumColor, IndexedColors.BLACK.getIndex(), 8);
+            pctStyleAccum.setAlignment(HorizontalAlignment.CENTER);
             
             for (Element table : doc.select("table")) {
                 Element title = doc.select("h4").get(tableTitle);
@@ -201,6 +211,7 @@ public class SCliReportMailerXlsx {
                             cellNum += 2;
                         }
                         else {
+                            sheet.setColumnWidth(cellNum, 3143); // número calculado a partir del archivo base 1000 = 35px
                             cellNum++;
                         }
                         excelCell.setCellStyle(headerStyle);
@@ -229,6 +240,15 @@ public class SCliReportMailerXlsx {
                                 case "coldatapctmax":
                                     excelCell.setCellStyle(pctMaxStyle);
                                     break;
+                                case "coldataaccum":
+                                    excelCell.setCellStyle(dataStyleAccum);
+                                    break;
+                                case "coldatapctaccum":
+                                    excelCell.setCellStyle(pctStyleAccum);
+                                    break;
+                                case "colmonthaccum":
+                                    excelCell.setCellStyle(metaDataStyleAccum);
+                                    break;
                                 default: 
                                     excelCell.setCellStyle(metaDataStyle);
                                     break;
@@ -238,14 +258,14 @@ public class SCliReportMailerXlsx {
                             excelCell = excelRow.createCell(cellNum++);
                             excelCell.setCellValue(cellBold.text());
                             switch (cell.className()) {
-                                case "coldata":
-                                    excelCell.setCellStyle(dataBoldStyle);
+                                case "coldatatotal":
+                                    excelCell.setCellStyle(dataBoldSeasonStyle);
                                     break;
-                                case "coldatapct":
-                                    excelCell.setCellStyle(pctBoldStyle);
+                                case "coldatapcttotal":
+                                    excelCell.setCellStyle(pctBoldSeasonStyle);
                                     break;
                                 default:
-                                    excelCell.setCellStyle(metaBoldStyle);
+                                    excelCell.setCellStyle(metaBoldSeasonStyle);
                                     break;
                             }
                         }

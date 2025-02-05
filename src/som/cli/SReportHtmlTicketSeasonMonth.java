@@ -89,7 +89,7 @@ public class SReportHtmlTicketSeasonMonth {
                 + "th {"
                 + " padding: 2px;"
                 + " text-align: center;"
-                + " background-color: DarkSlateGray;"
+                + " background-color: #008080;"
                 + " color: white;"
                 + "} "
                 + "td {"
@@ -103,18 +103,47 @@ public class SReportHtmlTicketSeasonMonth {
                 + "} "
                 + "td.coldatamax {"
                 + " text-align: right;"
-                + " background-color: PaleTurquoise;"
+                + " background-color: Aqua;"
                 + "} "
                 + "td.coldatapct {"
                 + " text-align: center;"
                 + " font-size: 0.75em;"
                 + " font-family: sans-serif;"
                 + "} "
+                + "td.coldatapctaccum {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + " background-color: #E5E7E9;"
+                + "} "
+                + "td.colmonthaccum {"
+                + " text-align: left;"
+                + " background-color: #E5E7E9;"
+                + " white-space: nowrap;"
+                + "} "
+                + "td.coldataaccum {"
+                + " text-align: right;"
+                + " background-color: #E5E7E9;"
+                + "} "
+                + "td.coldatatotal {"
+                + " text-align: right;"
+                + " background-color: #80bfbf;"
+                + "} "
+                + "td.coldatapcttotal {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + " background-color: #80bfbf;"
+                + "} "
+                + "td.colmonthtotal {"
+                + " text-align: left;"
+                + " background-color: #80bfbf;"
+                + "} "
                 + "td.coldatapctmax {"
                 + " text-align: center;"
                 + " font-size: 0.75em;"
                 + " font-family: sans-serif;"
-                + " background-color: PaleTurquoise;"
+                + " background-color: Aqua;"
                 + "}\n"
                 + "</style>\n";
         
@@ -207,7 +236,9 @@ public class SReportHtmlTicketSeasonMonth {
 
             int year;
             int month = item.getStartingSeasonMonth();
+            int rowAccumulated = getRowEquivalenceMonth(todayMonth, item.getStartingSeasonMonth());
             double[] tableTotals = new double[years + 1]; // total weight per year
+            double[] tableAccumulated = new double[years + 1]; // accumulated weight today
             double[][] tableValues = new double[years + 1][SLibTimeConsts.MONTHS]; // total weight per year
             HashMap<Integer, Integer> maxValues = new HashMap<>(); // key: year index, value: row index
 
@@ -241,7 +272,11 @@ public class SReportHtmlTicketSeasonMonth {
                             double value = resultSet.getDouble(1);
                             tableTotals[col] += value;
                             tableValues[col][row] = value;
-
+                            
+                            if (row <= rowAccumulated) {
+                                tableAccumulated[col] += value;
+                            }
+                            
                             Integer rowOfMaxValue = maxValues.get(col);
                             if (rowOfMaxValue == null || value > tableValues[col][rowOfMaxValue]) {
                                 maxValues.put(col, row);
@@ -284,7 +319,7 @@ public class SReportHtmlTicketSeasonMonth {
 
             html += "<tr>";
             for (int col = 0; col < headerCols.size(); col++) {
-                html += "<th" + (col == 0 ? "" : " colspan='2'") + ">" + headerCols.get(col) + "</th>";
+                html += "<th" + (col == 0 ? "" : " colspan='2'") + ">&nbsp&nbsp&nbsp " + headerCols.get(col) + " &nbsp&nbsp&nbsp</th>";
             }
             html += "</tr>\n";
 
@@ -299,7 +334,7 @@ public class SReportHtmlTicketSeasonMonth {
             for (int row = 0; row < SLibTimeConsts.MONTHS; row++) {
 
                 html += "<tr>";
-                html += "<td class='colmonth'>" + months[month - 1] + "</td>";
+                html += "<td class='colmonth'>" + months[month - 1] + ".</td>";
 
                 for (int col = 0; col < tableTotals.length; col++) {
                     boolean isMax = maxValues.get(col) == row;
@@ -317,10 +352,22 @@ public class SReportHtmlTicketSeasonMonth {
             // table footer:
 
             html += "<tr>";
-            html += "<td class='colmonth'><b>Total</b></td>";
+            html += "<td class='colmonthtotal'><b>Temporada</b></td>";
             for (int col = 0; col < tableTotals.length; col++) {
-                html += "<td class='coldata'><b>" + SLibUtils.getDecimalFormatAmount().format(tableTotals[col]) + "</b></td>";
-                html += "<td class='coldatapct'><b>" + decimalFormatPct.format(1) + "</b></td>";
+                html += "<td class='coldatatotal'><b>" + SLibUtils.getDecimalFormatAmount().format(tableTotals[col]) + "</b></td>";
+                html += "<td class='coldatapcttotal'><b>" + decimalFormatPct.format(1) + "</b></td>";
+            }
+            html += "</tr>\n";
+            
+            html += "<tr>";
+            html += "<td>&nbsp</td>";
+            html += "</tr>\n";
+            
+            html += "<tr>";
+            html += "<td class='colmonthaccum'>Acum. a " + months[todayMonth - 1] + ".</td>";
+            for (int col = 0; col < tableAccumulated.length; col++) {
+                html += "<td class='coldataaccum'>" +  SLibUtils.getDecimalFormatAmount().format(tableAccumulated[col]) + "</td>";
+                html += "<td class='coldatapctaccum'>" + decimalFormatPct.format(tableTotals[col] == 0 ? 0 : tableAccumulated[col] / tableTotals[col]) + "</td>";
             }
             html += "</tr>\n";
 
@@ -336,5 +383,17 @@ public class SReportHtmlTicketSeasonMonth {
         html += "</html>";
         
         return html;
+    }
+    
+    /*
+    Devuelve el renglón equivalente para cierto mes a partir del mes de inicio de temporada
+    */
+    private int getRowEquivalenceMonth(int month, int startingSeasonMonth) {
+        if (month >= startingSeasonMonth) {
+            return month - startingSeasonMonth;
+        }
+        else {
+            return month + SLibTimeConsts.MONTHS - startingSeasonMonth; 
+        }
     }
 }
