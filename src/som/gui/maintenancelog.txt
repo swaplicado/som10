@@ -2,7 +2,7 @@
 2025-02-24, 1.0 094.4
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
-1) Postergación de instanciación del diálogo de systema "selector de archivos" hasta que se necesite.
+1) Postergación de instanciación del diálogo de sistema "selector de archivos" hasta que se necesite.
 
 ================================================================================
 2025-02-05, 1.0 094.3
