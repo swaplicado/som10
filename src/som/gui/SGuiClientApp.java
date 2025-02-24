@@ -68,7 +68,7 @@ import som.mod.cfg.db.SDbUserGui;
 public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener {
 
     public static final String APP_NAME = "SOM 1.0";
-    public static final String APP_RELEASE_NUM = "094.3"; // release date: 2025-02-05
+    public static final String APP_RELEASE_NUM = "094.4"; // release date: 2025-02-24
     public static final String APP_RELEASE = APP_NAME + " " + APP_RELEASE_NUM;
     public static final String APP_COPYRIGHT = "2013-2025";
     public static final String APP_PROVIDER = "Software Aplicado SA de CV";
@@ -491,7 +491,7 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
             moDateRangePicker = new SGuiDateRangePicker(this);
             moYearPicker = new SGuiYearPicker(this);
             moYearMonthPicker = new SGuiYearMonthPicker(this);
-            moFileChooser = new JFileChooser();
+            //moFileChooser = new JFileChooser(); // delay instantiation until needed
             moIcon = new ImageIcon(getClass().getResource("/som/gui/img/swap_icon.png"));
             moIconCloseActive = new ImageIcon(getClass().getResource("/sa/lib/img/gui_close.png"));
             moIconCloseInactive = new ImageIcon(getClass().getResource("/sa/lib/img/gui_close_ina.png"));
@@ -892,6 +892,10 @@ public class SGuiClientApp extends JFrame implements SGuiClient, ActionListener 
 
     @Override
     public JFileChooser getFileChooser() {
+        if (moFileChooser == null) {
+            moFileChooser = new JFileChooser();
+        }
+        
         return moFileChooser;
     }
 
