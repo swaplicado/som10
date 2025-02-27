@@ -22,6 +22,7 @@ import sa.lib.SLibTimeConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiSession;
+import som.cli.SCliReportMailerSummary;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
@@ -1434,6 +1435,80 @@ public abstract class SSomUtils {
         return origins;
     }
     
+    private static String composeHtmlTableKgPctMonthComparativeHeader(final String table, final String itemName, final String month, final int year, final String conceptName) {
+        return "<b>Resumen y comparativa " + SLibUtils.textToHtml(table) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
+                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                + "<tr>"
+                + "<td align='center' rowspan='2'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
+                + "<td align='center' colspan='2'><b>" + SLibUtils.textToHtml(month + ". " + year) + "</b></td>"
+                + "<td align='center' colspan='2'><b>" + SLibUtils.textToHtml(month + ". " + (year - 1)) + "</b></td>"
+                + "<td align='center' colspan='2'><b>" + SLibUtils.textToHtml(month + ". " + (year - 2)) + "</b></td>"
+                + "<td align='center' colspan='2'><b>" + SLibUtils.textToHtml(month + ". " + (year - 3)) + "</b></td>"
+                + "</tr>"
+                + "<tr>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " vs. mes act.") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " vs. mes act.") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " vs. mes act.") + "</b></td>"
+                + "</tr>";
+    }
+    
+    private static String composeHtmlTableKgPctSeasonComparativeHeader(final String table, final String itemName, Date seasonStart, Date seasonEnd, final String conceptName) {
+        return "<b>Resumen y comparativa " + SLibUtils.textToHtml(table) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
+                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                + "<tr>"
+                + "<td align='center' rowspan='2'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
+                + "<td align='center' colspan='2'><b>" + SLibUtils.textToHtml(SLibTimeUtils.digestYear(seasonStart)[0] + "-" + SLibTimeUtils.digestYear(seasonEnd)[0]) + "</b></td>"
+                + "<td align='center' colspan='2'><b>" + SLibUtils.textToHtml(SLibTimeUtils.digestYear(SLibTimeUtils.addDate(seasonStart, - 1, 0, 0))[0] + "-" + SLibTimeUtils.digestYear(SLibTimeUtils.addDate(seasonEnd, - 1, 0, 0))[0]) + "</b></td>"
+                + "<td align='center' colspan='2'><b>" + SLibUtils.textToHtml(SLibTimeUtils.digestYear(SLibTimeUtils.addDate(seasonStart, - 2, 0, 0))[0] + "-" + SLibTimeUtils.digestYear(SLibTimeUtils.addDate(seasonEnd, - 2, 0, 0))[0]) + "</b></td>"
+                + "<td align='center' colspan='2'><b>" + SLibUtils.textToHtml(SLibTimeUtils.digestYear(SLibTimeUtils.addDate(seasonStart, - 3, 0, 0))[0] + "-" + SLibTimeUtils.digestYear(SLibTimeUtils.addDate(seasonEnd, - 3, 0, 0))[0]) + "</b></td>"
+                + "</tr>"
+                + "<tr>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " vs. temp. act.") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " vs. temp. act.") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " vs. temp. act.") + "</b></td>"
+                + "</tr>";
+    }
+    
+    private static String composeHtmlTableKgPctComparativeRow(final String concept, final double weight, final double weightTotal, double weight1yAgo, double weight2yAgo, double weight3yAgo) {
+        return "<tr>"
+                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight1yAgo) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight - weight1yAgo) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight2yAgo) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight - weight2yAgo) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight3yAgo) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight - weight3yAgo) + "</td>"
+                + "</tr>";
+    }
+    
+    private static String composeHtmlTableKgPctComparativeFooter(final String table, final double weightTotal, final double weight1yAgoTotal, final double diference1yAgoTotal, 
+            final double weight2yAgoTotal, final double diference2yAgoTotal, final double weight3yAgoTotal, final double diference3yAgoTotal) {
+        return "<tr>"
+                + "<td><b>Total " + SLibUtils.textToHtml(table) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weight1yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(diference1yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weight2yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(diference2yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weight3yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(diference3yAgoTotal) + "</b></td>"
+                + "</tr>"
+                + "</table><br>";
+    }
+    
     private static String composeHtmlTableKgPctHeader(final String table, final String itemName, final String conceptName) {
         return "<b>Resumen " + SLibUtils.textToHtml(table) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
                 + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
@@ -1499,16 +1574,23 @@ public abstract class SSomUtils {
      * @param session GUI session.
      * @param itemId Item ID.
      * @param date Date.
+     * @param repType
      * @param idTicOrig
      * @param idTicDest
      * @return HTML snippet.
      * @throws Exception 
      */
-    public static String composeHtmlSummaryItem(final SGuiSession session, final int itemId, final Date date, final int idTicOrig, final int idTicDest) throws Exception {
+    public static String composeHtmlSummaryItem(final SGuiSession session, final int itemId, final Date date, final int repType, final int idTicOrig, final int idTicDest) throws Exception {
         // REPORT PREPARATION:
 
         double weight;
         double weightTotal;
+        double weight1yAgo;
+        double weight1yAgoTotal;
+        double weight2yAgo;
+        double weight2yAgoTotal;
+        double weight3yAgo;
+        double weight3yAgoTotal;
         Date dateStart;
         Date dateEnd;
         String sql;
@@ -1598,22 +1680,48 @@ public abstract class SSomUtils {
 
         // SECTION 2.1. Current month summary by reporting group:
 
-        body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
-
         // compute reporting groups:
 
         if (repGroupResultSet.isAfterLast()) {
             repGroupResultSet.beforeFirst();
         }
 
-        while (repGroupResultSet.next()) {
-            weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
-            if (weight != 0) {
-                body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
-            }
-        }
+        if (repType == SCliReportMailerSummary.REGULAR_REPORT) {
+            body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
 
-        body += composeHtmlTableKgPctFooter(section, weightTotal);
+            while (repGroupResultSet.next()) {
+                weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                if (weight != 0) {
+                    body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+                }
+            }
+
+            body += composeHtmlTableKgPctFooter(section, weightTotal);
+        }
+        else {
+            double diference1yAgoTotal = 0;
+            double diference2yAgoTotal = 0;
+            double diference3yAgoTotal = 0;
+            weight1yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, idTicOrig, idTicDest);
+            weight2yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, idTicOrig, idTicDest);
+            weight3yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, idTicOrig, idTicDest);
+            body += composeHtmlTableKgPctMonthComparativeHeader(section, itemName, months[curMonth - 1], curYear, "Proveedor");
+            
+            while (repGroupResultSet.next()) {
+                weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                weight1yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                weight2yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                weight3yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                diference1yAgoTotal += weight - weight1yAgo;
+                diference2yAgoTotal += weight - weight2yAgo;
+                diference3yAgoTotal += weight - weight3yAgo;
+                if (weight != 0 || weight1yAgo != 0 || weight2yAgo != 0 || weight3yAgo != 0) {
+                    body += composeHtmlTableKgPctComparativeRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1yAgo, weight2yAgo, weight3yAgo);
+                }
+            }
+            
+            body += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
+        }
 
         // SECTION 2.2: Current month summary by scale: 
 
@@ -1662,30 +1770,56 @@ public abstract class SSomUtils {
                     SLibTimeUtils.getMaxDayOfMonth(SLibTimeUtils.createDate(curYear, item.getStartingSeasonMonth() - 1)));
         }
 
+        // SECTION 3.1 Current season summary by reporting group:
         dateStart = dateSeasonStart;
         dateEnd = dateSeasonEnd;
         weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "temporada";
-
-        // SECTION 3.1 Current season summary by reporting group:
-
-        body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
-
+        
         // compute reporting groups:
 
         if (repGroupResultSet.isAfterLast()) {
             repGroupResultSet.beforeFirst();
         }
 
-        while (repGroupResultSet.next()) {
-            weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
-            if (weight != 0) {
-                body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+        if (repType == SCliReportMailerSummary.REGULAR_REPORT) {
+            body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
+
+
+            while (repGroupResultSet.next()) {
+                weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                if (weight != 0) {
+                    body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+                }
             }
+
+            body += composeHtmlTableKgPctFooter(section, weightTotal);
         }
-
-        body += composeHtmlTableKgPctFooter(section, weightTotal);
-
+        else {
+            double diference1yAgoTotal = 0;
+            double diference2yAgoTotal = 0;
+            double diference3yAgoTotal = 0;
+            weight1yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, idTicOrig, idTicDest);
+            weight2yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, idTicOrig, idTicDest);
+            weight3yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, idTicOrig, idTicDest);
+            body += composeHtmlTableKgPctSeasonComparativeHeader(section, itemName, dateSeasonStart, dateSeasonEnd, "Proveedor");
+            
+            while (repGroupResultSet.next()) {
+                weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                weight1yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                weight2yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                weight3yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                diference1yAgoTotal += weight - weight1yAgo;
+                diference2yAgoTotal += weight - weight2yAgo;
+                diference3yAgoTotal += weight - weight3yAgo;
+                if (weight != 0 || weight1yAgo != 0 || weight2yAgo != 0 || weight3yAgo != 0) {
+                    body += composeHtmlTableKgPctComparativeRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1yAgo, weight2yAgo, weight3yAgo);
+                }
+            }
+            
+            body += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
+        }
+        
         // SECTION 3.2 Current season summary by scale:
 
         scaleRows = 0;
@@ -1755,8 +1889,8 @@ public abstract class SSomUtils {
 
         sql = "SELECT IF(i.sta_seas_mon = 1, YEAR(t.dt), IF(MONTH(t.dt) >= i.sta_seas_mon, CONCAT(YEAR(t.dt), '-', YEAR(t.dt) + 1), CONCAT(YEAR(t.dt) - 1, '-', YEAR(t.dt)))) AS _season, "
                 + "SUM(t.wei_des_net_r) AS _weight "
-                + "FROM S_TIC AS t "
-                + "INNER JOIN SU_ITEM AS i ON t.fk_item = i.id_item "
+                + "FROM s_tic AS t "
+                + "INNER JOIN su_item AS i ON t.fk_item = i.id_item "
                 + "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + itemId + " " 
                 + (idTicOrig == 0 ? "" : "AND t.fk_tic_orig = " + idTicOrig + " ") 
                 + (idTicDest == 0 ? "" : "AND t.fk_tic_dest = " + idTicDest + " ") 
@@ -1793,12 +1927,6 @@ public abstract class SSomUtils {
 
         double[] weights;
         double[] weightsTots;
-//        double weightTic;
-//        double weightAlt;
-//        double weightAll;
-//        double weightTotTic;
-//        double weightTotAlt;
-//        double weightTotal;
         Date dateStart;
         Date dateEnd;
         String sql;
@@ -1888,24 +2016,22 @@ public abstract class SSomUtils {
 
         // SECTION 2.1. Current month summary by reporting group:
 
-        body += composeHtmlTableKgPctHeaderAlternative(section, "Proveedor");
-
         // compute reporting groups:
 
         if (repGroupResultSet.isAfterLast()) {
             repGroupResultSet.beforeFirst();
         }
 
-        while (repGroupResultSet.next()) {
-            weights = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
-            
-            if (weights != null && weights[2] != 0.0) {
-                body += composeHtmlTableKgPctRowAlternative(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+            while (repGroupResultSet.next()) {
+                weights = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+
+                if (weights != null && weights[2] != 0.0) {
+                    body += composeHtmlTableKgPctRowAlternative(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                }
             }
-        }
 
-        body += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
-
+            body += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        
         // SECTION 2.2: Current month summary by scale: 
 
         scaleRows = 0;

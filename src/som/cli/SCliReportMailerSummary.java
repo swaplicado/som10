@@ -26,6 +26,7 @@ import sa.lib.xml.SXmlUtils;
 import som.mod.SModSysConsts;
 
 /**
+ * Resumen báscula
  * Report mailer for monthly reception at scale.
  * @author Sergio Flores
  */
@@ -35,6 +36,9 @@ public class SCliReportMailerSummary {
     public static final int ID_AVO_FRUIT_ORG = 64; // fruta orgánica
     public static final int ID_AVO_MARC = 23; // bagazo
     public static final int ID_AVO_KERNEL = 100; // hueso y cáscara
+    
+    public static final int REGULAR_REPORT = 1;
+    public static final int COMPARATIVE_REPORT = 2;
     
     public static final HashMap<Integer, String> ItemDescriptions = new HashMap<>();
     
@@ -49,19 +53,22 @@ public class SCliReportMailerSummary {
     private static final int ARG_IDX_ITEM_IDS = 0;
     /** Argument index for year reference. */
     private static final int ARG_IDX_DATE = 1;
+    /** Argument index for report type. */
+    private static final int ARG_IDX_REP_TP = 2;
     /** Argument index for list of mail-To recipients. */
-    private static final int ARG_IDX_MAIL_TO = 2;
+    private static final int ARG_IDX_MAIL_TO = 3;
     /** Argument index for list of mail-Bcc recipients. */
-    private static final int ARG_IDX_MAIL_BCC = 3;
+    private static final int ARG_IDX_MAIL_BCC = 4;
     
     private static final String ARG_DATE_TODAY = "TODAY";
     private static final String ARG_DATE_YESTERDAY = "YESTERDAY";
 
     private static final int[] DEF_ITEM_IDS = new int[] { ID_AVO_FRUIT, /*ID_AVO_FRUIT_ORG,*/ ID_AVO_MARC, ID_AVO_KERNEL };
-    private static final Date DEF_DATE = SLibTimeUtils.createDate(2024, 3, 12);
-    private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx;isabel.garcia@swaplicado.com.mx";
+    private static final Date DEF_DATE = SLibTimeUtils.createDate(2025, 2, 26);
+    private static final int DEF_REP_TP = COMPARATIVE_REPORT;
+    private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "gortiz@aeth.mx";
-    private static final String DEF_MAIL_BCC = "sflores@swaplicado.com.mx";
+    private static final String DEF_MAIL_BCC = "isabel.garcia@swaplicado.com.mx";
 
     /**
      * @param args the command line arguments
@@ -77,6 +84,7 @@ public class SCliReportMailerSummary {
             
             int[] itemIds = DEF_ITEM_IDS;
             Date date = DEF_DATE;
+            int repType = DEF_REP_TP;
             String mailTo = DEF_MAIL_TO;
             String mailBcc = DEF_MAIL_BCC;
             
@@ -97,9 +105,12 @@ public class SCliReportMailerSummary {
                 }
             }
             if (args.length >= 3) {
-                mailTo = args[ARG_IDX_MAIL_TO];
+                repType = Integer.parseInt(args[ARG_IDX_REP_TP]);
             }
             if (args.length >= 4) {
+                mailTo = args[ARG_IDX_MAIL_TO];
+            }
+            if (args.length >= 5) {
                 mailBcc = args[ARG_IDX_MAIL_BCC];
             }
             
@@ -133,7 +144,7 @@ public class SCliReportMailerSummary {
             // generate mail body:
 
             SReportHtmlScaleSummary htmlScaleSummary = new SReportHtmlScaleSummary(session);
-            String mailBody = htmlScaleSummary.generateReportHtml(itemIds, date, SModSysConsts.SU_TIC_ORIG_PRV, 0);
+            String mailBody = htmlScaleSummary.generateReportHtml(itemIds, date, repType, SModSysConsts.SU_TIC_ORIG_PRV, 0);
             
             // generate mail subject:
             

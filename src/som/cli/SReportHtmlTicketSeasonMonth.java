@@ -366,8 +366,8 @@ public class SReportHtmlTicketSeasonMonth {
             html += "<tr>";
             html += "<td class='colmonthaccum'>Acum. a " + months[todayMonth - 1] + ".</td>";
             for (int col = 0; col < tableAccumulated.length; col++) {
-                html += "<td class='coldataaccum'>" +  SLibUtils.getDecimalFormatAmount().format(tableAccumulated[col]) + "</td>";
-                html += "<td class='coldatapctaccum'>" + decimalFormatPct.format(tableTotals[col] == 0 ? 0 : tableAccumulated[col] / tableTotals[col]) + "</td>";
+                html += "<td class='coldataaccum'>" + (col == 0 ? "" : SLibUtils.getDecimalFormatAmount().format(tableAccumulated[col])) + "</td>";
+                html += "<td class='coldatapctaccum'>" + (col == 0 ? "" : decimalFormatPct.format(tableTotals[col] == 0 ? 0 : tableAccumulated[col] / tableTotals[col])) + "</td>";
             }
             html += "</tr>\n";
 

@@ -25,6 +25,7 @@ import sa.lib.xml.SXmlUtils;
 import som.mod.SModSysConsts;
 
 /**
+ * Histórico mensual recepción báscula
  * Report mailer for monthly reception at scale.
  * @author Sergio Flores
  */
@@ -61,7 +62,7 @@ public class SCliReportMailer {
     //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
     //private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
-    private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx;sflores@swaplicado.com.mx";
+    private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "gortiz@aeth.mx;sflores@swaplicado.com.mx";
 
     /**

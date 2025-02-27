@@ -217,7 +217,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
                 if (producerId == 0) {
                     // A summary of all receptions is about to be included:
-                    body += SSomUtils.composeHtmlSummaryItem(session, mnFkItemId, mtDate, SModSysConsts.SU_TIC_ORIG_PRV, 0);
+                    body += SSomUtils.composeHtmlSummaryItem(session, mnFkItemId, mtDate, 1, SModSysConsts.SU_TIC_ORIG_PRV, 0);
                 }
                 
                 // Add mail warning:

@@ -1,4 +1,11 @@
 ================================================================================
+2025-02-27, 1.0 094.5
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se elimina la repetición de los datos en el reporte de "Histórico mensual báscula".
+2) Se añade la comparativa con meses y temporadas pasadas en el reporte de "Resumen báscula".
+
+================================================================================
 2025-02-24, 1.0 094.4
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
