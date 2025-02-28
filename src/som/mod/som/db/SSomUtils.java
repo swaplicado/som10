@@ -2015,6 +2015,8 @@ public abstract class SSomUtils {
         section = "mes '" + months[curMonth - 1] + ". " + curYear + "'";
 
         // SECTION 2.1. Current month summary by reporting group:
+        
+        body += composeHtmlTableKgPctHeaderAlternative(section, "Proveedor");
 
         // compute reporting groups:
 
@@ -2022,15 +2024,15 @@ public abstract class SSomUtils {
             repGroupResultSet.beforeFirst();
         }
 
-            while (repGroupResultSet.next()) {
-                weights = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+        while (repGroupResultSet.next()) {
+            weights = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
 
-                if (weights != null && weights[2] != 0.0) {
-                    body += composeHtmlTableKgPctRowAlternative(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
-                }
+            if (weights != null && weights[2] != 0.0) {
+                body += composeHtmlTableKgPctRowAlternative(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
             }
+        }
 
-            body += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        body += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
         
         // SECTION 2.2: Current month summary by scale: 
 
