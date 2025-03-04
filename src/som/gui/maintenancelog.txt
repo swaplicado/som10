@@ -1,4 +1,10 @@
 ================================================================================
+2025-03-04, 1.0 094.6
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Se resaltan en rojo los campos de los proveedores que tienen rezago de cierto porcentaje respecto al periodo anterior en el reporte de "Resumen báscula".
+
+================================================================================
 2025-02-27, 1.0 094.5
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------

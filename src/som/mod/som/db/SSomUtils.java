@@ -35,6 +35,8 @@ import som.mod.cfg.db.SDbCompany;
  */
 public abstract class SSomUtils {
     
+    public static double LAGGING_PERCENTAGE = 0.15;
+    
     /**
      * Gets proper season for ticket defined by date, item and producer.
      * @param session Current GUI session.
@@ -1481,8 +1483,8 @@ public abstract class SSomUtils {
     
     private static String composeHtmlTableKgPctComparativeRow(final String concept, final double weight, final double weightTotal, double weight1yAgo, double weight2yAgo, double weight3yAgo) {
         return "<tr>"
-                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
+                + "<td" + ((weight1yAgo - weight) / weight1yAgo >= LAGGING_PERCENTAGE ? " style='background-color: tomato;'" : "") + ">" + SLibUtils.textToHtml(concept) + "</td>"
+                + "<td align='right'" + ((weight1yAgo - weight) / weight1yAgo >= LAGGING_PERCENTAGE ? " style='background-color: tomato;'" : "") + ">" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
                 + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>"
                 + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight1yAgo) + "</td>"
                 + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight - weight1yAgo) + "</td>"
@@ -1506,7 +1508,7 @@ public abstract class SSomUtils {
                 + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weight3yAgoTotal) + "</b></td>"
                 + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(diference3yAgoTotal) + "</b></td>"
                 + "</tr>"
-                + "</table><br>";
+                + "</table>";
     }
     
     private static String composeHtmlTableKgPctHeader(final String table, final String itemName, final String conceptName) {
@@ -1721,6 +1723,8 @@ public abstract class SSomUtils {
             }
             
             body += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
+            body += "<p style='font-size: 10px;'>" + SLibUtils.textToHtml("*Se muestran en rojo los proveedores rezagados " 
+                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PERCENTAGE) + " o más respecto al mes del año anterior.") + "</p>";
         }
 
         // SECTION 2.2: Current month summary by scale: 
@@ -1818,6 +1822,8 @@ public abstract class SSomUtils {
             }
             
             body += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
+            body += "<p style='font-size: 10px;'>" + SLibUtils.textToHtml("*Se muestran en rojo los proveedores rezagados " 
+                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PERCENTAGE) + " o más respecto a la temporada anterior.") + "</p>";
         }
         
         // SECTION 3.2 Current season summary by scale:
