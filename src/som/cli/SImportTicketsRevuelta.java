@@ -6,6 +6,7 @@
 package som.cli;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -42,17 +43,27 @@ import static som.mod.som.db.SSomUtils.getProperSeasonId;
  * TODO 2019-09-20 Sergio Flores: ¡Refactorizar esta clase y convertirla al paradigma OO!
  */
 public class SImportTicketsRevuelta {
-
+    
+    public static int getLastImportedTicket() { return mnLastImportedTicket; }
+    public static void setLastImportedTicket(int lastId) { mnLastImportedTicket = lastId; }
+    
     private static Connection moConnectionRev;
     private static int mnLastImportedTicket;
     private static SGuiSession moSession;
     private static String msPlateCageLabels;
 
-    public static int getLastImportedTicket() { return mnLastImportedTicket; }
-    public static void setLastImportedTicket(int lastId) { mnLastImportedTicket = lastId; }
+    private static final int ARG_IDX_TICKET_START = 0;
 
+    public static final int DEF_TICKET_START = 190000;
+    
     public static void main(String[] args) {
         try {
+            int idTicketStart = DEF_TICKET_START;
+            
+            if (args.length >= 1) {
+                idTicketStart = SLibUtils.parseInt(args[ARG_IDX_TICKET_START]);
+            }
+            
             moSession = new SGuiSession(null);
             
             String xml;
@@ -80,7 +91,7 @@ public class SImportTicketsRevuelta {
                 company.read(moSession, new int[] { SUtilConsts.BPR_CO_ID });
                 msPlateCageLabels = company.getPlateCageLabels();
                 
-                run();
+                run(idTicketStart);
                 database.disconnect();
                 moConnectionRev.close();
             }
@@ -93,11 +104,13 @@ public class SImportTicketsRevuelta {
         } 
     }
 
-    private static void run() throws Exception {
+    private static void run(int idTicketStart) throws Exception {
         Statement stmSoom = moSession.getStatement().getConnection().createStatement();
         Statement stmRev = moConnectionRev.createStatement();
         ResultSet rstSoom;
 
+        deleteLog();
+        
         rstSoom = stmSoom.executeQuery("SELECT MAX(num) FROM som_com.s_tic s WHERE dt >= '2019-01-01'");
         rstSoom.next();
         setLastImportedTicket(rstSoom.getInt(1));
@@ -107,9 +120,9 @@ public class SImportTicketsRevuelta {
                 + "Pes_Tara, Pes_Neto, Pes_Placas, Pes_Chofer, "
                 + "Pro_ID, Emp_ID, NOW() AS now "
                 + "FROM dba.Pesadas "
-                + "WHERE Pes_ID >= 150000 "
+                + "WHERE Pes_ID >= " + idTicketStart + " "
+                //+ "where pes_id = 149844 "
                 + "AND Usb_ID = 'ACTH' ORDER BY Pes_ID";
-                //+ "where pes_id = 149844";
 
         ResultSet rstRev = stmRev.executeQuery(sql);
 
@@ -240,15 +253,26 @@ public class SImportTicketsRevuelta {
                     
                     String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " importado!";
                     writeLog(entry);
+                    //System.out.println(entry);
                 }
                 else {
                     String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " NO fue importado! Producto: " + rstRev.getString("Pro_ID") + " " + now + ".";
                     writeLog(entry);
+                    //System.err.println(entry);
                 }
             }
         }
     }
 
+    /**
+     * Con el fin de no hacer el archivo excesivamente grande, el archivo *.log se elimina de la carpera raiz de SOM.
+     * @throws Exception
+     */
+    public static void deleteLog() throws Exception {
+        File log = new File("SImportTicketsRevuelta.log");
+        log.delete();
+    }
+    
     /**
      * Guarda la entrada en el archivo de bitacora *.log dentro de la carpeta raiz de SOM.
      * @param entry Entrada a guardar en la bitacora.

@@ -1,4 +1,11 @@
 ================================================================================
+2025-04-21, 1.0 094.8
+Isabel Danae GARCÍA SERVÍN
+--------------------------------------------------------------------------------
+1) Mejora en la importación de tickets de revuelta, se agrega el ID del ticket inicial como parámetro de usuario.
+1) Mejora en la importación de tickets de revuelta, se elimina la bitácora de importaciones al inicio de la ejecución con el fin de no mantener un archivo demasiado grande.
+
+================================================================================
 2025-03-25, 1.0 094.7
 Isabel Danae GARCÍA SERVÍN
 --------------------------------------------------------------------------------
