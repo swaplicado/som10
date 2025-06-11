@@ -53,7 +53,7 @@ public class SFormTicketSeasonRegion extends SBeanForm {
         moTextScaleCode = new sa.lib.gui.bean.SBeanFieldText();
         jPanel4 = new javax.swing.JPanel();
         jlTicket = new javax.swing.JLabel();
-        moTextTicket = new sa.lib.gui.bean.SBeanFieldInteger();
+        moTextTicket = new sa.lib.gui.bean.SBeanFieldText();
         jPanel10 = new javax.swing.JPanel();
         jlProducer = new javax.swing.JLabel();
         moTextProducer = new sa.lib.gui.bean.SBeanFieldText();
@@ -285,7 +285,7 @@ public class SFormTicketSeasonRegion extends SBeanForm {
     private sa.lib.gui.bean.SBeanFieldText moTextProducer;
     private sa.lib.gui.bean.SBeanFieldText moTextScaleCode;
     private sa.lib.gui.bean.SBeanFieldText moTextScaleName;
-    private sa.lib.gui.bean.SBeanFieldInteger moTextTicket;
+    private sa.lib.gui.bean.SBeanFieldText moTextTicket;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
@@ -295,7 +295,7 @@ public class SFormTicketSeasonRegion extends SBeanForm {
 
         moTextScaleName.setTextSettings(SGuiUtils.getLabelName(jlScale.getText()), 25);
         moTextScaleCode.setTextSettings(SGuiUtils.getLabelName(jlScale.getText()), 25);
-        moTextTicket.setIntegerSettings(SGuiUtils.getLabelName(jlTicket.getText()), SGuiConsts.GUI_TYPE_INT_RAW, true);
+        moTextTicket.setTextSettings(SGuiUtils.getLabelName(jlTicket.getText()), 10, 1);
         moTextProducer.setTextSettings(SGuiUtils.getLabelName(jlProducer.getText()), 25);
         moTextItem.setTextSettings(SGuiUtils.getLabelName(jlItem.getText()), 25);
         moKeySeason.setKeySettings(miClient, SGuiUtils.getLabelName(jlSeason.getText()), true);

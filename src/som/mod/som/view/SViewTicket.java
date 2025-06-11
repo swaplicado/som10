@@ -34,7 +34,9 @@ import som.gui.prt.SPrtUtils;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 import som.mod.som.db.SDbTicket;
+import som.mod.som.db.SDbTicketDivisionProcess;
 import som.mod.som.db.SSomConsts;
+import som.mod.som.db.SSomUtils;
 
 /**
  *
@@ -57,6 +59,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     private JButton mjbSeasonRegion;
     private JButton mjbPrint;
     private JButton mjbManifest;
+    private JButton mjbDivideTicket;
+    private JButton mjbDivideTicketRevert;
     
     public SViewTicket(SGuiClient client, int gridSubtype, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.S_TIC, gridSubtype, title);
@@ -65,13 +69,15 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     }
 
     private void initComponetsCustom() {
+        mjbDivideTicket = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_doc_div.gif")), "Dividir boleto", this);
+        mjbDivideTicketRevert = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_doc_div_red.gif")), "Revertir división de boleto", this);
+        mjbManifest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), "Manifiesto de entrega, transporte y recepción", this);
+        mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
         mjbPreviousStep = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_move_left.gif")), "Regresar boleto al estado anterior", this);
         mjbNextStep = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_move_right.gif")), "Enviar boleto al estado siguiente", this);
         mjbLaboratoryTest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_lab.gif")), "Agregar análisis de laboratorio", this);
         mjbManager = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tic_edit.gif")), "Modificar boleto", this);
         mjbSeasonRegion = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tic_cfg.gif")), "Cambiar temporada y región", this);
-        mjbPrint = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), SUtilConsts.TXT_PRINT + " boleto", this);
-        mjbManifest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), "Manifiesto de entrega, transporte y recepción", this);
 
         moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "itm");
         moPaneFilterInputCategory = new SPaneFilter(this, SModConsts.SU_INP_CT);
@@ -84,6 +90,11 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         moPaneFilterScale = new SPaneFilter(this, SModConsts.SU_SCA);
         moPaneFilterScale.initFilter(null);
 
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbDivideTicket);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbDivideTicketRevert);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbManifest);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
+        
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
             case SModSysConsts.SS_TIC_ST_LAB:
@@ -112,59 +123,67 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterInputCategory);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterItem);
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPrint);
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbManifest);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketOrigin);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterTicketDestination);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterScale);
 
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
+                mjbDivideTicket.setEnabled(true);
+                mjbDivideTicketRevert.setEnabled(true);
+                mjbManifest.setEnabled(false);
                 mjbPreviousStep.setEnabled(false);
                 mjbNextStep.setEnabled(true);
                 mjbLaboratoryTest.setEnabled(false);
                 mjbManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
-                mjbManifest.setEnabled(false);
                 break;
                 
             case SModSysConsts.SS_TIC_ST_LAB:
+                mjbDivideTicket.setEnabled(false);
+                mjbDivideTicketRevert.setEnabled(false);
+                mjbManifest.setEnabled(false);
                 mjbPreviousStep.setEnabled(true);
                 mjbNextStep.setEnabled(true);
                 mjbLaboratoryTest.setEnabled(true);
                 mjbManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
-                mjbManifest.setEnabled(false);
                 setRowButtonsEnabled(false);
                 break;
                 
             case SModSysConsts.SS_TIC_ST_ADM:
+                mjbDivideTicket.setEnabled(false);
+                mjbDivideTicketRevert.setEnabled(false);
+                mjbManifest.setEnabled(false);
                 mjbPreviousStep.setEnabled(true);
                 mjbNextStep.setEnabled(false);
                 mjbLaboratoryTest.setEnabled(false);
                 mjbManager.setEnabled(true);
                 mjbSeasonRegion.setEnabled(true);
-                mjbManifest.setEnabled(false);
                 setRowButtonsEnabled(false);
                 break;
                 
             case SModSysConsts.SS_TIC_ST_ALL_LOG:
+                mjbDivideTicket.setEnabled(false);
+                mjbDivideTicketRevert.setEnabled(false);
+                mjbManifest.setEnabled(true);
                 mjbPreviousStep.setEnabled(false);
                 mjbNextStep.setEnabled(false);
                 mjbLaboratoryTest.setEnabled(false);
                 mjbManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
-                mjbManifest.setEnabled(true);
                 setRowButtonsEnabled(false);
                 break;
                 
             case SLibConsts.UNDEFINED:
+                mjbDivideTicket.setEnabled(false);
+                mjbDivideTicketRevert.setEnabled(false);
+                mjbManifest.setEnabled(false);
                 mjbPreviousStep.setEnabled(false);
                 mjbNextStep.setEnabled(false);
                 mjbLaboratoryTest.setEnabled(false);
                 mjbManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
-                mjbManifest.setEnabled(false);
                 setRowButtonsEnabled(false);
                 break;
                 
@@ -415,13 +434,30 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                         try { 
                             SDbTicket ticket = new SDbTicket();
                             ticket.read(miClient.getSession(), gridRow.getRowPrimaryKey());
-                            if (!ticket.isAlternative()) {
-                                ticket.delete(miClient.getSession());
-                                updates = true;
+                            if (!SSomUtils.isFromDividedTicket(miClient.getSession(), ticket.getPkTicketId())) {
+                                if (!SSomUtils.isDividedTicket(miClient.getSession(), ticket.getPkTicketId())) {
+                                    String depTic = SSomUtils.isFreightDependentTicket(miClient.getSession(), ticket.getPkTicketId());
+                                    if (depTic.isEmpty()) {
+                                        if (!ticket.isAlternative()) {
+                                            ticket.delete(miClient.getSession());
+                                            updates = true;
+                                        }
+                                        else {
+                                            miClient.showMsgBoxInformation("El boleto no se puede eliminar debido a que ya tiene un registro en el sistema de SOM Orgánico con el folio " + ticket.getXtaNumAlternative() + ".\n"
+                                            + "Es necesario eliminar el registro.");
+                                        }
+                                    }
+                                    else {
+                                        miClient.showMsgBoxInformation("El boleto no se puede eliminar debido a que los siguientes boletos son dependientes de flete:\n"
+                                                + depTic + ".");
+                                    }
+                                }
+                                else {
+                                    miClient.showMsgBoxInformation("El boleto no se puede eliminar debido a que fue dividido en otros boletos.");
+                                }
                             }
                             else {
-                                miClient.showMsgBoxWarning("El boleto no se puede modificar debido a que ya tiene un registro en el sistema de SOM Orgánico con el folio " + ticket.getXtaNumAlternative() + ".\n"
-                                + "Es necesario eliminar el registro.");
+                                miClient.showMsgBoxInformation("El boleto no se puede eliminar debido a que viene de otro boleto dividido.");
                             }
                         }
                         catch (Exception e) {}
@@ -430,6 +466,102 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
 
                 if (updates) {
                     miClient.getSession().notifySuscriptors(mnGridType);
+                }
+            }
+        }
+    }
+    
+    private void actionDivideTicket() {
+        if (mjbDivideTicket.isEnabled()) {
+            if (jtTable.getSelectedRowCount() == 0) {
+                miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROWS);
+            }
+            else {
+                SGridRow gridRow = getSelectedGridRow();
+
+                if (((SGridRowView) gridRow).getRowType() != SGridConsts.ROW_TYPE_DATA) {
+                    miClient.showMsgBoxWarning(SGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                }
+                else if (((SGridRowView) gridRow).isRowSystem()) {
+                    miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_IS_SYSTEM);
+                }
+                else if (!((SGridRowView) gridRow).isDeletable()) {
+                    miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_NON_DELETABLE);
+                }
+                else {
+                    try { 
+                        SDbTicket tic = new SDbTicket();
+                        tic.read(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey());
+                        if (!SSomUtils.isFromDividedTicket(miClient.getSession(), tic.getPkTicketId())) {
+                            if (!tic.isPacking()) {
+                                if (tic.isTared()) {
+                                    if (!tic.isDeleted()) {
+                                        if (!tic.isAlternative()) {
+                                            SGuiParams params = new SGuiParams();
+                                            params.setKey(getSelectedGridRow().getRowPrimaryKey());
+                                            miClient.getSession().getModule(SModConsts.MOD_SOM_RM).showForm(SModConsts.SX_TIC_DIV_PROC, SLibConsts.UNDEFINED, params);
+                                            miClient.getSession().notifySuscriptors(mnGridType);
+                                        }
+                                        else {
+                                            miClient.showMsgBoxInformation("El boleto no se puede dividir debido a que ya tiene un registro en el sistema de SOM Orgánico con el folio " + tic.getXtaNumAlternative() + ".\n"
+                                            + "Es necesario eliminar el registro.");
+                                        }
+                                    }
+                                    else {
+                                        miClient.showMsgBoxInformation("No se puede dividir el boleto debido está eliminado.");
+                                    }
+                                }
+                                else {
+                                    miClient.showMsgBoxInformation("No se puede dividir el boleto debido a que no está tarado.");
+                                }
+                            }
+                            else {
+                                miClient.showMsgBoxInformation("No se puede dividir el boleto debido a que requiere empaques.");
+                            }
+                        }
+                        else {
+                            miClient.showMsgBoxInformation("No se puede dividir el boleto debido a que ya viene de otro boleto dividido.");
+                        }
+                    }
+                    catch (Exception e) {}
+                }
+            }
+        }
+    }
+    
+    private void actionDivideTicketRevert() {
+        if (mjbDivideTicketRevert.isEnabled()) {
+            if (jtTable.getSelectedRowCount() == 0) {
+                miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROWS);
+            }
+            else {
+                SGridRow gridRow = getSelectedGridRow();
+
+                if (((SGridRowView) gridRow).getRowType() != SGridConsts.ROW_TYPE_DATA) {
+                    miClient.showMsgBoxWarning(SGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                }
+                else if (((SGridRowView) gridRow).isRowSystem()) {
+                    miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_IS_SYSTEM);
+                }
+                else if (!((SGridRowView) gridRow).isDeletable()) {
+                    miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_NON_DELETABLE);
+                }
+                else {
+                    try { 
+                        if (SSomUtils.isFromDividedTicket(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey()[0])) {
+                            if (miClient.showMsgBoxConfirm("Se eliminarán todos los boletos resultado de la división para regresar al boleto original.\n"
+                                    + "¿Desea continuar?") == JOptionPane.OK_OPTION) {
+                                SDbTicketDivisionProcess ticDivProc = new SDbTicketDivisionProcess();
+                                ticDivProc.readByTicketNew(miClient.getSession(), getSelectedGridRow().getRowPrimaryKey());
+                                ticDivProc.delete(miClient.getSession());
+                                miClient.getSession().notifySuscriptors(mnGridType);
+                            }
+                        }
+                        else {
+                            miClient.showMsgBoxInformation("No se puede revertir la división del registro debido a que el boleto no viene de otro boleto dividido.");
+                        }
+                    }
+                    catch (Exception e) {}
                 }
             }
         }
@@ -560,6 +692,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.usr_fre, "
                 + "v.usr_tot_r, "
                 + "v.dps_dt_n, "
+                + "IF(v.freight_tic_tp = 'F', 'FLETE', IF(v.freight_tic_tp = 'D', 'DEPENDIENTE', '')) AS freight_tp, "
                 + "v.b_rev_1, "
                 + "v.b_rev_2, "
                 + "v.b_wei_src, "
@@ -598,6 +731,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "lab.dt, "
                 + "w.code, "
                 + "w.name, "
+                + "fr.name AS fre_orig, "
+                + "tf.num AS tic_dep, "
                 + "if (lab.b_done, " + SGridConsts.ICON_OK + ", " + SGridConsts.ICON_NULL + ") AS _lab_done, "
                 + "COALESCE(seareg.prc_ton, 0.0) AS _prc_ton_reg, "
                 + "COALESCE(seaprd.prc_ton, 0.0) AS _prc_ton_prd, "
@@ -647,13 +782,17 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.fk_seas_n = seaprd.id_seas AND v.fk_reg_n = seaprd.id_reg AND v.fk_item = seaprd.id_item AND v.fk_prod = seaprd.id_prod "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS w ON " 
                 + "v.fk_wah_unld_co_n = w.id_co AND v.fk_wah_unld_cob_n = w.id_cob AND v.fk_wah_unld_wah_n = w.id_wah "                
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_FREIGHT_ORIG) + " AS fr ON " 
+                + "v.fk_freight_orig_n = fr.id_freight_orig "                
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS tf ON " 
+                + "v.fk_freight_tic_n = tf.id_tic "                
                 + (sqlWhere.isEmpty() ? "" : "WHERE " + sqlWhere)
                 + "ORDER BY sca.code, sca.id_sca, v.num, v.id_tic ";
     }
 
     @Override
     public void createGridColumns() {
-        int cols = 45;
+        int cols = 48;
 
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
@@ -673,7 +812,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         int col = 0;
         SGridColumnView[] columns = new SGridColumnView[cols];
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca.code", "Báscula");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "v.num", "Boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "v.num", "Boleto", 75);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt", SGridConsts.COL_TITLE_DATE + " boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "prd.name", "Proveedor");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "prd.name_trd", "Proveedor nombre comercial");
@@ -758,6 +897,9 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_pay", "Pagado");
         }
 
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "freight_tp", "Control fletes");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "fre_orig", "Origen flete");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "tic_dep", "Boleto flete", 75);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
@@ -800,7 +942,19 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         if (e.getSource() instanceof JButton) {
             JButton button = (JButton) e.getSource();
 
-            if (button == mjbPreviousStep) {
+            if (button == mjbDivideTicket) {
+                actionDivideTicket();
+            }
+            else if (button == mjbDivideTicketRevert) {
+                actionDivideTicketRevert();
+            }
+            else if (button == mjbManifest) {
+                actionManifest();
+            }
+            else if (button == mjbPrint) {
+                actionPrint();
+            }
+            else if (button == mjbPreviousStep) {
                 actionPreviousStep();
             }
             else if (button == mjbNextStep) {
@@ -814,12 +968,6 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             }
             else if (button == mjbSeasonRegion) {
                 actionSeasonRegion();
-            }
-            else if (button == mjbPrint) {
-                actionPrint();
-            }
-            else if (button == mjbManifest) {
-                actionManifest();
             }
         }
     }

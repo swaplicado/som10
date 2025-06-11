@@ -227,7 +227,7 @@ public class SFormSupplyDpsTicket extends SBeanForm implements ActionListener {
                 SGridColumnForm[] columns = new SGridColumnForm[17];
 
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "Báscula");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_RAW, "Boleto");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT, "Boleto", 75);
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DATE, "Fecha");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "Ítem");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "Ítem código");

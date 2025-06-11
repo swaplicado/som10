@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,6 +35,8 @@ import som.mod.cfg.db.SDbCompany;
  * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
  */
 public abstract class SSomUtils {
+    
+    protected static DecimalFormat moDecimalFormatNegativeValue2D = new DecimalFormat("#,##0.00;(#,##0.00)");
     
     public static double LAGGING_PERCENTAGE = 0.15;
     
@@ -81,7 +84,7 @@ public abstract class SSomUtils {
 
         sql = "SELECT id_reg " +
                 "FROM " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_PROD) + " " +
-                "WHERE b_del = 0 AND b_dis = 0 AND id_seas = " + seasonId + " AND id_item = " + itemId + " AND id_prod = " + producerId + " ORDER BY b_def DESC";
+                "WHERE b_del = 0 AND b_dis = 0 AND id_seas = " + seasonId + " AND id_item = " + itemId + " AND id_prod = " + producerId + " ORDER BY b_def DESC, ts_usr_ins;";
         
         resultSet = session.getStatement().executeQuery(sql);
         if (resultSet.next()) {
@@ -96,6 +99,7 @@ public abstract class SSomUtils {
      * @param session Current GUI session.
      * @param externalUnitId External unit ID.
      * @return Unit ID.
+     * @throws java.lang.Exception
      */
     public static int getUnitId(SGuiSession session, int externalUnitId) throws Exception {
         int unitId = 0;
@@ -120,15 +124,16 @@ public abstract class SSomUtils {
      * @param ticketNumber Ticket number.
      * @param ticketId Ticket ID.
      * @return Value of <code>true</code> if ticket number already exists.
+     * @throws java.lang.Exception
      */
-    public static boolean existsTicket(final SGuiSession session, int ticketNumber, int ticketId) throws Exception {
+    public static boolean existsTicket(final SGuiSession session, String ticketNumber, int ticketId) throws Exception {
         boolean exists = false;
-        String sql = "";
-        ResultSet resultSet = null;
+        String sql;
+        ResultSet resultSet;
 
         sql = "SELECT COUNT(*) " +
                 "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " " +
-                "WHERE b_del = 0 AND num = " + ticketNumber + " " +
+                "WHERE b_del = 0 AND num = '" + ticketNumber + "' " +
                 (ticketId == SLibConsts.UNDEFINED ? "" : " AND id_tic <> " + ticketId + " ");
 
         resultSet = session.getStatement().executeQuery(sql);
@@ -138,12 +143,85 @@ public abstract class SSomUtils {
 
         return exists;
     }
+    
+    /**
+     * Validar si el fue dividido en otros boletos.
+     * @param session Current GUI session.
+     * @param ticketId Ticket ID.
+     * @return Value of <code>true</code> if is divided ticket.
+     * @throws java.lang.Exception
+     */
+    public static boolean isDividedTicket(final SGuiSession session, int ticketId) throws Exception {
+        boolean divided = false;
+        String sql;
+        ResultSet resultSet;
+
+        sql = "SELECT COUNT(*) " +
+                "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC_DIV) + " " +
+                "WHERE id_tic_div = " + ticketId + " ";
+
+        resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            divided = resultSet.getInt(1) > 0;
+        }
+
+        return divided;
+    }
+    
+    /**
+     * Validar si el boleto es parte del resultado de una división de otro boleto.
+     * @param session Current GUI session.
+     * @param ticketId Ticket ID.
+     * @return Value of <code>true</code> if ticket is from divided ticket.
+     * @throws java.lang.Exception
+     */
+    public static boolean isFromDividedTicket(final SGuiSession session, int ticketId) throws Exception {
+        boolean divided = false;
+        String sql;
+        ResultSet resultSet;
+
+        sql = "SELECT COUNT(*) " +
+                "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC_DIV) + " " +
+                "WHERE id_tic_new = " + ticketId + " ";
+
+        resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            divided = resultSet.getInt(1) > 0;
+        }
+
+        return divided;
+    }
+    
+    /**
+     * Validar si el boleto es flete de otros boletos dependientes.
+     * @param session Current GUI session.
+     * @param ticketId Ticket ID.
+     * @return String with dependent tickets.
+     * @throws java.lang.Exception
+     */
+    public static String isFreightDependentTicket(final SGuiSession session, int ticketId) throws Exception {
+        String tickets = "";
+        String sql;
+        ResultSet resultSet;
+
+        sql = "SELECT num " +
+                "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " " +
+                "WHERE fk_freight_tic_n = " + ticketId + " ";
+
+        resultSet = session.getStatement().executeQuery(sql);
+        while (resultSet.next()) {
+            tickets += (tickets.isEmpty() ?  "" : ", ") + resultSet.getString(1);
+        }
+
+        return tickets;
+    }
 
     /**
      * Validates if Region Season Configuration exists.
      * @param session Current GUI session.
      * @param configKey Region Season Configuration primary key (index: 0 = season ID; 1 = region ID; 2 = item ID).
      * @return Value of <code>true</code> if Region Season Configuration exists.
+     * @throws java.lang.Exception
      */
     public static boolean existsSeasonRegion(SGuiSession session, int[] configKey) throws Exception {
         boolean exists = false;
@@ -167,6 +245,7 @@ public abstract class SSomUtils {
      * @param session Current GUI session.
      * @param configKey Region Season Configuration primary key (index: 0 = season ID; 1 = region ID; 2 = item ID, 3 = producer ID).
      * @return Value of <code>true</code> if Producer Season Configuration exists.
+     * @throws java.lang.Exception
      */
     public static boolean existsSeasonProducer(SGuiSession session, int[] configKey) throws Exception {
         boolean exists = false;
@@ -191,6 +270,7 @@ public abstract class SSomUtils {
      * @param dateStart Start date.
      * @param dateEnd End date
      * @return
+     * @throws java.lang.Exception
      */
     public static String completeSeasonRegionTickets(SGuiSession session, Date dateStart, Date dateEnd) throws Exception {
         int seasonId = 0;
@@ -483,6 +563,25 @@ public abstract class SSomUtils {
         }
 
         return stock;
+    }
+    
+    /**
+     * Obtain required freight by item id
+     * @param session
+     * @param itemId
+     * @return
+     * @throws Exception 
+     */
+    public static String getReqFreightByItem(SGuiSession session, int itemId) throws Exception {
+        String reqFreight = "";
+        String sql = "SELECT c.req_freight FROM " + SModConsts.TablesMap.get(SModConsts.SU_INP_CT) + " AS c " +
+                "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON c.id_inp_ct = i.fk_inp_ct " +
+                "WHERE i.id_item = " + itemId + ";";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+        if (resultSet.next()) {
+            reqFreight = resultSet.getString(1);
+        }
+        return reqFreight;
     }
 
     /**
@@ -1486,12 +1585,12 @@ public abstract class SSomUtils {
                 + "<td" + ((weight1yAgo - weight) / weight1yAgo >= LAGGING_PERCENTAGE ? " style='background-color: tomato;'" : "") + ">" + SLibUtils.textToHtml(concept) + "</td>"
                 + "<td align='right'" + ((weight1yAgo - weight) / weight1yAgo >= LAGGING_PERCENTAGE ? " style='background-color: tomato;'" : "") + ">" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
                 + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight1yAgo) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight - weight1yAgo) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight2yAgo) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight - weight2yAgo) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight3yAgo) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight - weight3yAgo) + "</td>"
+                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight1yAgo) + "</td>"
+                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight - weight1yAgo) + "</td>"
+                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight2yAgo) + "</td>"
+                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight - weight2yAgo) + "</td>"
+                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight3yAgo) + "</td>"
+                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight - weight3yAgo) + "</td>"
                 + "</tr>";
     }
     
@@ -1501,12 +1600,12 @@ public abstract class SSomUtils {
                 + "<td><b>Total " + SLibUtils.textToHtml(table) + "</b></td>"
                 + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
                 + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weight1yAgoTotal) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(diference1yAgoTotal) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weight2yAgoTotal) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(diference2yAgoTotal) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weight3yAgoTotal) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(diference3yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(weight1yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(diference1yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(weight2yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(diference2yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(weight3yAgoTotal) + "</b></td>"
+                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(diference3yAgoTotal) + "</b></td>"
                 + "</tr>"
                 + "</table>";
     }

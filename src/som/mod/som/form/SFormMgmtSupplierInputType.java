@@ -185,7 +185,7 @@ public class SFormMgmtSupplierInputType extends SBeanForm {
                 int col = 0;
                 SGridColumnForm[] columns = new SGridColumnForm[16];
 
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_RAW, "Boleto");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT, "Boleto", 75);
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Temporada");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Región");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "Proveedor");

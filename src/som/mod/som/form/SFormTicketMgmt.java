@@ -80,7 +80,7 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         moTextPlates = new sa.lib.gui.bean.SBeanFieldText();
         jPanel4 = new javax.swing.JPanel();
         jlTicket = new javax.swing.JLabel();
-        moTextTicket = new sa.lib.gui.bean.SBeanFieldInteger();
+        moTextTicket = new sa.lib.gui.bean.SBeanFieldText();
         jPanel14 = new javax.swing.JPanel();
         jlPlatesCage = new javax.swing.JLabel();
         moTextPlatesCage = new sa.lib.gui.bean.SBeanFieldText();
@@ -913,7 +913,7 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
     private sa.lib.gui.bean.SBeanFieldText moTextSysCurCodePay;
     private sa.lib.gui.bean.SBeanFieldText moTextSysCurCodePrcTon;
     private sa.lib.gui.bean.SBeanFieldText moTextSysCurCodeTot;
-    private sa.lib.gui.bean.SBeanFieldInteger moTextTicket;
+    private sa.lib.gui.bean.SBeanFieldText moTextTicket;
     private sa.lib.gui.bean.SBeanFieldText moTextUserCurCodeFreight;
     private sa.lib.gui.bean.SBeanFieldText moTextUserCurCodePay;
     private sa.lib.gui.bean.SBeanFieldText moTextUserCurCodePrcTon;
@@ -945,7 +945,7 @@ public class SFormTicketMgmt extends SBeanForm implements ActionListener, ItemLi
         moTextSysCurCodeTot.setTextSettings(SGuiUtils.getLabelName(jlSystemTotal.getText()), 3);
         moTextScaleName.setTextSettings(SGuiUtils.getLabelName(jlScale.getText()), 25);
         moTextScaleCode.setTextSettings(SGuiUtils.getLabelName(jlScale.getText()), 25);
-        moTextTicket.setIntegerSettings(SGuiUtils.getLabelName(jlTicket.getText()), SGuiConsts.GUI_TYPE_INT_RAW, true);
+        moTextTicket.setTextSettings(SGuiUtils.getLabelName(jlTicket.getText()), 10, 1);
         moTextItem.setTextSettings(SGuiUtils.getLabelName(jlItem.getText()), 25);
         moKeyProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlProducer.getText()), true);
         moTextSeason.setTextSettings(SGuiUtils.getLabelName(jlSeason.getText()), 25);

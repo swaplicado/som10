@@ -55,7 +55,7 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
         moTextScaleCode = new sa.lib.gui.bean.SBeanFieldText();
         jPanel4 = new javax.swing.JPanel();
         jlTicket = new javax.swing.JLabel();
-        moTextTicket = new sa.lib.gui.bean.SBeanFieldInteger();
+        moTextTicket = new sa.lib.gui.bean.SBeanFieldText();
         jPanel10 = new javax.swing.JPanel();
         jlPlates = new javax.swing.JLabel();
         moTextPlates = new sa.lib.gui.bean.SBeanFieldText();
@@ -121,6 +121,7 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
         jPanel4.add(jlTicket);
 
         moTextTicket.setEditable(false);
+        moTextTicket.setText("sBeanFieldText2");
         jPanel4.add(moTextTicket);
 
         jPanel2.add(jPanel4);
@@ -308,7 +309,7 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
     private sa.lib.gui.bean.SBeanFieldText moTextScaleCode;
     private sa.lib.gui.bean.SBeanFieldText moTextScaleName;
     private sa.lib.gui.bean.SBeanFieldText moTextSeason;
-    private sa.lib.gui.bean.SBeanFieldInteger moTextTicket;
+    private sa.lib.gui.bean.SBeanFieldText moTextTicket;
     private sa.lib.gui.bean.SBeanFieldText moTextWeight;
     // End of variables declaration//GEN-END:variables
 
@@ -317,7 +318,7 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
 
         moTextScaleName.setTextSettings(SGuiUtils.getLabelName(jlScale.getText()), 25);
         moTextScaleCode.setTextSettings(SGuiUtils.getLabelName(jlScale.getText()), 25);
-        moTextTicket.setIntegerSettings(SGuiUtils.getLabelName(jlTicket.getText()), SGuiConsts.GUI_TYPE_INT_RAW, true);
+        moTextTicket.setTextSettings(SGuiUtils.getLabelName(jlTicket.getText()), 10, 1);
         moTextProducer.setTextSettings(SGuiUtils.getLabelName(jlProducer.getText()), 25);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
         moTextSeason.setTextSettings(SGuiUtils.getLabelName(jlSeason.getText()), 25);

@@ -151,7 +151,7 @@ public abstract class SMaterialUtils {
                 "ORDER BY sca.code, t.num, t.dt, p.name;" ;
         
         gridColumns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "Báscula"));
-        gridColumns.add(new SGridColumnForm(SGridConsts.COL_TYPE_INT_RAW, "Boleto", 50));
+        gridColumns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT, "Boleto", 75));
         gridColumns.add(new SGridColumnForm(SGridConsts.COL_TYPE_DATE, "Fecha boleto"));
         gridColumns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "Proveedor"));
         gridColumns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Proveedor nombre comercial", 120));

@@ -23,6 +23,7 @@ public class SDbInputCategory extends SDbRegistryUser {
     protected int mnPkInputCategoryId;
     protected String msCode;
     protected String msName;
+    protected String msRequiredFreight;
     protected boolean mbWareouseUnloadRequired;
     /*
     protected boolean mbUpdatable;
@@ -45,6 +46,7 @@ public class SDbInputCategory extends SDbRegistryUser {
     public void setPkInputCategoryId(int n) { mnPkInputCategoryId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
+    public void setRequiredFreight(String s) { msRequiredFreight = s; }
     public void setWareouseUnloadRequired(boolean b) { mbWareouseUnloadRequired = b; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
     public void setDisableable(boolean b) { mbDisableable = b; }
@@ -60,6 +62,7 @@ public class SDbInputCategory extends SDbRegistryUser {
     public int getPkInputCategoryId() { return mnPkInputCategoryId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
+    public String getRequiredFreight() { return msRequiredFreight; }
     public boolean isWareouseUnloadRequired() { return mbWareouseUnloadRequired; }
     public boolean isUpdatable() { return mbUpdatable; }
     public boolean isDisableable() { return mbDisableable; }
@@ -89,6 +92,7 @@ public class SDbInputCategory extends SDbRegistryUser {
         mnPkInputCategoryId = 0;
         msCode = "";
         msName = "";
+        msRequiredFreight = "";
         mbWareouseUnloadRequired = false;
         mbUpdatable = false;
         mbDisableable = false;
@@ -147,6 +151,7 @@ public class SDbInputCategory extends SDbRegistryUser {
             mnPkInputCategoryId = resultSet.getInt("id_inp_ct");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
+            msRequiredFreight = resultSet.getString("req_freight");
             mbWareouseUnloadRequired = resultSet.getBoolean("b_wah_unld_req");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
             mbDisableable = resultSet.getBoolean("b_can_dis");
@@ -185,6 +190,7 @@ public class SDbInputCategory extends SDbRegistryUser {
                     mnPkInputCategoryId + ", " +
                     "'" + msCode + "', " +
                     "'" + msName + "', " +
+                    "'" + msRequiredFreight + "', " + 
                     (mbWareouseUnloadRequired ? 1 : 0) + ", " + 
                     (mbUpdatable ? 1 : 0) + ", " +
                     (mbDisableable ? 1 : 0) + ", " +
@@ -205,6 +211,7 @@ public class SDbInputCategory extends SDbRegistryUser {
                     //"id_inp_ct = " + mnPkInputCategoryId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
+                    "req_freight = '" + msRequiredFreight + "', " +
                     "b_wah_unld_req = " + (mbWareouseUnloadRequired ? 1 : 0) + ", " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
                     "b_can_dis = " + (mbDisableable ? 1 : 0) + ", " +
@@ -231,6 +238,7 @@ public class SDbInputCategory extends SDbRegistryUser {
         registry.setPkInputCategoryId(this.getPkInputCategoryId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
+        registry.setRequiredFreight(this.getRequiredFreight());
         registry.setWareouseUnloadRequired(this.isWareouseUnloadRequired());
         registry.setUpdatable(this.isUpdatable());
         registry.setDisableable(this.isDisableable());

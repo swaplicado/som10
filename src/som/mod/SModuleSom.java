@@ -7,6 +7,7 @@ package som.mod;
 
 import javax.swing.JMenu;
 import sa.lib.SLibConsts;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistry;
 import sa.lib.db.SDbRegistrySysFly;
@@ -20,36 +21,36 @@ import sa.lib.gui.SGuiOptionPicker;
 import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiReport;
 import som.mod.som.db.SDbExternalWarehouse;
+import som.mod.som.db.SDbGrindingLot;
 import som.mod.som.db.SDbInputCategory;
 import som.mod.som.db.SDbInputClass;
 import som.mod.som.db.SDbInputSource;
 import som.mod.som.db.SDbInputType;
 import som.mod.som.db.SDbIodineValueRank;
 import som.mod.som.db.SDbItem;
-import som.mod.som.db.SDbGrindingLot;
 import som.mod.som.db.SDbProducer;
 import som.mod.som.db.SDbScale;
 import som.mod.som.db.SDbUnit;
 import som.mod.som.db.SSomConsts;
 import som.mod.som.form.SFormExternalWarehouse;
+import som.mod.som.form.SFormGrindingLot;
 import som.mod.som.form.SFormInputCategory;
 import som.mod.som.form.SFormInputClass;
 import som.mod.som.form.SFormInputSource;
 import som.mod.som.form.SFormInputType;
 import som.mod.som.form.SFormIodineValueRank;
 import som.mod.som.form.SFormItem;
-import som.mod.som.form.SFormGrindingLot;
 import som.mod.som.form.SFormItemAlternative;
 import som.mod.som.form.SFormProducer;
 import som.mod.som.form.SFormScale;
 import som.mod.som.view.SViewExternalWarehouse;
+import som.mod.som.view.SViewGrindingLots;
 import som.mod.som.view.SViewInputCategory;
 import som.mod.som.view.SViewInputClass;
 import som.mod.som.view.SViewInputSource;
 import som.mod.som.view.SViewInputType;
 import som.mod.som.view.SViewIodineValueRank;
 import som.mod.som.view.SViewItem;
-import som.mod.som.view.SViewGrindingLots;
 import som.mod.som.view.SViewItemAlternative;
 import som.mod.som.view.SViewProducer;
 import som.mod.som.view.SViewScale;
@@ -286,8 +287,23 @@ public class SModuleSom extends SGuiModule {
             case SModConsts.SU_PROD:
                 settings = new SGuiCatalogueSettings("Proveedor", 1);
                 settings.setCodeApplying(true);
-                sql = "SELECT id_prod AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_prod ";
+                switch (subtype) {
+                    case SModConsts.SU_SEAS_PROD:
+                        sql = "SELECT DISTINCT p.id_prod AS " + SDbConsts.FIELD_ID + "1, p.name AS " + SDbConsts.FIELD_ITEM + ", p.code AS " + SDbConsts.FIELD_CODE + " "
+                                + "FROM su_seas_prod AS sp "
+                                + "INNER JOIN su_seas as s on sp.id_seas = s.id_seas "
+                                + "INNER JOIN su_prod AS p ON sp.id_prod = p.id_prod "
+                                + "WHERE NOT sp.b_del AND NOT s.b_del AND NOT p.b_del AND NOT p.b_dis "
+                                + (params == null ? "" : "AND sp.id_item = " + params.getParamsMap().get(SModConsts.SU_ITEM) + " "
+                                + "AND '" + SLibUtils.DbmsDateFormatDate.format(params.getParamsMap().get(SModConsts.SU_SEAS)) + "' BETWEEN s.dt_sta AND s.dt_end " 
+                                + (params.getParamsMap().get(SModConsts.SU_REG) == null ? "" : "AND sp.id_reg = " + params.getParamsMap().get(SModConsts.SU_REG) + " "))
+                                + "ORDER BY p.name, p.id_prod";
+                        break;
+                    case SLibConsts.UNDEFINED:
+                        sql = "SELECT id_prod AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
+                                + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_prod ";
+                        break;
+                }
                 break;
             case SModConsts.S_GRINDING_LOT:
                 settings = new SGuiCatalogueSettings("Lotes", 1);

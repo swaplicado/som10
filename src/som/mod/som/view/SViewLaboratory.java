@@ -273,7 +273,7 @@ public class SViewLaboratory extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt", SGridConsts.COL_TITLE_DATE + " análisis lab");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_ICON, "f_done", "Terminado");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sc.code", "Báscula");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "t.num", "Boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "t.num", "Boleto", 75);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "t.dt", SGridConsts.COL_TITLE_DATE + " boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tor.code", "Procedencia boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tde.code", "Destino boleto");

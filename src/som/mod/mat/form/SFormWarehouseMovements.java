@@ -615,7 +615,7 @@ public class SFormWarehouseMovements extends SBeanForm implements ActionListener
         mnEmpWahId = 0;
         mnEmpProdId = 0;
         
-        moTextTicket.setTextSettings(SGuiUtils.getLabelName(jlTicket), 50);
+        moTextTicket.setTextSettings(SGuiUtils.getLabelName(jlTicket), 10, 1);
         moDateTicDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlTicDate), false);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem), false);
         moKeyProd.setKeySettings(miClient, SGuiUtils.getLabelName(jlProd), false);

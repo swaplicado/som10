@@ -105,7 +105,7 @@ public class SDbIog extends SDbRegistryUser {
     protected String msXtaUnit;
     protected String msXtaTicketOrig;
     protected String msXtaTicketDest;
-    protected int mnXtaTicketNumber;
+    protected String msXtaTicketNumber;
     protected int mnXtaStkDayPkYearId;
     protected Date mtXtaStkDayDate;
     protected double mdXtaQuantitytoTransfer;
@@ -716,7 +716,7 @@ public class SDbIog extends SDbRegistryUser {
     public void setXtaUnit(String s) { msXtaUnit = s; }
     public void setXtaTicketOrig(String s) { msXtaTicketOrig = s; }
     public void setXtaTicketDest(String s) { msXtaTicketDest = s; }
-    public void setXtaTicketNumber(int n) { mnXtaTicketNumber = n; }
+    public void setXtaTicketNumber(String s) { msXtaTicketNumber = s; }
     public void setXtaStkDayPkYearId(int n) { mnXtaStkDayPkYearId = n; }
     public void setXtaStkDayDate(Date t) { mtXtaStkDayDate = t; }
     public void setXtaQuantitytoTransfer(double d) { mdXtaQuantitytoTransfer = 0; }
@@ -745,7 +745,7 @@ public class SDbIog extends SDbRegistryUser {
     public String getXtaUnit() { return msXtaUnit; }
     public String getXtaTicketOrig() { return msXtaTicketOrig; }
     public String getXtaTicketDest() { return msXtaTicketDest; }
-    public int getXtaTicketNumber() { return mnXtaTicketNumber; }
+    public String getXtaTicketNumber() { return msXtaTicketNumber; }
     public int getXtaStkDayPkYearId() { return mnXtaStkDayPkYearId; }
     public Date getXtaStkDayDate() { return mtXtaStkDayDate; }
     public double getXtaQuantitytoTransfer() { return mdXtaQuantitytoTransfer; }
@@ -990,7 +990,7 @@ public class SDbIog extends SDbRegistryUser {
         msXtaUnit = "";
         msXtaTicketOrig = "";
         msXtaTicketDest = "";
-        mnXtaTicketNumber = 0;
+        msXtaTicketNumber = "";
         mnXtaStkDayPkYearId = 0;
         mtXtaStkDayDate = null;
         mdXtaQuantitytoTransfer = 0;
@@ -1122,11 +1122,11 @@ public class SDbIog extends SDbRegistryUser {
             msXtaIogTypeCode = resultSet.getString("t.code");
             msXtaIogTypeName = resultSet.getString("t.name");
             msXtaNumber = msXtaIogTypeCode + "-" + mnNumber;
-            mnXtaTicketNumber = resultSet.getInt("tk.num");
+            msXtaTicketNumber = resultSet.getString("tk.num");
             msXtaItem = resultSet.getString("f_item");
             msXtaUnit = resultSet.getString("u.code");
 
-            if (resultSet.wasNull()) { mnXtaTicketNumber = 0; }
+            if (resultSet.wasNull()) { msXtaTicketNumber = ""; }
 
             // Read iog destiny registries:
 

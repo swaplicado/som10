@@ -303,7 +303,7 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
     public void setAuxFkExternalUnitId(int n) { mnAuxFkExternalUnitId = n; }
 
     public int getAuxFkExternalUnitId() { return mnAuxFkExternalUnitId; }
-
+    
     @Override
     public void setPrimaryKey(int[] pk) {
         mnPkItemId= pk[0];

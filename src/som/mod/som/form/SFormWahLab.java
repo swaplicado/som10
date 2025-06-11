@@ -1354,16 +1354,30 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         catch (Exception e) {}
     }
     
-    private void editAfterValidation() {
-        if (!miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_VLR) && moBoolValidate.getValue()) {
-            jbRestart.setEnabled(false);
-            moBoolDone.setEnabled(false);
-            jbSaveRow.setEnabled(false);
-            jbSaveAndNextRow.setEnabled(false);
-            jbEditTest.setEnabled(false);
-            jbErase.setEnabled(false);
-            jbSave.setEnabled(false);
-        }        
+    private void editRegistry() {
+        if (moBoolValidate.getValue()) {
+            if (!miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_VLR)) {
+                enableSaveComponents(false);
+                jbRestart.setEnabled(false);
+            }
+            else {
+                enableSaveComponents(true);
+            }
+        }
+        else {
+            enableSaveComponents(true);
+        }
+    }
+    
+    private void enableSaveComponents(boolean enable) {
+        jbRestart.setEnabled(!enable);
+        moBoolDone.setEnabled(enable);
+        jbSaveRow.setEnabled(enable);
+        jbSaveAndNextRow.setEnabled(enable);
+        jbEditTest.setEnabled(enable);
+        jbErase.setEnabled(enable);
+        jbSave.setEnabled(enable);
+        jbReadInfo.setEnabled(!enable);
     }
     
     private void actionContinue() {
@@ -1550,9 +1564,14 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     
     @Override
     public void actionCancel() {
-        if (miClient.showMsgBoxConfirm("¿Está seguro que desea cancelar la captura?") == JOptionPane.YES_OPTION) {
+        if (miClient.showMsgBoxConfirm("¿Está seguro(a) que desea cancelar la captura?") == JOptionPane.YES_OPTION) {
             super.actionCancel();
         }
+    }
+    
+    @Override
+    public void actionReadInfo() {
+        miClient.showMsgBoxInformation("El análisis no se puede modificar debido a que ya está validado.");
     }
 
     @Override
@@ -1668,7 +1687,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         }
         setEnabledFields(false);
         addAllListeners();
-        editAfterValidation();
+        editRegistry();
     }
 
     @Override

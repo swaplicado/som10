@@ -65,7 +65,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldInteger" name="moIntNumberToSearch">
+                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextNumberToSearch">
                 </Component>
                 <Component class="javax.swing.JButton" name="jbSearch">
                   <Properties>

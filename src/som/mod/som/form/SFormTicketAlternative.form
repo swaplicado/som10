@@ -109,7 +109,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldInteger" name="moIntTicket">
+                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextTicket">
                 </Component>
                 <Component class="javax.swing.JLabel" name="jlDummy">
                   <Properties>

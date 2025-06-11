@@ -399,7 +399,7 @@ public class SViewStock extends SGridPaneView implements ActionListener {
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "dth_rec", "Referencia");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca", "Báscula");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "boleto", "Boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "boleto", "Boleto", 75);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "prov", "Proveedor");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "prov_com", "Proveedor nombre comercial");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "item", "Ítem");

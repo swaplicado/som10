@@ -23,7 +23,7 @@ import som.mod.SModConsts;
 public class SDbTicketAlternative extends SDbRegistryUser  {
 
     protected int mnPkTicketId;
-    protected int mnNumber;
+    protected String msNumber;
     protected Date mtDate;
     protected double mdQuantity;
     protected String msPlate;
@@ -60,6 +60,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     protected double mdUserFreight;
     protected double mdUserTotal_r;
     protected Date mtDpsSupplyDate_n;
+    protected String msRequiredFreight;
+    protected String msFreightTicketType;
     protected boolean mbRevueltaImport1;
     protected boolean mbRevueltaImport2;
     protected boolean mbWeightSourceAvailable;
@@ -93,6 +95,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     protected int mnFkExternalDpsYearId_n;
     protected int mnFkExternalDpsDocId_n;
     protected int mnFkExternalDpsEntryId_n;
+    protected int mnFkFreightOriginId_n;
+    protected int mnFkFreightTicketId_n;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -137,7 +141,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
      */
 
     public void setPkTicketId(int n) { mnPkTicketId = n; }
-    public void setNumber(int n) { mnNumber = n; }
+    public void setNumber(String s) { msNumber = s; }
     public void setDate(Date t) { mtDate = t; }
     public void setQuantity(double d) { mdQuantity = d; }
     public void setPlate(String s) { msPlate = s; }
@@ -174,6 +178,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     public void setUserFreight(double d) { mdUserFreight = d; }
     public void setUserTotal_r(double d) { mdUserTotal_r = d; }
     public void setDpsSupplyDate_n(Date t) { mtDpsSupplyDate_n = t; }
+    public void setRequiredFreight(String s) { msRequiredFreight = s; }
+    public void setFreightTicketType(String s) { msFreightTicketType = s; }
     public void setRevueltaImport1(boolean b) { mbRevueltaImport1 = b; }
     public void setRevueltaImport2(boolean b) { mbRevueltaImport2 = b; }
     public void setWeightSourceAvailable(boolean b) { mbWeightSourceAvailable = b; }
@@ -205,6 +211,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     public void setFkExternalDpsYearId_n(int n) { mnFkExternalDpsYearId_n = n; }
     public void setFkExternalDpsDocId_n(int n) { mnFkExternalDpsDocId_n = n; }
     public void setFkExternalDpsEntryId_n(int n) { mnFkExternalDpsEntryId_n = n; }
+    public void setFkFreightOriginId_n(int n) { mnFkFreightOriginId_n = n; }
+    public void setFkFreightTicketId_n(int n) { mnFkFreightTicketId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setFkUserTaredId(int n) { mnFkUserTaredId = n; }
@@ -217,7 +225,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     public void setTsUserAssorted(Date t) { mtTsUserAssorted = t; }
 
     public int getPkTicketId() { return mnPkTicketId; }
-    public int getNumber() { return mnNumber; }
+    public String getNumber() { return msNumber; }
     public Date getDate() { return mtDate; }
     public double getQuantity() { return mdQuantity; }
     public String getPlate() { return msPlate; }
@@ -254,6 +262,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     public double getUserFreight() { return mdUserFreight; }
     public double getUserTotal_r() { return mdUserTotal_r; }
     public Date getDpsSupplyDate_n() { return mtDpsSupplyDate_n; }
+    public String getRequiredFreight() { return msRequiredFreight; }
+    public String getFreightTicketType() { return msFreightTicketType; }
     public boolean isRevueltaImport1() { return mbRevueltaImport1; }
     public boolean isRevueltaImport2() { return mbRevueltaImport2; }
     public boolean isWeightSourceAvailable() { return mbWeightSourceAvailable; }
@@ -285,6 +295,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
     public int getFkExternalDpsYearId_n() { return mnFkExternalDpsYearId_n; }
     public int getFkExternalDpsDocId_n() { return mnFkExternalDpsDocId_n; }
     public int getFkExternalDpsEntryId_n() { return mnFkExternalDpsEntryId_n; }
+    public int getFkFreightOriginId_n() { return mnFkFreightOriginId_n; }
+    public int getFkFreightTicketId_n() { return mnFkFreightTicketId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public int getFkUserTaredId() { return mnFkUserTaredId; }
@@ -350,7 +362,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
 
     @Override
     public String getName() {
-        return mnNumber + "";
+        return msNumber;
     }
 
     @Override
@@ -368,7 +380,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
         initBaseRegistry();
 
         mnPkTicketId = 0;
-        mnNumber = 0;
+        msNumber = "";
         mtDate = null;
         mdQuantity = 0;
         msPlate = "";
@@ -405,6 +417,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
         mdUserFreight = 0;
         mdUserTotal_r = 0;
         mtDpsSupplyDate_n = null;
+        msRequiredFreight = "";
+        msFreightTicketType = "";
         mbRevueltaImport1 = false;
         mbRevueltaImport2 = false;
         mbWeightSourceAvailable = false;
@@ -436,6 +450,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
         mnFkExternalDpsYearId_n = 0;
         mnFkExternalDpsDocId_n = 0;
         mnFkExternalDpsEntryId_n = 0;
+        mnFkFreightOriginId_n = 0;
+        mnFkFreightTicketId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mnFkUserTaredId = 0;
@@ -484,7 +500,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         mnPkTicketId = 0;
 
@@ -526,7 +542,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
         }
         else {
             mnPkTicketId = resultSet.getInt("t.id_tic");
-            mnNumber = resultSet.getInt("t.num");
+            msNumber = resultSet.getString("t.num");
             mtDate = resultSet.getDate("t.dt");
             mdQuantity = resultSet.getDouble("t.qty");
             msPlate = resultSet.getString("t.pla");
@@ -563,6 +579,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
             mdUserFreight = resultSet.getDouble("t.usr_fre");
             mdUserTotal_r = resultSet.getDouble("t.usr_tot_r");
             mtDpsSupplyDate_n = resultSet.getDate("t.dps_dt_n");
+            msRequiredFreight = resultSet.getString("req_freight");
+            msFreightTicketType = resultSet.getString("freight_tic_tp");
             mbRevueltaImport1 = resultSet.getBoolean("t.b_rev_1");
             mbRevueltaImport2 = resultSet.getBoolean("t.b_rev_2");
             mbWeightSourceAvailable = resultSet.getBoolean("t.b_wei_src");
@@ -595,6 +613,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
             mnFkExternalDpsYearId_n = resultSet.getInt("t.fk_ext_dps_year_n");
             mnFkExternalDpsDocId_n = resultSet.getInt("t.fk_ext_dps_doc_n");
             mnFkExternalDpsEntryId_n = resultSet.getInt("t.fk_ext_dps_ety_n");
+            mnFkFreightOriginId_n = resultSet.getInt("fk_freight_orig_n");
+            mnFkFreightTicketId_n = resultSet.getInt("fk_freight_tic_n");
             mnFkUserInsertId = resultSet.getInt("t.fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("t.fk_usr_upd");
             mnFkUserTaredId = resultSet.getInt("t.fk_usr_tar");
@@ -671,7 +691,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkTicketId + ", " +
-                    mnNumber + ", " +
+                    "'" + msNumber + "', " +
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " +
                     mdQuantity + ", " +
                     "'" + msPlate + "', " +
@@ -708,6 +728,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
                     mdUserFreight + ", " +
                     mdUserTotal_r + ", " +
                     "" + (mtDpsSupplyDate_n == null ? "NULL" : "'" + SLibUtils.DbmsDateFormatDate.format(mtDpsSupplyDate_n) + "'") + ", " +
+                    "'" + msRequiredFreight + "', " + 
+                    "'" + msFreightTicketType + "', " + 
                     (mbRevueltaImport1 ? 1 : 0) + ", " +
                     (mbRevueltaImport2 ? 1 : 0) + ", " +
                     (mbWeightSourceAvailable ? 1 : 0) + ", " +
@@ -739,6 +761,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
                     (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
                     (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
+                    (mnFkFreightOriginId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightOriginId_n) + ", " + 
+                    (mnFkFreightTicketId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightTicketId_n) + ", " + 
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     mnFkUserTaredId + ", " +
@@ -759,7 +783,7 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
                     /*
                     "id_tic = " + mnPkTicketId + ", " +
                     */
-                    "num = " + mnNumber + ", " +
+                    "num = '" + msNumber + "', " +
                     "dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " +
                     "qty = " + mdQuantity + ", " +
                     "pla = '" + msPlate + "', " +
@@ -796,6 +820,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
                     "usr_fre = " + mdUserFreight + ", " +
                     "usr_tot_r = " + mdUserTotal_r + ", " +
                     "dps_dt_n = " + (mtDpsSupplyDate_n == null ? "NULL" : "'" + SLibUtils.DbmsDateFormatDate.format(mtDpsSupplyDate_n) + "'") + ", " +
+                    "req_freight = '" + msRequiredFreight + "', " +
+                    "freight_tic_tp = '" + msFreightTicketType + "', " +
                     "b_rev_1 = " + (mbRevueltaImport1 ? 1 : 0) + ", " +
                     "b_rev_2 = " + (mbRevueltaImport2 ? 1 : 0) + ", " +
                     "b_wei_src = " + (mbWeightSourceAvailable ? 1 : 0) + ", " +
@@ -827,6 +853,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
                     "fk_ext_dps_year_n = " + (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     "fk_ext_dps_doc_n = " + (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
                     "fk_ext_dps_ety_n = " + (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
+                    "fk_freight_orig_n = " + (mnFkFreightOriginId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightOriginId_n) + ", " +
+                    "fk_freight_tic_n = " + (mnFkFreightTicketId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightTicketId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     "fk_usr_tar = " + mnFkUserTaredId + ", " +
@@ -920,6 +948,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
         registry.setUserFreight(this.getUserFreight());
         registry.setUserTotal_r(this.getUserTotal_r());
         registry.setDpsSupplyDate_n(this.getDpsSupplyDate_n());
+        registry.setRequiredFreight(this.getRequiredFreight());
+        registry.setFreightTicketType(this.getFreightTicketType());
         registry.setRevueltaImport1(this.isRevueltaImport1());
         registry.setRevueltaImport2(this.isRevueltaImport2());
         registry.setWeightSourceAvailable(this.isWeightSourceAvailable());
@@ -951,6 +981,8 @@ public class SDbTicketAlternative extends SDbRegistryUser  {
         registry.setFkExternalDpsYearId_n(this.getFkExternalDpsYearId_n());
         registry.setFkExternalDpsDocId_n(this.getFkExternalDpsDocId_n());
         registry.setFkExternalDpsEntryId_n(this.getFkExternalDpsEntryId_n());
+        registry.setFkFreightOriginId_n(this.getFkFreightOriginId_n());
+        registry.setFkFreightTicketId_n(this.getFkFreightTicketId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setFkUserTaredId(this.getFkUserTaredId());

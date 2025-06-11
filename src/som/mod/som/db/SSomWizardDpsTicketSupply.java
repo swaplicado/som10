@@ -23,7 +23,7 @@ public class SSomWizardDpsTicketSupply implements SGridRow {
 
     protected int mnPkTicketId;
     protected String msScaleCode;
-    protected int mnTicket;
+    protected String msNum;
     protected Date mtTicketDate;
     protected String msSupplierName;
     protected String msSupplierCode;
@@ -53,7 +53,7 @@ public class SSomWizardDpsTicketSupply implements SGridRow {
 
     public void setPkTicketId(int n) { mnPkTicketId = n; }
     public void setScaleCode(String s) { msScaleCode = s; }
-    public void setTicket(int n) { mnTicket = n; }
+    public void setNum(String s) { msNum = s; }
     public void setTicketDate(Date t) { mtTicketDate = t; }
     public void setSupplierName(String s) { msSupplierName = s; }
     public void setSupplierCode(String s) { msSupplierCode = s; }
@@ -81,7 +81,7 @@ public class SSomWizardDpsTicketSupply implements SGridRow {
 
     public int getPkTicketId() { return mnPkTicketId; }
     public String getScaleCode() { return msScaleCode; }
-    public int getTicket() { return mnTicket; }
+    public String getNum() { return msNum; }
     public Date getTicketDate() { return mtTicketDate; }
     public String getSupplierName() { return msSupplierName; }
     public String getSupplierCode() { return msSupplierCode; }
@@ -114,7 +114,7 @@ public class SSomWizardDpsTicketSupply implements SGridRow {
 
         mnPkTicketId = 0;
         msScaleCode = "";
-        mnTicket = 0;
+        msNum = "";
         mtTicketDate = null;
         msSupplierName = "";
         msSupplierCode = "";
@@ -156,7 +156,7 @@ public class SSomWizardDpsTicketSupply implements SGridRow {
 
             wizard.setPkTicketId(resultSet.getInt("f_id_1"));
             wizard.setScaleCode(resultSet.getString("sc.code"));
-            wizard.setTicket(resultSet.getInt("f_code"));
+            wizard.setNum(resultSet.getString("f_code"));
             wizard.setTicketDate(resultSet.getDate("f_date"));
             wizard.setSupplierName(resultSet.getString("pr.name"));
             wizard.setSupplierCode(resultSet.getString("pr.code"));
@@ -307,7 +307,7 @@ public class SSomWizardDpsTicketSupply implements SGridRow {
                 value = msScaleCode;
                 break;
             case 1:
-                value = mnTicket;
+                value = msNum;
                 break;
             case 2:
                 value = mtTicketDate;

@@ -52,7 +52,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     private static final int MAX_SEARCH_TICKETS = 100;
 
     protected int mnPkTicketId;
-    protected int mnNumber;
+    protected String msNumber;
     protected Date mtDate;
     protected double mdQuantity;
     protected String msPlate;
@@ -89,6 +89,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected double mdUserFreight;
     protected double mdUserTotal_r;
     protected Date mtDpsSupplyDate_n;
+    protected String msRequiredFreight;
+    protected String msFreightTicketType;
     protected boolean mbRevueltaImport1;
     protected boolean mbRevueltaImport2;
     protected boolean mbWeightSourceAvailable;
@@ -122,6 +124,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected int mnFkExternalDpsYearId_n;
     protected int mnFkExternalDpsDocId_n;
     protected int mnFkExternalDpsEntryId_n;
+    protected int mnFkFreightOriginId_n;
+    protected int mnFkFreightTicketId_n;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -194,7 +198,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 SDbProducer prodr = (SDbProducer) session.readRegistry(SModConsts.SU_PROD, new int[] { mnFkProducerId });
                 String itemName = SLibUtils.textProperCase(item.getName());
 
-                subject = "[SOM] " + "Boleto " + mnNumber + ": " +
+                subject = "[SOM] " + "Boleto " + msNumber + ": " +
                         SLibUtils.textToHtml(itemName) + "; " +
                         SLibUtils.DecimalFormatValue2D.format(mdWeightDestinyNet_r) + " " + SSomConsts.KG + "; " +
                         SLibUtils.textToHtml(prodr.getNameTrade());
@@ -205,7 +209,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
                 body = "<b>" + section + "</b><br>"
                     + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
-                    + "<tr><td>Boleto</td><td align='left'>" + mnNumber + "</td></tr>"
+                    + "<tr><td>Boleto</td><td align='left'>" + msNumber + "</td></tr>"
                     + "<tr><td>Chofer</td><td align='left'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(msDriver.length() > MAX_LEN_NAME ? msDriver.substring(0, MAX_LEN_NAME) : msDriver)) + "</td></tr>"
                     + "<tr><td>Fecha</td><td align='left'>" + SLibUtils.DateFormatDatetime.format(mtDatetimeArrival) + "</td></tr>"
                     + "<tr><td>Proveedor</td><td align='left'>" + SLibUtils.textToHtml((prodr.getNameTrade().length() > MAX_LEN_PROD ? prodr.getNameTrade().substring(0, MAX_LEN_PROD) : prodr.getNameTrade())) + "</td></tr>"
@@ -264,7 +268,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
      */
 
     public void setPkTicketId(int n) { mnPkTicketId = n; }
-    public void setNumber(int n) { mnNumber = n; }
+    public void setNumber(String s) { msNumber = s; }
     public void setDate(Date t) { mtDate = t; }
     public void setQuantity(double d) { mdQuantity = d; }
     public void setPlate(String s) { msPlate = s; }
@@ -301,6 +305,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setUserFreight(double d) { mdUserFreight = d; }
     public void setUserTotal_r(double d) { mdUserTotal_r = d; }
     public void setDpsSupplyDate_n(Date t) { mtDpsSupplyDate_n = t; }
+    public void setRequiredFreight(String s) { msRequiredFreight = s; }
+    public void setFreightTicketType(String s) { msFreightTicketType = s; }
     public void setRevueltaImport1(boolean b) { mbRevueltaImport1 = b; }
     public void setRevueltaImport2(boolean b) { mbRevueltaImport2 = b; }
     public void setWeightSourceAvailable(boolean b) { mbWeightSourceAvailable = b; }
@@ -332,6 +338,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setFkExternalDpsYearId_n(int n) { mnFkExternalDpsYearId_n = n; }
     public void setFkExternalDpsDocId_n(int n) { mnFkExternalDpsDocId_n = n; }
     public void setFkExternalDpsEntryId_n(int n) { mnFkExternalDpsEntryId_n = n; }
+    public void setFkFreightOriginId_n(int n) { mnFkFreightOriginId_n = n; }
+    public void setFkFreightTicketId_n(int n) { mnFkFreightTicketId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setFkUserTaredId(int n) { mnFkUserTaredId = n; }
@@ -344,7 +352,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setTsUserAssorted(Date t) { mtTsUserAssorted = t; }
 
     public int getPkTicketId() { return mnPkTicketId; }
-    public int getNumber() { return mnNumber; }
+    public String getNumber() { return msNumber; }
     public Date getDate() { return mtDate; }
     public double getQuantity() { return mdQuantity; }
     public String getPlate() { return msPlate; }
@@ -381,6 +389,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public double getUserFreight() { return mdUserFreight; }
     public double getUserTotal_r() { return mdUserTotal_r; }
     public Date getDpsSupplyDate_n() { return mtDpsSupplyDate_n; }
+    public String getRequiredFreight() { return msRequiredFreight; }
+    public String getFreightTicketType() { return msFreightTicketType; }
     public boolean isRevueltaImport1() { return mbRevueltaImport1; }
     public boolean isRevueltaImport2() { return mbRevueltaImport2; }
     public boolean isWeightSourceAvailable() { return mbWeightSourceAvailable; }
@@ -412,6 +422,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public int getFkExternalDpsYearId_n() { return mnFkExternalDpsYearId_n; }
     public int getFkExternalDpsDocId_n() { return mnFkExternalDpsDocId_n; }
     public int getFkExternalDpsEntryId_n() { return mnFkExternalDpsEntryId_n; }
+    public int getFkFreightOriginId_n() { return mnFkFreightOriginId_n; }
+    public int getFkFreightTicketId_n() { return mnFkFreightTicketId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public int getFkUserTaredId() { return mnFkUserTaredId; }
@@ -465,10 +477,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public Vector<SDbTicketNote> getChildTicketNotes() { return mvChildTicketNotes; }
     public Vector<SDbLaboratory> getChildLaboratories() { return mvChildLaboratories; }
-
+    
     @Override
     public String getName() {
-        return mnNumber + "";
+        return msNumber;
     }
 
     @Override
@@ -486,7 +498,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         initBaseRegistry();
 
         mnPkTicketId = 0;
-        mnNumber = 0;
+        msNumber = "";
         mtDate = null;
         mdQuantity = 0;
         msPlate = "";
@@ -523,6 +535,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mdUserFreight = 0;
         mdUserTotal_r = 0;
         mtDpsSupplyDate_n = null;
+        msRequiredFreight = "";
+        msFreightTicketType = "";
         mbRevueltaImport1 = false;
         mbRevueltaImport2 = false;
         mbWeightSourceAvailable = false;
@@ -554,6 +568,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mnFkExternalDpsYearId_n = 0;
         mnFkExternalDpsDocId_n = 0;
         mnFkExternalDpsEntryId_n = 0;
+        mnFkFreightOriginId_n = 0;
+        mnFkFreightTicketId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mnFkUserTaredId = 0;
@@ -655,7 +671,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         }
         else {
             mnPkTicketId = resultSet.getInt("t.id_tic");
-            mnNumber = resultSet.getInt("t.num");
+            msNumber = resultSet.getString("t.num");
             mtDate = resultSet.getDate("t.dt");
             mdQuantity = resultSet.getDouble("t.qty");
             msPlate = resultSet.getString("t.pla");
@@ -692,6 +708,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mdUserFreight = resultSet.getDouble("t.usr_fre");
             mdUserTotal_r = resultSet.getDouble("t.usr_tot_r");
             mtDpsSupplyDate_n = resultSet.getDate("t.dps_dt_n");
+            msRequiredFreight = resultSet.getString("req_freight");
+            msFreightTicketType = resultSet.getString("freight_tic_tp");
             mbRevueltaImport1 = resultSet.getBoolean("t.b_rev_1");
             mbRevueltaImport2 = resultSet.getBoolean("t.b_rev_2");
             mbWeightSourceAvailable = resultSet.getBoolean("t.b_wei_src");
@@ -723,6 +741,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mnFkExternalDpsYearId_n = resultSet.getInt("t.fk_ext_dps_year_n");
             mnFkExternalDpsDocId_n = resultSet.getInt("t.fk_ext_dps_doc_n");
             mnFkExternalDpsEntryId_n = resultSet.getInt("t.fk_ext_dps_ety_n");
+            mnFkFreightOriginId_n = resultSet.getInt("fk_freight_orig_n");
+            mnFkFreightTicketId_n = resultSet.getInt("fk_freight_tic_n");
             mnFkUserInsertId = resultSet.getInt("t.fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("t.fk_usr_upd");
             mnFkUserTaredId = resultSet.getInt("t.fk_usr_tar");
@@ -843,7 +863,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
                     mnPkTicketId + ", " +
-                    mnNumber + ", " +
+                    "'" + msNumber + "', " +
                     "'" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " +
                     mdQuantity + ", " +
                     "'" + msPlate + "', " +
@@ -880,6 +900,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     mdUserFreight + ", " +
                     mdUserTotal_r + ", " +
                     "" + (mtDpsSupplyDate_n == null ? "NULL" : "'" + SLibUtils.DbmsDateFormatDate.format(mtDpsSupplyDate_n) + "'") + ", " +
+                    "'" + msRequiredFreight + "', " + 
+                    "'" + msFreightTicketType + "', " + 
                     (mbRevueltaImport1 ? 1 : 0) + ", " +
                     (mbRevueltaImport2 ? 1 : 0) + ", " +
                     (mbWeightSourceAvailable ? 1 : 0) + ", " +
@@ -911,6 +933,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
                     (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
+                    (mnFkFreightOriginId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightOriginId_n) + ", " + 
+                    (mnFkFreightTicketId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightTicketId_n) + ", " + 
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     mnFkUserTaredId + ", " +
@@ -930,7 +954,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     /*
                     "id_tic = " + mnPkTicketId + ", " +
                     */
-                    "num = " + mnNumber + ", " +
+                    "num = '" + msNumber + "', " +
                     "dt = '" + SLibUtils.DbmsDateFormatDate.format(mtDate) + "', " +
                     "qty = " + mdQuantity + ", " +
                     "pla = '" + msPlate + "', " +
@@ -967,6 +991,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "usr_fre = " + mdUserFreight + ", " +
                     "usr_tot_r = " + mdUserTotal_r + ", " +
                     "dps_dt_n = " + (mtDpsSupplyDate_n == null ? "NULL" : "'" + SLibUtils.DbmsDateFormatDate.format(mtDpsSupplyDate_n) + "'") + ", " +
+                    "req_freight = '" + msRequiredFreight + "', " +
+                    "freight_tic_tp = '" + msFreightTicketType + "', " +
                     "b_rev_1 = " + (mbRevueltaImport1 ? 1 : 0) + ", " +
                     "b_rev_2 = " + (mbRevueltaImport2 ? 1 : 0) + ", " +
                     "b_wei_src = " + (mbWeightSourceAvailable ? 1 : 0) + ", " +
@@ -998,6 +1024,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "fk_ext_dps_year_n = " + (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     "fk_ext_dps_doc_n = " + (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
                     "fk_ext_dps_ety_n = " + (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
+                    "fk_freight_orig_n = " + (mnFkFreightOriginId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightOriginId_n) + ", " +
+                    "fk_freight_tic_n = " + (mnFkFreightTicketId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightTicketId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     "fk_usr_tar = " + mnFkUserTaredId + ", " +
@@ -1088,6 +1116,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setUserFreight(this.getUserFreight());
         registry.setUserTotal_r(this.getUserTotal_r());
         registry.setDpsSupplyDate_n(this.getDpsSupplyDate_n());
+        registry.setRequiredFreight(this.getRequiredFreight());
+        registry.setFreightTicketType(this.getFreightTicketType());
         registry.setRevueltaImport1(this.isRevueltaImport1());
         registry.setRevueltaImport2(this.isRevueltaImport2());
         registry.setWeightSourceAvailable(this.isWeightSourceAvailable());
@@ -1119,6 +1149,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setFkExternalDpsYearId_n(this.getFkExternalDpsYearId_n());
         registry.setFkExternalDpsDocId_n(this.getFkExternalDpsDocId_n());
         registry.setFkExternalDpsEntryId_n(this.getFkExternalDpsEntryId_n());
+        registry.setFkFreightOriginId_n(this.getFkFreightOriginId_n());
+        registry.setFkFreightTicketId_n(this.getFkFreightTicketId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setFkUserTaredId(this.getFkUserTaredId());
@@ -1172,10 +1204,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
         if (can) {
             initQueryMembers();
-            can = !SSomUtils.existsTicket(session, mnNumber, mnPkTicketId);
+            can = !SSomUtils.existsTicket(session, msNumber, mnPkTicketId);
 
             if (!can) {
-                msQueryResult = "¡El boleto #" + mnNumber + " ya existe!";
+                msQueryResult = "¡El boleto #" + msNumber + " ya existe!";
             }
         }
 
@@ -1193,7 +1225,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 msQueryResult = "¡El boleto está vinculado con un documento de inventarios!";
             }
             else {
-                can = !SSomUtils.existsTicket(session, mnNumber, mnPkTicketId);
+                can = !SSomUtils.existsTicket(session, msNumber, mnPkTicketId);
 
                 if (!can) {
                     msQueryResult = "¡El boleto ya existe!";
@@ -1283,7 +1315,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
         switch(row) {
             case 0:
-                value = mnNumber;
+                value = msNumber;
                 break;
             case 1:
                 value = mtDatetimeArrival;
@@ -1521,7 +1553,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
      * @throws SQLException
      * @throws Exception 
      */
-    public static ArrayList<SDbTicket> getTicketsByNumber(final SGuiSession session, final int number) throws SQLException, Exception {
+    public static ArrayList<SDbTicket> getTicketsByNumber(final SGuiSession session, final String number) throws SQLException, Exception {
         int count = 0;
         ArrayList<SDbTicket> tickets = new ArrayList<>();
         

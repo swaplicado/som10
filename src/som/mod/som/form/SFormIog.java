@@ -197,7 +197,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moTextTicketScale = new sa.lib.gui.bean.SBeanFieldText();
         jPanel26 = new javax.swing.JPanel();
         jlTicketNumber = new javax.swing.JLabel();
-        moIntTicketNumber = new sa.lib.gui.bean.SBeanFieldInteger();
+        moTextTicket = new sa.lib.gui.bean.SBeanFieldText();
         jPanel43 = new javax.swing.JPanel();
         jlTicketOrigin = new javax.swing.JLabel();
         moTextTicketOrigin = new sa.lib.gui.bean.SBeanFieldText();
@@ -667,8 +667,8 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         jlTicketNumber.setPreferredSize(new java.awt.Dimension(80, 23));
         jPanel26.add(jlTicketNumber);
 
-        moIntTicketNumber.setEditable(false);
-        jPanel26.add(moIntTicketNumber);
+        moTextTicket.setEditable(false);
+        jPanel26.add(moTextTicket);
 
         jPanel27.add(jPanel26);
 
@@ -810,7 +810,6 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private sa.lib.gui.bean.SBeanFieldDecimal moDecQuantityDestiny;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecXtaStock;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecXtaStockDestiny;
-    private sa.lib.gui.bean.SBeanFieldInteger moIntTicketNumber;
     private sa.lib.gui.bean.SBeanFieldKey moKeyBranch;
     private sa.lib.gui.bean.SBeanFieldKey moKeyBranchDestiny;
     private sa.lib.gui.bean.SBeanFieldKey moKeyByProduct;
@@ -831,6 +830,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
     private sa.lib.gui.bean.SBeanFieldText moTextNote;
     private sa.lib.gui.bean.SBeanFieldText moTextNumber;
     private sa.lib.gui.bean.SBeanFieldText moTextReference;
+    private sa.lib.gui.bean.SBeanFieldText moTextTicket;
     private sa.lib.gui.bean.SBeanFieldText moTextTicketDestination;
     private sa.lib.gui.bean.SBeanFieldText moTextTicketOrigin;
     private sa.lib.gui.bean.SBeanFieldText moTextTicketScale;
@@ -878,7 +878,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moBoolDeleted.setBooleanSettings(moBoolDeleted.getText(), false);
         moBoolSystem.setBooleanSettings(moBoolSystem.getText(), false);
 
-        moIntTicketNumber.setIntegerSettings(SGuiUtils.getLabelName(jlTicketNumber), SGuiConsts.GUI_TYPE_INT, false);
+        moTextTicket.setTextSettings(jlTicketNumber.getText(), 10, 1);
         moTextDpsBizPartner.setTextSettings(jlDpsBizPartner.getText(), 200, 0);
         moTextDpsBizPartnerCode.setTextSettings("Código", 100, 0);
         moDateDpsDate.setDateSettings(miClient, jlDpsDate.getText(), false);
@@ -891,8 +891,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moDecDpsQuantityPending.setDecimalSettings(SGuiUtils.getLabelName(jlDpsQuantityPending), SGuiConsts.GUI_TYPE_DEC_AMT, false);
         
         moTextTicketScale.setTextSettings(jlTicketScale.getText(), 200, 0);
-        moIntTicketNumber.setIntegerSettings(jlTicketNumber.getText(), SGuiConsts.GUI_TYPE_INT, false);
-
+        
         moFields.addField(moTextIogType);
         moFields.addField(moKeyIogAdjustmentType);
         moFields.addField(moKeyByProduct);
@@ -929,7 +928,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moFields.addField(moDecDpsQuantityPending);
 
         moFields.addField(moTextTicketScale);
-        moFields.addField(moIntTicketNumber);
+        moFields.addField(moTextTicket);
         
         moFields.setFormButton(jbSave);
 
@@ -1010,7 +1009,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
         moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
         jlQuantityUnit.setText(moRegistry.getFkItemId() > 0 && moKeyItem.getSelectedItem().getComplement() != null ? moKeyItem.getSelectedItem().getComplement().toString() : "");
         moDecQuantity.setValue(moRegistry.getQuantity() < 0 ? 0 : moRegistry.getQuantity());
-        moIntTicketNumber.setValue(moRegistry.getXtaTicketNumber());
+        moTextTicket.setValue(moRegistry.getXtaTicketNumber());
         moTextNote.setValue(moRegistry.getXtaNote());
         moBoolDeleted.setValue(moRegistry.isDeleted());
         moBoolSystem.setValue(moRegistry.isSystem());
@@ -1129,7 +1128,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
                 ticket.read(miClient.getSession(), new int[] { moRegistry.getFkTicketId_n() });
 
                 moTextTicketScale.setValue(ticket.getXtaScaleName());
-                moIntTicketNumber.setValue(ticket.getNumber());
+                moTextTicket.setValue(ticket.getNumber());
                 disabledTicketFields(true);
 
                 if (moRegistry.isRegistryNew()) {
@@ -1442,7 +1441,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
     private void editableTicketFields(final boolean b) {
         moTextTicketScale.setEditable(b);
-        moIntTicketNumber.setEditable(b);
+        moTextTicket.setEditable(b);
     }
 
     private void disabledDpsFields(final boolean b) {
@@ -1472,7 +1471,7 @@ public class SFormIog extends sa.lib.gui.bean.SBeanForm implements ActionListene
 
     private void disabledTicketFields(final boolean b) {
         moTextTicketScale.setEnabled(b);
-        moIntTicketNumber.setEnabled(b);
+        moTextTicket.setEnabled(b);
 
         jlTicketScale.setEnabled(b);
         jlTicketNumber.setEnabled(b);

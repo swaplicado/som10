@@ -46,6 +46,7 @@ public class SViewInputCategory extends SGridPaneView {
                 + "v.id_inp_ct AS " + SDbConsts.FIELD_ID + "1, "
                 + "v.code AS " + SDbConsts.FIELD_CODE + ", "
                 + "v.name AS " + SDbConsts.FIELD_NAME + ", "
+                + "IF(v.req_freight = 'N', 'NO', 'SÍ') AS req_fre, "
                 + "v.b_wah_unld_req, "
                 + "v.b_can_upd AS " + SDbConsts.FIELD_CAN_UPD + ", "
                 + "v.b_can_dis AS " + SDbConsts.FIELD_CAN_DIS + ", "
@@ -71,10 +72,11 @@ public class SViewInputCategory extends SGridPaneView {
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[10];
+        SGridColumnView[] columns = new SGridColumnView[11];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "req_fre", "Control fletes");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_L, "v.b_wah_unld_req", "Almacén descarga requerido");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DIS, SGridConsts.COL_TITLE_IS_DIS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);

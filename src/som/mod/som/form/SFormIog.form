@@ -1077,7 +1077,7 @@
                         </Property>
                       </Properties>
                     </Component>
-                    <Component class="sa.lib.gui.bean.SBeanFieldInteger" name="moIntTicketNumber">
+                    <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextTicket">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                       </Properties>

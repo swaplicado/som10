@@ -33,7 +33,7 @@ public class SDbStockMovementEntry extends SDbRegistryUser implements SGridRow {
     
     protected String msXtaUnit;
     protected String msXtaMatCond;
-    protected int mnXtaTicketNum;
+    protected String msXtaTicketNum;
     
     protected SDbStock moStock;
     protected SDbStockMovement moAuxStockMovement;
@@ -63,7 +63,7 @@ public class SDbStockMovementEntry extends SDbRegistryUser implements SGridRow {
     public void setAuxStockMovement(SDbStockMovement o) { moAuxStockMovement = o; }
     
     public String getXtaMatCond() { return msXtaMatCond; }
-    public int getXtaTicketNum() { return mnXtaTicketNum; }
+    public String getXtaTicketNum() { return msXtaTicketNum; }
     
     public SDbStock getStock() { return moStock; }
     public SDbStockMovement getAuxStockMovement() { return moAuxStockMovement; }
@@ -93,7 +93,7 @@ public class SDbStockMovementEntry extends SDbRegistryUser implements SGridRow {
                     "WHERE id_tic = " + mnFkTicketId_n;
             ResultSet resultSet = session.getStatement().executeQuery(msSql);
             if (resultSet.next()) {
-                mnXtaTicketNum = resultSet.getInt(1);
+                msXtaTicketNum = resultSet.getString(1);
             }
         }
     }
@@ -123,7 +123,7 @@ public class SDbStockMovementEntry extends SDbRegistryUser implements SGridRow {
         
         msXtaUnit = "";
         msXtaMatCond = "";
-        mnXtaTicketNum = 0;
+        msXtaTicketNum = "";
         
         moStock = null;
         moAuxStockMovement = null;

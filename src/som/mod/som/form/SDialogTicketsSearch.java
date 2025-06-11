@@ -17,10 +17,9 @@ import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
 import sa.lib.gui.SGuiClient;
-import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
-import sa.lib.gui.bean.SBeanFieldInteger;
+import sa.lib.gui.bean.SBeanFieldText;
 import sa.lib.gui.bean.SBeanFormDialog;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
@@ -65,7 +64,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jlNumberToSearch = new javax.swing.JLabel();
-        moIntNumberToSearch = new sa.lib.gui.bean.SBeanFieldInteger();
+        moTextNumberToSearch = new sa.lib.gui.bean.SBeanFieldText();
         jbSearch = new javax.swing.JButton();
         jbReset = new javax.swing.JButton();
         jPanel18 = new javax.swing.JPanel();
@@ -159,7 +158,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jlNumberToSearch.setText("Boleto a buscar:");
         jlNumberToSearch.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel2.add(jlNumberToSearch);
-        jPanel2.add(moIntNumberToSearch);
+        jPanel2.add(moTextNumberToSearch);
 
         jbSearch.setText("Buscar");
         jbSearch.setPreferredSize(new java.awt.Dimension(75, 23));
@@ -655,17 +654,17 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
     private javax.swing.JTextField jtfWeightDestinyNetUnit;
     private javax.swing.JTextField jtfWeightSource;
     private javax.swing.JTextField jtfWeightSourceUnit;
-    private sa.lib.gui.bean.SBeanFieldInteger moIntNumberToSearch;
     private sa.lib.gui.bean.SBeanFieldKey moKeyTicketDestination;
     private sa.lib.gui.bean.SBeanFieldKey moKeyTicketOrigin;
+    private sa.lib.gui.bean.SBeanFieldText moTextNumberToSearch;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 880, 565);
         
-        moIntNumberToSearch.setIntegerSettings(SGuiUtils.getLabelName(jlNumberToSearch), SGuiConsts.GUI_TYPE_INT_RAW, false);
+        moTextNumberToSearch.setTextSettings(SGuiUtils.getLabelName(jlNumberToSearch), 10, 1);
         
-        moFields.addField(moIntNumberToSearch);
+        moFields.addField(moTextNumberToSearch);
         
         moFields.setFormButton(jbSearch);
         
@@ -803,23 +802,23 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
     
     private void actionPerformedSearch() {
         try {
-            if (moIntNumberToSearch.getValue() != 0 || 
-                    (moIntNumberToSearch.getValue() == 0 && miClient.showMsgBoxConfirm("¿Está seguro que desea buscar boletos con el número 0?") == JOptionPane.YES_OPTION)) {
+            if (!moTextNumberToSearch.getValue().isEmpty() || 
+                    (moTextNumberToSearch.getValue().equals("0") && miClient.showMsgBoxConfirm("¿Está seguro que desea buscar boletos con el número 0?") == JOptionPane.YES_OPTION)) {
                 miClient.getFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
                 
-                maTickets = SDbTicket.getTicketsByNumber(miClient.getSession(), moIntNumberToSearch.getValue());
+                maTickets = SDbTicket.getTicketsByNumber(miClient.getSession(), moTextNumberToSearch.getValue());
                 
                 if (maTickets.isEmpty()) {
                     mnCurrentTicketIndex = -1;
-                    miClient.showMsgBoxWarning("No se encontraron boletos con el número " + moIntNumberToSearch.getValue() + ".");
-                    moIntNumberToSearch.requestFocusInWindow();
+                    miClient.showMsgBoxWarning("No se encontraron boletos con el número " + moTextNumberToSearch.getValue() + ".");
+                    moTextNumberToSearch.requestFocusInWindow();
                 }
                 else {
                     mnCurrentTicketIndex = 0;
                     
                     showCurrentTicket();
 
-                    moIntNumberToSearch.setEditable(false);
+                    moTextNumberToSearch.setEditable(false);
                     jbSearch.setEnabled(false);
                     jbReset.setEnabled(true);
                     jbGoFirst.setEnabled(maTickets.size() > 1);
@@ -845,7 +844,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         
         showCurrentTicket();
         
-        moIntNumberToSearch.setEditable(true);
+        moTextNumberToSearch.setEditable(true);
         jbSearch.setEnabled(true);
         jbReset.setEnabled(false);
         jbGoFirst.setEnabled(false);
@@ -853,7 +852,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jbGoNext.setEnabled(false);
         jbGoLast.setEnabled(false);
         
-        moIntNumberToSearch.requestFocusInWindow();
+        moTextNumberToSearch.requestFocusInWindow();
     }
 
     private void actionPerformedGoFirst() {
@@ -901,7 +900,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
     
     @Override
     public void addAllListeners() {
-        moIntNumberToSearch.addActionListener(this);
+        moTextNumberToSearch.addActionListener(this);
         jbSearch.addActionListener(this);
         jbReset.addActionListener(this);
         jbGoFirst.addActionListener(this);
@@ -912,7 +911,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
 
     @Override
     public void removeAllListeners() {
-        moIntNumberToSearch.removeActionListener(this);
+        moTextNumberToSearch.removeActionListener(this);
         jbSearch.removeActionListener(this);
         jbReset.removeActionListener(this);
         jbGoFirst.removeActionListener(this);
@@ -944,10 +943,10 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() instanceof SBeanFieldInteger) {
-            SBeanFieldInteger field = (SBeanFieldInteger) e.getSource();
+        if (e.getSource() instanceof SBeanFieldText) {
+            SBeanFieldText field = (SBeanFieldText) e.getSource();
             
-            if (field == moIntNumberToSearch) {
+            if (field == moTextNumberToSearch) {
                 actionPerformedSearch();
             }
         }

@@ -474,7 +474,7 @@ public class SFormMgmtSupplierItem extends SBeanForm implements SGridPaneFormOwn
                 int col = 0;
                 SGridColumnForm[] columns = new SGridColumnForm[12];
 
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_RAW, "Boleto", 50);
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT, "Boleto", 75);
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DATE, "Fecha entrada", 100);
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT, "Placas", 75);
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DEC_4D, "Peso origen (" + SSomConsts.KG + ")", 120);

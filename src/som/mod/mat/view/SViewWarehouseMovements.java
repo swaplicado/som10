@@ -252,13 +252,13 @@ public class SViewWarehouseMovements extends SGridPaneView implements ActionList
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, "ref", "Referencia");
         if (!mbIsDetail) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca_mov", "Báscula");
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "bol_mov", "Boleto");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "bol_mov", "Boleto", 75);
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "prov_mov", "Proveedor");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "prov_com", "Proveedor nombre comercial");
         }
         else {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca_ety", "Báscula");
-            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "bol_ety", "Boleto");
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "bol_ety", "Boleto", 75);
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "prov_ety", "Proveedor");            
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "prov_com_ety", "Proveedor nombre comercial");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "item", "Ítem");

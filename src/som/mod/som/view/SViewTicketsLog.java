@@ -188,7 +188,7 @@ public class SViewTicketsLog extends SGridPaneView implements ActionListener {
 
         columns = new SGridColumnView[12];
 
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, SDbConsts.FIELD_CODE, "Boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, SDbConsts.FIELD_CODE, "Boleto", 75);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "v.dt", SGridConsts.COL_TITLE_DATE + " boleto");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "vp.name", "Proveedor");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "vp.name_trd", "Proveedor nombre comercial");

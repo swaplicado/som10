@@ -4,7 +4,9 @@
  */
 package som.mod;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import sa.lib.gui.SGuiItem;
 
 /**
  *
@@ -215,6 +217,8 @@ public abstract class SModSysConsts {
     public static final int SU_TIC_DEST_NA = 1;
     public static final int SU_TIC_DEST_PTA = 11;
     public static final int SU_TIC_DEST_EXW = 12;
+    
+    public static final int SU_FREIGHT_ORIG_NA = 1;
 
     public static final int SX_DEN = 1;
     public static final int SX_IOD_VAL = 2;
@@ -230,6 +234,14 @@ public abstract class SModSysConsts {
 
     public static final int SX_LAB_TEST = 1;
     public static final int SX_LAB_TEST_DET = 2;
+    
+    public static final ArrayList<SGuiItem> SX_REQ_FRE_OPTIONS;
+    public static final HashMap<Integer, String> SX_REQ_FRE_CODE;
+    public static final String SX_REQ_FRE_NO = "N";
+    public static final String SX_REQ_FRE_YES = "Y";
+    
+    public static final String SX_FREIGHT_TIC_TP_FRE = "F";
+    public static final String SX_FREIGHT_TIC_TP_DEP = "D";
     
     public static final int[] MS_MVT_CL_IN_REC = new int[] { 1, 1 };
     public static final int[] MS_MVT_CL_IN_PRD = new int[] { 1, 6 };
@@ -307,5 +319,14 @@ public abstract class SModSysConsts {
         SU_OIL_TP_DESC.put(2, "REFINADO");
         SU_OIL_TP_DESC.put(3, "REPROCESO");
         SU_OIL_TP_DESC.put(4, "RESIDUO");
+        
+        SX_REQ_FRE_OPTIONS = new ArrayList<>();
+        SX_REQ_FRE_OPTIONS.add(new SGuiItem(new int[] { 0 }, "- Control de fletes -"));
+        SX_REQ_FRE_OPTIONS.add(new SGuiItem(new int[] { 1 }, "NO"));
+        SX_REQ_FRE_OPTIONS.add(new SGuiItem(new int[] { 2 }, "SÍ"));
+        
+        SX_REQ_FRE_CODE = new HashMap<>();
+        SX_REQ_FRE_CODE.put(1, "N");
+        SX_REQ_FRE_CODE.put(2, "Y");
     }
 }

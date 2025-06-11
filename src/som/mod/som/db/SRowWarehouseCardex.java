@@ -26,7 +26,6 @@ public class SRowWarehouseCardex implements SGridRow {
     private double mdPondOil;
     private double mdPondMoi;
     
-    
     public void setItem(String s) { msItem = s; }
     public void setDateStart(Date t)  { mtDateStart = t; }
     public void setDateEnd(Date t) { mtDateEnd = t; }
@@ -120,5 +119,4 @@ public class SRowWarehouseCardex implements SGridRow {
     public void setRowValueAt(Object o, int i) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }

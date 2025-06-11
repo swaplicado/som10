@@ -28,7 +28,7 @@ public class SRowSupplyDpsTicket extends SDbRegistry implements SGridRow {
     protected int mnFkExternalDpsEntryId_n;
 
     protected int mnPkTicketId;
-    protected int mnNumber;
+    protected String msNumber;
     protected Date mtDate;
     protected String msPlate;
     protected String msDriver;
@@ -66,7 +66,7 @@ public class SRowSupplyDpsTicket extends SDbRegistry implements SGridRow {
     public void setFkExternalDpsEntryId_n(int n) { mnFkExternalDpsEntryId_n = n; }
 
     public void setPkTicketId(int n) { mnPkTicketId = n; }
-    public void setNumber(int n) { mnNumber = n; }
+    public void setNumber(String s) { msNumber = s; }
     public void setDate(Date t) { mtDate = t; }
     public void setPlate(String s) { msPlate = s; }
     public void setDriver(String s) { msDriver = s; }
@@ -82,7 +82,7 @@ public class SRowSupplyDpsTicket extends SDbRegistry implements SGridRow {
     public int getFkExternalDpsEntryId_n() { return mnFkExternalDpsEntryId_n; }
 
     public int getPkTicketId() { return mnPkTicketId; }
-    public int getNumber() { return mnNumber; }
+    public String getNumber() { return msNumber; }
     public Date getDate() { return mtDate; }
     public String getPlate() { return msPlate; }
     public String getDriver() { return msDriver; }
@@ -141,7 +141,7 @@ public class SRowSupplyDpsTicket extends SDbRegistry implements SGridRow {
         mnFkExternalDpsEntryId_n = 0;
 
         mnPkTicketId = 0;
-        mnNumber = 0;
+        msNumber = "";
         mtDate = null;
         msPlate = "";
         msDriver = "";
@@ -219,7 +219,7 @@ public class SRowSupplyDpsTicket extends SDbRegistry implements SGridRow {
             supplyDpsTicket = new SRowSupplyDpsTicket();
 
             supplyDpsTicket.setPkTicketId(resultSet.getInt("v.id_tic"));
-            supplyDpsTicket.setNumber(resultSet.getInt("v.num"));
+            supplyDpsTicket.setNumber(resultSet.getString("v.num"));
             supplyDpsTicket.setDate(resultSet.getDate("v.dt"));
             supplyDpsTicket.setPlate(resultSet.getString("v.pla"));
             supplyDpsTicket.setDriver(resultSet.getString("v.drv"));
@@ -331,7 +331,7 @@ public class SRowSupplyDpsTicket extends SDbRegistry implements SGridRow {
                 value = msXtaScaleCode;
                 break;
             case 1:
-                value = mnNumber;
+                value = msNumber;
                 break;
             case 2:
                 value = mtDate;

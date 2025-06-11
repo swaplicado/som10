@@ -28,7 +28,7 @@ import som.mod.SModSysConsts;
 /**
  * Resumen báscula
  * Report mailer for monthly reception at scale.
- * @author Sergio Flores
+ * @author Sergio Flores, Isabel Servín
  */
 public class SCliReportMailerSummary {
     

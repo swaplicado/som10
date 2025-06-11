@@ -78,6 +78,7 @@ public abstract class SModConsts {
     public static final int SU_INP_SRC = 320021;
     public static final int SU_TIC_ORIG = 320034;
     public static final int SU_TIC_DEST = 320035;
+    public static final int SU_FREIGHT_ORIG = 320036;
     public static final int SU_BY_PRODUCT = 320022;
     public static final int SU_GRINDING_PARAM = 320041;
     public static final int SU_GRINDING_LINK_ITEM_PARAM = 320042;
@@ -106,6 +107,7 @@ public abstract class SModConsts {
     public static final int S_ALT_LAB = 330101;
     public static final int S_TIC = 330011;
     public static final int S_TIC_NOTE = 330012;
+    public static final int S_TIC_DIV = 330013;
     public static final int S_ALT_TIC = 330102;
     public static final int S_WAH_LAB = 330016;
     public static final int S_WAH_LAB_TEST = 330017;
@@ -203,6 +205,9 @@ public abstract class SModConsts {
     public static final int SX_ALT_W_LAB = 340113;
     public static final int SX_ITEM_ALT = 340114;
     public static final int SX_WAH_LAB_DET = 340115;
+    public static final int SX_TIC_DIV_PROC = 340116;
+    public static final int SX_TIC_FREIGHT = 340117;
+    public static final int SX_TIC_DATE = 340118;
 
     public static final int SR_TIC = 350001;
     public static final int SR_ALT_TIC = 350025;
@@ -309,6 +314,7 @@ public abstract class SModConsts {
         TablesMap.put(SU_INP_SRC, "su_inp_src");
         TablesMap.put(SU_TIC_ORIG, "su_tic_orig");
         TablesMap.put(SU_TIC_DEST, "su_tic_dest");
+        TablesMap.put(SU_FREIGHT_ORIG, "su_freight_orig");
         TablesMap.put(SU_BY_PRODUCT, "su_by_product");
         TablesMap.put(SU_GRINDING_PARAM, "su_grin_param");
         TablesMap.put(SU_GRINDING_LINK_ITEM_PARAM, "su_grin_link_item_param");
@@ -336,6 +342,7 @@ public abstract class SModConsts {
         TablesMap.put(S_ALT_LAB, "s_alt_lab");
         TablesMap.put(S_TIC, "s_tic");
         TablesMap.put(S_TIC_NOTE, "s_tic_note");
+        TablesMap.put(S_TIC_DIV, "s_tic_div");
         TablesMap.put(S_ALT_TIC, "s_alt_tic");
         TablesMap.put(S_WAH_LAB, "s_wah_lab");
         TablesMap.put(S_WAH_LAB_TEST, "s_wah_lab_test");

@@ -12,6 +12,7 @@ import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
 import som.mod.SModConsts;
+import som.mod.SModSysConsts;
 import som.mod.som.db.SDbInputCategory;
 
 /**
@@ -52,12 +53,16 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
         jlName = new javax.swing.JLabel();
         moTextName = new sa.lib.gui.bean.SBeanFieldText();
         jPanel6 = new javax.swing.JPanel();
+        jlFreReq = new javax.swing.JLabel();
+        moKeyFreReq = new sa.lib.gui.bean.SBeanFieldKey();
+        jlReqFreHelp = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
         jchWarehouseRequired = new javax.swing.JCheckBox();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(3, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -84,11 +89,30 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jchWarehouseRequired.setText("Almacén de descarga requerido");
-        jchWarehouseRequired.setPreferredSize(new java.awt.Dimension(300, 23));
-        jPanel6.add(jchWarehouseRequired);
+        jlFreReq.setText("Control fletes:*");
+        jlFreReq.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel6.add(jlFreReq);
+
+        moKeyFreReq.setEditable(true);
+        moKeyFreReq.setPreferredSize(new java.awt.Dimension(120, 23));
+        jPanel6.add(moKeyFreReq);
+
+        jlReqFreHelp.setForeground(new java.awt.Color(109, 109, 109));
+        jlReqFreHelp.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlReqFreHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_view_info.png"))); // NOI18N
+        jlReqFreHelp.setToolTipText("Habilita el control de fletes en la captura de boletos de báscula de los insumos de esta categoría");
+        jlReqFreHelp.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel6.add(jlReqFreHelp);
 
         jPanel2.add(jPanel6);
+
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jchWarehouseRequired.setText("Almacén de descarga requerido");
+        jchWarehouseRequired.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel7.add(jchWarehouseRequired);
+
+        jPanel2.add(jPanel7);
 
         jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
@@ -101,9 +125,13 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JCheckBox jchWarehouseRequired;
     private javax.swing.JLabel jlCode;
+    private javax.swing.JLabel jlFreReq;
     private javax.swing.JLabel jlName;
+    private javax.swing.JLabel jlReqFreHelp;
+    private sa.lib.gui.bean.SBeanFieldKey moKeyFreReq;
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
     // End of variables declaration//GEN-END:variables
@@ -113,9 +141,11 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
 
         moTextCode.setTextSettings(SGuiUtils.getLabelName(jlCode), 5);
         moTextName.setTextSettings(SGuiUtils.getLabelName(jlName), 50);
+        moKeyFreReq.setKeySettings(miClient, SGuiUtils.getLabelName(jlFreReq), true);
 
         moFields.addField(moTextCode);
         moFields.addField(moTextName);
+        moFields.addField(moKeyFreReq);
 
         moFields.setFormButton(jbSave);
     }
@@ -131,8 +161,13 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void reloadCatalogues() {
-
+        moKeyFreReq.removeAllItems();
+        SModSysConsts.SX_REQ_FRE_OPTIONS.forEach((item) -> {
+            moKeyFreReq.addItem(item);
+        });
+        moKeyFreReq.setSelectedIndex(0);
     }
 
     @Override
@@ -156,6 +191,12 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
         moTextName.setValue(moRegistry.getName());
         moTextCode.setValue(moRegistry.getCode());
         jchWarehouseRequired.setSelected(moRegistry.isWareouseUnloadRequired());
+        
+        for (int i = 1; i <= SModSysConsts.SX_REQ_FRE_CODE.size(); i++) {
+            if (SModSysConsts.SX_REQ_FRE_CODE.get(i).equals(moRegistry.getRequiredFreight())) {
+                moKeyFreReq.setValue(new int[] { i });
+            }
+        }
 
         setFormEditable(true);
 
@@ -170,6 +211,7 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
 
         registry.setName(moTextName.getValue());
         registry.setCode(moTextCode.getValue());
+        registry.setRequiredFreight(SModSysConsts.SX_REQ_FRE_CODE.get(moKeyFreReq.getValue()[0]));
         registry.setWareouseUnloadRequired(jchWarehouseRequired.isSelected());
 
         return registry;

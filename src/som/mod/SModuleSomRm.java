@@ -7,9 +7,11 @@ package som.mod;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import sa.lib.SLibConsts;
+import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistry;
@@ -41,6 +43,7 @@ import som.mod.mat.view.SViewStockTransfer;
 import som.mod.mat.view.SViewTicketMovements;
 import som.mod.mat.view.SViewTicketReceptions;
 import som.mod.mat.view.SViewWarehouseMovements;
+import som.mod.som.db.SDbFreightOrigin;
 import som.mod.som.db.SDbGrindingEvent;
 import som.mod.som.db.SDbGrindingResult;
 import som.mod.som.db.SDbLaboratory;
@@ -55,6 +58,7 @@ import som.mod.som.db.SDbSupraRegion;
 import som.mod.som.db.SDbTicket;
 import som.mod.som.db.SDbTicketAlternative;
 import som.mod.som.db.SDbTicketDestination;
+import som.mod.som.db.SDbTicketDivisionProcess;
 import som.mod.som.db.SDbTicketOrigin;
 import som.mod.som.db.SDbWarehouseStart;
 import som.mod.som.form.SDialogRepFreightTime;
@@ -64,8 +68,10 @@ import som.mod.som.form.SDialogRepReceivedFruit;
 import som.mod.som.form.SDialogRepReceivedFruitAcidity;
 import som.mod.som.form.SDialogRepReceivedFruitHist;
 import som.mod.som.form.SDialogRepReceivedSeed;
+import som.mod.som.form.SDialogTicketDivisionProcess;
 import som.mod.som.form.SDialogTicketsSearch;
 import som.mod.som.form.SFormDialogAssignSeasonRegion;
+import som.mod.som.form.SFormFreightOrigin;
 import som.mod.som.form.SFormGrindingEvent;
 import som.mod.som.form.SFormGrindingResultHr;
 import som.mod.som.form.SFormLaboratory;
@@ -85,6 +91,7 @@ import som.mod.som.form.SFormTicketOrigin;
 import som.mod.som.form.SFormTicketSeasonRegion;
 import som.mod.som.form.SFormTicketWahUnld;
 import som.mod.som.form.SFormWarehouseStart;
+import som.mod.som.view.SViewFreightOrigin;
 import som.mod.som.view.SViewGrindingEvents;
 import som.mod.som.view.SViewGrindingResults;
 import som.mod.som.view.SViewGrindingResume;
@@ -127,6 +134,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCatReportingGroup;
     private JMenuItem mjCatTicketOrigin;
     private JMenuItem mjCatTicketDestination;
+    private JMenuItem mjCatFreightOrigin;
     private JMenuItem mjCatIodineValueRank;
     private JMenuItem mjCatExternalWarehouses;
     private JMenuItem mjCatUpdateCatalogues;
@@ -210,6 +218,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private SFormSeasonProducer moFormSeasonProducer;
     private SFormTicketOrigin moFormTicketOrigin;
     private SFormTicketDestination moFormTicketDestination;
+    private SFormFreightOrigin moFormFreightOrigin;
     private SFormDialogAssignSeasonRegion moFormDialogAssignSeasonRegion;
     private SFormMgmtSupplierItem moFormMgmtSupplierItem;
     private SFormMgmtSupplierInputType moFormMgmtSupplierInputType;
@@ -217,6 +226,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private SFormShift moFormShift;
     private SFormEmployee moFormEmployee;
     private SFormWarehouseMovements moFormTicketMovements;
+    private SDialogTicketDivisionProcess moDialogTicketDivision;
 
     public SModuleSomRm(SGuiClient client) {
        super(client, SModConsts.MOD_SOM_RM, SLibConsts.UNDEFINED);
@@ -240,6 +250,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatReportingGroup = new JMenuItem("Agrupadores de reporte");
         mjCatTicketOrigin = new JMenuItem("Procedencias de boletos");
         mjCatTicketDestination = new JMenuItem("Destinos de boletos");
+        mjCatFreightOrigin = new JMenuItem("Origenes de fletes");
         mjCatIodineValueRank = new JMenuItem("Rangos de yodo");
         mjCatExternalWarehouses = new JMenuItem("Almacenes sistema externo");
         mjCatUpdateCatalogues = new JMenuItem("Actualizar catálogos sistema externo...");
@@ -260,6 +271,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCat.add(mjCatTicketOrigin);
         mjCat.add(mjCatTicketDestination);
         mjCat.addSeparator();
+        mjCat.add(mjCatFreightOrigin);
+        mjCat.addSeparator();
         mjCat.add(mjCatIodineValueRank);
         mjCat.addSeparator();
         mjCat.add(mjCatExternalWarehouses);
@@ -277,6 +290,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatReportingGroup.addActionListener(this);
         mjCatTicketOrigin.addActionListener(this);
         mjCatTicketDestination.addActionListener(this);
+        mjCatFreightOrigin.addActionListener(this);
         mjCatIodineValueRank.addActionListener(this);
         mjCatExternalWarehouses.addActionListener(this);
         mjCatUpdateCatalogues.addActionListener(this);
@@ -562,6 +576,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SU_TIC_DEST:
                 registry = new SDbTicketDestination();
                 break;
+            case SModConsts.SU_FREIGHT_ORIG:
+                registry = new SDbFreightOrigin();
+                break;
             case SModConsts.SX_SEAS_REG:
                 registry = new SDbSeason();
                 break;
@@ -610,6 +627,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.M_MVT:
                 registry = new SDbStockMovement();
                 break;
+            case SModConsts.SX_TIC_DIV_PROC:
+                registry = new SDbTicketDivisionProcess();
+                break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }
@@ -647,6 +667,11 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 settings = new SGuiCatalogueSettings("Destino del boleto", 1);
                 sql = "SELECT id_tic_dest AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " " 
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name, id_tic_dest ";
+                break;
+            case SModConsts.SU_FREIGHT_ORIG:
+                settings = new SGuiCatalogueSettings("Origen del flete", 1);
+                sql = "SELECT id_freight_orig AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " " 
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name, id_freight_orig ";
                 break;
             case SModConsts.SX_PROD_SEAS:
                 settings = new SGuiCatalogueSettings("Temporada", 1);
@@ -707,6 +732,23 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                         + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_REG) + " AS re ON s.id_reg = re.id_reg "
                         + "WHERE s.b_del = 0 AND s.b_dis = 0 AND s.id_seas = " + seasId + " AND s.id_item = " + itemId + " AND s.id_prod = " + prodId + " " 
                         + "ORDER BY re.name, s.id_seas, s.id_reg, s.id_item, s.id_prod ";
+                break;
+            case SModConsts.SX_TIC_FREIGHT:
+                int inputCt = 0;
+                Date date = new Date();
+                if (params != null) {
+                    inputCt = (int) params.getParamsMap().get(SModConsts.SU_INP_CT);
+                    date = (Date) params.getParamsMap().get(SModConsts.SX_TIC_DATE);
+                }
+                date = SLibTimeUtils.addDate(date, 0, -1, 0);
+                settings = new SGuiCatalogueSettings("Boleto del flete", 1);
+                sql = "SELECT t.id_tic AS " + SDbConsts.FIELD_ID + "1, t.num AS " + SDbConsts.FIELD_ITEM + " "
+                        + "FROM s_tic AS t "
+                        + "INNER JOIN su_item AS i ON t.fk_item = i.id_item "
+                        + "WHERE t.req_freight = '" + SModSysConsts.SX_REQ_FRE_YES + "' "
+                        + "AND t.freight_tic_tp = '" + SModSysConsts.SX_FREIGHT_TIC_TP_FRE + "' "
+                        + "AND i.fk_inp_ct = " + inputCt + " AND t.dt >= '" + SLibUtils.DbmsDateFormatDate.format(date) + "' "
+                        + "ORDER BY t.num DESC ";
                 break;
             case SModConsts.MS_MVT_CL:
                 settings = new SGuiCatalogueSettings("Clase de movimiento", 2);
@@ -794,6 +836,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.SU_TIC_DEST:
                 view = new SViewTicketDestination(miClient, "Destinos boletos");
+                break;
+            case SModConsts.SU_FREIGHT_ORIG:
+                view = new SViewFreightOrigin(miClient, "Origenes fletes");
                 break;
             case SModConsts.S_GRINDING_EVENT:
                 switch (subtype) {
@@ -1016,6 +1061,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 if (moFormTicketDestination == null) moFormTicketDestination = new SFormTicketDestination(miClient, "Destino del boleto");
                 form = moFormTicketDestination;
                 break;
+            case SModConsts.SU_FREIGHT_ORIG:
+                if (moFormFreightOrigin == null) moFormFreightOrigin = new SFormFreightOrigin(miClient, "Origen del flete");
+                form = moFormFreightOrigin;
+                break;
             case SModConsts.SX_SEAS_REG:
                 if (moFormDialogAssignSeasonRegion == null) moFormDialogAssignSeasonRegion = new SFormDialogAssignSeasonRegion(miClient, "Clasificar boletos sin temporada y/o región");
                 form = moFormDialogAssignSeasonRegion;
@@ -1088,6 +1137,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 if (moFormTicketMovements == null) moFormTicketMovements = new SFormWarehouseMovements(miClient, "Movimientos de almacén de MP");
                 moFormTicketMovements.setValue(SFormWarehouseMovements.GUI_PARAMS, params);
                 form = moFormTicketMovements;
+                break;
+            case SModConsts.SX_TIC_DIV_PROC:
+                if (moDialogTicketDivision == null) moDialogTicketDivision = new SDialogTicketDivisionProcess(miClient, "Division de boletos");
+                form = moDialogTicketDivision;
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -1199,6 +1252,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCatTicketDestination) {
                 showView(SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCatFreightOrigin) {
+                showView(SModConsts.SU_FREIGHT_ORIG, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjCatIodineValueRank) {
                 miClient.getSession().showView(SModConsts.SU_IOD_VAL_RANK, SLibConsts.UNDEFINED, null);

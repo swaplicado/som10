@@ -521,7 +521,7 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
                 SGridColumnForm[] columns = new SGridColumnForm[26];
 
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "Báscula");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_RAW, "Boleto");
+                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT, "Boleto", 75);
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DATE, SGridConsts.COL_TITLE_DATE + " boleto");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_BPR_S, "Proveedor");
                 columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "Proveedor código");
@@ -869,7 +869,7 @@ public class SFormDialogWizardDps extends SBeanFormDialog implements ActionListe
 
                         ticket.read(miClient.getSession(), new int[] { wizardDpsTicketSupply.getPkTicketId() });
 
-                        if (miClient.showMsgBoxConfirm("Se cerrará para surtido el boleto '" + wizardDpsTicketSupply.getTicket() + "'. \n" +
+                        if (miClient.showMsgBoxConfirm("Se cerrará para surtido el boleto '" + wizardDpsTicketSupply.getNum() + "'. \n" +
                             SGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION) {
                             ticket.setFkUserAssortedId(miClient.getSession().getUser().getPkUserId());
                             ticket.saveField(miClient.getSession().getStatement(), new int[] { wizardDpsTicketSupply.getPkTicketId() }, SDbTicket.FIELD_ASSORTED, true);

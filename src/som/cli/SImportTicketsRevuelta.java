@@ -138,7 +138,7 @@ public class SImportTicketsRevuelta {
 
         while (rstRev.next()) {
             id = rstRev.getInt("Pes_ID");
-            rstSoom = stmSoom.executeQuery("SELECT num FROM som_com.s_tic s WHERE num = " + id);
+            rstSoom = stmSoom.executeQuery("SELECT num FROM som_com.s_tic s WHERE num = '" + id + "'");
             now = SLibUtils.DateFormatDatetime.format(rstRev.getDate("now"));
             if (!rstSoom.next()) {
                 idItem = SSomUtils.mapItemSomRevuelta(moSession, rstRev.getString("Pro_ID"));
@@ -153,7 +153,7 @@ public class SImportTicketsRevuelta {
                     
                     SDbTicket registry = new SDbTicket();
                     //registry.setPkTicketId(rstSoom.getInt("newId"));
-                    registry.setNumber(rstRev.getInt("Pes_ID"));
+                    registry.setNumber(rstRev.getString("Pes_ID"));
                     registry.setDate(rstRev.getDate("Pes_FecHorPri"));
                     //registry.setQuantity(Quantity());
                     registry.setPlate(rstRev.getString("Pes_Placas"));

@@ -119,7 +119,7 @@ public class SDbScale extends SDbRegistryUser {
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         mnPkScaleId = 0;
 
@@ -132,7 +132,7 @@ public class SDbScale extends SDbRegistryUser {
 
     @Override
     public void read(SGuiSession session, int[] pk) throws SQLException, Exception {
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         initRegistry();
         initQueryMembers();

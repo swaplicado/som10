@@ -140,7 +140,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldInteger" name="moTextTicket">
+                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextTicket">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                   </Properties>

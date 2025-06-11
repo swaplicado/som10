@@ -88,7 +88,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moBoolTared = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel4 = new javax.swing.JPanel();
         jlTicket = new javax.swing.JLabel();
-        moIntTicket = new sa.lib.gui.bean.SBeanFieldInteger();
+        moTextTicket = new sa.lib.gui.bean.SBeanFieldText();
         jlDummy = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jlProducer = new javax.swing.JLabel();
@@ -204,7 +204,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jlTicket.setText("Boleto:*");
         jlTicket.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel4.add(jlTicket);
-        jPanel4.add(moIntTicket);
+        jPanel4.add(moTextTicket);
 
         jlDummy.setPreferredSize(new java.awt.Dimension(25, 23));
         jPanel4.add(jlDummy);
@@ -550,7 +550,6 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightDestinyArrival;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightDestinyDeparture;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightSource;
-    private sa.lib.gui.bean.SBeanFieldInteger moIntTicket;
     private sa.lib.gui.bean.SBeanFieldKey moKeyInputSource;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
     private sa.lib.gui.bean.SBeanFieldKey moKeyProducer;
@@ -563,13 +562,14 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private sa.lib.gui.bean.SBeanFieldText moTextPlates;
     private sa.lib.gui.bean.SBeanFieldText moTextPlatesCage;
     private sa.lib.gui.bean.SBeanFieldText moTextScale;
+    private sa.lib.gui.bean.SBeanFieldText moTextTicket;
     // End of variables declaration//GEN-END:variables
 
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 1040, 650);
         
         moKeyScale.setKeySettings(miClient, SGuiUtils.getLabelName(jlScale.getText()), true);
-        moIntTicket.setIntegerSettings(SGuiUtils.getLabelName(jlTicket.getText()), SGuiConsts.GUI_TYPE_INT_RAW, true);
+        moTextTicket.setTextSettings(SGuiUtils.getLabelName(jlTicket), 10, 1);
         moKeyProducer.setKeySettings(miClient, SGuiUtils.getLabelName(jlProducer.getText()), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem.getText()), true);
         moKeyInputSource.setKeySettings(miClient, SGuiUtils.getLabelName(jlInputSource.getText()), true);
@@ -595,7 +595,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moTextNote2.setTextSettings(SGuiUtils.getLabelName(jlNote2.getText()), 500, 0);
         
         moFields.addField(moKeyScale);
-        moFields.addField(moIntTicket);
+        moFields.addField(moTextTicket);
         moFields.addField(moKeyProducer);
         moFields.addField(moKeyItem);
         moFields.addField(moKeyInputSource);
@@ -638,7 +638,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
     private void setEnabledFields() {
         moBoolTared.setEditable(false);
-        moIntTicket.setEditable(true);
+        moTextTicket.setEditable(true);
         moKeyProducer.setEnabled(true);
         moKeyItem.setEnabled(true);
         moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
@@ -865,7 +865,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
         moKeyScale.setValue(new int[] { moRegistry.getFkScaleId() });
         moBoolTared.setValue(moRegistry.isTared());
-        moIntTicket.setValue(moRegistry.getNumber());
+        moTextTicket.setValue(moRegistry.getNumber());
         moKeyProducer.setValue(new int[] { moRegistry.getFkProducerId() });
         itemStateKeyProducer();
         moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
@@ -939,7 +939,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
         getSeasonRegion();
 
-        registry.setNumber(moIntTicket.getValue());
+        registry.setNumber(moTextTicket.getValue());
         registry.setDate(moDatetimeArrival.getValue());
         //registry.setQuantity(...); // seemingly unused
         registry.setPlate(moTextPlates.getValue());
@@ -988,6 +988,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         //registry.setUserFreight(...);
         //registry.setUserTotal_r(...);
         //registry.setDpsSupplyDate_n(...);
+        registry.setRequiredFreight("N");
         registry.setRevueltaImport1(mbIsRevImport1);
         registry.setRevueltaImport2(mbIsRevImport2);
         registry.setWeightSourceAvailable(moBoolWeightSourceAvailable.getValue());
