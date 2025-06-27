@@ -206,7 +206,7 @@ public abstract class SSomUtils {
 
         sql = "SELECT num " +
                 "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " " +
-                "WHERE fk_freight_tic_n = " + ticketId + " ";
+                "WHERE fk_freight_tic_n = " + ticketId + " AND NOT b_del";
 
         resultSet = session.getStatement().executeQuery(sql);
         while (resultSet.next()) {
