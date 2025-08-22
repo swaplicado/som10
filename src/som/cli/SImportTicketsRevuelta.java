@@ -44,11 +44,11 @@ import static som.mod.som.db.SSomUtils.getProperSeasonId;
  */
 public class SImportTicketsRevuelta {
     
-    public static int getLastImportedTicket() { return mnLastImportedTicket; }
-    public static void setLastImportedTicket(int lastId) { mnLastImportedTicket = lastId; }
+    public static String getLastImportedTicket() { return msLastImportedTicket; }
+    public static void setLastImportedTicket(String lastId) { msLastImportedTicket = lastId; }
     
     private static Connection moConnectionRev;
-    private static int mnLastImportedTicket;
+    private static String msLastImportedTicket;
     private static SGuiSession moSession;
     private static String msPlateCageLabels;
 
@@ -111,9 +111,9 @@ public class SImportTicketsRevuelta {
 
         deleteLog();
         
-        rstSoom = stmSoom.executeQuery("SELECT MAX(num) FROM som_com.s_tic s WHERE dt >= '2019-01-01'");
+        rstSoom = stmSoom.executeQuery("SELECT MAX(num) FROM som_com.s_tic s WHERE dt >= '2019-01-01' AND NOT b_del");
         rstSoom.next();
-        setLastImportedTicket(rstSoom.getInt(1));
+        setLastImportedTicket(rstSoom.getString(1));
         String sql = "SELECT "
                 + "Pes_ID, Pes_FecHorPri, Pes_ObsPri, Pes_PesoPri, Pes_Bruto, Pes_OpeNomPri, "
                 + "Pes_FecHorSeg, Pes_UnidadPri, Pes_PesoSeg, Pes_ObsSeg, Pes_OpeNomSeg, "
