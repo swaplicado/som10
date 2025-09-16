@@ -27,6 +27,9 @@ import som.mod.som.db.SSomMailUtils;
  */
 public class SReportHtmlTicketSeasonMonth {
     
+    public static final int MODE_UNIT_ITEM = 1;
+    public static final int MODE_UNIT_TON = 2;
+    
     private final SGuiSession moSession;
     
     public SReportHtmlTicketSeasonMonth(final SGuiSession session) {
@@ -42,10 +45,11 @@ public class SReportHtmlTicketSeasonMonth {
      * @param cutOff
      * @param ticOrig
      * @param ticDest
+     * @param mode a) Unit of item; b) metric tons.
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays, final Date today, final Date cutOff, final int ticOrig, final int ticDest) throws Exception {
+    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays, final Date today, final Date cutOff, final int ticOrig, final int ticDest, final int mode) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -169,6 +173,10 @@ public class SReportHtmlTicketSeasonMonth {
         int lastInputCategoryId = 0; // to control when a new input category stages, to stand it out as a new title
         
         for (int itemId : itemIds) {
+            // formatters:
+            DecimalFormat decimalFormatPct = mode == MODE_UNIT_TON ? new DecimalFormat("#0%") : new DecimalFormat("#0.0%");
+            DecimalFormat decimalFormatVal = mode == MODE_UNIT_TON ? SLibUtils.DecimalFormatInteger : SLibUtils.getDecimalFormatAmount();
+            
             // read requested item for report:
             SDbItem item = new SDbItem();
             item.read(moSession, new int[] { itemId }); // read this way due to session is moduleless
@@ -209,7 +217,7 @@ public class SReportHtmlTicketSeasonMonth {
             // HTML heading 3 (item subtitle):
             
             String name = SCliReportMailer.ItemDescriptions.get(itemId);
-            html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (acumulado en " + unit.getCode() + ")") + "</h4>\n";
+            html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (acumulado en " + (mode == MODE_UNIT_TON ? "ton" : unit.getCode()) + ")") + "</h4>\n";
 
             // obtain report data:
 
@@ -228,8 +236,10 @@ public class SReportHtmlTicketSeasonMonth {
             
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
+                double value = resultSet.getDouble(1) / (mode == MODE_UNIT_TON ? 1000 : 1);
+                
                 html += "<p>" + SLibUtils.textToHtml("Recepción " + (intvlDays == 1 ? "último día" : "últimos " + intvlDays + " días") + ": " + 
-                        SLibUtils.getDecimalFormatAmount().format(resultSet.getDouble(1)) + " " + unit.getCode()) + "</p>\n";
+                        decimalFormatVal.format(value) + " " + (mode == MODE_UNIT_TON ? "ton" : unit.getCode())) + "</p>\n";
             }
 
             // monthly weights, begining from first year or season backwards:
@@ -269,7 +279,7 @@ public class SReportHtmlTicketSeasonMonth {
 
                         resultSet = preparedStatement.executeQuery();
                         if (resultSet.next()) {
-                            double value = resultSet.getDouble(1);
+                            double value = resultSet.getDouble(1) / (mode == MODE_UNIT_TON ? 1000 : 1);
                             tableTotals[col] += value;
                             tableValues[col][row] = value;
                             
@@ -319,15 +329,13 @@ public class SReportHtmlTicketSeasonMonth {
 
             html += "<tr>";
             for (int col = 0; col < headerCols.size(); col++) {
-                html += "<th" + (col == 0 ? "" : " colspan='2'") + ">&nbsp&nbsp&nbsp " + headerCols.get(col) + " &nbsp&nbsp&nbsp</th>";
+                html += "<th" + (col == 0 ? "" : " colspan='2'") + ">&nbsp;&nbsp;&nbsp; " + headerCols.get(col) + " &nbsp;&nbsp;&nbsp;</th>";
             }
             html += "</tr>\n";
-
 
             // table body:
 
             String[] months = SLibTimeUtils.createMonthsOfYearStd(Calendar.SHORT); // month names for first column
-            DecimalFormat decimalFormatPct = new DecimalFormat("#0.0%");
 
             month = item.getStartingSeasonMonth();
 
@@ -338,7 +346,7 @@ public class SReportHtmlTicketSeasonMonth {
 
                 for (int col = 0; col < tableTotals.length; col++) {
                     boolean isMax = maxValues.get(col) == row;
-                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + SLibUtils.getDecimalFormatAmount().format(tableValues[col][row]) + "</td>";
+                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableValues[col][row]) + "</td>";
                     html += "<td class='coldatapct" + (isMax ? "max" : "") + "'>" + decimalFormatPct.format(tableTotals[col] == 0 ? 0 : tableValues[col][row] / tableTotals[col]) + "</td>";
                 }
 
@@ -354,19 +362,19 @@ public class SReportHtmlTicketSeasonMonth {
             html += "<tr>";
             html += "<td class='colmonthtotal'><b>Temporada</b></td>";
             for (int col = 0; col < tableTotals.length; col++) {
-                html += "<td class='coldatatotal'><b>" + SLibUtils.getDecimalFormatAmount().format(tableTotals[col]) + "</b></td>";
+                html += "<td class='coldatatotal'><b>" + decimalFormatVal.format(tableTotals[col]) + "</b></td>";
                 html += "<td class='coldatapcttotal'><b>" + decimalFormatPct.format(1) + "</b></td>";
             }
             html += "</tr>\n";
             
             html += "<tr>";
-            html += "<td>&nbsp</td>";
+            html += "<td>&nbsp;</td>";
             html += "</tr>\n";
             
             html += "<tr>";
             html += "<td class='colmonthaccum'>Acum. a " + months[todayMonth - 1] + ".</td>";
             for (int col = 0; col < tableAccumulated.length; col++) {
-                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : SLibUtils.getDecimalFormatAmount().format(tableAccumulated[col])) + "</td>";
+                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : decimalFormatVal.format(tableAccumulated[col])) + "</td>";
                 html += "<td class='coldatapctaccum'>" + (col == 0 ? "N/A" : decimalFormatPct.format(tableTotals[col] == 0 ? 0 : tableAccumulated[col] / tableTotals[col])) + "</td>";
             }
             html += "</tr>\n";

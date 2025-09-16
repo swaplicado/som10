@@ -25,8 +25,9 @@ import sa.lib.xml.SXmlUtils;
 import som.mod.SModSysConsts;
 
 /**
+ * Histórico mensual recepción báscula alternativo.
  * Report mailer for monthly reception at scale.
- * @author Sergio Flores, Isabel Servín
+ * @author Sergio Flores, Isabel Servín, Sergio Flores
  */
 public class SCliReportMailerAlternative {
     
@@ -60,9 +61,10 @@ public class SCliReportMailerAlternative {
     private static final int DEF_YEAR_REF = 2010; // año/temporada tope hacia atrás
     //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
-    //private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
-    private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
+    private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
+    //private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "gortiz@aeth.mx;sflores@swaplicado.com.mx";
+    private static final String DEF_MAIL_BCC = "sflores.swaplicado@gmail.com";
 
     /**
      * @param args the command line arguments
@@ -128,6 +130,7 @@ public class SCliReportMailerAlternative {
             
             // generate mail body:
 
+            
             SReportHtmlTicketSeasonMonthAlternative reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonthAlternative(session);
             String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(itemIds, yearRef, intvlDays, SModSysConsts.SU_TIC_ORIG_PRV, 0);
             

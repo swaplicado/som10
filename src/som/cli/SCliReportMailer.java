@@ -25,7 +25,7 @@ import sa.lib.xml.SXmlUtils;
 import som.mod.SModSysConsts;
 
 /**
- * Histórico mensual recepción báscula
+ * Histórico mensual recepción báscula.
  * Report mailer for monthly reception at scale.
  * @author Sergio Flores
  */
@@ -62,8 +62,11 @@ public class SCliReportMailer {
     //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
     //private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
-    private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
+    //private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
+    private static final String DEF_MAIL_TO = "gortiz@aeth.mx";
     //private static final String DEF_MAIL_TO = "gortiz@aeth.mx;sflores@swaplicado.com.mx";
+    private static final String DEF_MAIL_BCC = "sflores@swaplicado.com.mx";
+    //private static final String DEF_MAIL_BCC = "sflores.swaplicado@gmail.com";
 
     /**
      * @param args the command line arguments
@@ -82,7 +85,7 @@ public class SCliReportMailer {
             int artYearBase = DEF_YEAR_BASE;
             int argIntvlDays = DEF_INTVL_DAYS;
             String argMailTo = DEF_MAIL_TO;
-            String argMailBcc = DEF_MAIL_TO;
+            String argMailBcc = DEF_MAIL_BCC;
             
             if (args.length >= 1) {
                 argItemIds = SLibUtils.textExplodeAsIntArray(args[ARG_IDX_ITEM_IDS], ";");
@@ -131,7 +134,7 @@ public class SCliReportMailer {
 
             Date today = new Date();
             SReportHtmlTicketSeasonMonth reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonth(session);
-            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(argItemIds, artYearBase, argIntvlDays, today, null, SModSysConsts.SU_TIC_ORIG_PRV, 0);
+            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(argItemIds, artYearBase, argIntvlDays, today, null, SModSysConsts.SU_TIC_ORIG_PRV, 0, SReportHtmlTicketSeasonMonth.MODE_UNIT_TON);
             
             // generate mail subject:
             

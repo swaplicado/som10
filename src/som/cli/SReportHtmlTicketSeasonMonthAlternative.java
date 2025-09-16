@@ -23,7 +23,7 @@ import som.mod.som.db.SSomMailUtils;
 
 /**
  *
- * @author Sergio Flores, Isabel Servín
+ * @author Sergio Flores, Isabel Servín, Sergio Flores
  */
 public class SReportHtmlTicketSeasonMonthAlternative {
     
@@ -348,7 +348,7 @@ public class SReportHtmlTicketSeasonMonthAlternative {
 
             html += "<tr>";
             for (int col = 0; col < headerCols.size(); col++) {
-                html += "<th" + (col == 0 ? "" : " colspan='4'") + ">&nbsp&nbsp&nbsp " + headerCols.get(col) + " &nbsp&nbsp&nbsp</th>";
+                html += "<th" + (col == 0 ? "" : " colspan='4'") + ">&nbsp;&nbsp;&nbsp; " + headerCols.get(col) + " &nbsp;&nbsp;&nbsp;</th>";
             }
             html += "</tr>\n";
             
@@ -399,7 +399,7 @@ public class SReportHtmlTicketSeasonMonthAlternative {
             html += "</tr>\n";
             
             html += "<tr>";
-            html += "<td>&nbsp</td>";
+            html += "<td>&nbsp;</td>";
             html += "</tr>\n";
             
             html += "<tr>";
