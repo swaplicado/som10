@@ -95,6 +95,7 @@ public class SReportHtmlTicketSeasonMonth {
                 + " text-align: center;"
                 + " background-color: #008080;"
                 + " color: white;"
+                + " word-break: keep-all;"
                 + "} "
                 + "td {"
                 + " padding: 2px;"
@@ -329,7 +330,16 @@ public class SReportHtmlTicketSeasonMonth {
 
             html += "<tr>";
             for (int col = 0; col < headerCols.size(); col++) {
-                html += "<th" + (col == 0 ? "" : " colspan='2'") + ">&nbsp;&nbsp;&nbsp; " + headerCols.get(col) + " &nbsp;&nbsp;&nbsp;</th>";
+                String spaces;
+                
+                if (mode == MODE_UNIT_TON) {
+                    spaces = "&nbsp;&nbsp;";
+                }
+                else {
+                    spaces = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                }
+                
+                html += "<th" + (col == 0 ? "" : " colspan='2'") + ">" + spaces + headerCols.get(col) + spaces + "</th>";
             }
             html += "</tr>\n";
 
@@ -382,7 +392,6 @@ public class SReportHtmlTicketSeasonMonth {
             html += "</table>\n";
             html += "<br>\n";
         }
-        
         
         html += SSomMailUtils.composeSomMailWarning();
         

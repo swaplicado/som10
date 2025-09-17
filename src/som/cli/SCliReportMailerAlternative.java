@@ -63,7 +63,9 @@ public class SCliReportMailerAlternative {
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
     private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
+    //private static final String DEF_MAIL_TO = "gortiz@aeth.mx";
     //private static final String DEF_MAIL_TO = "gortiz@aeth.mx;sflores@swaplicado.com.mx";
+    //private static final String DEF_MAIL_BCC = "sflores@swaplicado.com.mx";
     private static final String DEF_MAIL_BCC = "sflores.swaplicado@gmail.com";
 
     /**
@@ -83,7 +85,7 @@ public class SCliReportMailerAlternative {
             int yearRef = DEF_YEAR_REF;
             int intvlDays = DEF_INTVL_DAYS;
             String mailTo = DEF_MAIL_TO;
-            String mailBcc = DEF_MAIL_TO;
+            String mailBcc = DEF_MAIL_BCC;
             
             if (args.length >= 1) {
                 itemIds = args[ARG_IDX_ITEM_IDS].split(";");
@@ -130,9 +132,9 @@ public class SCliReportMailerAlternative {
             
             // generate mail body:
 
-            
+            Date today = new Date();
             SReportHtmlTicketSeasonMonthAlternative reportHtmlTicketSeasonMonth = new SReportHtmlTicketSeasonMonthAlternative(session);
-            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(itemIds, yearRef, intvlDays, SModSysConsts.SU_TIC_ORIG_PRV, 0);
+            String mailBody = reportHtmlTicketSeasonMonth.generateReportHtml(itemIds, yearRef, intvlDays, today, SModSysConsts.SU_TIC_ORIG_PRV, 0, SReportHtmlTicketSeasonMonthAlternative.MODE_UNIT_TON);
             
             // generate mail subject:
             

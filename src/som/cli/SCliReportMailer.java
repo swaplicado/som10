@@ -61,12 +61,12 @@ public class SCliReportMailer {
     private static final int DEF_YEAR_BASE = 2010; // año/temporada tope hacia atrás
     //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
-    //private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
+    private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
-    private static final String DEF_MAIL_TO = "gortiz@aeth.mx";
+    //private static final String DEF_MAIL_TO = "gortiz@aeth.mx";
     //private static final String DEF_MAIL_TO = "gortiz@aeth.mx;sflores@swaplicado.com.mx";
-    private static final String DEF_MAIL_BCC = "sflores@swaplicado.com.mx";
-    //private static final String DEF_MAIL_BCC = "sflores.swaplicado@gmail.com";
+    //private static final String DEF_MAIL_BCC = "sflores@swaplicado.com.mx";
+    private static final String DEF_MAIL_BCC = "sflores.swaplicado@gmail.com";
 
     /**
      * @param args the command line arguments

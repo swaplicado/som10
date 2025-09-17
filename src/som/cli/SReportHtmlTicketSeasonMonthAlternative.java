@@ -27,6 +27,9 @@ import som.mod.som.db.SSomMailUtils;
  */
 public class SReportHtmlTicketSeasonMonthAlternative {
     
+    public static final int MODE_UNIT_ITEM = 1;
+    public static final int MODE_UNIT_TON = 2;
+    
     private final SGuiSession moSession;
     
     public SReportHtmlTicketSeasonMonthAlternative(final SGuiSession session) {
@@ -38,12 +41,14 @@ public class SReportHtmlTicketSeasonMonthAlternative {
      * @param itemIds List of ID of items.
      * @param yearRef Year reference. Can be one out of two elegible types of values: 1) if it is a 4-digit year and greater or equal than 2001, it is the year to start from; otherwise 2) it is the number of history years besides current year.
      * @param intvlDays Interval days for invocation of this report mailer.
+     * @param today Today date.
      * @param ticOrig
      * @param ticDest
+     * @param mode a) Unit of item; b) metric tons.
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final String[] itemIds, final int yearRef, final int intvlDays, final int ticOrig, final int ticDest) throws Exception {
+    public String generateReportHtml(final String[] itemIds, final int yearRef, final int intvlDays, final Date today, final int ticOrig, final int ticDest, final int mode) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -89,6 +94,7 @@ public class SReportHtmlTicketSeasonMonthAlternative {
                 + " text-align: center;"
                 + " background-color: #008080;"
                 + " color: white;"
+                + " word-break: keep-all;"
                 + "} "
                 + "td {"
                 + " padding: 2px;"
@@ -153,7 +159,6 @@ public class SReportHtmlTicketSeasonMonthAlternative {
         
         // define start and end date for report:
         
-        Date today = new Date();
         int[] todayDigestion = SLibTimeUtils.digestDate(today);
         int todayYear = todayDigestion[0];
         int todayMonth = todayDigestion[1];
@@ -168,6 +173,10 @@ public class SReportHtmlTicketSeasonMonthAlternative {
         int lastInputCategoryId = 0; // to control when a new input category stages, to stand it out as a new title
         
         for (String itemId : itemIds) {
+            // formatters:
+            DecimalFormat decimalFormatPct = mode == MODE_UNIT_TON ? new DecimalFormat("#0%") : new DecimalFormat("#0.0%");
+            DecimalFormat decimalFormatVal = mode == MODE_UNIT_TON ? SLibUtils.DecimalFormatInteger : SLibUtils.getDecimalFormatAmount();
+            
             // read requested item for report:
             String[] ids = itemId.split("-");
             int convId = SLibUtils.parseInt(ids[0]);
@@ -214,7 +223,7 @@ public class SReportHtmlTicketSeasonMonthAlternative {
             // HTML heading 3 (item subtitle):
             
             String name = SCliReportMailer.ItemDescriptions.get(convId);
-            html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (acumulado en " + unit.getCode() + ")") + "</h4>\n";
+            html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (acumulado en " + (mode == MODE_UNIT_TON ? "ton" : unit.getCode()) + ")") + "</h4>\n";
 
             // obtain report data:
 
@@ -222,7 +231,8 @@ public class SReportHtmlTicketSeasonMonthAlternative {
             sql = "SELECT " 
                     + "SUM(IF(b_alt = 0, wei_des_net_r, 0)) AS _tic, " 
                     + "SUM(IF(b_alt = 1, wei_des_net_r, 0)) AS _alt, " 
-                    + "SUM(wei_des_net_r) _tot FROM( " 
+                    + "SUM(wei_des_net_r) _tot "
+                    + "FROM ( " 
                     + "SELECT *, dt fecha FROM s_tic "
                     + "WHERE NOT b_alt AND fk_item = " + convId + " " 
                     + "UNION " 
@@ -233,13 +243,6 @@ public class SReportHtmlTicketSeasonMonthAlternative {
                     + (ticOrig == 0 ? "" : "AND fk_tic_orig = " + ticOrig + " ")
                     + (ticDest == 0 ? "" : "AND fk_tic_dest = " + ticDest + " ")
                     + " AND fecha BETWEEN ? AND ?";
-            
-//            String sqlTotal = "SELECT SUM(wei_des_net_r) "
-//                    + "FROM s_tic "
-//                    + "WHERE NOT b_del AND b_tar AND fk_item = " + itemId + " "
-//                    + (ticOrig == 0 ? "" : "AND fk_tic_orig = " + ticOrig + " ")
-//                    + (ticDest == 0 ? "" : "AND fk_tic_dest = " + ticDest + " ")
-//                    + " AND dt BETWEEN ? AND ?";
             PreparedStatement statementTotal = moSession.getStatement().getConnection().prepareStatement(sql);
             
             // reception during last interval days:
@@ -249,8 +252,10 @@ public class SReportHtmlTicketSeasonMonthAlternative {
             
             resultSet = statementTotal.executeQuery();
             if (resultSet.next()) {
+                double value = resultSet.getDouble(1) / (mode == MODE_UNIT_TON ? 1000 : 1);
+                
                 html += "<p>" + SLibUtils.textToHtml("Recepción " + (intvlDays == 1 ? "último día" : "últimos " + intvlDays + " días") + ": " + 
-                        SLibUtils.getDecimalFormatAmount().format(resultSet.getDouble(1)) + " " + unit.getCode()) + "</p>\n";
+                        decimalFormatVal.format(value) + " " + (mode == MODE_UNIT_TON ? "ton" : unit.getCode())) + "</p>\n";
             }
 
             // monthly weights, begining from first year or season backwards:
@@ -286,8 +291,7 @@ public class SReportHtmlTicketSeasonMonthAlternative {
                     
                     resultSet = statementTotal.executeQuery();
                     if (resultSet.next()) {
-                        
-                        double value = resultSet.getDouble(1);
+                        double value = resultSet.getDouble(1) / (mode == MODE_UNIT_TON ? 1000 : 1);
                         tableTotalTic[col] += value;
                         tableValuesTic[col][row] = value;
                         
@@ -300,7 +304,7 @@ public class SReportHtmlTicketSeasonMonthAlternative {
                             maxValuesTic.put(col, row);
                         }
                         
-                        value = resultSet.getDouble(2);
+                        value = resultSet.getDouble(2) / (mode == MODE_UNIT_TON ? 1000 : 1);
                         tableTotalAlt[col] += value;
                         tableValuesAlt[col][row] = value;
                         
@@ -313,7 +317,7 @@ public class SReportHtmlTicketSeasonMonthAlternative {
                             maxValuesAlt.put(col, row);
                         }
                         
-                        value = resultSet.getDouble(3);
+                        value = resultSet.getDouble(3) / (mode == MODE_UNIT_TON ? 1000 : 1);
                         tableTotals[col] += value;
                         tableValuesTotals[col][row] = value;
 
@@ -348,21 +352,31 @@ public class SReportHtmlTicketSeasonMonthAlternative {
 
             html += "<tr>";
             for (int col = 0; col < headerCols.size(); col++) {
-                html += "<th" + (col == 0 ? "" : " colspan='4'") + ">&nbsp;&nbsp;&nbsp; " + headerCols.get(col) + " &nbsp;&nbsp;&nbsp;</th>";
+                String spaces;
+                
+                if (mode == MODE_UNIT_TON) {
+                    spaces = "&nbsp;&nbsp;";
+                }
+                else {
+                    spaces = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                }
+                
+                html += "<th" + (col == 0 ? "" : " colspan='4'") + ">" + spaces + headerCols.get(col) + spaces + "</th>";
             }
             html += "</tr>\n";
             
             html += "<tr><td></td>";
             for (int col = 0; col < headerCols.size() - 1; col++) {
-                html += "<td align='center'>Convencional</td><td align='center'>"+SLibUtils.textToHtml("Orgánico")+"</td><td align='center'>Total</td><td align='center'>%</td>";
+                html += "<td align='center'>&nbsp;" + SLibUtils.textToHtml("Convenc.") + "&nbsp;</td>"
+                        + "<td align='center'>&nbsp;" + SLibUtils.textToHtml("Orgánico") + "&nbsp;</td>"
+                        + "<td align='center'>&nbsp;" + SLibUtils.textToHtml("Total") + "&nbsp;</td>"
+                        + "<td align='center'>&nbsp;" + SLibUtils.textToHtml("%") + "&nbsp;</td>";
             }
             html += "</tr>\n";
-
 
             // table body:
 
             String[] months = SLibTimeUtils.createMonthsOfYearStd(Calendar.SHORT); // month names for first column
-            DecimalFormat decimalFormatPct = new DecimalFormat("#0.0%");
 
             month = item.getStartingSeasonMonth();
 
@@ -373,9 +387,9 @@ public class SReportHtmlTicketSeasonMonthAlternative {
 
                 for (int col = 0; col < tableTotals.length; col++) {
                     boolean isMax = maxValuesTot.get(col) == row;
-                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + SLibUtils.getDecimalFormatAmount().format(tableValuesTic[col][row]) + "</td>";
-                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + SLibUtils.getDecimalFormatAmount().format(tableValuesAlt[col][row]) + "</td>";
-                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + SLibUtils.getDecimalFormatAmount().format(tableValuesTotals[col][row]) + "</td>";
+                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableValuesTic[col][row]) + "</td>";
+                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableValuesAlt[col][row]) + "</td>";
+                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableValuesTotals[col][row]) + "</td>";
                     html += "<td class='coldatapct" + (isMax ? "max" : "") + "'>" + decimalFormatPct.format(tableTotals[col] == 0 ? 0 : tableValuesTotals[col][row] / tableTotals[col]) + "</td>";
                 }
 
@@ -391,9 +405,9 @@ public class SReportHtmlTicketSeasonMonthAlternative {
             html += "<tr>";
             html += "<td class='colmonthtotal'><b>Temporada</b></td>";
             for (int col = 0; col < tableTotals.length; col++) {
-                html += "<td class='coldatatotal'><b>" + SLibUtils.getDecimalFormatAmount().format(tableTotalTic[col]) + "</b></td>";
-                html += "<td class='coldatatotal'><b>" + SLibUtils.getDecimalFormatAmount().format(tableTotalAlt[col]) + "</b></td>";
-                html += "<td class='coldatatotal'><b>" + SLibUtils.getDecimalFormatAmount().format(tableTotals[col]) + "</b></td>";
+                html += "<td class='coldatatotal'><b>" + decimalFormatVal.format(tableTotalTic[col]) + "</b></td>";
+                html += "<td class='coldatatotal'><b>" + decimalFormatVal.format(tableTotalAlt[col]) + "</b></td>";
+                html += "<td class='coldatatotal'><b>" + decimalFormatVal.format(tableTotals[col]) + "</b></td>";
                 html += "<td class='coldatapcttotal'><b>" + decimalFormatPct.format(1) + "</b></td>";
             }
             html += "</tr>\n";
@@ -405,9 +419,9 @@ public class SReportHtmlTicketSeasonMonthAlternative {
             html += "<tr>";
             html += "<td class='colmonthaccum'>Acum. a " + months[todayMonth - 1] + ".</td>";
             for (int col = 0; col < tableAccumulated.length; col++) {
-                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : SLibUtils.getDecimalFormatAmount().format(tableAccumulated[col])) + "</td>";
-                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : SLibUtils.getDecimalFormatAmount().format(tableAccumulatedAlt[col])) + "</td>";
-                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : SLibUtils.getDecimalFormatAmount().format(tableAccumulated[col] + tableAccumulatedAlt[col])) + "</td>";
+                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : decimalFormatVal.format(tableAccumulated[col])) + "</td>";
+                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : decimalFormatVal.format(tableAccumulatedAlt[col])) + "</td>";
+                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : decimalFormatVal.format(tableAccumulated[col] + tableAccumulatedAlt[col])) + "</td>";
                 html += "<td class='coldatapctaccum'>" + (col == 0 ? "N/A" : decimalFormatPct.format(tableTotals[col] == 0 ? 0 : (tableAccumulated[col] + tableAccumulatedAlt[col]) / tableTotals[col])) + "</td>";
             }
             html += "</tr>\n";
@@ -415,7 +429,6 @@ public class SReportHtmlTicketSeasonMonthAlternative {
             html += "</table>\n";
             html += "<br>\n";
         }
-        
         
         html += SSomMailUtils.composeSomAlternativeMailWarning();
         
