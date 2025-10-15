@@ -1,5 +1,6 @@
 package som.mod.som.data;
  
+import erp.SFileUtilities;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -101,9 +102,9 @@ public class SDailyStockReportWriter {
         SDailyStockReportWriter.write(sheetStock, 1, columnNames, allStock);
         
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Microsoft office Excel", "xlsx");
+        FileNameExtensionFilter filter = SFileUtilities.createFileNameExtensionFilter(SFileUtilities.XLSX);
         fileChooser.setFileFilter(filter);
-        fileChooser.setSelectedFile(new File("reporte" + (new Date()).getTime() + ".xlsx"));
+        fileChooser.setSelectedFile(new File("reporte" + (new Date()).getTime() + "." + SFileUtilities.XLSX));
 
         int iSelection = fileChooser.showSaveDialog(fileChooser);
 

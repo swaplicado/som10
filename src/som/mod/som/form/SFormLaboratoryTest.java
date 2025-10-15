@@ -139,12 +139,15 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         jPanel28 = new javax.swing.JPanel();
         jlFruitPulpHumidityPercentage = new javax.swing.JLabel();
         moDecFruitPulpHumidityPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jLabel2 = new javax.swing.JLabel();
         jPanel29 = new javax.swing.JPanel();
         jlFruitPulpOilPercentage = new javax.swing.JLabel();
         moDecFruitPulpOilPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jLabel3 = new javax.swing.JLabel();
         jPanel30 = new javax.swing.JPanel();
         jlFruitYieldAdjustmentPercentage = new javax.swing.JLabel();
         moDecFruitYieldAdjustmentPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jLabel1 = new javax.swing.JLabel();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout(5, 0));
@@ -380,6 +383,11 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         jPanel28.add(jlFruitPulpHumidityPercentage);
         jPanel28.add(moDecFruitPulpHumidityPercentage);
 
+        jLabel2.setForeground(java.awt.SystemColor.textInactiveText);
+        jLabel2.setText("(Determina % humedad: peso humedad pulpa /  peso fruta.)");
+        jLabel2.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel28.add(jLabel2);
+
         jPanel25.add(jPanel28);
 
         jPanel29.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -388,6 +396,11 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         jlFruitPulpOilPercentage.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel29.add(jlFruitPulpOilPercentage);
         jPanel29.add(moDecFruitPulpOilPercentage);
+
+        jLabel3.setForeground(java.awt.SystemColor.textInactiveText);
+        jLabel3.setText("(Determina % aceite: peso aceite pulpa /  peso fruta.)");
+        jLabel3.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel29.add(jLabel3);
 
         jPanel25.add(jPanel29);
 
@@ -398,6 +411,11 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         jPanel30.add(jlFruitYieldAdjustmentPercentage);
         jPanel30.add(moDecFruitYieldAdjustmentPercentage);
 
+        jLabel1.setForeground(java.awt.SystemColor.textInactiveText);
+        jLabel1.setText("(OJO: ¡No se usa en el cálculo, solo aparece en reportes!)");
+        jLabel1.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel30.add(jLabel1);
+
         jPanel25.add(jPanel30);
 
         jPanel21.add(jPanel25, java.awt.BorderLayout.NORTH);
@@ -407,6 +425,9 @@ public class SFormLaboratoryTest extends sa.lib.gui.bean.SBeanForm implements Ac
         getContentPane().add(jPanel7, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;

@@ -582,6 +582,17 @@
                     </Component>
                     <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecFruitPulpHumidityPercentage">
                     </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel2">
+                      <Properties>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="6d" green="6d" id="Text Inactive Text" palette="2" red="6d" type="palette"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="(Determina % humedad: peso humedad pulpa /  peso fruta.)"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[300, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel29">
@@ -601,6 +612,17 @@
                     </Component>
                     <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecFruitPulpOilPercentage">
                     </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel3">
+                      <Properties>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="6d" green="6d" id="Text Inactive Text" palette="2" red="6d" type="palette"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="(Determina % aceite: peso aceite pulpa /  peso fruta.)"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[300, 23]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel30">
@@ -619,6 +641,17 @@
                       </Properties>
                     </Component>
                     <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecFruitYieldAdjustmentPercentage">
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel1">
+                      <Properties>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="6d" green="6d" id="Text Inactive Text" palette="2" red="6d" type="palette"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="(OJO: &#xa1;No se usa en el c&#xe1;lculo, solo aparece en reportes!)"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[300, 23]"/>
+                        </Property>
+                      </Properties>
                     </Component>
                   </SubComponents>
                 </Container>
