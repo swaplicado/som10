@@ -102,9 +102,9 @@ public class SDailyStockReportWriter {
         SDailyStockReportWriter.write(sheetStock, 1, columnNames, allStock);
         
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = SFileUtilities.createFileNameExtensionFilter(SFileUtilities.XLSX);
+        FileNameExtensionFilter filter = SFileUtilities.createFileNameExtensionFilter(SFileUtilities.xlsx);
         fileChooser.setFileFilter(filter);
-        fileChooser.setSelectedFile(new File("reporte" + (new Date()).getTime() + "." + SFileUtilities.XLSX));
+        fileChooser.setSelectedFile(new File("reporte" + (new Date()).getTime() + "." + SFileUtilities.xlsx));
 
         int iSelection = fileChooser.showSaveDialog(fileChooser);
 
