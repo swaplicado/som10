@@ -12,9 +12,9 @@ import sa.lib.gui.SGuiSession;
 
 /**
  *
- * @author Isabel Servín
+ * @author Isabel Servín, Sergio Flores
  */
-public class SReportHtmlExistences {
+public class SReportHtmlStock {
 
     private static final int FONT_SIZE_TBL = 2;
     

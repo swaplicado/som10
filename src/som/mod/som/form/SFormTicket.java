@@ -50,7 +50,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín, Sergio Flores
  */
 public class SFormTicket extends SBeanForm implements ActionListener, ItemListener, FocusListener, ChangeListener {
 
@@ -1644,13 +1644,13 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
         if (mnFormSubtype == SModConsts.SX_TIC_TARE_PEND) {
             if (moItem.isAutoMailNotification()) {
-                registry.setAuxItemSendMail(true);
-                registry.setAuxItemRecipientsTo(moItem.getAutoMailNotificationBoxes());
+                registry.setAuxSendMailOnSaveForItems(true);
+                registry.setAuxMailRecipientsForItems(moItem.getAutoMailNotificationBoxes());
             }
             
             if (moProducer.isAutoMailNotification()) {
-                registry.setAuxProducerSendMail(true);
-                registry.setAuxProducerRecipientsTo(moProducer.getAutoMailNotificationBoxes());
+                registry.setAuxSendMailOnSaveForProducer(true);
+                registry.setAuxMailRecipientsForProducer(moProducer.getAutoMailNotificationBoxes());
             }
         }
 

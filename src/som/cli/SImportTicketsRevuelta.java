@@ -212,7 +212,7 @@ public class SImportTicketsRevuelta {
                     registry.setFkRegionId_n(getProperRegionId(moSession, seasonId, registry.getFkItemId(), registry.getFkProducerId()));
                     registry.setFkUnitId(dbItem.getFkUnitId());
                     
-                    HashMap originsMap = SSomUtils.getOrigin(moSession, idItem);
+                    HashMap<Integer, String> originsMap = SSomUtils.createOriginsMap(moSession, idItem);
                     registry.setFkInputSourceId((originsMap.containsKey(dbProducer.getFkInputSourceId()) ? dbProducer.getFkInputSourceId() : SModSysConsts.SU_INP_SRC_NA));
                     registry.setFkLaboratoryId_n(0);
                     registry.setFkTicketOriginId(SModSysConsts.SU_TIC_ORIG_NA);

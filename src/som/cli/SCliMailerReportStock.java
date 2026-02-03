@@ -16,19 +16,16 @@ import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbDatabase;
 import sa.lib.gui.SGuiSession;
-import sa.lib.mail.SMail;
-import sa.lib.mail.SMailConsts;
-import sa.lib.mail.SMailSender;
-import sa.lib.mail.SMailUtils;
 import sa.lib.xml.SXmlUtils;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.cfg.db.SDbCompany;
 
 /**
+ * CLI mailer of report of stock (in HTML format).
  *
- * @author Isabel Servín
+ * @author Isabel Servín, Sergio Flores
  */
-public class SCliReportMailerExistences {
+public class SCliMailerReportStock {
     
     private static SGuiSession moSession;
     
@@ -81,7 +78,7 @@ public class SCliReportMailerExistences {
             run(daysToSendMail, mailTo, mailBcc);
         }
         catch (Exception e) {
-            SLibUtils.printException(SCliReportMailerExistences.class.getName(), e);
+            SLibUtils.printException(SCliMailerReportStock.class.getName(), e);
         }
     }
     
@@ -99,29 +96,15 @@ public class SCliReportMailerExistences {
             date = resultSet.getDate(1);
         }
         
-        SReportHtmlExistences htmlExistences = new SReportHtmlExistences();
-        
-        String mailBody = htmlExistences.generateReportHtml(moSession, date);
+        SReportHtmlStock reportHtml = new SReportHtmlStock();
+        String mailBody = reportHtml.generateReportHtml(moSession, date);
 
-        // generate mail subject:
+        // send mail report:
 
         String mailSubject = "[SOM] Existencias al " + SLibUtils.DateFormatDate.format(date);
-
-        // prepare mail recepients:
-
         ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailTo, ";")));
         ArrayList<String> recipientsBcc = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(mailBcc, ";")));
 
-        // send mail:
-
-        SMailSender sender = new SMailSender("mail.tron.com.mx", "26", "smtp", false, true, "som@aeth.mx", "Aeth2021*s.", "som@aeth.mx");
-        //SMailSender sender = new SMailSender("mail.swaplicado.com.mx", "26", "smtp", false, true, "sflores@swaplicado.com.mx", "Ch3c0m4n", "sflores@swaplicado.com.mx");
-
-        SMail mail = new SMail(sender, SMailUtils.encodeSubjectUtf8(mailSubject), mailBody, recipientsTo);
-//        mail.getBccRecipients().addAll(recipientsBcc);
-        mail.setContentType(SMailConsts.CONT_TP_TEXT_HTML);
-        mail.send();
-
-        System.out.println("Mail send!");
+        SCliUtils.sendMailReport(mailSubject, mailBody, recipientsTo, recipientsBcc, null);
     }
 }

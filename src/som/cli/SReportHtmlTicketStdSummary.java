@@ -6,6 +6,7 @@
 package som.cli;
 
 import java.util.Date;
+import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiSession;
 import som.mod.som.db.SDbItem;
@@ -16,25 +17,25 @@ import som.mod.som.db.SSomUtils;
  *
  * @author Sergio Flores
  */
-public class SReportHtmlScaleSummary {
+public class SReportHtmlTicketStdSummary {
     
     private final SGuiSession moSession;
     
-    public SReportHtmlScaleSummary(final SGuiSession session) {
+    public SReportHtmlTicketStdSummary(final SGuiSession session) {
         moSession = session;
     }
     
     /**
      * Generates report in HTML 5 format.
-     * @param itemIds List of ID of items.
+     * @param itemIds Array of ID of items to report.
      * @param date Date.
-     * @param repType
-     * @param ticOrig
-     * @param ticDest
+     * @param reportMode Report mode (SCliMailerReportFruitsStdSummary.REP_MODE_...)
+     * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
+     * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final int[] itemIds, final Date date, int repType, final int ticOrig, final int ticDest) throws Exception {
+    public String generateReportHtml(final int[] itemIds, final Date date, int reportMode, final int ticketOrigin, final int ticketDestination) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -74,16 +75,19 @@ public class SReportHtmlScaleSummary {
                 + "table, th, td {"
                 + " border: 1px solid black;"
                 + " border-collapse: collapse;"
-                + " white-space: nowrap;"
                 + "} "
                 + "th {"
                 + " padding: 2px;"
                 + " text-align: center;"
                 + " background-color: DarkSlateGray;"
                 + " color: white;"
+                + " word-break: keep-all;"
+                + " white-space: nowrap;"
                 + "} "
                 + "td {"
                 + " padding: 2px;"
+                + " word-break: keep-all;"
+                + " white-space: nowrap;"
                 + "} "
                 + "td.colmonth {"
                 + " text-align: left;"
@@ -105,7 +109,8 @@ public class SReportHtmlScaleSummary {
                 + " font-size: 0.75em;"
                 + " font-family: sans-serif;"
                 + " background-color: PaleTurquoise;"
-                + "}\n"
+                + "}"
+                + "\n"
                 + "</style>\n";
         
         html += "</head>\n";
@@ -120,19 +125,34 @@ public class SReportHtmlScaleSummary {
         
         // HTML heading 1 (main title):
         
-        html += "<h2>" + SLibUtils.textToHtml("Resumen báscula " + SLibUtils.DateFormatDate.format(date)) + "</h2>\n";
-        html += "<p>" + SLibUtils.textToHtml("Fecha-hora emisión: " + SLibUtils.textToHtml(SLibUtils.DateFormatDatetime.format(now))) + "</p>\n";
+        html += "<h2>" + SLibUtils.textToHtml("Resumen de báscula: Recepción de fruta") + "</h2>\n";
+        
+        if (SLibTimeUtils.isSameDate(date, now)) {
+            html += "<p>" + SLibUtils.textToHtml("Fecha-hora de corte y emisión: " + SLibUtils.DateFormatDatetime.format(now) + ".") + "</p>\n";
+        }
+        else {
+            html += "<p>" + SLibUtils.textToHtml("Fecha de corte: " + SLibUtils.DateFormatDate.format(date) + ".") + "</p>\n";
+            html += "<p>" + SLibUtils.textToHtml("Fecha-hora de emisión: " + SLibUtils.DateFormatDatetime.format(now) + ".") + "</p>\n";
+        }
         
         // process list of items for report:
+        
+        boolean processingFirstItem = true;
 
         for (int itemId : itemIds) {
+            if (!processingFirstItem) {
+                html += "<hr>\n";
+            }
+            
             // read requested item for report:
             SDbItem item = new SDbItem();
             item.read(moSession, new int[] { itemId });
             
             // compose summary:
             html += "<h1>" + SLibUtils.textToHtml(item.getName()) + "</h1>\n";
-            html += SSomUtils.composeHtmlSummaryItem(moSession, itemId, date, repType, ticOrig, ticDest);
+            html += SSomUtils.composeHtmlSummaryItem(moSession, itemId, SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, date, reportMode, ticketOrigin, ticketDestination);
+            
+            processingFirstItem = false;
         }
         
         html += SSomMailUtils.composeSomMailWarning();

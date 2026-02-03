@@ -1,4 +1,18 @@
 ================================================================================
+2026-02-03, 1.0 095.5
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Refactorización y estandarización de nombres de clases de reporteadores mail y generadores de contenido HTML SOM:
+- SOM: Histórico mensual báscula fruta;
+- SOM: Histórico mensual báscula fruta Excel;
+- SOM: Resumen báscula fruta;
+- SOM ORG.: Histórico mensual báscula fruta;
+- SOM ORG.: Resumen báscula fruta.
+2) Control de períodos mensuales en reportes mail para fruta (aguacate e insumos relacionados) en base a:
+- primer día de mes (19, i.e., 18 como día de corte mensual); y
+- primer mes de temporada (julio).
+
+================================================================================
 2025-09-17, 1.0 095.4
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

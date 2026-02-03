@@ -23,7 +23,8 @@ import sa.lib.SLibTimeConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiSession;
-import som.cli.SCliReportMailerSummary;
+import som.cli.SCliConsts;
+import som.cli.SCliMailerReportFruitsStdSummary;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
@@ -32,13 +33,15 @@ import som.mod.cfg.db.SDbCompany;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín, Sergio Flores
  */
 public abstract class SSomUtils {
     
-    protected static DecimalFormat moDecimalFormatNegativeValue2D = new DecimalFormat("#,##0.00;(#,##0.00)");
-    
-    public static double LAGGING_PERCENTAGE = 0.15;
+    private static final int IDX_CNV = 0;
+    private static final int IDX_ALT = 1;
+    private static final int IDX_TOT = 2;
+    private static final double LAGGING_PERCENTAGE = 0.15;
+    private static final DecimalFormat moDecimalFormatNegativeValue2D = new DecimalFormat("#,##0.00;(#,##0.00)");
     
     /**
      * Gets proper season for ticket defined by date, item and producer.
@@ -67,7 +70,7 @@ public abstract class SSomUtils {
 
         return  seasonId;
     }
-
+    
     /**
      * Gets proper region for ticket difined by season, item and producer.
      * @param session Current GUI session.
@@ -93,7 +96,7 @@ public abstract class SSomUtils {
 
         return regionId;
     }
-
+    
     /**
      * Gets unit ID for external unit ID.
      * @param session Current GUI session.
@@ -117,7 +120,7 @@ public abstract class SSomUtils {
 
         return unitId;
     }
-
+    
     /**
      * Validates if ticket number already exists.
      * @param session Current GUI session.
@@ -510,6 +513,7 @@ public abstract class SSomUtils {
      * @param stockMoveKey int[].
      * @param date Date.
      * @param absolute boolean.
+     * @param skipWaste
      * @return SSomStock
      */
     public static SSomStock obtainStock(SGuiSession session, final int yearId, final int itemId, final int unitId, final int itemTypeId,
@@ -583,36 +587,6 @@ public abstract class SSomUtils {
         }
         return reqFreight;
     }
-
-    /**
-     * Validate stock to specific date and the end year date
-     * @param session Current GUI session.
-     * @param nYearId int,
-     * @param nItemId int,
-     * @param nUnitId int,
-     * @param nItemTypeId int,
-     * @param anWarehouseId int[],
-     * @param date Date
-     * @param dQuantity double
-     * @return SSomStock
-     */
-    /* Check if this function is still needed (Sergio Flores 2015-10-12).
-    public static SSomStock validateStock(SGuiSession session, final int nYearId, final int nItemId, final int nUnitId, final int nItemTypeId,
-            final int[] anWarehouseId, final int nDivisionId, final Date date, final double dQuantity) {
-
-        return validateStock(
-                session,
-                nYearId,
-                nItemId,
-                nUnitId,
-                nItemTypeId,
-                anWarehouseId,
-                nDivisionId,
-                null,
-                date,
-                dQuantity);
-    }
-    */
     
     /**
      * Validate stock to specific date and the end year date
@@ -622,6 +596,8 @@ public abstract class SSomUtils {
      * @param nUnitId int,
      * @param nItemTypeId int,
      * @param anWarehouseId int[],
+     * @param nDivisionId
+     * @param anStockMoveId
      * @param date Date
      * @param dQuantity double
      * @return SSomStock
@@ -751,76 +727,6 @@ public abstract class SSomUtils {
     }
 
     /**
-     * Validate stock to specific date and the end year date
-     * @param session Current GUI session.
-     * @param nYearId int,
-     * @param nItemPtId int,
-     * @param nItemCullTypeId int,
-     * @param anWarehouseId int[],
-     * @param date Date
-     * @param dStockCull double
-     * @return Vector<stock, item (optional), msg>
-     */
-    /* Check if this function is still needed (Sergio Flores 2015-10-12).
-    public static double[] convertStockCulltoStockPT(SGuiSession session, final int nYearId, final int nItemPtId, final int nItemCullTypeId,
-            final int[] anWarehouseId, final Date date, final double dStockCull) {
-        double dCentimetersCull = 0;
-        double dStock = 0;
-        double dDensityCull = 0;
-        double dWarehouseHeight = 0;
-        double dWarehouseCapacityLiters = 0;
-        double dLiterByCentimeter = 0;
-        String sSql = "";
-        SDbItem itemPt = null;
-        ResultSet resultSet = null;
-
-        try {
-            sSql = "SELECT i.id_item, i.fk_unit, i.den, wah.dim_heig, wah.cap_real_lt " +
-                "FROM " + SModConsts.TablesMap.get(SModConsts.S_STK) + " AS s " +
-                "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON " +
-                "s.id_item = i.id_item " +
-                "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON " +
-                "s.id_unit = u.id_unit " +
-                "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS wah ON " +
-                "s.id_co = wah.id_co AND s.id_cob = wah.id_cob AND s.id_wah = wah.id_wah  " +
-                "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_DIV) + " AS d ON " +
-                "s.id_div = d.id_div " +
-                "WHERE s.b_del = 0 AND " +
-                "s.id_year = " + nYearId + " AND " +
-                "i.fk_item_tp = " + nItemCullTypeId + " AND " +
-                "s.id_co = " + anWarehouseId[0] + " AND " +
-                "s.id_cob = " + anWarehouseId[1] + " AND " +
-                "s.id_wah = " + anWarehouseId[2] + " AND " +
-                "s.dt <= '" + SLibUtils.DbmsDateFormatDate.format(date) + "'; ";
-
-            resultSet = session.getStatement().executeQuery(sSql);
-            if (!resultSet.next()) {
-                throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
-            }
-            else {
-                dDensityCull = resultSet.getDouble("i.den");
-                dWarehouseHeight = resultSet.getDouble("wah.dim_heig");
-                dWarehouseCapacityLiters = resultSet.getDouble("wah.cap_real_lt");
-                dLiterByCentimeter = (dWarehouseHeight * 100) > 0 ? dWarehouseCapacityLiters / (dWarehouseHeight * 100) : 0;
-
-                itemPt = new SDbItem();
-                itemPt.read(session, new int[] { nItemPtId });
-                if (itemPt != null) {
-
-                    dCentimetersCull = dStockCull / (dLiterByCentimeter * dDensityCull);
-                    dStock = dCentimetersCull * (dLiterByCentimeter * itemPt.getDensity());
-                }
-            }
-        }
-        catch(Exception e) {
-            SLibUtils.showException(SSomUtils.class.getName(), e);
-        }
-
-        return new double[] { dStock, dCentimetersCull };
-    }
-    */
-
-    /**
      * Obtain conexion with system Revuelta XXI using ODBC
      * @param session Current GUI session.
      * @return Connection
@@ -840,28 +746,6 @@ public abstract class SSomUtils {
 
         return connection;
     }
-
-    /**
-     * Obtain conexion with system Revuelta XXI using JDBC
-     * @param session Current GUI session.
-     * @return Connection
-     */
-    /* Deprecation due to change of DBMS of Revuelta's scale software (Alfredo Pérez, 2018-02-19)
-    public static Connection openConnectionRevueltaJdbc(SGuiSession session) {
-        Connection connection = null;
-
-        try {
-            Class.forName("com.caigen.sql.access.AccessDriver");
-            
-            connection = DriverManager.getConnection("jdbc:access:/" + ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getRevueltaPath());
-        }
-        catch (ClassNotFoundException | SQLException e) {
-            SLibUtils.printException(SSomUtils.class.getName(), e);
-        }
-
-        return connection;
-    }
-    */
 
     /**
      * Obtain conexion with system Revuelta using JDBC jconn3 Driver
@@ -999,166 +883,6 @@ public abstract class SSomUtils {
     }
     
     /**
-     * Obtain weight on destiny from tickes on provided period.
-     * @param session Current GUI session.
-     * @param idItem ID of item.
-     * @param dateStart Start date.
-     * @param dateEnd End date.
-     * @param idReportingGroup ID of reporting group, can be zero.
-     * @param idProducer ID of producer, can be zero.
-     * @param idTicOrig
-     * @param idTicDest
-     * @return double
-     * @throws java.sql.SQLException
-     */
-    public static double obtainWeightDestinyByPeriod(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, 
-            final int idReportingGroup, final int idProducer, final int idTicOrig, final int idTicDest) throws SQLException {
-        double weight = 0;
-
-        String sql = "SELECT SUM(t.wei_des_net_r) " +
-            "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS p ON t.fk_prod = p.id_prod " +
-            "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " AND " +
-            "t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
-            (idProducer == 0 ? "" : "AND p.id_prod = " + idProducer + " ") +
-            (idTicOrig == 0 ? "" : "AND t.fk_tic_orig = " + idTicOrig + " ") +
-            (idTicDest == 0 ? "" : "AND t.fk_tic_dest = " + idTicDest + " ") +
-            (idReportingGroup == 0 ? "" : "AND p.fk_rep_grp = " + idReportingGroup + " ") + ";";
-        ResultSet resultSet = session.getStatement().executeQuery(sql);
-
-        if (resultSet.next()) {
-            weight = resultSet.getDouble(1);
-        }
-
-        return weight;
-    }
-    
-    /**
-     * Obtain weight on destiny from tickes on provided period.
-     * @param session Current GUI session.
-     * @param idItem ID of item.
-     * @param idAltItem
-     * @param dateStart Start date.
-     * @param dateEnd End date.
-     * @param idReportingGroup ID of reporting group, can be zero.
-     * @param idProducer ID of producer, can be zero.
-     * @param idTicOrig
-     * @param idTicDest
-     * @return double
-     * @throws java.sql.SQLException
-     */
-    public static double[] obtainWeightDestinyByPeriodAlternative(final SGuiSession session, final int idItem, final int idAltItem, final Date dateStart, final Date dateEnd, 
-            final int idReportingGroup, final int idProducer, final int idTicOrig, final int idTicDest) throws SQLException {
-        double[] arr = null;
-
-        String sql = "SELECT " +
-            "SUM(IF(t.b_alt = 0, t.wei_des_net_r, 0)) AS _tic, " +
-            "SUM(IF(t.b_alt = 1, t.wei_des_net_r, 0)) AS _alt, " +
-            "SUM(t.wei_des_net_r) AS _tot " +
-            "FROM (" + 
-            "SELECT *, dt fecha FROM " +
-            SModConsts.TablesMap.get(SModConsts.S_TIC) + " " +
-            "WHERE NOT b_del AND NOT b_alt AND b_tar AND fk_item = " + idItem + " " +
-            "UNION " +
-            "SELECT a.*, t.dt fecha FROM " +
-            SModConsts.TablesMap.get(SModConsts.S_ALT_TIC) + " a " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " t ON a.id_tic = t.id_tic " + 
-            "WHERE NOT a.b_del AND a.b_alt AND a.fk_item = " + idAltItem + " ) AS t " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS p ON t.fk_prod = p.id_prod " +
-            "WHERE NOT t.b_del AND " +
-            "t.fecha BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
-            (idProducer == 0 ? "" : "AND p.id_prod = " + idProducer + " ") +
-            (idTicOrig == 0 ? "" : "AND t.fk_tic_orig = " + idTicOrig + " ") +
-            (idTicDest == 0 ? "" : "AND t.fk_tic_dest = " + idTicDest + " ") +
-            (idReportingGroup == 0 ? "" : "AND p.fk_rep_grp = " + idReportingGroup + " ") + ";";
-        ResultSet resultSet = session.getStatement().executeQuery(sql);
-
-        if (resultSet.next()) {
-            arr = new double[] { resultSet.getDouble(1), resultSet.getDouble(2), resultSet.getDouble(3) };
-        }
-
-        return arr;
-    }
-    
-    /**
-     * Obtain weight on destiny and on a given scale from tickes on the provided period.
-     * @param session Current GUI session.
-     * @param idItem int,
-     * @param dateStart Date,
-     * @param dateEnd Date,
-     * @param idScale int
-     * @param idTicOrig
-     * @param idTicDest
-     * @return double
-     * @throws java.sql.SQLException
-     */
-    public static double obtainWeightDestinyByScale(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, final int idScale,
-            final int idTicOrig, final int idTicDest) throws SQLException {
-        double weight = 0;
-
-        String sql = "SELECT SUM(t.wei_des_net_r) " +
-            "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS s ON t.fk_sca = s.id_sca " +
-            "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " " +
-            (idTicOrig == 0 ? "" : "AND t.fk_tic_orig = " + idTicOrig + " ") +
-            (idTicDest == 0 ? "" : "AND t.fk_tic_dest = " + idTicDest + " ") +
-            "AND t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
-            "AND t.fk_sca = " + idScale + ";";
-        ResultSet resultSet = session.getStatement().executeQuery(sql);
-
-        if (resultSet.next()) {
-            weight = resultSet.getDouble(1);
-        }
-
-        return weight;
-    }
-    
-    /**
-     * Obtain weight on destiny and on a given scale from tickes on the provided period.
-     * @param session Current GUI session.
-     * @param idItem int,
-     * @param idAltItem
-     * @param dateStart Date,
-     * @param dateEnd Date,
-     * @param idScale int
-     * @param idTicOrig
-     * @param idTicDest
-     * @return double
-     * @throws java.sql.SQLException
-     */
-    public static double[] obtainWeightDestinyByScaleAlternative(final SGuiSession session, final int idItem, final int idAltItem, final Date dateStart, final Date dateEnd, final int idScale,
-            final int idTicOrig, final int idTicDest) throws SQLException {
-        double[] arr = null;
-
-        String sql = "SELECT " +
-            "SUM(IF(t.b_alt = 0, t.wei_des_net_r, 0)) AS _tic, " +
-            "SUM(IF(t.b_alt = 1, t.wei_des_net_r, 0)) AS _alt, " +
-            "SUM(t.wei_des_net_r) AS _tot " +
-            "FROM (" + 
-            "SELECT *, dt fecha FROM " +
-            SModConsts.TablesMap.get(SModConsts.S_TIC) + " " +
-            "WHERE NOT b_del AND NOT b_alt AND b_tar AND fk_item = " + idItem + " " +
-            "UNION " +
-            "SELECT a.*, t.dt fecha FROM " +
-            SModConsts.TablesMap.get(SModConsts.S_ALT_TIC) + " a " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " t ON a.id_tic = t.id_tic " + 
-            "WHERE NOT a.b_del AND a.b_alt AND a.fk_item = " + idAltItem + " ) AS t " +
-            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS s ON t.fk_sca = s.id_sca " +
-            "WHERE NOT t.b_del " +
-            (idTicOrig == 0 ? "" : "AND t.fk_tic_orig = " + idTicOrig + " ") +
-            (idTicDest == 0 ? "" : "AND t.fk_tic_dest = " + idTicDest + " ") +
-            "AND t.fecha BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
-            "AND t.fk_sca = " + idScale + ";";
-        ResultSet resultSet = session.getStatement().executeQuery(sql);
-
-        if (resultSet.next()) {
-            arr = new double[] { resultSet.getDouble(1), resultSet.getDouble(2), resultSet.getDouble(3) };
-        }
-
-        return arr;
-    }
-
-    /**
      * Validate warehouse item (business rules [1. Warehouse item (only one FG), 2. Warehouse capacity, 3. Warehouse unit])
      * @param session SGuiSession,
      * @param paramPkWarehouseId int[],
@@ -1170,7 +894,9 @@ public abstract class SSomUtils {
      * @param paramXtaUnit String,
      * @param paramXtaValidateWarehouseCapacity boolean,
      * @param paramXtaValidateExportationStock boolean
+     * @param paramFkMixId
      * @return String msg error
+     * @throws java.lang.Exception
      */
     public static String obtainWarehouseItemsForBusinessRules(final SGuiSession session, final int[] paramPkWarehouseId, final int[] paramPkStockId, final Date paramDate,
             final int paramFkItemId, final int paramFkUnitId, final double paramQuantity, final String paramXtaUnit, final boolean paramXtaValidateWarehouseCapacity,
@@ -1181,7 +907,7 @@ public abstract class SSomUtils {
         SDbItem item = null;
         SDbUnit unit = null;
         SSomWarehouseItem somWarehouseItem = null;
-        ArrayList<SSomWarehouseItem> aWarehouseItems = new ArrayList<SSomWarehouseItem>();
+        ArrayList<SSomWarehouseItem> aWarehouseItems = new ArrayList<>();
 
         warehouse = new SDbBranchWarehouse();
         warehouse.read(session, paramPkWarehouseId);
@@ -1288,7 +1014,7 @@ public abstract class SSomUtils {
     }
 
     /**
-     * Obtain stock warehouse by item
+     * Obtain stock warehouse by item.
      * @param session SGuiSession,
      * @param nYearId int,
      * @param anWarehouseId int[],
@@ -1296,12 +1022,13 @@ public abstract class SSomUtils {
      * @param dateStart, Date,
      * @param dateEnd, Date,
      * @param nDivisionId int,
-     * @return ArrayList<SSomWarehouseId>
+     * @param nMixId
+     * @return Arra of <code>SSomWarehouseId</code>
      */
     public static ArrayList<SSomWarehouseItem> stockWarehouseByItem(final SGuiSession session, final int nYearId, final int[] anWarehouseId, final int[] anStockMoveId,
             final Date dateStart, final Date dateEnd, final int nDivisionId, final int nMixId) {
         String sql = "";
-        ArrayList<SSomWarehouseItem> aWarehouseItem = new ArrayList<SSomWarehouseItem>();
+        ArrayList<SSomWarehouseItem> aWarehouseItem = new ArrayList<>();
         SSomWarehouseItem warehouseItem = null;
         ResultSet resultSet = null;
 
@@ -1366,6 +1093,7 @@ public abstract class SSomUtils {
      * @param paMfgWarehouseProductProduction ArrayList<SSomManufacturingWarehouseProduct>,
      * @param paWarehouseProductStorage ArrayList<SSomManufacturingWarehouseProduct>
      * @return SSomProductionEstimateDistributeWarehouses
+     * @throws java.lang.Exception
      */
     public static SSomProductionEstimateDistributeWarehouses productionEstimateDistribute(final SGuiSession session, final Date pDate, final int pnDivisionId,
             final int pnProductionEstimateId, final int pnProductionEstimateVersionId, final ArrayList<SSomMfgWarehouseProduct> paMfgWarehouseProductProduction,
@@ -1497,6 +1225,7 @@ public abstract class SSomUtils {
      * @param session SGuiSession,
      * @param mfgEstimationId int,
      * @param mfgEstimationVersionId int
+     * @throws java.sql.SQLException
      */
     public static void productionEstimateDeleteIogs(final SGuiSession session, final int mfgEstimationId, final int mfgEstimationVersionId) throws SQLException, Exception {
         String sql = "";
@@ -1519,9 +1248,15 @@ public abstract class SSomUtils {
         }
     }
     
-    
-    public static HashMap getOrigin(SGuiSession session, int idItem) throws SQLException {
-        HashMap <Integer, String> origins = new HashMap<>();
+    /**
+     * Create origins map.
+     * @param session
+     * @param idItem
+     * @return
+     * @throws SQLException 
+     */
+    public static HashMap<Integer, String> createOriginsMap(SGuiSession session, int idItem) throws SQLException {
+        HashMap<Integer, String> origins = new HashMap<>();
         
         String sql = "SELECT sis.id_inp_src, sis.name "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_INP_SRC) +" AS sis "
@@ -1536,6 +1271,166 @@ public abstract class SSomUtils {
         return origins;
     }
     
+    /**
+     * Obtain weight on destiny from tickes on provided period.
+     * @param session Current GUI session.
+     * @param idItem ID of item.
+     * @param dateStart Start date.
+     * @param dateEnd End date.
+     * @param idReportingGroup ID of reporting group, can be zero.
+     * @param idProducer ID of producer, can be zero.
+     * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
+     * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
+     * @return double
+     * @throws java.sql.SQLException
+     */
+    private static double obtainWeightDestinyByPeriod(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, 
+            final int idReportingGroup, final int idProducer, final int ticketOrigin, final int ticketDestination) throws SQLException {
+        double weight = 0;
+
+        String sql = "SELECT SUM(t.wei_des_net_r) " +
+            "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS p ON t.fk_prod = p.id_prod " +
+            "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " AND " +
+            "t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
+            (idProducer == 0 ? "" : "AND p.id_prod = " + idProducer + " ") +
+            (ticketOrigin == 0 ? "" : "AND t.fk_tic_orig = " + ticketOrigin + " ") +
+            (ticketDestination == 0 ? "" : "AND t.fk_tic_dest = " + ticketDestination + " ") +
+            (idReportingGroup == 0 ? "" : "AND p.fk_rep_grp = " + idReportingGroup + " ") + ";";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+
+        if (resultSet.next()) {
+            weight = resultSet.getDouble(1);
+        }
+
+        return weight;
+    }
+    
+    /**
+     * Obtain weight on destiny from tickes on provided period.
+     * @param session Current GUI session.
+     * @param idItemCnv ID of conventional item.
+     * @param idItemAlt ID of alternative item.
+     * @param dateStart Start date.
+     * @param dateEnd End date.
+     * @param idReportingGroup ID of reporting group, can be zero.
+     * @param idProducer ID of producer, can be zero.
+     * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
+     * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
+     * @return double
+     * @throws java.sql.SQLException
+     */
+    private static double[] obtainWeightDestinyByPeriodAlt(final SGuiSession session, final int idItemCnv, final int idItemAlt, final Date dateStart, final Date dateEnd, 
+            final int idReportingGroup, final int idProducer, final int ticketOrigin, final int ticketDestination) throws SQLException {
+        double[] arr = null;
+
+        String sql = "SELECT " +
+            "SUM(IF(t.b_alt = 0, t.wei_des_net_r, 0)) AS _tic, " +
+            "SUM(IF(t.b_alt = 1, t.wei_des_net_r, 0)) AS _alt, " +
+            "SUM(t.wei_des_net_r) AS _tot " +
+            "FROM (" + 
+            "SELECT *, dt fecha FROM " +
+            SModConsts.TablesMap.get(SModConsts.S_TIC) + " " +
+            "WHERE NOT b_del AND NOT b_alt AND b_tar AND fk_item = " + idItemCnv + " " +
+            "UNION " +
+            "SELECT a.*, t.dt fecha FROM " +
+            SModConsts.TablesMap.get(SModConsts.S_ALT_TIC) + " a " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " t ON a.id_tic = t.id_tic " + 
+            "WHERE NOT a.b_del AND a.b_alt AND a.fk_item = " + idItemAlt + " ) AS t " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_PROD) + " AS p ON t.fk_prod = p.id_prod " +
+            "WHERE NOT t.b_del AND " +
+            "t.fecha BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
+            (idProducer == 0 ? "" : "AND p.id_prod = " + idProducer + " ") +
+            (ticketOrigin == 0 ? "" : "AND t.fk_tic_orig = " + ticketOrigin + " ") +
+            (ticketDestination == 0 ? "" : "AND t.fk_tic_dest = " + ticketDestination + " ") +
+            (idReportingGroup == 0 ? "" : "AND p.fk_rep_grp = " + idReportingGroup + " ") + ";";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+
+        if (resultSet.next()) {
+            arr = new double[] { resultSet.getDouble(1), resultSet.getDouble(2), resultSet.getDouble(3) };
+        }
+
+        return arr;
+    }
+    
+    /**
+     * Obtain weight on destiny and on a given scale from tickes on the provided period.
+     * @param session Current GUI session.
+     * @param idItem int,
+     * @param dateStart Date,
+     * @param dateEnd Date,
+     * @param idScale int
+     * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
+     * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
+     * @return double
+     * @throws java.sql.SQLException
+     */
+    private static double obtainWeightDestinyByScale(final SGuiSession session, final int idItem, final Date dateStart, final Date dateEnd, final int idScale,
+            final int ticketOrigin, final int ticketDestination) throws SQLException {
+        double weight = 0;
+
+        String sql = "SELECT SUM(t.wei_des_net_r) " +
+            "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS t " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS s ON t.fk_sca = s.id_sca " +
+            "WHERE NOT t.b_del AND t.b_tar AND t.fk_item = " + idItem + " " +
+            (ticketOrigin == 0 ? "" : "AND t.fk_tic_orig = " + ticketOrigin + " ") +
+            (ticketDestination == 0 ? "" : "AND t.fk_tic_dest = " + ticketDestination + " ") +
+            "AND t.dt BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
+            "AND t.fk_sca = " + idScale + ";";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+
+        if (resultSet.next()) {
+            weight = resultSet.getDouble(1);
+        }
+
+        return weight;
+    }
+    
+    /**
+     * Obtain weight on destiny and on a given scale from tickes on the provided period.
+     * @param session Current GUI session.
+     * @param idItemCnv ID of conventional item.
+     * @param idItemAlt ID of alternative item.
+     * @param dateStart Start date.
+     * @param dateEnd End date.
+     * @param idScale ID of scale.
+     * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
+     * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
+     * @return double
+     * @throws java.sql.SQLException
+     */
+    private static double[] obtainWeightDestinyByScaleAlt(final SGuiSession session, final int idItemCnv, final int idItemAlt, final Date dateStart, final Date dateEnd, final int idScale,
+            final int ticketOrigin, final int ticketDestination) throws SQLException {
+        double[] arr = null;
+
+        String sql = "SELECT " +
+            "SUM(IF(t.b_alt = 0, t.wei_des_net_r, 0)) AS _tic, " +
+            "SUM(IF(t.b_alt = 1, t.wei_des_net_r, 0)) AS _alt, " +
+            "SUM(t.wei_des_net_r) AS _tot " +
+            "FROM (" + 
+            "SELECT *, dt fecha FROM " +
+            SModConsts.TablesMap.get(SModConsts.S_TIC) + " " +
+            "WHERE NOT b_del AND NOT b_alt AND b_tar AND fk_item = " + idItemCnv + " " +
+            "UNION " +
+            "SELECT a.*, t.dt fecha FROM " +
+            SModConsts.TablesMap.get(SModConsts.S_ALT_TIC) + " a " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " t ON a.id_tic = t.id_tic " + 
+            "WHERE NOT a.b_del AND a.b_alt AND a.fk_item = " + idItemAlt + " ) AS t " +
+            "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS s ON t.fk_sca = s.id_sca " +
+            "WHERE NOT t.b_del " +
+            (ticketOrigin == 0 ? "" : "AND t.fk_tic_orig = " + ticketOrigin + " ") +
+            (ticketDestination == 0 ? "" : "AND t.fk_tic_dest = " + ticketDestination + " ") +
+            "AND t.fecha BETWEEN '" + SLibUtils.DbmsDateFormatDate.format(dateStart) + "' AND '" + SLibUtils.DbmsDateFormatDate.format(dateEnd) + "' " +
+            "AND t.fk_sca = " + idScale + ";";
+        ResultSet resultSet = session.getStatement().executeQuery(sql);
+
+        if (resultSet.next()) {
+            arr = new double[] { resultSet.getDouble(1), resultSet.getDouble(2), resultSet.getDouble(3) };
+        }
+
+        return arr;
+    }
+
     private static String composeHtmlTableKgPctMonthComparativeHeader(final String table, final String itemName, final String month, final int year, final String conceptName) {
         return "<b>Resumen y comparativa " + SLibUtils.textToHtml(table) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
                 + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
@@ -1610,8 +1505,21 @@ public abstract class SSomUtils {
                 + "</table>";
     }
     
-    private static String composeHtmlTableKgPctHeader(final String table, final String itemName, final String conceptName) {
-        return "<b>Resumen " + SLibUtils.textToHtml(table) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
+    private static String trimEnding(final String text, final String ending) {
+        String textTrimmed;
+        
+        if (text.endsWith(ending)) {
+            textTrimmed = text.substring(0, text.length() - 1);
+        }
+        else {
+            textTrimmed = text;
+        }
+        
+        return textTrimmed;
+    }
+
+    private static String composeHtmlTableKgPctHeader(final String concept, final String itemName, final String conceptName) {
+        return "<b>Resumen " + SLibUtils.textToHtml(concept) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
                 + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
                 + "<tr>"
                 + "<td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
@@ -1620,18 +1528,36 @@ public abstract class SSomUtils {
                 + "</tr>";
     }
     
-    private static String composeHtmlTableKgPctHeaderAlternative(final String table, final String conceptName) {
-        return "<b>Resumen " + SLibUtils.textToHtml(table) + ": </b><br>"
+    private static String composeHtmlTableKgPctHeaderSeasons(final String concept, final String itemName, final String conceptName) {
+        return "<b>Resumen " + SLibUtils.textToHtml(concept) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
                 + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
                 + "<tr>"
                 + "<td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " conv.") + "</b></td>"
-                + "<td class=Forms align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " org.") + "</b></td>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " total") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "</tr>";
+    }
+    
+    private static String composeHtmlTableKgPctHeaderAlt(final String concept, final String conceptName) {
+        return "<b>Resumen " + SLibUtils.textToHtml(concept) + ": </b><br>"
+                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                + "<tr>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Convenc.") + "</b></td>"
+                + "<td class=Forms align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Orgánico.") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Total") + "</b></td>"
                 + "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>"
                 + "</tr>";
     }
 
+    private static String composeHtmlTableKgPctHeaderSeasonsAlt(final String concept, final String conceptName) {
+        return "<b>Resumen " + SLibUtils.textToHtml(concept) + ": </b><br>"
+                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                + "<tr><td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
+                + "<td align='center'><b>" + SSomConsts.KG + " Convenc.</b></td>"
+                + "<td align='center'><b>" + SSomConsts.KG + " Orgánico.</b></td>"
+                + "<td align='center'><b>" + SSomConsts.KG + " Total</b></td></tr>";
+    }
+    
     private static String composeHtmlTableKgPctRow(final String concept, final double weight, final double weightTotal) {
         return "<tr>"
                 + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
@@ -1640,37 +1566,770 @@ public abstract class SSomUtils {
                 + "</tr>";
     }
     
-    private static String composeHtmlTableKgPctRowAlternative(final String concept, final double weightTic, final double weightAlt, final double weightAll, final double weightTotal) {
+    private static String composeHtmlTableKgPctRowSeasons(final String concept, final double weight) {
         return "<tr>"
                 + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightTic) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
+                + "</tr>";
+    }
+    
+    private static String composeHtmlTableKgPctRowAlt(final String concept, final double weightCnv, final double weightAlt, final double weightTot, final double weightTotal) {
+        return "<tr>"
+                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightCnv) + "</td>"
                 + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightAlt) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightAll) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weightAll / weightTotal) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightTot) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weightTot / weightTotal) + "</td>"
                 + "</tr>";
     }
 
-    private static String composeHtmlTableKgPctFooter(final String table, final double weightTotal) {
+    private static String composeHtmlTableKgPctRowSeasonsAlt(final String concept, final double weightCnv, final double weightAlt, final double weightTot) {
         return "<tr>"
-                + "<td><b>Total " + SLibUtils.textToHtml(table) + "</b></td>"
+                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightCnv) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightAlt) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightTot) + "</td>"
+                + "</tr>";
+    }
+
+    private static String composeHtmlTableKgPctFooter(final String concept, final double weightTotal) {
+        return "<tr>"
+                + "<td><b>Total " + SLibUtils.textToHtml(concept) + "</b></td>"
                 + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
                 + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
                 + "</tr>"
-                + "</table><br>";
+                + "</table>";
     }
     
-    private static String composeHtmlTableKgPctFooterAlternative(final String table, final double weightTotTic, final double weightTotAlt, final double weightTotal) {
+    private static String composeHtmlTableKgPctFooterSeasons(final String concept, final double weightTotal) {
         return "<tr>"
-                + "<td><b>Total " + SLibUtils.textToHtml(table) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotTic) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotAlt) + "</b></td>"
+                + "<td><b>Total " + SLibUtils.textToHtml(concept) + "</b></td>"
                 + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
+                + "</tr>"
+                + "</table>";
+    }
+    
+    private static String composeHtmlTableKgPctFooterAlt(final String concept, final double weightTotalCnv, final double weightTotalAlt, final double weightTotalTot) {
+        return "<tr>"
+                + "<td><b>Total " + SLibUtils.textToHtml(concept) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalCnv) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalAlt) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalTot) + "</b></td>"
                 + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
                 + "</tr>"
-                + "</table><br>";
+                + "</table>";
+    }
+    
+    private static String composeHtmlTableKgPctFooterSeasonsAlt(final String concept, final double weightTotalCnv, final double weightTotalAlt, final double weightTotalTot) {
+        return "<tr>"
+                + "<td><b>Total " + SLibUtils.textToHtml(concept) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalCnv) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalAlt) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalTot) + "</b></td>"
+                + "</tr>"
+                + "</table>";
+    }
+    
+    /**
+     * Compose an HTML summary of all receptions from requested item.
+     * @param session GUI session.
+     * @param itemId Item ID.
+     * @param seasonFirstMonth Season first month (1 = January; 0 = item's start month.)
+     * @param monthFirstDay Month first day (0 | 1 = 1st. of start month; > 1 = nth of previous month.)
+     * @param date Date.
+     * @param reportMode Report mode (SCliMailerReportFruitsStdSummary.REP_MODE_...)
+     * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
+     * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
+     * @return HTML snippet.
+     * @throws Exception 
+     */
+    public static String composeHtmlSummaryItem(final SGuiSession session, final int itemId, final int seasonFirstMonth, final int monthFirstDay, final Date date, final int reportMode, final int ticketOrigin, final int ticketDestination) throws Exception {
+        // ---------------------------------------------------------------------
+        // REPORT REPORT PREPARATION ///////////////////////////////////////////
+        // ---------------------------------------------------------------------
+
+        String sql;
+        
+        // retrieve item:
+        
+        SDbItem item = new SDbItem();
+        item.read(session, new int[] { itemId }); // read this way due to session is moduleless
+        String itemName = SLibUtils.textProperCase(item.getName());
+
+        // retrieve list of all reporting groups:
+
+        sql = "SELECT id_rep_grp, name, sort "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_REP_GRP) + " AS r "
+                + "ORDER BY name, sort, id_rep_grp ";
+
+        Statement repGroupStatement = session.getDatabase().getConnection().createStatement(); // a new statement to prevent other result sets from being closed
+        ResultSet repGroupResultSet = repGroupStatement.executeQuery(sql);
+
+        // retrieve list of all scales:
+
+        sql = "SELECT id_sca, name, b_def "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " "
+                + "ORDER BY name, id_sca ";
+
+        Statement scaleStatement = session.getDatabase().getConnection().createStatement(); // a new statement to prevent other result sets from being closed
+        ResultSet scaleResultSet = scaleStatement.executeQuery(sql);
+        
+        // ---------------------------------------------------------------------
+        // REPORT PROCESSING ///////////////////////////////////////////////////
+        // ---------------------------------------------------------------------
+
+        Date dateStart;
+        Date dateEnd;
+        double weight;
+        double weightTotal;
+        double weight1yAgo;
+        double weight1yAgoTotal;
+        double weight2yAgo;
+        double weight2yAgoTotal;
+        double weight3yAgo;
+        double weight3yAgoTotal;
+        String section;
+        String[] months = SLibTimeUtils.createMonthsOfYear(Locale.getDefault(), Calendar.SHORT);
+        DateSettings dateSettings = new DateSettings(date, seasonFirstMonth, monthFirstDay);
+        
+        String html = "";
+        
+        // ---------------------------------------------------------------------
+        // SECTION 1. Current day:
+        // ---------------------------------------------------------------------
+
+        dateStart = dateSettings.Today;
+        dateEnd = dateSettings.Today;
+        weightTotal = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
+        section = "día " + SLibUtils.DateFormatDate.format(date);
+
+        // SECTION 1.1. Current day summary by reporting group:
+
+        html += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
+
+        // compute reporting groups:
+
+        while (repGroupResultSet.next()) { // first reading, cursor before first row
+            weight = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+            if (weight != 0) {
+                html += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+            }
+        }
+
+        html += composeHtmlTableKgPctFooter(section, weightTotal);
+
+        // SECTION 1.2. Current day summary by scale:
+
+        int scaleRows = 0;
+        boolean scaleForceRendering = false;
+        String scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+
+        // compute scales:
+
+        while (scaleResultSet.next()) { // first reading, cursor is before first row!
+            weight = obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
+            
+            if (weight != 0) {
+                scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                scaleRows++;
+                if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
+                    scaleForceRendering = true;
+                }
+            }
+        }
+
+        scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+
+        if (scaleForceRendering || scaleRows > 1) {
+            html += "<br>";
+            html += scaleHtml; // more than one scale present or receptions done in a non-default scale
+        }
+        
+        html += "<br>";
+
+        // ---------------------------------------------------------------------
+        // SECTION 2. Current month:
+        // ---------------------------------------------------------------------
+
+        dateStart = dateSettings.MonthStartDate;
+        dateEnd = dateSettings.MonthEndDate;
+        weightTotal = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
+        section = "mes " + months[dateSettings.CurrentMonth - 1] + ". " + dateSettings.CurrentYear + (dateSettings.isMonthOutdated() ? "*" : "");
+
+        // SECTION 2.1. Current month summary by reporting group:
+
+        // compute reporting groups:
+
+        if (repGroupResultSet.isAfterLast()) {
+            repGroupResultSet.beforeFirst();
+        }
+
+        if (reportMode == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
+            html += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
+
+            while (repGroupResultSet.next()) {
+                weight = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                if (weight != 0) {
+                    html += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+                }
+            }
+
+            html += composeHtmlTableKgPctFooter(section, weightTotal);
+        }
+        else {
+            double diference1yAgoTotal = 0;
+            double diference2yAgoTotal = 0;
+            double diference3yAgoTotal = 0;
+            weight1yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            weight2yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            weight3yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            html += composeHtmlTableKgPctMonthComparativeHeader(section, itemName, months[dateSettings.CurrentMonth - 1], dateSettings.CurrentYear, "Proveedor");
+            
+            while (repGroupResultSet.next()) {
+                weight = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                weight1yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                weight2yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                weight3yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                diference1yAgoTotal += weight - weight1yAgo;
+                diference2yAgoTotal += weight - weight2yAgo;
+                diference3yAgoTotal += weight - weight3yAgo;
+                if (weight != 0 || weight1yAgo != 0 || weight2yAgo != 0 || weight3yAgo != 0) {
+                    html += composeHtmlTableKgPctComparativeRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1yAgo, weight2yAgo, weight3yAgo);
+                }
+            }
+            
+            html += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
+            html += "<p style='font-size: 11px; color: tomato;'><b>" + SLibUtils.textToHtml("Nota:") + "</b>&nbsp;" + SLibUtils.textToHtml("Se marcan en rojo los proveedores rezagados " 
+                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PERCENTAGE) + " o más respecto al mes del año anterior.") + "</p>";
+        }
+
+        // SECTION 2.2: Current month summary by scale: 
+
+        scaleRows = 0;
+        scaleForceRendering = false;
+        scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+
+        // compute scales:
+
+        if (scaleResultSet.isAfterLast()) {
+            scaleResultSet.beforeFirst();
+        }
+
+        while (scaleResultSet.next()) {
+            weight = obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
+            
+            if (weight != 0) {
+                scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                scaleRows++;
+                if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
+                    scaleForceRendering = true;
+                }
+            }
+        }
+
+        scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+
+        if (scaleForceRendering || scaleRows > 1) {
+            if (reportMode == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
+                html += "<br>";
+            }
+            html += scaleHtml; // more than one scale present or receptions done in a non-default scale
+        }
+
+        if (dateSettings.isMonthOutdated()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateSettings.getCurrentMonthPeriod() + ".") + "</p>";
+        }
+        else {
+            html += "<br>";
+        }
+        
+        // ---------------------------------------------------------------------
+        // SECTION 3. Current season:
+        // ---------------------------------------------------------------------
+
+        // SECTION 3.1 Current season summary by reporting group:
+        
+        dateStart = dateSettings.SeasonStartDate;
+        dateEnd = dateSettings.SeasonEndDate;
+        weightTotal = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
+        section = "temporada " + dateSettings.getCurrentSeasonTitle() + (dateSettings.isMonthOutdated() ? "*" : "");
+        
+        // compute reporting groups:
+
+        if (repGroupResultSet.isAfterLast()) {
+            repGroupResultSet.beforeFirst();
+        }
+
+        if (reportMode == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
+            html += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
+
+            while (repGroupResultSet.next()) {
+                weight = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                if (weight != 0) {
+                    html += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+                }
+            }
+
+            html += composeHtmlTableKgPctFooter(section, weightTotal);
+        }
+        else {
+            double diference1yAgoTotal = 0;
+            double diference2yAgoTotal = 0;
+            double diference3yAgoTotal = 0;
+            weight1yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            weight2yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            weight3yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            html += composeHtmlTableKgPctSeasonComparativeHeader(section, itemName, dateStart, dateEnd, "Proveedor");
+            
+            while (repGroupResultSet.next()) {
+                weight = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                weight1yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                weight2yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                weight3yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                diference1yAgoTotal += weight - weight1yAgo;
+                diference2yAgoTotal += weight - weight2yAgo;
+                diference3yAgoTotal += weight - weight3yAgo;
+                if (weight != 0 || weight1yAgo != 0 || weight2yAgo != 0 || weight3yAgo != 0) {
+                    html += composeHtmlTableKgPctComparativeRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1yAgo, weight2yAgo, weight3yAgo);
+                }
+            }
+            
+            html += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
+            html += "<p style='font-size: 11px; color: tomato;'><b>" + SLibUtils.textToHtml("Nota:") + "</b>&nbsp;" + SLibUtils.textToHtml("Se marcan en rojo los proveedores rezagados " 
+                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PERCENTAGE) + " o más respecto a la temporada anterior.") + "</p>";
+        }
+        
+        // SECTION 3.2 Current season summary by scale:
+
+        scaleRows = 0;
+        scaleForceRendering = false;
+        scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+
+        // compute scales:
+
+        if (scaleResultSet.isAfterLast()) {
+            scaleResultSet.beforeFirst();
+        }
+
+        while (scaleResultSet.next()) {
+            weight = obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
+            
+            if (weight != 0) {
+                scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                scaleRows++;
+                if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
+                    scaleForceRendering = true;
+                }
+            }
+        }
+
+        scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+
+        if (scaleForceRendering || scaleRows > 1) {
+            if (reportMode == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
+                html += "<br>";
+            }
+            html += scaleHtml; // more than one scale present or receptions done in a non-default scale
+        }
+
+        if (dateSettings.isMonthOutdated()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateSettings.getCurrentSeasonPeriod() + ".") + "</p>";
+        }
+        else {
+            html += "<br>";
+        }
+        
+        // ---------------------------------------------------------------------
+        // SECTION 4. Season summary by month:
+        // ---------------------------------------------------------------------
+
+        dateStart = dateSettings.SeasonStartDate;
+        dateEnd = dateSettings.SeasonEndDate;
+        weightTotal = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
+        section = "temporada " + dateSettings.getCurrentSeasonTitle() + (dateSettings.isMonthOutdated() ? "*" : "");
+
+        html += composeHtmlTableKgPctHeader(section, itemName, "Mes");
+
+        // compute session months:
+
+        for (int i = 0; i < SLibTimeConsts.MONTHS; i++) {
+            Date[] boundaries = dateSettings.SeasonMonthsBoundaries.get(i);
+            Date start = boundaries[0];
+            Date end = boundaries[1];
+            int[] monthDigestion = SLibTimeUtils.digestMonth(end);
+
+            weight = obtainWeightDestinyByPeriod(session, itemId, start, end, 0, 0, ticketOrigin, ticketDestination);
+            html += composeHtmlTableKgPctRow(monthDigestion[0] + " " + months[monthDigestion[1] - 1] + ".", weight, weightTotal);
+        }
+
+        html += composeHtmlTableKgPctFooter(section, weightTotal);
+
+        if (dateSettings.isMonthOutdated()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + dateSettings.getCurrentSeasonInfo() + ".") + "</p>";
+        }
+        else {
+            html += "<br>";
+        }
+        
+        // ---------------------------------------------------------------------
+        // SECTION 5: History of all past seasons:
+        // ---------------------------------------------------------------------
+        
+        weightTotal = 0;
+        section = "temporadas" + (dateSettings.isMonthOutdated() ? "*" : "");
+
+        html += composeHtmlTableKgPctHeaderSeasons(section, itemName, "Temporada");
+        
+        ArrayList<Date[]> seasonsYearsBoundaries = dateSettings.createSeasonsYearsBoundaries(SCliConsts.FRUIT_FIRST_YEAR);
+        
+        for (Date[] boundary : seasonsYearsBoundaries) {
+            Date start = boundary[0];
+            Date end = boundary[1];
+            String concept;
+            
+            if (dateSettings.SeasonFirstMonth == SLibTimeConsts.MONTH_JAN && dateSettings.MonthFirstDay == 1) {
+                concept = "" + SLibTimeUtils.digestYear(start)[0];
+            }
+            else {
+                concept = "" + SLibTimeUtils.digestYear(start)[0] + "-" + SLibTimeUtils.digestYear(end)[0];
+            }
+            
+            weight = obtainWeightDestinyByPeriod(session, itemId, start, end, 0, 0, ticketOrigin, ticketDestination);
+            html += composeHtmlTableKgPctRowSeasons(concept, weight);
+            
+            weightTotal += weight;
+        }
+        
+        html += composeHtmlTableKgPctFooterSeasons(section, weightTotal);
+        
+        if (dateSettings.isSeasonOutdated() || dateSettings.isMonthOutdated()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + dateSettings.getSeasonsInfo() + ".") + "</p>";
+        }
+        else {
+            html += "<br>";
+        }
+        
+        return html;
     }
 
     /**
+     * Compose an HTML summary of all receptions from requested conventional and alternative items.
+     * @param session GUI session.
+     * @param itemCnvId Conventional item ID.
+     * @param itemAltId Alternative item alt ID.
+     * @param seasonFirstMonth Season first month (1 = January; 0 = item's start month.)
+     * @param monthFirstDay Month first day (0 | 1 = 1st. of start month; > 1 = nth of previous month.)
+     * @param date Date.
+     * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
+     * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
+     * @return HTML snippet.
+     * @throws Exception 
+     */
+    public static String composeHtmlSummaryItemAlt(final SGuiSession session, final int itemCnvId, final int itemAltId, final int seasonFirstMonth, final int monthFirstDay, final Date date, final int ticketOrigin, final int ticketDestination) throws Exception {
+        // ---------------------------------------------------------------------
+        // REPORT REPORT PREPARATION ///////////////////////////////////////////
+        // ---------------------------------------------------------------------
+
+        String sql;
+        
+        // retrieve item:
+        
+        SDbItem item = new SDbItem();
+        item.read(session, new int[] { itemCnvId }); // read this way due to session is moduleless
+
+        // retrieve list of all reporting groups:
+
+        sql = "SELECT id_rep_grp, name, sort "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.CU_REP_GRP) + " AS r "
+                + "ORDER BY name, sort, id_rep_grp ";
+
+        Statement repGroupStatement = session.getDatabase().getConnection().createStatement(); // a new statement to prevent other result sets from being closed
+        ResultSet repGroupResultSet = repGroupStatement.executeQuery(sql);
+
+        // retrieve list of all scales:
+
+        sql = "SELECT id_sca, name, b_def "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " "
+                + "ORDER BY name, id_sca ";
+
+        Statement scaleStatement = session.getDatabase().getConnection().createStatement(); // a new statement to prevent other result sets from being closed
+        ResultSet scaleResultSet = scaleStatement.executeQuery(sql);
+
+        // ---------------------------------------------------------------------
+        // REPORT PROCESSING ///////////////////////////////////////////////////
+        // ---------------------------------------------------------------------
+
+        Date dateStart;
+        Date dateEnd;
+        double[] weights;
+        double[] weightsTotals;
+        String section;
+        String[] months = SLibTimeUtils.createMonthsOfYear(Locale.getDefault(), Calendar.SHORT);
+        DateSettings dateSettings = new DateSettings(date, seasonFirstMonth, monthFirstDay);
+        
+        String html = "";
+        
+        // ---------------------------------------------------------------------
+        // SECTION 1. Current day:
+        // ---------------------------------------------------------------------
+
+        dateStart = dateSettings.Today;
+        dateEnd = dateSettings.Today;
+        weightsTotals = obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
+        section = "día " + SLibUtils.DateFormatDate.format(date);
+
+        // SECTION 1.1. Current day summary by reporting group:
+
+        html += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
+
+        // compute reporting groups:
+
+        while (repGroupResultSet.next()) { // first reading, cursor before first row
+            weights = obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+            if (weights != null && weights[IDX_TOT] != 0.0) {
+                html += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+            }
+        }
+
+        html += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+
+        // SECTION 1.2. Current day summary by scale:
+
+        int scaleRows = 0;
+        boolean scaleForceRendering = false;
+        String scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
+
+        // compute scales:
+
+        while (scaleResultSet.next()) { // first reading, cursor before first row
+            weights = obtainWeightDestinyByScaleAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
+            
+            if (weights != null && weights[IDX_TOT] != 0.0) {
+                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+                scaleRows++;
+                if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
+                    scaleForceRendering = true;
+                }
+            }
+        }
+
+        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+
+        if (scaleForceRendering || scaleRows > 1) {
+            html += "<br>";
+            html += scaleHtml; // more than one scale present or receptions done in a non-default scale
+        }
+
+        html += "<br>";
+
+        // ---------------------------------------------------------------------
+        // SECTION 2. Current month:
+        // ---------------------------------------------------------------------
+
+        dateStart = dateSettings.MonthStartDate;
+        dateEnd = dateSettings.MonthEndDate;
+        weightsTotals = obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
+        section = "mes " + months[dateSettings.CurrentMonth - 1] + ". " + dateSettings.CurrentYear + (dateSettings.isMonthOutdated() ? "*" : "");
+
+        // SECTION 2.1. Current month summary by reporting group:
+        
+        // compute reporting groups:
+
+        if (repGroupResultSet.isAfterLast()) {
+            repGroupResultSet.beforeFirst();
+        }
+
+        html += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
+
+        while (repGroupResultSet.next()) {
+            weights = obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+            if (weights != null && weights[IDX_TOT] != 0.0) {
+                html += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+            }
+        }
+
+        html += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+        
+        // SECTION 2.2: Current month summary by scale: 
+
+        scaleRows = 0;
+        scaleForceRendering = false;
+        scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
+
+        // compute scales:
+
+        if (scaleResultSet.isAfterLast()) {
+            scaleResultSet.beforeFirst();
+        }
+
+        while (scaleResultSet.next()) {
+            weights = obtainWeightDestinyByScaleAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
+            
+            if (weights != null && weights[IDX_TOT] != 0.0) {
+                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+                scaleRows++;
+                if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
+                    scaleForceRendering = true;
+                }
+            }
+        }
+
+        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+
+        if (scaleForceRendering || scaleRows > 1) {
+            html += "<br>";
+            html += scaleHtml; // more than one scale present or receptions done in a non-default scale
+        }
+
+        if (dateSettings.isMonthOutdated()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateSettings.getCurrentMonthPeriod() + ".") + "</p>";
+        }
+        else {
+            html += "<br>";
+        }
+        
+        // ---------------------------------------------------------------------
+        // SECTION 3. Current season:
+        // ---------------------------------------------------------------------
+
+        // SECTION 3.1 Current season summary by reporting group:
+        
+        dateStart = dateSettings.SeasonStartDate;
+        dateEnd = dateSettings.SeasonEndDate;
+        weightsTotals = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
+        section = "temporada " + dateSettings.getCurrentSeasonTitle() + (dateSettings.isMonthOutdated() ? "*" : "");
+
+        // compute reporting groups:
+
+        if (repGroupResultSet.isAfterLast()) {
+            repGroupResultSet.beforeFirst();
+        }
+
+        html += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
+
+        while (repGroupResultSet.next()) {
+            weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+            if (weights != null && weights[IDX_TOT] != 0.0) {
+                html += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+            }
+        }
+
+        html += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+
+        // SECTION 3.2 Current season summary by scale:
+
+        scaleRows = 0;
+        scaleForceRendering = false;
+        scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
+
+        // compute scales:
+
+        if (scaleResultSet.isAfterLast()) {
+            scaleResultSet.beforeFirst();
+        }
+
+        while (scaleResultSet.next()) {
+            weights = SSomUtils.obtainWeightDestinyByScaleAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
+            
+            if (weights != null && weights[IDX_TOT] != 0.0) {
+                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+                scaleRows++;
+                if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
+                    scaleForceRendering = true;
+                }
+            }
+        }
+
+        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+
+        if (scaleForceRendering || scaleRows > 1) {
+            html += "<br>";
+            html += scaleHtml; // more than one scale present or receptions done in a non-default scale
+        }
+
+        if (dateSettings.isMonthOutdated()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateSettings.getCurrentSeasonPeriod() + ".") + "</p>";
+        }
+        else {
+            html += "<br>";
+        }
+        
+        // ---------------------------------------------------------------------
+        // SECTION 4. Season summary by month:
+        // ---------------------------------------------------------------------
+
+        dateStart = dateSettings.SeasonStartDate;
+        dateEnd = dateSettings.SeasonEndDate;
+        weightsTotals = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
+        section = "temporada " + dateSettings.getCurrentSeasonTitle() + (dateSettings.isMonthOutdated() ? "*" : "");
+
+        html += composeHtmlTableKgPctHeaderAlt(section, "Período");
+
+        // compute months:
+
+        for (int i = 0; i < SLibTimeConsts.MONTHS; i++) {
+            Date[] boundaries = dateSettings.SeasonMonthsBoundaries.get(i);
+            Date start = boundaries[0];
+            Date end = boundaries[1];
+            int[] monthDigestion = SLibTimeUtils.digestMonth(end);
+
+            weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, start, end, 0, 0, ticketOrigin, ticketDestination);
+            html += composeHtmlTableKgPctRowAlt(monthDigestion[0] + " " + months[monthDigestion[1] - 1] + ".", weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+        }
+
+        html += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+
+        if (dateSettings.isMonthOutdated()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + dateSettings.getCurrentSeasonInfo() + ".") + "</p>";
+        }
+        else {
+            html += "<br>";
+        }
+        
+        // ---------------------------------------------------------------------
+        // SECTION 5: History of all past seasons:
+        // ---------------------------------------------------------------------
+
+        weightsTotals = new double[] { 0, 0, 0};
+        section = "temporadas" + (dateSettings.isMonthOutdated() ? "*" : "");
+
+        html += composeHtmlTableKgPctHeaderSeasonsAlt(section, "Temporada");
+        
+        ArrayList<Date[]> seasonsYearsBoundaries = dateSettings.createSeasonsYearsBoundaries(SCliConsts.FRUIT_FIRST_YEAR);
+        
+        for (Date[] boundary : seasonsYearsBoundaries) {
+            Date start = boundary[0];
+            Date end = boundary[1];
+            String concept;
+            
+            if (dateSettings.SeasonFirstMonth == SLibTimeConsts.MONTH_JAN && dateSettings.MonthFirstDay == 1) {
+                concept = "" + SLibTimeUtils.digestYear(start)[0];
+            }
+            else {
+                concept = "" + SLibTimeUtils.digestYear(start)[0] + "-" + SLibTimeUtils.digestYear(end)[0];
+            }
+            
+            weights = obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, start, end, 0, 0, ticketOrigin, ticketDestination);
+            html += composeHtmlTableKgPctRowSeasonsAlt(concept, weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT]);
+            
+            weightsTotals[IDX_CNV] += weights[IDX_CNV];
+            weightsTotals[IDX_ALT] += weights[IDX_ALT];
+            weightsTotals[IDX_TOT] += weights[IDX_TOT];
+        }
+        
+        html += composeHtmlTableKgPctFooterSeasonsAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+        
+        if (dateSettings.isSeasonOutdated() || dateSettings.isMonthOutdated()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + dateSettings.getSeasonsInfo() + ".") + "</p>";
+        }
+        else {
+            html += "<br>";
+        }
+        
+        return html;
+    }
+    
+    /** RESPALDO REALIZADO EL 21/01/2026 DEL MÉTODO composeHtmlSummaryItem(). *
      * Compose an HTML summary of all receptions from requested item.
      * @param session GUI session.
      * @param itemId Item ID.
@@ -1681,7 +2340,8 @@ public abstract class SSomUtils {
      * @return HTML snippet.
      * @throws Exception 
      */
-    public static String composeHtmlSummaryItem(final SGuiSession session, final int itemId, final Date date, final int repType, final int idTicOrig, final int idTicDest) throws Exception {
+    @Deprecated
+    public static String composeHtmlSummaryItem_20260116(final SGuiSession session, final int itemId, final Date date, final int repType, final int idTicOrig, final int idTicDest) throws Exception {
         // REPORT PREPARATION:
 
         double weight;
@@ -1787,7 +2447,7 @@ public abstract class SSomUtils {
             repGroupResultSet.beforeFirst();
         }
 
-        if (repType == SCliReportMailerSummary.REGULAR_REPORT) {
+        if (repType == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
             body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
 
             while (repGroupResultSet.next()) {
@@ -1822,7 +2482,7 @@ public abstract class SSomUtils {
             }
             
             body += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
-            body += "<p style='font-size: 10px;'>" + SLibUtils.textToHtml("*Se muestran en rojo los proveedores rezagados " 
+            body += "<p style='font-size: 11px; color: tomato;'><b>" + SLibUtils.textToHtml("Nota:") + "</b>&nbsp;" + SLibUtils.textToHtml("Se marcan en rojo los proveedores rezagados " 
                     + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PERCENTAGE) + " o más respecto al mes del año anterior.") + "</p>";
         }
 
@@ -1874,6 +2534,7 @@ public abstract class SSomUtils {
         }
 
         // SECTION 3.1 Current season summary by reporting group:
+        
         dateStart = dateSeasonStart;
         dateEnd = dateSeasonEnd;
         weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
@@ -1885,9 +2546,8 @@ public abstract class SSomUtils {
             repGroupResultSet.beforeFirst();
         }
 
-        if (repType == SCliReportMailerSummary.REGULAR_REPORT) {
+        if (repType == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
             body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
-
 
             while (repGroupResultSet.next()) {
                 weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
@@ -1921,7 +2581,7 @@ public abstract class SSomUtils {
             }
             
             body += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
-            body += "<p style='font-size: 10px;'>" + SLibUtils.textToHtml("*Se muestran en rojo los proveedores rezagados " 
+            body += "<p style='font-size: 11px; color: tomato;'><b>" + SLibUtils.textToHtml("Nota:") + "</b>&nbsp;" + SLibUtils.textToHtml("Se marcan en rojo los proveedores rezagados " 
                     + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PERCENTAGE) + " o más respecto a la temporada anterior.") + "</p>";
         }
         
@@ -2016,7 +2676,7 @@ public abstract class SSomUtils {
         return body;
     }
 
-    /**
+    /** RESPALDO REALIZADO EL 21/01/2026 DEL MÉTODO composeHtmlSummaryItemAlternative(). *
      * Compose an HTML summary of all receptions from requested item.
      * @param session GUI session.
      * @param itemId Item ID.
@@ -2027,7 +2687,8 @@ public abstract class SSomUtils {
      * @return HTML snippet.
      * @throws Exception 
      */
-    public static String composeHtmlSummaryItemAlternative(final SGuiSession session, final int itemId, final int itemAltId, final Date date, final int idTicOrig, final int idTicDest) throws Exception {
+    @Deprecated
+    public static String composeHtmlSummaryItemAlternative_20260116(final SGuiSession session, final int itemId, final int itemAltId, final Date date, final int idTicOrig, final int idTicDest) throws Exception {
         // REPORT PREPARATION:
 
         double[] weights;
@@ -2069,36 +2730,36 @@ public abstract class SSomUtils {
 
         dateStart = date;
         dateEnd = date;
-        weightsTots = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
+        weightsTots = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "día '" + SLibUtils.DateFormatDate.format(date) + "'";
 
         // SECTION 1.1. Current day summary by reporting group:
 
-        body += composeHtmlTableKgPctHeaderAlternative(section, "Proveedor");
+        body += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
 
         // compute reporting groups:
 
         while (repGroupResultSet.next()) { // first reading, cursor before first row
-            weights = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+            weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
             if (weights != null && weights[2] != 0.0) {
-                body += composeHtmlTableKgPctRowAlternative(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                body += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
             }
         }
 
-        body += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        body += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         // SECTION 1.2. Current day summary by scale:
 
         int scaleRows = 0;
         boolean scaleForce = false;
-        String scaleHtml = composeHtmlTableKgPctHeaderAlternative(section, "Báscula");
+        String scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
 
         // compute scales:
 
         while (scaleResultSet.next()) { // first reading, cursor before first row
-            weights = SSomUtils.obtainWeightDestinyByScaleAlternative(session, itemId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
+            weights = SSomUtils.obtainWeightDestinyByScaleAlt(session, itemId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             if (weights != null && weights[2] != 0.0) {
-                scaleHtml += composeHtmlTableKgPctRowAlternative(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
                 scaleRows++;
                 if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
                     scaleForce = true;
@@ -2106,7 +2767,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         if (scaleForce || scaleRows > 1) {
             body += scaleHtml; // more than one scale present or receptions done in a non-default scale
@@ -2116,12 +2777,12 @@ public abstract class SSomUtils {
 
         dateStart = SLibTimeUtils.getBeginOfMonth(date);
         dateEnd = SLibTimeUtils.getEndOfMonth(date);
-        weightsTots = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
+        weightsTots = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "mes '" + months[curMonth - 1] + ". " + curYear + "'";
 
         // SECTION 2.1. Current month summary by reporting group:
         
-        body += composeHtmlTableKgPctHeaderAlternative(section, "Proveedor");
+        body += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
 
         // compute reporting groups:
 
@@ -2130,20 +2791,20 @@ public abstract class SSomUtils {
         }
 
         while (repGroupResultSet.next()) {
-            weights = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+            weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
 
             if (weights != null && weights[2] != 0.0) {
-                body += composeHtmlTableKgPctRowAlternative(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                body += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
             }
         }
 
-        body += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        body += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
         
         // SECTION 2.2: Current month summary by scale: 
 
         scaleRows = 0;
         scaleForce = false;
-        scaleHtml = composeHtmlTableKgPctHeaderAlternative(section, "Báscula");
+        scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
 
         // compute scales:
 
@@ -2152,10 +2813,10 @@ public abstract class SSomUtils {
         }
 
         while (scaleResultSet.next()) {
-            weights = SSomUtils.obtainWeightDestinyByScaleAlternative(session, itemId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
+            weights = SSomUtils.obtainWeightDestinyByScaleAlt(session, itemId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             
             if (weights != null && weights[2] != 0.0) {
-                scaleHtml += composeHtmlTableKgPctRowAlternative(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
                 scaleRows++;
                 if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
                     scaleForce = true;
@@ -2163,7 +2824,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         if (scaleForce || scaleRows > 1) {
             body += scaleHtml; // more than one scale present or receptions done in a non-default scale
@@ -2189,12 +2850,12 @@ public abstract class SSomUtils {
 
         dateStart = dateSeasonStart;
         dateEnd = dateSeasonEnd;
-        weightsTots = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
+        weightsTots = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "temporada";
 
         // SECTION 3.1 Current season summary by reporting group:
 
-        body += composeHtmlTableKgPctHeaderAlternative(section, "Proveedor");
+        body += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
 
         // compute reporting groups:
 
@@ -2203,19 +2864,19 @@ public abstract class SSomUtils {
         }
 
         while (repGroupResultSet.next()) {
-            weights = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+            weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
             if (weights != null && weights[2] != 0.0) {
-                body += composeHtmlTableKgPctRowAlternative(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                body += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
             }
         }
 
-        body += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        body += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         // SECTION 3.2 Current season summary by scale:
 
         scaleRows = 0;
         scaleForce = false;
-        scaleHtml = composeHtmlTableKgPctHeaderAlternative(section, "Báscula");
+        scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
 
         // compute scales:
 
@@ -2224,10 +2885,10 @@ public abstract class SSomUtils {
         }
 
         while (scaleResultSet.next()) {
-            weights = SSomUtils.obtainWeightDestinyByScaleAlternative(session, itemId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
+            weights = SSomUtils.obtainWeightDestinyByScaleAlt(session, itemId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             
             if (weights != null && weights[2] != 0.0) {
-                scaleHtml += composeHtmlTableKgPctRowAlternative(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
                 scaleRows++;
                 if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
                     scaleForce = true;
@@ -2235,7 +2896,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         if (scaleForce || scaleRows > 1) {
             body += scaleHtml; // more than one scale present or receptions done in a non-default scale
@@ -2245,10 +2906,10 @@ public abstract class SSomUtils {
 
         dateStart = dateSeasonStart;
         dateEnd = dateSeasonEnd;
-        weightsTots = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
+        weightsTots = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "temporada";
 
-        body += composeHtmlTableKgPctHeaderAlternative(section, "Período");
+        body += composeHtmlTableKgPctHeaderAlt(section, "Período");
 
         // compute months:
 
@@ -2264,12 +2925,12 @@ public abstract class SSomUtils {
             dateStart = SLibTimeUtils.createDate(year, month);
             dateEnd = SLibTimeUtils.getEndOfMonth(dateStart);
 
-            weights = SSomUtils.obtainWeightDestinyByPeriodAlternative(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
-            body += composeHtmlTableKgPctRowAlternative("" + year + " " + months[month - 1] + ".", weights[0], weights[1], weights[2], weightsTots[2]);
+            weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
+            body += composeHtmlTableKgPctRowAlt("" + year + " " + months[month - 1] + ".", weights[0], weights[1], weights[2], weightsTots[2]);
             month++;
         }
 
-        body += composeHtmlTableKgPctFooterAlternative(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        body += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         // SECTION 5: History of all past seasons:
 
@@ -2318,7 +2979,6 @@ public abstract class SSomUtils {
         
         return body;
     }
-
     
     /**
      * Actualiza los boletos con el origen insumo del proveedor.
@@ -2360,5 +3020,298 @@ public abstract class SSomUtils {
             return resultSet.getString(1);
         }
         return "";
+    }
+    
+    /**
+     * Clase de utilerías para obtención de datos relativos a una fecha para la generación de reportes de recepción de insumos en báscula.
+     */
+    public static class DateSettings {
+        
+        public Date Today;
+        public int SeasonFirstMonth;
+        public int MonthFirstDay;
+        
+        /** Current "calendar" year. */
+        public int CurrentYear;
+        /** Current "calendar" month. */
+        public int CurrentMonth;
+        
+        /** Start of current "operative" month. */
+        public Date MonthStartDate;
+        /** End of current "operative" month. */
+        public Date MonthEndDate;
+        
+        /** Start of current "operative" season. */
+        public Date SeasonStartDate;
+        /** End of current "operative" season. */
+        public Date SeasonEndDate;
+        
+        /** Boundaries (starting and anding dates) of twelve months of season. */
+        public ArrayList<Date[]> SeasonMonthsBoundaries;
+        
+        /**
+         * Create a new instance of DatesSettings.
+         * @param today Today.
+         * @param seasonFirstMonth Season first month (1 = January; 0 = item's start month.)
+         * @param monthFirstDay Month first day (0 | 1 = 1st. of start month; > 1 = nth of previous month.)
+         * @throws Exception 
+         */
+        public DateSettings(final Date today, final int seasonFirstMonth, final int monthFirstDay) throws Exception {
+            // validate arguments:
+            
+            if (seasonFirstMonth < SLibTimeConsts.MONTH_MIN || seasonFirstMonth > SLibTimeConsts.MONTH_MAX) {
+                throw new Exception("El mes de inicio de temporada, " + seasonFirstMonth + ", debe estar entre " + SLibTimeConsts.MONTH_MIN + " y " + SLibTimeConsts.MONTH_MAX + ".");
+            }
+            
+            if (monthFirstDay < 1 || monthFirstDay > SCliConsts.MAX_MONTH_START_DAY) {
+                throw new Exception("El día de inicio de mes, " + monthFirstDay + ", debe estar entre " + 1 + " y " + SCliConsts.MAX_MONTH_START_DAY + ".");
+            }
+            
+            // process date settings:
+            
+            Today = today;
+            SeasonFirstMonth = seasonFirstMonth;
+            MonthFirstDay = monthFirstDay;
+            
+            int[] dateDigestion = SLibTimeUtils.digestDate(today); // 0 = year, 1 = month, 2 = day
+            int todayYear = dateDigestion[0];
+            int todayMonth = dateDigestion[1];
+            int todayDay = dateDigestion[2];
+            
+            if (MonthFirstDay == 1) {
+                // month starts on 1st.
+                
+                CurrentYear = todayYear;
+                CurrentMonth = todayMonth;
+                
+                MonthStartDate = SLibTimeUtils.createDate(CurrentYear, CurrentMonth, 1);
+                MonthEndDate = SLibTimeUtils.getEndOfMonth(MonthStartDate);
+            }
+            else {
+                // month starts after 1st.
+                
+                if (todayDay < MonthFirstDay) {
+                    // today belongs to "current" month:
+                    
+                    CurrentYear = todayYear;
+                    CurrentMonth = todayMonth;
+                    
+                    if (CurrentMonth > SLibTimeConsts.MONTH_JAN) {
+                        MonthStartDate = SLibTimeUtils.createDate(CurrentYear, CurrentMonth - 1, MonthFirstDay);
+                    }
+                    else {
+                        MonthStartDate = SLibTimeUtils.createDate(CurrentYear - 1, SLibTimeConsts.MONTH_DEC, MonthFirstDay);
+                    }
+                }
+                else {
+                    // today belongs to "next" month:
+                    
+                    if (todayMonth < SLibTimeConsts.MONTH_DEC) {
+                        CurrentYear = todayYear;
+                        CurrentMonth = todayMonth + 1;
+                    }
+                    else {
+                        CurrentYear = todayYear + 1;
+                        CurrentMonth = SLibTimeConsts.MONTH_JAN;
+                    }
+                    
+                    MonthStartDate = SLibTimeUtils.createDate(todayYear, todayMonth, MonthFirstDay);
+                }
+                
+                MonthEndDate = SLibTimeUtils.createDate(CurrentYear, CurrentMonth, MonthFirstDay - 1);
+            }
+            
+            int firstSeasonYear = CurrentMonth >= SeasonFirstMonth ? CurrentYear : CurrentYear - 1;
+            int firstSeasonMonth = SeasonFirstMonth - (MonthFirstDay == 1 ? 0 : 1);
+            
+            SeasonStartDate = SLibTimeUtils.createDate(firstSeasonYear, firstSeasonMonth, MonthFirstDay);
+            SeasonEndDate = SLibTimeUtils.addDate(SeasonStartDate, 1, MonthFirstDay == 1 ? 0 : 1, -1);
+            
+            SeasonMonthsBoundaries = new ArrayList<>();
+            
+            if (MonthFirstDay == 1) {
+                // month starts on 1st.
+                
+                int year = firstSeasonYear;
+                int month = firstSeasonMonth;
+                
+                for (int i = 0; i < SLibTimeConsts.MONTHS; i++, month++) {
+                    if (month > SLibTimeConsts.MONTH_DEC) {
+                        month = SLibTimeConsts.MONTH_JAN;
+                        year++;
+                    }
+                    
+                    Date start = SLibTimeUtils.createDate(year, month, 1);
+                    Date end = SLibTimeUtils.getEndOfMonth(start);
+                    
+                    SeasonMonthsBoundaries.add(new Date[] { start, end });
+                }
+            }
+            else {
+                // month starts after 1st.
+                
+                Date start = null;
+                Date end = null;
+                
+                for (int i = 0; i < SLibTimeConsts.MONTHS; i++) {
+                    if (start == null) {
+                        start = SeasonStartDate;
+                    }
+                    else {
+                        start = SLibTimeUtils.addDate(start, 0, 1, 0);
+                    }
+                    
+                    end = SLibTimeUtils.addDate(start, 0, 1, -1);
+                    
+                    SeasonMonthsBoundaries.add(new Date[] { start, end });
+                }
+            }
+        }
+
+        /**
+         * Check if season is outdated, that is if it does not start in January.
+         * @return <code>true</code> if season does not start in January.
+         */
+        public boolean isSeasonOutdated() {
+            return SeasonFirstMonth != SLibTimeConsts.MONTH_JAN;
+        }
+        
+        /**
+         * Check if month is outdated, that is if it does not start in the 1st.
+         * @return <code>true</code> if month does not start in the 1st.
+         */
+        public boolean isMonthOutdated() {
+            return MonthFirstDay != 1;
+        }
+        
+        /**
+         * Get period of current month in format "from A to B".
+         * @return Period of current month.
+         */
+        public String getCurrentMonthPeriod() {
+            return "del " + SLibUtils.DateFormatDate.format(MonthStartDate) + " al " + SLibUtils.DateFormatDate.format(MonthEndDate);
+        }
+        
+        /**
+         * Get period of current season in format "from A to B".
+         * @return Period of current season.
+         */
+        public String getCurrentSeasonPeriod() {
+            return "del " + SLibUtils.DateFormatDate.format(SeasonStartDate) + " al " + SLibUtils.DateFormatDate.format(SeasonEndDate);
+        }
+        
+        /**
+         * Get title for current season in format "yyyy" or "xxxx-yyyy" if season is outdated.
+         * @return 
+         */
+        public String getCurrentSeasonTitle() {
+            String season;
+            
+            if (SeasonFirstMonth == SLibTimeConsts.MONTH_JAN && MonthFirstDay == 1) {
+                season = "" + SLibTimeUtils.digestYear(SeasonStartDate)[0];
+            }
+            else {
+                season = "" + SLibTimeUtils.digestYear(SeasonStartDate)[0] + "-" + SLibTimeUtils.digestYear(SeasonEndDate)[0];
+            }
+            
+            return season;
+        }
+        
+        /**
+         * Get season information.
+         * @return 
+         */
+        public String getCurrentSeasonInfo() {
+            String info = "";
+            
+            info += "Inicio temporada: "
+                    + "mes " + SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[SeasonFirstMonth - 1] + "; "
+                    + "día " + SLibUtils.DateFormatDate.format(SeasonStartDate) + ". ";
+            
+            if (isMonthOutdated()) {
+                info += "Día corte mensual: " + (MonthFirstDay - 1) + ".";
+            }
+            else {
+                info += "Día inicio mensual: " + MonthFirstDay + ".";
+            }
+            
+            return info;
+        }
+        
+        /**
+         * Get seasons information.
+         * @return 
+         */
+        public String getSeasonsInfo() {
+            String info = "";
+            
+            info += "Inicio temporadas: "
+                    + "mes " + SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[SeasonFirstMonth - 1] + ". ";
+            
+            if (isMonthOutdated()) {
+                info += "Día corte mensual: " + (MonthFirstDay - 1) + ".";
+            }
+            else {
+                info += "Día inicio mensual: " + MonthFirstDay + ".";
+            }
+            
+            return info;
+        }
+        
+        /**
+         * Create boundaries of seasons years.
+         * @param firstYear First year.
+         * @return Array of seasons years boudaries, within each element is a season start (index 0) and end (index 1) dates.
+         */
+        public ArrayList<Date[]> createSeasonsYearsBoundaries(final int firstYear) throws Exception {
+            ArrayList<Date[]> boundaries = new ArrayList<>();
+            
+            if (firstYear > CurrentYear) {
+                throw new Exception("El primer año, " + firstYear + ", no puede ser mayor al año actual, " + CurrentYear + ".");
+            }
+            
+            for (int year = firstYear; year <= CurrentYear; year++) {
+                Date start = SLibTimeUtils.createDate(year, SeasonFirstMonth, MonthFirstDay);
+                Date end = SLibTimeUtils.addDate(start, 1, 0, -1);
+                boundaries.add(new Date[] { start, end });
+            }
+            
+            return boundaries;
+        }
+        
+        public String getSeasonMonthsBoundariesAsString() {
+            return DateSettings.getSeasonMonthsBoundariesAsString(SeasonMonthsBoundaries);
+        }
+        
+        @Override
+        public String toString() {
+            String string = "";
+            
+            string += "Today: " + SLibUtils.IsoFormatDate.format(Today) + "; ";
+            string += "MonthStartDay: " + MonthFirstDay + "; ";
+            string += "SeasonFirstMonth: " + SeasonFirstMonth + "; ";
+
+            string += "CurrentYear: " + CurrentYear + "; ";
+            string += "CurrentMonth: " + CurrentMonth + "; ";
+
+            string += "MonthStartDate: " + SLibUtils.IsoFormatDate.format(MonthStartDate) + "; ";
+            string += "MonthEndDate: " + SLibUtils.IsoFormatDate.format(MonthEndDate) + "; ";
+            
+            string += "SeasonStartDate: " + SLibUtils.IsoFormatDate.format(SeasonStartDate) + "; ";
+            string += "SeasonEndDate: " + SLibUtils.IsoFormatDate.format(SeasonEndDate) + "; ";
+            string += "SeasonMonthsBoundaries.size(): " + SeasonMonthsBoundaries.size() + ".";
+            
+            return string;
+        }
+        
+        public static String getSeasonMonthsBoundariesAsString(final ArrayList<Date[]> boundaries) {
+            String string = "";
+            
+            for (Date[] boundary : boundaries) {
+                string += (string.isEmpty() ? "" : "\n") + SLibUtils.IsoFormatDate.format(boundary[0]) + " - " + SLibUtils.IsoFormatDate.format(boundary[1]);
+            }
+            
+            return string;
+        }
     }
 }

@@ -37,8 +37,8 @@ import som.mod.som.db.SSomConsts;
 import som.mod.som.db.SSomUtils;
 
 /**
- *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín, Adrián Avilés
+ * Forma de captura del catálogo de ítems.
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín, Adrián Avilés, Sergio Flores
  * 2018-12-11, Sergio Flores: Adición de parámetros de fruta.
  * 2019-01-07, Sergio Flores: Adición de ajuste de rendimiento para parámetros de fruta.
  */

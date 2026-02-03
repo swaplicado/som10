@@ -20,10 +20,11 @@ import som.mod.cfg.db.SDbCompany;
 import som.mod.som.db.SSomMailUtils;
 
 /**
+ * CLI mailer of report of summary of day, week, month and season of oil seeds at scale (in HTML format).
  *
- * @author Isabel Servín
+ * @author Isabel Servín, Sergio Flores
  */
-public class SCliReportMailerSeedReceptions {
+public class SCliMailerReportSeeds {
     
     private static SGuiSession moSession;
     
@@ -77,7 +78,7 @@ public class SCliReportMailerSeedReceptions {
             run(mailTo, mailBcc);
         }
         catch (Exception e) {
-            SLibUtils.printException(SCliReportMailerSeedReceptions.class.getName(), e);
+            SLibUtils.printException(SCliMailerReportSeeds.class.getName(), e);
         }
     }
     
@@ -114,7 +115,7 @@ public class SCliReportMailerSeedReceptions {
         
         if (receptionMail.equals("1")) {
             int daysToSendMail = ordinaryPeriod ? noReceptionIn : noReceptionOut;
-            SSomMailUtils.computeMailReceptions(moSession, date, date, SModSysConsts.SU_TIC_ORIG_PRV, 0, true, ordinaryPeriod, noReceptionMail, daysToSendMail, mailTo, mailBcc);
+            SSomMailUtils.computeMailReceptions(moSession, date, date, SModSysConsts.SU_TIC_ORIG_SUP, 0, true, ordinaryPeriod, noReceptionMail, daysToSendMail, mailTo, mailBcc);
         }
         else {
             int maxId = 0;

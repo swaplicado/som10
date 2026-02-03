@@ -10,7 +10,7 @@ import sa.lib.gui.SGuiItem;
 
 /**
  *
- * @author Sergio Flores, Isabel Servín, Edwin Carmona
+ * @author Sergio Flores, Isabel Servín, Edwin Carmona, Sergio Flores
  */
 public abstract class SModSysConsts {
     
@@ -210,13 +210,13 @@ public abstract class SModSysConsts {
     public static final int SU_OIL_GRP_FAM_OTHER_SEEDS = 3;
     public static final int SU_OIL_GRP_FAM_OTHER_AVO = 4;
     
-    public static final int SU_TIC_ORIG_NA = 1;
-    public static final int SU_TIC_ORIG_PRV = 11;
-    public static final int SU_TIC_ORIG_EXW = 12;
+    public static final int SU_TIC_ORIG_NA = 1; // not applicable
+    public static final int SU_TIC_ORIG_SUP = 11; // supplier
+    public static final int SU_TIC_ORIG_EXW = 12; // external warehouse
 
-    public static final int SU_TIC_DEST_NA = 1;
-    public static final int SU_TIC_DEST_PTA = 11;
-    public static final int SU_TIC_DEST_EXW = 12;
+    public static final int SU_TIC_DEST_NA = 1; // not applicable
+    public static final int SU_TIC_DEST_FAC = 11; // factory
+    public static final int SU_TIC_DEST_EXW = 12; // external warehouse
     
     public static final int SU_FREIGHT_ORIG_NA = 1;
 

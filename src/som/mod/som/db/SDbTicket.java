@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Vector;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
-import sa.lib.SLibTimeUtils;
+import sa.lib.SLibTimeConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistry;
@@ -25,13 +25,15 @@ import sa.lib.gui.SGuiSession;
 import sa.lib.mail.SMail;
 import sa.lib.mail.SMailConsts;
 import sa.lib.mail.SMailSender;
+import som.cli.SCliConsts;
+import som.cli.SCliMailerReportFruitsStdSummary;
 import som.gui.SGuiClientSessionCustom;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
+ * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín, Sergio Flores
  * 2019-01-07, Sergio Flores: Mostrar solo proveedores con movimientos en sección período actual, en notificación automática de recepción de boletos.
  * 2019-01-17, Sergio Flores: Mejoras reporte automático vía mail al tarar boletos:
  *   a) remoción de proveedores sin movimientos en todas las secciones. Antes aparecían todos.
@@ -160,10 +162,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     protected boolean mbAuxMoveNextOnSave;
     protected boolean mbAuxRequirePriceComputation;
-    protected boolean mbAuxItemSendMail;
-    protected String msAuxItemRecipientsTo;
-    protected boolean mbAuxProducerSendMail;
-    protected String msAuxProducerRecipientsTo;
+    protected boolean mbAuxSendMailOnSaveForItems;
+    protected String msAuxMailRecipientsForItems;
+    protected boolean mbAuxSendMailOnSaveForProducer;
+    protected String msAuxMailRecipientsForProducer;
 
     protected Vector<SDbTicketNote> mvChildTicketNotes;
     protected Vector<SDbLaboratory> mvChildLaboratories;
@@ -182,7 +184,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     /**
      * Send mail when ticket tared.
      * @param session Current user session.
-     * @param producerId Zero or ID of producer. When zero, a summary of all receptions is included. Otherwise, when non-zero, only the ticket info is rendered.
+     * @param producerId Zero or ID of producer. When is zero, a summary of all receptions is included. Otherwise only the ticket info is rendered.
      */
     private void sendMail(final SGuiSession session, final int producerId) {
         String subject;
@@ -190,10 +192,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         String section;
 
         try {
-            if ((producerId == 0 && !msAuxItemRecipientsTo.isEmpty()) || (producerId != 0 && !msAuxProducerRecipientsTo.isEmpty())) {
-                int[] curDate = SLibTimeUtils.digestDate(mtDate);
-                int curYear = curDate[0];
-                int curMonth = curDate[1];
+            if ((producerId == 0 && !msAuxMailRecipientsForItems.isEmpty()) || (producerId != 0 && !msAuxMailRecipientsForProducer.isEmpty())) {
                 SDbItem item = (SDbItem) session.readRegistry(SModConsts.SU_ITEM, new int[] { mnFkItemId });
                 SDbProducer prodr = (SDbProducer) session.readRegistry(SModConsts.SU_PROD, new int[] { mnFkProducerId });
                 String itemName = SLibUtils.textProperCase(item.getName());
@@ -221,7 +220,20 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
                 if (producerId == 0) {
                     // A summary of all receptions is about to be included:
-                    body += SSomUtils.composeHtmlSummaryItem(session, mnFkItemId, mtDate, 1, SModSysConsts.SU_TIC_ORIG_PRV, 0);
+                    
+                    int seasonFirstMonth;
+                    int monthFirstDay;
+                    
+                    if (item.getStartingSeasonMonth() <= SLibTimeConsts.MONTH_JAN) {
+                        seasonFirstMonth = SLibTimeConsts.MONTH_JAN;
+                        monthFirstDay = 1;
+                    }
+                    else {
+                        seasonFirstMonth = SCliConsts.FRUIT_SEASON_FIRST_MONTH;
+                        monthFirstDay = SCliConsts.FRUIT_MONTH_FIRST_DAY;
+                    }
+                    
+                    body += SSomUtils.composeHtmlSummaryItem(session, mnFkItemId, seasonFirstMonth, monthFirstDay, mtDate, SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD, SModSysConsts.SU_TIC_ORIG_SUP, 0);
                 }
                 
                 // Add mail warning:
@@ -241,11 +253,12 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     ((SGuiClientSessionCustom) session.getSessionCustom()).getCompany().getMailNotificationConfigUser());
 
                 ArrayList<String> recipients;
+                
                 if (producerId == 0) {
-                    recipients = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(msAuxItemRecipientsTo, ";")));
+                    recipients = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(msAuxMailRecipientsForItems, ";")));
                 }
                 else {
-                    recipients = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(msAuxProducerRecipientsTo, ";")));
+                    recipients = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(msAuxMailRecipientsForProducer, ";")));
                 }
                 
                 SMail mail = new SMail(sender, subject, body, recipients);
@@ -450,10 +463,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public void setAuxMoveNextOnSend(boolean b) { mbAuxMoveNextOnSave = b; }
     public void setAuxRequirePriceComputation(boolean b) { mbAuxRequirePriceComputation = b; }
-    public void setAuxItemSendMail(boolean b) { mbAuxItemSendMail = b; }
-    public void setAuxItemRecipientsTo(String s) { msAuxItemRecipientsTo = s; }
-    public void setAuxProducerSendMail(boolean b) { mbAuxProducerSendMail = b; }
-    public void setAuxProducerRecipientsTo(String s) { msAuxProducerRecipientsTo = s; }
+    public void setAuxSendMailOnSaveForItems(boolean b) { mbAuxSendMailOnSaveForItems = b; }
+    public void setAuxMailRecipientsForItems(String s) { msAuxMailRecipientsForItems = s; }
+    public void setAuxSendMailOnSaveForProducer(boolean b) { mbAuxSendMailOnSaveForProducer = b; }
+    public void setAuxMailRecipientsForProducer(String s) { msAuxMailRecipientsForProducer = s; }
 
     public String getXtaScaleName() { return msXtaScaleName; }
     public String getXtaScaleCode() { return msXtaScaleCode; }
@@ -470,10 +483,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public boolean isAuxMoveNextOnSend() { return mbAuxMoveNextOnSave; }
     public boolean isAuxRequirePriceComputation() { return mbAuxRequirePriceComputation; }
-    public boolean isAuxItemSendMail() { return mbAuxItemSendMail; }
-    public String getAuxItemRecipientsTo() { return msAuxItemRecipientsTo; }
-    public boolean isAuxProducerSendMail() { return mbAuxProducerSendMail; }
-    public String getAuxProducerRecipientsTo() { return msAuxProducerRecipientsTo; }
+    public boolean isAuxSendMailOnSaveForItems() { return mbAuxSendMailOnSaveForItems; }
+    public String getAuxMailRecipientsForItems() { return msAuxMailRecipientsForItems; }
+    public boolean isAuxSendMailOnSaveForProducer() { return mbAuxSendMailOnSaveForProducer; }
+    public String getAuxMailRecipientsForProducer() { return msAuxMailRecipientsForProducer; }
 
     public Vector<SDbTicketNote> getChildTicketNotes() { return mvChildTicketNotes; }
     public Vector<SDbLaboratory> getChildLaboratories() { return mvChildLaboratories; }
@@ -600,10 +613,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
         mbAuxMoveNextOnSave = false;
         mbAuxRequirePriceComputation = false;
-        mbAuxItemSendMail = false;
-        msAuxItemRecipientsTo = "";
-        mbAuxProducerSendMail = false;
-        msAuxProducerRecipientsTo = "";
+        mbAuxSendMailOnSaveForItems = false;
+        msAuxMailRecipientsForItems = "";
+        mbAuxSendMailOnSaveForProducer = false;
+        msAuxMailRecipientsForProducer = "";
 
         mvChildTicketNotes.clear();
         mvChildLaboratories.clear();
@@ -1060,11 +1073,11 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             }
         }
 
-        if (mbAuxItemSendMail) {
+        if (mbAuxSendMailOnSaveForItems) {
             sendMail(session, 0);
         }
         
-        if (mbAuxProducerSendMail) {
+        if (mbAuxSendMailOnSaveForProducer) {
             sendMail(session, mnFkProducerId);
         }
 
@@ -1181,10 +1194,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
         registry.setAuxMoveNextOnSend(this.isAuxMoveNextOnSend());
         registry.setAuxRequirePriceComputation(this.isAuxRequirePriceComputation());
-        registry.setAuxItemSendMail(this.isAuxItemSendMail());
-        registry.setAuxItemRecipientsTo(this.getAuxItemRecipientsTo());
-        registry.setAuxProducerSendMail(this.isAuxProducerSendMail());
-        registry.setAuxProducerRecipientsTo(this.getAuxProducerRecipientsTo());
+        registry.setAuxSendMailOnSaveForItems(this.isAuxSendMailOnSaveForItems());
+        registry.setAuxMailRecipientsForItems(this.getAuxMailRecipientsForItems());
+        registry.setAuxSendMailOnSaveForProducer(this.isAuxSendMailOnSaveForProducer());
+        registry.setAuxMailRecipientsForProducer(this.getAuxMailRecipientsForProducer());
 
         for (SDbTicketNote child : mvChildTicketNotes) {
             registry.getChildTicketNotes().add(child.clone());

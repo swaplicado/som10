@@ -6,9 +6,9 @@
 package som.cli;
 
 import java.util.Date;
+import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiSession;
-import som.mod.som.db.SDbItem;
 import som.mod.som.db.SSomMailUtils;
 import som.mod.som.db.SSomUtils;
 
@@ -26,14 +26,14 @@ public class SReportHtmlScaleSummaryAlternative {
     
     /**
      * Generates report in HTML 5 format.
-     * @param itemIds List of ID of items.
+     * @param itemIdsPairs Array of pairs of ID of items to report.
      * @param date Date.
-     * @param ticOrig
-     * @param ticDest
+     * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
+     * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final String[] itemIds, final Date date, final int ticOrig, final int ticDest) throws Exception {
+    public String generateReportHtml(final String[] itemIdsPairs, final Date date, final int ticketOrigin, final int ticketDestination) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -79,9 +79,13 @@ public class SReportHtmlScaleSummaryAlternative {
                 + " text-align: center;"
                 + " background-color: DarkSlateGray;"
                 + " color: white;"
+                + " word-break: keep-all;"
+                + " white-space: nowrap;"
                 + "} "
                 + "td {"
                 + " padding: 2px;"
+                + " word-break: keep-all;"
+                + " white-space: nowrap;"
                 + "} "
                 + "td.colmonth {"
                 + " text-align: left;"
@@ -98,15 +102,13 @@ public class SReportHtmlScaleSummaryAlternative {
                 + " font-size: 0.75em;"
                 + " font-family: sans-serif;"
                 + "} "
-                + "td.Forms {"
-                + "white-space: nowrap;"
-                + "}"
                 + "td.coldatapctmax {"
                 + " text-align: center;"
                 + " font-size: 0.75em;"
                 + " font-family: sans-serif;"
                 + " background-color: PaleTurquoise;"
-                + "}\n"
+                + "}"
+                + "\n"
                 + "</style>\n";
         
         html += "</head>\n";
@@ -121,22 +123,34 @@ public class SReportHtmlScaleSummaryAlternative {
         
         // HTML heading 1 (main title):
         
-        html += "<h2>" + SLibUtils.textToHtml("Resumen báscula " + SLibUtils.DateFormatDate.format(date)) + "</h2>\n";
-        html += "<p>" + SLibUtils.textToHtml("Fecha-hora emisión: " + SLibUtils.textToHtml(SLibUtils.DateFormatDatetime.format(now))) + "</p>\n";
+        html += "<h2>" + SLibUtils.textToHtml("Resumen de báscula: Recepción de fruta") + "</h2>\n";
+        
+        if (SLibTimeUtils.isSameDate(date, now)) {
+            html += "<p>" + SLibUtils.textToHtml("Fecha-hora de corte y emisión: " + SLibUtils.DateFormatDatetime.format(now) + ".") + "</p>\n";
+        }
+        else {
+            html += "<p>" + SLibUtils.textToHtml("Fecha de corte: " + SLibUtils.DateFormatDate.format(date) + ".") + "</p>\n";
+            html += "<p>" + SLibUtils.textToHtml("Fecha-hora de emisión: " + SLibUtils.DateFormatDatetime.format(now) + ".") + "</p>\n";
+        }
         
         // process list of items for report:
 
-        for (String itemId : itemIds) {
-            String[] ids = itemId.split("-");
-            int convId = SLibUtils.parseInt(ids[0]);
-            int altId = SLibUtils.parseInt(ids[1]);
-            // read requested item for report:
-            SDbItem item = new SDbItem();
-            item.read(moSession, new int[] { convId });
+        boolean processingFirstItem = true;
+
+        for (String itemIdsPair : itemIdsPairs) {
+            if (!processingFirstItem) {
+                html += "<hr>\n";
+            }
+            
+            String[] ids = itemIdsPair.split("-");
+            int itemCnvId = SLibUtils.parseInt(ids[0]);
+            int itemAltId = SLibUtils.parseInt(ids[1]);
             
             // compose summary:
-            html += "<h1>" + SLibUtils.textToHtml("AGUACATE CONVENCIONAL Y ORGÁNICO") + "</h1>\n";
-            html += SSomUtils.composeHtmlSummaryItemAlternative(moSession, convId, altId, date, ticOrig, ticDest);
+            html += "<h1>" + SLibUtils.textToHtml(SCliConsts.ItemsPairsNames.get(itemIdsPair).toUpperCase()) + "</h1>\n";
+            html += SSomUtils.composeHtmlSummaryItemAlt(moSession, itemCnvId, itemAltId, SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, date, ticketOrigin, ticketDestination);
+            
+            processingFirstItem = false;
         }
         
         html += SSomMailUtils.composeSomAlternativeMailWarning();
