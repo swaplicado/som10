@@ -194,8 +194,8 @@ public class SFormInputType extends sa.lib.gui.bean.SBeanForm {
 
         moKeyInputCategory.setValue(new int[] { idCategory });
         moKeyInputClass.setValue(new int[] { idCategory, idClass });
-        moTextName.setValue(moRegistry.getName());
         moTextCode.setValue(moRegistry.getCode());
+        moTextName.setValue(moRegistry.getName());
 
         setFormEditable(true);
 

@@ -1034,7 +1034,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
         jbRestart.setEnabled(false);
         jbEdit.setEnabled(false);
         jbReadInfo.setEnabled(false);
-        moBoolValidate.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_VLR));
+        moBoolValidate.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_LAB_VAL));
     }
 
     private void setLaboratoryTestResults(SDbWahLabTest labTest) {
@@ -1356,7 +1356,7 @@ public class SFormWahLab extends SBeanForm implements SGridPaneFormOwner, Action
     
     private void editRegistry() {
         if (moBoolValidate.getValue()) {
-            if (!miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_VLR)) {
+            if (!miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_LAB_VAL)) {
                 enableSaveComponents(false);
                 jbRestart.setEnabled(false);
             }

@@ -17,7 +17,7 @@ import som.mod.som.db.SDbInputCategory;
 
 /**
  *
- * @author Sergio Flores, Isabel Servín
+ * @author Sergio Flores, Isabel Servín, Sergio Flores
  */
 public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
 
@@ -188,8 +188,8 @@ public class SFormInputCategory extends sa.lib.gui.bean.SBeanForm {
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
         }
 
-        moTextName.setValue(moRegistry.getName());
         moTextCode.setValue(moRegistry.getCode());
+        moTextName.setValue(moRegistry.getName());
         jchWarehouseRequired.setSelected(moRegistry.isWareouseUnloadRequired());
         
         for (int i = 1; i <= SModSysConsts.SX_REQ_FRE_CODE.size(); i++) {

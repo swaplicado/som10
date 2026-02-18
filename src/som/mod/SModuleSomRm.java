@@ -28,14 +28,20 @@ import sa.lib.gui.SGuiReport;
 import som.mod.ext.db.SExtUtils;
 import som.mod.ext.form.SDialogRepComparativeTicket;
 import som.mod.mat.db.SDbEmployee;
+import som.mod.mat.db.SDbExwAdjustment;
+import som.mod.mat.db.SDbExwAdjustmentType;
+import som.mod.mat.db.SDbExwFacility;
 import som.mod.mat.db.SDbMaterialCondition;
 import som.mod.mat.db.SDbShift;
 import som.mod.mat.db.SDbStockMovement;
 import som.mod.mat.form.SFormEmployee;
+import som.mod.mat.form.SFormExwAdjustment;
 import som.mod.mat.form.SFormMaterialCondition;
 import som.mod.mat.form.SFormShift;
 import som.mod.mat.form.SFormWarehouseMovements;
 import som.mod.mat.view.SViewEmployee;
+import som.mod.mat.view.SViewExwAdjustments;
+import som.mod.mat.view.SViewExwStock;
 import som.mod.mat.view.SViewMaterialCondition;
 import som.mod.mat.view.SViewShift;
 import som.mod.mat.view.SViewStock;
@@ -89,7 +95,7 @@ import som.mod.som.form.SFormTicketDestination;
 import som.mod.som.form.SFormTicketMgmt;
 import som.mod.som.form.SFormTicketOrigin;
 import som.mod.som.form.SFormTicketSeasonRegion;
-import som.mod.som.form.SFormTicketWahUnld;
+import som.mod.som.form.SFormTicketWahUnload;
 import som.mod.som.form.SFormWarehouseStart;
 import som.mod.som.view.SViewFreightOrigin;
 import som.mod.som.view.SViewGrindingEvents;
@@ -106,6 +112,7 @@ import som.mod.som.view.SViewSupraRegion;
 import som.mod.som.view.SViewTicket;
 import som.mod.som.view.SViewTicketAlternative;
 import som.mod.som.view.SViewTicketDestination;
+import som.mod.som.view.SViewTicketExwUpdateLog;
 import som.mod.som.view.SViewTicketOrigin;
 import som.mod.som.view.SViewTicketTare;
 import som.mod.som.view.SViewTicketWahUnld;
@@ -144,15 +151,17 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCfgSeasonProducer;
     private JMenuItem mjCfgRegions;
     private JMenuItem mjCfgSupraRegions;
-    private JMenu mjTic;   // Tickets
+    private JMenu mjTic;   // Scale tickets
     private JMenuItem mjTicTicketSca;
     private JMenuItem mjTicTicketLab;
     private JMenuItem mjTicTicketAdm;
     private JMenuItem mjTicTicketAll;
     private JMenuItem mjTicTarePend;
     private JMenuItem mjTicTare;
-    private JMenuItem mjTicWahNAsigned;
-    private JMenuItem mjTicWahAsigned;
+    private JMenuItem mjTicWahNotUnloaded;
+    private JMenuItem mjTicWahUnloaded;
+    private JMenuItem mjTicExwUpdateLogByUpdateDate;
+    private JMenuItem mjTicExwUpdateLogByTicketDate;
     private JMenuItem mjTicManSupplierItem;
     private JMenuItem mjTicManSupplierInputType;
     private JMenuItem mjTicRank;
@@ -180,6 +189,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjStkTicxRec;
     private JMenuItem mjStkTicRecibed;
     private JMenuItem mjStkTicWithMov;
+    private JMenuItem mjStkExwStockByItem;
+    private JMenuItem mjStkExwStockByItemExw;
+    private JMenuItem mjStkExwAdjustments;
     private JMenuItem mjStkTicWithoutMov;
     private JMenuItem mjStkMatCond;
     private JMenuItem mjStkShift;
@@ -208,12 +220,13 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private SFormLaboratory moFormLaboratory;
     private SFormLaboratoryAlternative moFormLaboratoryAlternative;
     private SFormTicket moFormTicket;
-    private SFormTicketAlternative moFormTicketAlternative;
     private SFormTicket moFormTicketTare;
-    private SFormWarehouseStart moFormWarehouseStart;
-    private SFormTicketWahUnld moFormTicketWahUnld;
+    private SFormTicket moFormTicketUpdate;
+    private SFormTicketAlternative moFormTicketAlternative;
+    private SFormTicketWahUnload moFormTicketWahUnload;
     private SFormTicketMgmt moFormTicketMgmt;
     private SFormTicketSeasonRegion moFormTicketSeasonRegion;
+    private SFormWarehouseStart moFormWarehouseStart;
     private SFormSeasonRegion moFormSeasonRegion;
     private SFormSeasonProducer moFormSeasonProducer;
     private SFormTicketOrigin moFormTicketOrigin;
@@ -226,6 +239,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private SFormShift moFormShift;
     private SFormEmployee moFormEmployee;
     private SFormWarehouseMovements moFormTicketMovements;
+    private SFormExwAdjustment moFormExwAdjustmentIn;
+    private SFormExwAdjustment moFormExwAdjustmentOut;
     private SDialogTicketDivisionProcess moDialogTicketDivision;
 
     public SModuleSomRm(SGuiClient client) {
@@ -322,8 +337,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicTicketAll = new JMenuItem("Boletos (todos)");
         mjTicTarePend = new JMenuItem("Boletos por tarar");
         mjTicTare = new JMenuItem("Boletos tarados");
-        mjTicWahNAsigned = new JMenuItem("Boletos por descargar");
-        mjTicWahAsigned = new JMenuItem("Boletos descargados");
+        mjTicWahNotUnloaded = new JMenuItem("Boletos por descargar");
+        mjTicWahUnloaded = new JMenuItem("Boletos descargados");
+        mjTicExwUpdateLogByUpdateDate = new JMenuItem("Modificaciones de procedencia y destino por fecha de modificación");
+        mjTicExwUpdateLogByTicketDate = new JMenuItem("Modificaciones de procedencia y destino por fecha de boleto");
         mjTicManSupplierItem = new JMenuItem("Boletos por proveedor por ítem");
         mjTicManSupplierInputType = new JMenuItem("Boletos por proveedor por tipo de insumo");
         mjTicRank = new JMenuItem("Clasificar boletos sin temporada y/o región...");
@@ -337,8 +354,11 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTic.add(mjTicTarePend);
         mjTic.add(mjTicTare);
         mjTic.addSeparator();
-        mjTic.add(mjTicWahNAsigned);
-        mjTic.add(mjTicWahAsigned);
+        mjTic.add(mjTicWahNotUnloaded);
+        mjTic.add(mjTicWahUnloaded);
+        mjTic.addSeparator();
+        mjTic.add(mjTicExwUpdateLogByUpdateDate);
+        mjTic.add(mjTicExwUpdateLogByTicketDate);
         mjTic.addSeparator();
         mjTic.add(mjTicManSupplierItem);
         mjTic.add(mjTicManSupplierInputType);
@@ -353,8 +373,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjTicTicketAll.addActionListener(this);
         mjTicTarePend.addActionListener(this);
         mjTicTare.addActionListener(this);
-        mjTicWahNAsigned.addActionListener(this);
-        mjTicWahAsigned.addActionListener(this);
+        mjTicWahNotUnloaded.addActionListener(this);
+        mjTicWahUnloaded.addActionListener(this);
+        mjTicExwUpdateLogByUpdateDate.addActionListener(this);
+        mjTicExwUpdateLogByTicketDate.addActionListener(this);
         mjTicManSupplierItem.addActionListener(this);
         mjTicManSupplierInputType.addActionListener(this);
         mjTicRank.addActionListener(this);
@@ -415,6 +437,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjStkTicRecibed = new JMenuItem("Boletos recibidos de MP");
         mjStkTicWithoutMov = new JMenuItem("Boletos sin movimientos de almacén de MP");
         mjStkTicWithMov = new JMenuItem("Boletos con movimientos de almacén de MP");
+        mjStkExwStockByItem = new JMenuItem("Existencias en almacenes externos por ítem");
+        mjStkExwStockByItemExw = new JMenuItem("Existencias en almacenes externos por ítem y almacén");
+        mjStkExwAdjustments = new JMenuItem("Ajustes de existencias de almacenes externos");
         mjStkMatCond = new JMenuItem("Estados de MP");
         mjStkShift = new JMenuItem("Turnos de almacén de MP");
         mjStkEmployee = new JMenuItem("Empleados de almacén de MP");
@@ -432,6 +457,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjStk.add(mjStkTicWithoutMov);
         mjStk.add(mjStkTicWithMov);
         mjStk.addSeparator();
+        mjStk.add(mjStkExwStockByItem);
+        mjStk.add(mjStkExwStockByItemExw);
+        mjStk.add(mjStkExwAdjustments);
+        mjStk.addSeparator();
         mjStk.add(mjStkMatCond);
         mjStk.add(mjStkShift);
         mjStk.add(mjStkEmployee);
@@ -447,6 +476,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjStkTicRecibed.addActionListener(this);
         mjStkTicWithoutMov.addActionListener(this);
         mjStkTicWithMov.addActionListener(this);
+        mjStkExwStockByItem.addActionListener(this);
+        mjStkExwStockByItemExw.addActionListener(this);
+        mjStkExwAdjustments.addActionListener(this);
         mjStkMatCond.addActionListener(this);
         mjStkShift.addActionListener(this);
         mjStkEmployee.addActionListener(this);
@@ -506,33 +538,35 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         
         mjCfg.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
 
-        mjTic.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SUP_SCA, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_REP_RM }));
-        mjTicTicketSca.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SUP_SCA }));
-        mjTicTicketLab.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB }));
+        mjTic.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SCA_SUP, SModSysConsts.CS_RIG_LAB_SUP, SModSysConsts.CS_RIG_REP_RM }));
+        mjTicTicketSca.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SCA_SUP }));
+        mjTicTicketLab.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_LAB_SUP }));
         mjTicTicketAdm.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
         mjTicTicketAll.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
-        mjTicTarePend.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SUP_SCA }));
-        mjTicTare.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SUP_SCA }));
-        mjTicWahNAsigned.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
-        mjTicWahAsigned.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
+        mjTicTarePend.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SCA_SUP }));
+        mjTicTare.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_SCA_SUP }));
+        mjTicWahNotUnloaded.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
+        mjTicWahUnloaded.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
+        mjTicExwUpdateLogByUpdateDate.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RM_STK_SUP, SModSysConsts.CS_RIG_RM_STK_MAN }));
+        mjTicExwUpdateLogByTicketDate.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RM_STK_SUP, SModSysConsts.CS_RIG_RM_STK_MAN }));
         mjTicManSupplierItem.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
         mjTicManSupplierInputType.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
         mjTicRank.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_MAN_RM));
-        mjTicSearch.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_SCA, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_REP_RM }));
+        mjTicSearch.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_SCA, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SCA_SUP, SModSysConsts.CS_RIG_LAB_SUP, SModSysConsts.CS_RIG_REP_RM }));
         
-        mjGrindingSeed.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
-        mjGrindingAvoc.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
+        mjGrindingSeed.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_LAB_SUP, SModSysConsts.CS_RIG_DIS_RM }));
+        mjGrindingAvoc.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_LAB_SUP, SModSysConsts.CS_RIG_DIS_RM }));
 
-        mjQa.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_SUP_LAB, SModSysConsts.CS_RIG_DIS_RM }));
+        mjQa.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM, SModSysConsts.CS_RIG_LAB, SModSysConsts.CS_RIG_LAB_SUP, SModSysConsts.CS_RIG_DIS_RM }));
         mjQaWahStart.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
         mjQaOilMoiPond.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_DIS_RM }));
 
         mjRep.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_MAN_RM, SModSysConsts.CS_RIG_REP_RM }));
         
-        mjStk.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RMEC, SModSysConsts.CS_RIG_RMES, SModSysConsts.CS_RIG_RMEA }));
-        mjStkMatCond.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_RMEA));
-        mjStkShift.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_RMEA));
-        mjStkEmployee.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_RMEA));
+        mjStk.setEnabled(miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RM_STK_DEO, SModSysConsts.CS_RIG_RM_STK_SUP, SModSysConsts.CS_RIG_RM_STK_MAN }));
+        mjStkMatCond.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_RM_STK_MAN));
+        mjStkShift.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_RM_STK_MAN));
+        mjStkEmployee.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_RM_STK_MAN));
     }
 
     /*
@@ -598,6 +632,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 registry = new SDbWarehouseStart();
                 break;
             case SModConsts.S_TIC:
+            case SModConsts.S_TIC_EXW_UPD_LOG:
             case SModConsts.SX_TIC_LAB:
             case SModConsts.SX_TIC_TARE:
             case SModConsts.SX_TIC_WAH_UNLD:
@@ -624,8 +659,14 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.MU_EMP:
                 registry = new SDbEmployee();
                 break;
+            case SModConsts.MU_EXW_FAC:
+                registry = new SDbExwFacility();
+                break;
             case SModConsts.M_MVT:
                 registry = new SDbStockMovement();
+                break;
+            case SModConsts.M_EXW_ADJ:
+                registry = new SDbExwAdjustment();
                 break;
             case SModConsts.SX_TIC_DIV_PROC:
                 registry = new SDbTicketDivisionProcess();
@@ -660,13 +701,13 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.SU_TIC_ORIG:
                 settings = new SGuiCatalogueSettings("Procedencia del boleto", 1);
-                sql = "SELECT id_tic_orig AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " " 
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name, id_tic_orig ";
+                sql = "SELECT id_tic_orig AS " + SDbConsts.FIELD_ID + "1, CONCAT(name, ' (', code, ')') AS " + SDbConsts.FIELD_ITEM + " " 
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY id_tic_orig ";
                 break;
             case SModConsts.SU_TIC_DEST:
                 settings = new SGuiCatalogueSettings("Destino del boleto", 1);
-                sql = "SELECT id_tic_dest AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " " 
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY name, id_tic_dest ";
+                sql = "SELECT id_tic_dest AS " + SDbConsts.FIELD_ID + "1, CONCAT(name, ' (', code, ')') AS " + SDbConsts.FIELD_ITEM + " " 
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY id_tic_dest ";
                 break;
             case SModConsts.SU_FREIGHT_ORIG:
                 settings = new SGuiCatalogueSettings("Origen del flete", 1);
@@ -738,15 +779,15 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 Date date = new Date();
                 if (params != null) {
                     inputCt = (int) params.getParamsMap().get(SModConsts.SU_INP_CT);
-                    date = (Date) params.getParamsMap().get(SModConsts.SX_TIC_DATE);
+                    date = (Date) params.getParamsMap().get(SModConsts.SX_PARAM_TIC_DATE);
                 }
                 date = SLibTimeUtils.addDate(date, 0, -1, 0);
                 settings = new SGuiCatalogueSettings("Boleto del flete", 1);
                 sql = "SELECT t.id_tic AS " + SDbConsts.FIELD_ID + "1, t.num AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM s_tic AS t "
                         + "INNER JOIN su_item AS i ON t.fk_item = i.id_item "
-                        + "WHERE t.req_freight = '" + SModSysConsts.SX_REQ_FRE_YES + "' "
-                        + "AND t.freight_tic_tp = '" + SModSysConsts.SX_FREIGHT_TIC_TP_FRE + "' "
+                        + "WHERE t.req_freight = '" + SDbTicket.REQ_FRT_YES + "' "
+                        + "AND t.freight_tic_tp = '" + SDbTicket.FRT_TIC_TP_FRT + "' "
                         + "AND i.fk_inp_ct = " + inputCt + " AND t.dt >= '" + SLibUtils.DbmsDateFormatDate.format(date) + "' "
                         + "ORDER BY t.num DESC ";
                 break;
@@ -792,9 +833,34 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 }
                 sql = "SELECT id_emp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " "
-                        + "WHERE NOT b_del AND NOT b_sys AND NOT b_dis " 
+                        + "WHERE NOT b_del AND NOT b_dis AND NOT b_sys " 
                         + (where.isEmpty() ? "" : "AND " + where + " ")
                         + "ORDER BY name, id_emp ";
+                break;
+            case SModConsts.MU_EXW_FAC:
+                settings = new SGuiCatalogueSettings("Almacén externo", 1);
+                sql = "SELECT id_exw_fac AS " + SDbConsts.FIELD_ID + "1, CONCAT(name, ' (', code, ')') AS " + SDbConsts.FIELD_ITEM + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " "
+                        + "WHERE NOT b_del AND NOT b_dis " 
+                        + "ORDER BY id_exw_fac ";
+                break;
+            case SModConsts.MU_EXW_ADJ_TP:
+                String sqlMovCt = "";
+                switch (subtype) {
+                    case SModSysConsts.SS_IOG_CT_IN:
+                        sqlMovCt = "AND mov_ct IN ('" + SDbExwAdjustmentType.MOV_CT_IN + "', '" + SDbExwAdjustmentType.MOV_CT_ALL + "') ";
+                        break;
+                    case SModSysConsts.SS_IOG_CT_OUT:
+                        sqlMovCt = "AND mov_ct IN ('" + SDbExwAdjustmentType.MOV_CT_OUT + "', '" + SDbExwAdjustmentType.MOV_CT_ALL + "') ";
+                        break;
+                    default:
+                        miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
+                settings = new SGuiCatalogueSettings("Tipo ajuste almacén externo", 1);
+                sql = "SELECT id_exw_adj_tp AS " + SDbConsts.FIELD_ID + "1, CONCAT(name, ' (', code, ')') AS " + SDbConsts.FIELD_ITEM + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " "
+                        + "WHERE NOT b_del AND NOT b_dis " + sqlMovCt
+                        + "ORDER BY name, code, id_exw_adj_tp ";
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -950,6 +1016,20 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                     case SModSysConsts.SS_TIC_WAH_UNLD_ASIGNED:
                         view = new SViewTicketWahUnld(miClient, subtype, "Boletos descargados");
                         break;
+                    default:
+                        miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
+                break;
+            case SModConsts.S_TIC_EXW_UPD_LOG:
+                switch (subtype) {
+                    case SViewTicketExwUpdateLog.BY_UPD_DATE:
+                        view = new SViewTicketExwUpdateLog(miClient, subtype, "Modificaciones procedencia destino x fecha modificación");
+                        break;
+                    case SViewTicketExwUpdateLog.BY_TIC_DATE:
+                        view = new SViewTicketExwUpdateLog(miClient, subtype, "Modificaciones procedencia destino x fecha boleto");
+                        break;
+                    default:
+                        miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
                 }
                 break;
             case SModConsts.SX_QA_OIL_MOI_POND:
@@ -988,6 +1068,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                             view = new SViewWarehouseMovements(miClient, subtype, "Salidas almacén MP (detalle)", params);
                         }
                         break;
+                    default:
+                        miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
                 }
                 break;
             case SModConsts.M_STK:
@@ -1001,6 +1083,8 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                     case SModSysConsts.MX_TIC_W_MVT_REC:
                         view = new SViewTicketMovements(miClient, subtype, "Boletos c/movimientos almacén MP");
                         break;
+                    default:
+                        miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
                 }
                 break;
             case SModConsts.MX_TIC_REC:
@@ -1011,10 +1095,27 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                     case SModSysConsts.MX_TIC_W_MVT_REC:
                         view = new SViewTicketReceptions(miClient, subtype, "Boletos recibidos MP");
                         break;
+                    default:
+                        miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
                 }
                 break;
             case SModConsts.MX_STK_TRANS:
                 view = new SViewStockTransfer(miClient, "Inventarios iniciales MP");
+                break;
+            case SModConsts.M_EXW_ADJ:
+                view = new SViewExwAdjustments(miClient, "Ajustes almacenes externos");
+                break;
+            case SModConsts.MX_EXW_STOCK:
+                switch (subtype) {
+                    case SViewExwStock.BY_ITEM:
+                        view = new SViewExwStock(miClient, subtype, "Existencias almacenes externos x ítem");
+                        break;
+                    case SViewExwStock.BY_ITEM_EXW:
+                        view = new SViewExwStock(miClient, subtype, "Existencias almacenes externos x ítem y almacén");
+                        break;
+                    default:
+                        miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -1078,11 +1179,19 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 form = moFormResult;
                 break;
             case SModConsts.S_TIC:
-                if (moFormTicket == null) moFormTicket = new SFormTicket(miClient, "Boleto", SLibConsts.UNDEFINED);
+                if (moFormTicket == null) moFormTicket = new SFormTicket(miClient, SLibConsts.UNDEFINED, "Boleto de báscula");
                 form = moFormTicket;
                 break;
+            case SModConsts.SX_TIC_TARE:
+                if (moFormTicketTare == null) moFormTicketTare = new SFormTicket(miClient, SModConsts.SX_TIC_TARE_PEND, "Boleto de báscula (tara)");
+                form = moFormTicketTare;
+                break;
+            case SModConsts.S_TIC_EXW_UPD_LOG:
+                if (moFormTicketUpdate == null) moFormTicketUpdate = new SFormTicket(miClient, SModConsts.SX_TIC_UPD, "Boleto de báscula (modificación de procedencia y destino)");
+                form = moFormTicketUpdate;
+                break;
             case SModConsts.S_ALT_TIC:
-                if (moFormTicketAlternative == null) moFormTicketAlternative = new SFormTicketAlternative(miClient, "Boleto", SLibConsts.UNDEFINED);
+                if (moFormTicketAlternative == null) moFormTicketAlternative = new SFormTicketAlternative(miClient, SLibConsts.UNDEFINED, "Boleto de báscula");
                 form = moFormTicketAlternative;
                 break;
             case SModConsts.S_WAH_START:
@@ -1097,13 +1206,9 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 if (moFormLaboratoryAlternative == null) moFormLaboratoryAlternative = new SFormLaboratoryAlternative(miClient, "Análisis de laboratorio");
                 form = moFormLaboratoryAlternative;
                 break;
-            case SModConsts.SX_TIC_TARE:
-                if (moFormTicketTare == null) moFormTicketTare = new SFormTicket(miClient, "Boleto", SModConsts.SX_TIC_TARE_PEND);
-                form = moFormTicketTare;
-                break;
             case SModConsts.SX_TIC_WAH_UNLD:
-                if (moFormTicketWahUnld == null) moFormTicketWahUnld = new SFormTicketWahUnld(miClient, "Boleto almacén");
-                form = moFormTicketWahUnld;
+                if (moFormTicketWahUnload == null) moFormTicketWahUnload = new SFormTicketWahUnload(miClient, "Descarga de boleto de báscula");
+                form = moFormTicketWahUnload;
                 break;
             case SModConsts.SX_TIC_MAN:
                 if (moFormTicketMgmt == null) moFormTicketMgmt = new SFormTicketMgmt(miClient, "Boleto");
@@ -1137,6 +1242,25 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 if (moFormTicketMovements == null) moFormTicketMovements = new SFormWarehouseMovements(miClient, "Movimientos de almacén de MP");
                 moFormTicketMovements.setValue(SFormWarehouseMovements.GUI_PARAMS, params);
                 form = moFormTicketMovements;
+                break;
+            case SModConsts.M_EXW_ADJ:
+                if (params == null) {
+                    miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
+                else {
+                    switch (params.getType()) {
+                        case SModSysConsts.SS_IOG_CT_IN:
+                            if (moFormExwAdjustmentIn == null) moFormExwAdjustmentIn = new SFormExwAdjustment(miClient, SModSysConsts.SS_IOG_CT_IN, "Ajuste de entradas de almacenes externos");
+                            form = moFormExwAdjustmentIn;
+                            break;
+                        case SModSysConsts.SS_IOG_CT_OUT:
+                            if (moFormExwAdjustmentOut == null) moFormExwAdjustmentOut = new SFormExwAdjustment(miClient, SModSysConsts.SS_IOG_CT_OUT, "Ajuste de salidas de almacenes externos");
+                            form = moFormExwAdjustmentOut;
+                            break;
+                        default:
+                            miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                    }
+                }
                 break;
             case SModConsts.SX_TIC_DIV_PROC:
                 if (moDialogTicketDivision == null) moDialogTicketDivision = new SDialogTicketDivisionProcess(miClient, "Division de boletos");
@@ -1316,11 +1440,17 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             else if (menuItem == mjTicTare) {
                 showView(SModConsts.SX_TIC_TARE, SModConsts.SX_TIC_TARE, null);
             }
-            else if (menuItem == mjTicWahNAsigned) {
+            else if (menuItem == mjTicWahNotUnloaded) {
                 showView(SModConsts.SX_TIC_WAH_UNLD, SModSysConsts.SS_TIC_WAH_UNLD_N_ASIGNED, null);
             }
-            else if (menuItem == mjTicWahAsigned) {
+            else if (menuItem == mjTicWahUnloaded) {
                 showView(SModConsts.SX_TIC_WAH_UNLD, SModSysConsts.SS_TIC_WAH_UNLD_ASIGNED, null);
+            }
+            else if (menuItem == mjTicExwUpdateLogByUpdateDate) {
+                showView(SModConsts.S_TIC_EXW_UPD_LOG, SViewTicketExwUpdateLog.BY_UPD_DATE, null);
+            }
+            else if (menuItem == mjTicExwUpdateLogByTicketDate) {
+                showView(SModConsts.S_TIC_EXW_UPD_LOG, SViewTicketExwUpdateLog.BY_TIC_DATE, null);
             }
             else if (menuItem == mjQaLabTest) {
                 showView(SModConsts.S_LAB, SModSysConsts.SX_LAB_TEST, null);
@@ -1363,6 +1493,15 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjStkTicWithMov) {
                 showView(SModConsts.MX_TIC_MVT, SModSysConsts.MX_TIC_W_MVT_REC, null);
+            }
+            else if (menuItem == mjStkExwStockByItem) {
+                showView(SModConsts.MX_EXW_STOCK, SViewExwStock.BY_ITEM, null);
+            }
+            else if (menuItem == mjStkExwStockByItemExw) {
+                showView(SModConsts.MX_EXW_STOCK, SViewExwStock.BY_ITEM_EXW, null);
+            }
+            else if (menuItem == mjStkExwAdjustments) {
+                showView(SModConsts.M_EXW_ADJ, 0, null);
             }
             else if (menuItem == mjStkMatCond) {
                 showView(SModConsts.MU_MAT_COND, SLibConsts.UNDEFINED, null);

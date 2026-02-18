@@ -91,8 +91,8 @@ public class SPaneUserInputCategory extends JPanel {
         msCodes = "";
         msNames = "";
         msMessageNames = "";
-        boolean mbUserHasPrivilege = ((SDbUser) miClient.getSession().getUser()).hasPrivilege(SModSysConsts.CS_RIG_SUP_SCA) ||
-                ((SDbUser) miClient.getSession().getUser()).hasPrivilege(SModSysConsts.CS_RIG_SUP_LAB);
+        boolean mbUserHasPrivilege = ((SDbUser) miClient.getSession().getUser()).hasPrivilege(SModSysConsts.CS_RIG_SCA_SUP) ||
+                ((SDbUser) miClient.getSession().getUser()).hasPrivilege(SModSysConsts.CS_RIG_LAB_SUP);
         if (mbUserHasPrivilege){
             msCodes = ALL; 
             msNames = ALL; 

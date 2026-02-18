@@ -17,11 +17,11 @@ import som.mod.SModConsts;
 
 /**
  *
- * @author Juan Barajas
+ * @author Juan Barajas, Sergio Flores
  */
 public class SDbUnit extends SDbRegistryUser {
 
-    protected int mnPkUnit;
+    protected int mnPkUnitId;
     protected String msCode;
     protected String msName;
     protected int mnSortingPos;
@@ -46,7 +46,7 @@ public class SDbUnit extends SDbRegistryUser {
         initRegistry();
     }
 
-    public void setPkUnitId(int n) { mnPkUnit = n; }
+    public void setPkUnitId(int n) { mnPkUnitId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
     public void setSortingPos(int n) { mnSortingPos = n; }
@@ -62,7 +62,7 @@ public class SDbUnit extends SDbRegistryUser {
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkUnitId() { return mnPkUnit; }
+    public int getPkUnitId() { return mnPkUnitId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
     public int getSortingPos() { return mnSortingPos; }
@@ -80,19 +80,19 @@ public class SDbUnit extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkUnit = pk[0];
+        mnPkUnitId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkUnit };
+        return new int[] { mnPkUnitId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
 
-        mnPkUnit = 0;
+        mnPkUnitId = 0;
         msCode = "";
         msName = "";
         mnSortingPos = 0;
@@ -116,7 +116,7 @@ public class SDbUnit extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_unit = " + mnPkUnit + " ";
+        return "WHERE id_unit = " + mnPkUnitId + " ";
     }
 
     @Override
@@ -128,12 +128,12 @@ public class SDbUnit extends SDbRegistryUser {
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet = null;
 
-        mnPkUnit = 0;
+        mnPkUnitId = 0;
 
         msSql = "SELECT COALESCE(MAX(id_unit), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkUnit = resultSet.getInt(1);
+            mnPkUnitId = resultSet.getInt(1);
         }
     }
 
@@ -151,7 +151,7 @@ public class SDbUnit extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkUnit = resultSet.getInt("id_unit");
+            mnPkUnitId = resultSet.getInt("id_unit");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
             mnSortingPos = resultSet.getInt("sort");
@@ -192,7 +192,7 @@ public class SDbUnit extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
 
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkUnit + ", " +
+                    mnPkUnitId + ", " +
                     "'" + msCode + "', " +
                     "'" + msName + "', " +
                     mnSortingPos + ", " +
@@ -213,7 +213,7 @@ public class SDbUnit extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
-                    //"id_unit = " + mnPkUnit + ", " +
+                    //"id_unit = " + mnPkUnitId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
                     "sort = " + mnSortingPos + ", " +

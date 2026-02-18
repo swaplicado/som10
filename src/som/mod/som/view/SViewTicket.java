@@ -40,7 +40,7 @@ import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín
+ * @author Juan Barajas, Alfredo Pérez, Isabel Servín, Sergio Flores
  */
 public class SViewTicket extends SGridPaneView implements ActionListener {
 
@@ -55,7 +55,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     private JButton mjbPreviousStep;
     private JButton mjbNextStep;
     private JButton mjbLaboratoryTest;
-    private JButton mjbManager;
+    private JButton mjbExwUpdate;
+    private JButton mjbEditByManager;
     private JButton mjbSeasonRegion;
     private JButton mjbPrint;
     private JButton mjbManifest;
@@ -69,6 +70,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     }
 
     private void initComponetsCustom() {
+        boolean hasRightRawMaterials = miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RM_STK_SUP, SModSysConsts.CS_RIG_RM_STK_MAN });
+        
         mjbDivideTicket = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_doc_div.gif")), "Dividir boleto", this);
         mjbDivideTicketRevert = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_doc_div_red.gif")), "Revertir división de boleto", this);
         mjbManifest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_print.gif")), "Manifiesto de entrega, transporte y recepción", this);
@@ -76,7 +79,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         mjbPreviousStep = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_move_left.gif")), "Regresar boleto al estado anterior", this);
         mjbNextStep = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_move_right.gif")), "Enviar boleto al estado siguiente", this);
         mjbLaboratoryTest = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_lab.gif")), "Agregar análisis de laboratorio", this);
-        mjbManager = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tic_edit.gif")), "Modificar boleto", this);
+        mjbExwUpdate = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_edit_alt.jpg")), "Modificar procedencia y destino", this);
+        mjbEditByManager = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tic_edit.gif")), "Modificar boleto", this);
         mjbSeasonRegion = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_tic_cfg.gif")), "Cambiar temporada y región", this);
 
         moPaneFilterUserInputCategory = new SPaneUserInputCategory(miClient, SModConsts.S_TIC, "itm");
@@ -118,7 +122,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbPreviousStep);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbNextStep);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbLaboratoryTest);
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbManager);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbExwUpdate);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbEditByManager);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbSeasonRegion);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterUserInputCategory);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterInputCategory);
@@ -132,10 +137,13 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbDivideTicket.setEnabled(true);
                 mjbDivideTicketRevert.setEnabled(true);
                 mjbManifest.setEnabled(false);
+                mjbPrint.setEnabled(true);
+                
                 mjbPreviousStep.setEnabled(false);
                 mjbNextStep.setEnabled(true);
                 mjbLaboratoryTest.setEnabled(false);
-                mjbManager.setEnabled(false);
+                mjbExwUpdate.setEnabled(hasRightRawMaterials);
+                mjbEditByManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
                 break;
                 
@@ -143,11 +151,15 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbDivideTicket.setEnabled(false);
                 mjbDivideTicketRevert.setEnabled(false);
                 mjbManifest.setEnabled(false);
+                mjbPrint.setEnabled(true);
+                
                 mjbPreviousStep.setEnabled(true);
                 mjbNextStep.setEnabled(true);
                 mjbLaboratoryTest.setEnabled(true);
-                mjbManager.setEnabled(false);
+                mjbExwUpdate.setEnabled(hasRightRawMaterials);
+                mjbEditByManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
+                
                 setRowButtonsEnabled(false);
                 break;
                 
@@ -155,11 +167,15 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbDivideTicket.setEnabled(false);
                 mjbDivideTicketRevert.setEnabled(false);
                 mjbManifest.setEnabled(false);
+                mjbPrint.setEnabled(true);
+                
                 mjbPreviousStep.setEnabled(true);
                 mjbNextStep.setEnabled(false);
                 mjbLaboratoryTest.setEnabled(false);
-                mjbManager.setEnabled(true);
+                mjbExwUpdate.setEnabled(hasRightRawMaterials);
+                mjbEditByManager.setEnabled(true);
                 mjbSeasonRegion.setEnabled(true);
+                
                 setRowButtonsEnabled(false);
                 break;
                 
@@ -167,11 +183,15 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbDivideTicket.setEnabled(false);
                 mjbDivideTicketRevert.setEnabled(false);
                 mjbManifest.setEnabled(true);
+                mjbPrint.setEnabled(true);
+                
                 mjbPreviousStep.setEnabled(false);
                 mjbNextStep.setEnabled(false);
                 mjbLaboratoryTest.setEnabled(false);
-                mjbManager.setEnabled(false);
+                mjbExwUpdate.setEnabled(hasRightRawMaterials);
+                mjbEditByManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
+                
                 setRowButtonsEnabled(false);
                 break;
                 
@@ -179,11 +199,15 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 mjbDivideTicket.setEnabled(false);
                 mjbDivideTicketRevert.setEnabled(false);
                 mjbManifest.setEnabled(false);
+                mjbPrint.setEnabled(true);
+                
                 mjbPreviousStep.setEnabled(false);
                 mjbNextStep.setEnabled(false);
                 mjbLaboratoryTest.setEnabled(false);
-                mjbManager.setEnabled(false);
+                mjbExwUpdate.setEnabled(hasRightRawMaterials);
+                mjbEditByManager.setEnabled(false);
                 mjbSeasonRegion.setEnabled(false);
+                
                 setRowButtonsEnabled(false);
                 break;
                 
@@ -193,8 +217,6 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     }
 
     private void actionPreviousStep() {
-        SDbTicket ticket;
-
         if (mjbPreviousStep.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
@@ -212,7 +234,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                     miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_NON_UPDATABLE);
                 }
                 else {
-                    ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
+                    SDbTicket ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
 
                     if (miClient.showMsgBoxConfirm("¿Desea regresar el boleto al estado anterior?") == JOptionPane.YES_OPTION) {
                         try {
@@ -233,8 +255,6 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     }
 
     private void actionNextStep() {
-        SDbTicket ticket;
-
         if (mjbNextStep.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
@@ -252,7 +272,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                     miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_NON_UPDATABLE);
                 }
                 else {
-                    ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
+                    SDbTicket ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
 
                     if (miClient.showMsgBoxConfirm("¿Desea enviar el boleto al estado siguiente?") == JOptionPane.YES_OPTION) {
                         try {
@@ -273,8 +293,6 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     }
 
     private void actionLaboratoryTest() {
-        SGuiParams params;
-
         if (mjbLaboratoryTest.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
@@ -292,7 +310,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                     miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_NON_UPDATABLE);
                 }
                 else {
-                    params = new SGuiParams(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
+                    SGuiParams params = new SGuiParams(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
 
                     miClient.getSession().getModule(SModConsts.MOD_SOM_RM, SLibConsts.UNDEFINED).showForm(SModConsts.SX_TIC_LAB, SLibConsts.UNDEFINED, params);
                 }
@@ -300,11 +318,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         }
     }
 
-    private void actionManager() {
-        SDbTicket ticket;
-        SGuiParams params;
-
-        if (mjbManager.isEnabled()) {
+    private void actionExwUpdate() {
+        if (mjbExwUpdate.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
             }
@@ -321,10 +336,36 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                     miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_NON_UPDATABLE);
                 }
                 else {
-                    ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
+                    SGuiParams params = new SGuiParams(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
+
+                    miClient.getSession().getModule(SModConsts.MOD_SOM_RM, SLibConsts.UNDEFINED).showForm(SModConsts.S_TIC_EXW_UPD_LOG, SLibConsts.UNDEFINED, params);
+                }
+            }
+        }
+    }
+
+    private void actionEditByManager() {
+        if (mjbEditByManager.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
+
+                if (gridRow.getRowType() != SGridConsts.ROW_TYPE_DATA) {
+                    miClient.showMsgBoxWarning(SGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                }
+                else if (gridRow.isRowSystem()) {
+                    miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_IS_SYSTEM);
+                }
+                else if (!gridRow.isUpdatable()) {
+                    miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_NON_UPDATABLE);
+                }
+                else {
+                    SDbTicket ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
 
                     if (ticket.isLaboratory()) {
-                        params = new SGuiParams(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
+                        SGuiParams params = new SGuiParams(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
 
                         miClient.getSession().getModule(SModConsts.MOD_SOM_RM, SLibConsts.UNDEFINED).showForm(SModConsts.SX_TIC_MAN, SLibConsts.UNDEFINED, params);
                     }
@@ -337,25 +378,33 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     }
 
     private void actionSeasonRegion() {
-        SDbTicket ticket;
-        SGuiParams params;
-
-        if (mjbManager.isEnabled()) {
+        if (mjbEditByManager.isEnabled()) {
             if (jtTable.getSelectedRowCount() != 1) {
                 miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
             }
             else {
                 SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
 
-                ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
-
-                if (ticket.isLaboratory()) {
-                    params = new SGuiParams(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
-
-                    miClient.getSession().getModule(SModConsts.MOD_SOM_RM, SLibConsts.UNDEFINED).showForm(SModConsts.SX_TIC_SEAS_REG, SLibConsts.UNDEFINED, params);
+                if (gridRow.getRowType() != SGridConsts.ROW_TYPE_DATA) {
+                    miClient.showMsgBoxWarning(SGridConsts.ERR_MSG_ROW_TYPE_DATA);
+                }
+                else if (gridRow.isRowSystem()) {
+                    miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_IS_SYSTEM);
+                }
+                else if (!gridRow.isUpdatable()) {
+                    miClient.showMsgBoxWarning(SDbConsts.MSG_REG_ + gridRow.getRowName() + SDbConsts.MSG_REG_NON_UPDATABLE);
                 }
                 else {
-                    miClient.showMsgBoxInformation("El boleto '" + ticket.getNumber() + "' no necesita configurar temporada ni región.");
+                    SDbTicket ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
+
+                    if (ticket.isLaboratory()) {
+                        SGuiParams params = new SGuiParams(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
+
+                        miClient.getSession().getModule(SModConsts.MOD_SOM_RM, SLibConsts.UNDEFINED).showForm(SModConsts.SX_TIC_SEAS_REG, SLibConsts.UNDEFINED, params);
+                    }
+                    else {
+                        miClient.showMsgBoxInformation("El boleto '" + ticket.getNumber() + "' no necesita configurar temporada ni región.");
+                    }
                 }
             }
         }
@@ -576,6 +625,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         moPaneSettings.setUpdatableApplying(false);
         moPaneSettings.setDisableableApplying(false);
         moPaneSettings.setDeletableApplying(false);
+        moPaneSettings.setDeletedApplying(true);
         moPaneSettings.setSystemApplying(true);
         moPaneSettings.setUserInsertApplying(true);
         moPaneSettings.setUserUpdateApplying(true);
@@ -651,7 +701,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         }
         
         String sqlFilter = moPaneFilterUserInputCategory.getSqlFilter();
-        if(!sqlFilter.isEmpty()) {
+        if (!sqlFilter.isEmpty()) {
             sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + sqlFilter;
         }
         
@@ -677,7 +727,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.wei_src, "         // Declared weight at origin
                 + "v.wei_des_arr, "     // wda: Weigth at destiny at arrival
                 + "v.wei_des_dep, "     // wdd: Weigth at destiny at departure
-                + "v.wei_des_gro_r, "   // wdg: Weigth gross at destiny  (= wda – wdd)
+                + "v.wei_des_gro_r, "   // wdg: Weigth gross at destiny (= wda – wdd)
                 + "v.wei_des_net_r, "   // wdn: Weigth net at destiny (= wdg – pwn)
                 + "v.sys_pen_per, "
                 + "v.sys_wei_pay, "
@@ -692,7 +742,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.usr_fre, "
                 + "v.usr_tot_r, "
                 + "v.dps_dt_n, "
-                + "IF(v.freight_tic_tp = 'F', 'FLETE', IF(v.freight_tic_tp = 'D', 'DEPENDIENTE', '')) AS freight_tp, "
+                + "CASE WHEN v.freight_tic_tp = '" + SDbTicket.FRT_TIC_TP_FRT + "' THEN '" + SDbTicket.FRT_TIC_TP_FRT_DESC + "' WHEN v.freight_tic_tp = '" + SDbTicket.FRT_TIC_TP_DEP + "' THEN '" + SDbTicket.FRT_TIC_TP_DEP_DESC + "' ELSE '' END AS _frt_tic_tp, "
                 + "v.b_rev_1, "
                 + "v.b_rev_2, "
                 + "v.b_wei_src, "
@@ -723,16 +773,21 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "src.name, "
                 + "sea.id_seas, "
                 + "sea.name, "
-                + "tor.code, "
-                + "tde.code, "
                 + "reg.id_reg, "
                 + "reg.name, "
+                + "tor.code, "
+                + "tde.code, "
+                + "efor.code, "
+                + "efde.code, "
                 + "lab.num, "
                 + "lab.dt, "
-                + "w.code, "
-                + "w.name, "
-                + "fr.name AS fre_orig, "
-                + "tf.num AS tic_dep, "
+                + "wah.id_co, "
+                + "wah.id_cob, "
+                + "wah.id_wah, "
+                + "wah.code, "
+                + "wah.name, "
+                + "fror.name, "
+                + "frtic.num, "
                 + "if (lab.b_done, " + SGridConsts.ICON_OK + ", " + SGridConsts.ICON_NULL + ") AS _lab_done, "
                 + "COALESCE(seareg.prc_ton, 0.0) AS _prc_ton_reg, "
                 + "COALESCE(seaprd.prc_ton, 0.0) AS _prc_ton_prd, "
@@ -766,6 +821,10 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.fk_tic_orig = tor.id_tic_orig "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_TIC_DEST) + " AS tde ON "
                 + "v.fk_tic_dest = tde.id_tic_dest "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.MU_EXW_FAC) + " AS efor ON "
+                + "v.fk_exw_fac_orig = efor.id_exw_fac "
+                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.MU_EXW_FAC) + " AS efde ON "
+                + "v.fk_exw_fac_dest = efde.id_exw_fac "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "v.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -780,19 +839,19 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.fk_seas_n = seareg.id_seas AND v.fk_reg_n = seareg.id_reg AND v.fk_item = seareg.id_item "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_PROD) + " AS seaprd ON "
                 + "v.fk_seas_n = seaprd.id_seas AND v.fk_reg_n = seaprd.id_reg AND v.fk_item = seaprd.id_item AND v.fk_prod = seaprd.id_prod "
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS w ON " 
-                + "v.fk_wah_unld_co_n = w.id_co AND v.fk_wah_unld_cob_n = w.id_cob AND v.fk_wah_unld_wah_n = w.id_wah "                
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_FREIGHT_ORIG) + " AS fr ON " 
-                + "v.fk_freight_orig_n = fr.id_freight_orig "                
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS tf ON " 
-                + "v.fk_freight_tic_n = tf.id_tic "                
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS wah ON " 
+                + "v.fk_wah_unld_co_n = wah.id_co AND v.fk_wah_unld_cob_n = wah.id_cob AND v.fk_wah_unld_wah_n = wah.id_wah "                
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_FREIGHT_ORIG) + " AS fror ON " 
+                + "v.fk_freight_orig_n = fror.id_freight_orig "                
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS frtic ON " 
+                + "v.fk_freight_tic_n = frtic.id_tic "                
                 + (sqlWhere.isEmpty() ? "" : "WHERE " + sqlWhere)
                 + "ORDER BY sca.code, sca.id_sca, v.num, v.id_tic ";
     }
 
     @Override
     public void createGridColumns() {
-        int cols = 48;
+        int cols = 50;
 
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
@@ -833,7 +892,9 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "sea.name", "Temporada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "reg.name", "Región");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tor.code", "Procedencia boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "efor.code", "Almacén procedencia");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tde.code", "Destino boleto");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "efde.code", "Almacén destino");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "src.name", "Origen insumo");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla", "Placas");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.pla_cag", "Placas caja");
@@ -847,25 +908,25 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         columns[col++].setSumApplying(true);
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_dep", "Peso salida (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_qty_arr", "Cant empaq lleno entrada (" + SSomConsts.PIECE + ")");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_qty_arr", "Núm envases llenos entrada (" + SSomConsts.PIECE + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_emp_qty_arr", "Cant empaq vacío entrada (" + SSomConsts.PIECE + ")");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_emp_qty_arr", "Núm envases vacíos entrada (" + SSomConsts.PIECE + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_qty_dep", "Cant empaq lleno salida (" + SSomConsts.PIECE + ")");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_qty_dep", "Núm envases llenos salida (" + SSomConsts.PIECE + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_emp_qty_dep", "Cant empaq vacío salida (" + SSomConsts.PIECE + ")");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_emp_qty_dep", "Núm envases vacíos salida (" + SSomConsts.PIECE + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_wei_arr", "Peso empaq lleno entrada (" + SSomConsts.KG + ")");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_wei_arr", "Peso envases llenos entrada (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_emp_wei_arr", "Peso empaq vacío entrada (" + SSomConsts.KG + ")");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_emp_wei_arr", "Peso envases vacíos entrada (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_wei_arr", "Peso empaq total entrada (" + SSomConsts.KG + ")");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_wei_arr", "Peso total envases entrada (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_wei_dep", "Peso empaq lleno salida (" + SSomConsts.KG + ")");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_wei_dep", "Peso envases llenos salida (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_emp_wei_dep", "Peso empaq vacío salida (" + SSomConsts.KG + ")");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_pac_emp_wei_dep", "Peso envases vacíos salida (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
-        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_wei_dep", "Peso empaq total salida (" + SSomConsts.KG + ")");
+        columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.pac_wei_dep", "Peso total envases salida (" + SSomConsts.KG + ")");
         columns[col++].setSumApplying(true);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "_wei_ave", "Peso promedio (" + SSomConsts.KG + "/" + SSomConsts.PIECE + ")");
         columns[col] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.wei_des_gro_r", "Carga destino bruto (" + SSomConsts.KG + ")");
@@ -874,8 +935,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         columns[col++].setSumApplying(true);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_1", "1a pesada Revuelta");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_2", "2a pesada Revuelta");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "w.name", "Almacén descarga");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "w.code", "Almacén descarga código");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "wah.name", "Almacén descarga");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "wah.code", "Almacén descarga código");
 
         if (mnGridSubtype == SModSysConsts.SS_TIC_ST_ADM) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "_prc_ton_reg", "Precio ton reg $");
@@ -897,9 +958,9 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_pay", "Pagado");
         }
 
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "freight_tp", "Control fletes");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "fre_orig", "Origen flete");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "tic_dep", "Boleto flete", 75);
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "_frt_tic_tp", "Control fletes");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "fror.name", "Origen flete");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "frtic.num", "Boleto flete", 75);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
@@ -920,6 +981,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         moSuscriptionsSet.add(SModConsts.SU_SEAS);
         moSuscriptionsSet.add(SModConsts.SU_REG);
         moSuscriptionsSet.add(SModConsts.S_LAB);
+        moSuscriptionsSet.add(SModConsts.S_TIC_EXW_UPD_LOG);
         moSuscriptionsSet.add(SModConsts.SX_TIC_TARE);
         moSuscriptionsSet.add(SModConsts.CU_USR);
     }
@@ -930,7 +992,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             actionLaboratoryTest();
         }
         else if (mnGridSubtype == SModSysConsts.SS_TIC_ST_ADM) {
-            actionManager();
+            actionEditByManager();
         }
         else {
             super.actionMouseClicked();
@@ -963,8 +1025,11 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             else if (button == mjbLaboratoryTest) {
                 actionLaboratoryTest();
             }
-            else if (button == mjbManager) {
-                actionManager();
+            else if (button == mjbExwUpdate) {
+                actionExwUpdate();
+            }
+            else if (button == mjbEditByManager) {
+                actionEditByManager();
             }
             else if (button == mjbSeasonRegion) {
                 actionSeasonRegion();

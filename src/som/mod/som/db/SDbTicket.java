@@ -32,7 +32,9 @@ import som.mod.SModConsts;
 import som.mod.SModSysConsts;
 
 /**
- *
+ * Boleto de báscula.
+ * ¡IMPORTANTE!: Preservar en todo momento la misma estructura de miembros en las clases SDbTicket (esta clase) y SDbTicketAlternative, porque son objetos espejo.
+ * 
  * @author Juan Barajas, Alfredo Pérez, Sergio Flores, Isabel Servín, Sergio Flores
  * 2019-01-07, Sergio Flores: Mostrar solo proveedores con movimientos en sección período actual, en notificación automática de recepción de boletos.
  * 2019-01-17, Sergio Flores: Mejoras reporte automático vía mail al tarar boletos:
@@ -48,6 +50,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public static final int FIELD_ASSORTED = SDbRegistry.FIELD_BASE + 5;
     public static final int FIELD_DPS = SDbRegistry.FIELD_BASE + 6;
     public static final int FIELD_DPS_NULL = SDbRegistry.FIELD_BASE + 7;
+    
+    public static final String REQ_FRT_NO = "N";
+    public static final String REQ_FRT_YES = "Y";
+    public static final String FRT_TIC_TP_FRT = "F";
+    public static final String FRT_TIC_TP_DEP = "D";
+    public static final String FRT_TIC_TP_FRT_DESC = "Flete";
+    public static final String FRT_TIC_TP_DEP_DESC = "Dependiente";
     
     private static final int MAX_LEN_PROD = 20;
     private static final int MAX_LEN_NAME = 25;
@@ -123,6 +132,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected int mnFkWarehouseUnloadWarehouseId_n;
     protected int mnFkTicketOriginId;
     protected int mnFkTicketDestinationId;
+    protected int mnFkExwFacilityOriginId;
+    protected int mnFkExwFacilityDestinationId;
     protected int mnFkExternalDpsYearId_n;
     protected int mnFkExternalDpsDocId_n;
     protected int mnFkExternalDpsEntryId_n;
@@ -158,6 +169,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected String msXtaInputSource;
     protected String msXtaProducer;
     protected String msXtaProducerFiscalId;
+    
+    // Exclusive members of SDbTicket, but not of its mirrowed SDbTicketAlternative:
+    
     protected String msXtaNumAlternative;
 
     protected boolean mbAuxMoveNextOnSave;
@@ -170,6 +184,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected Vector<SDbTicketNote> mvChildTicketNotes;
     protected Vector<SDbLaboratory> mvChildLaboratories;
 
+    /**
+     * Crea una nueva instancia de un boleto de báscula de SOM.
+     */
     public SDbTicket() {
         super(SModConsts.S_TIC);
         mvChildTicketNotes = new Vector<>();
@@ -348,6 +365,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setFkWarehouseUnloadWarehouseId_n(int n) { mnFkWarehouseUnloadWarehouseId_n = n; }
     public void setFkTicketOriginId(int n) { mnFkTicketOriginId = n; }
     public void setFkTicketDestinationId(int n) { mnFkTicketDestinationId = n; }
+    public void setFkExwFacilityOriginId(int n) { mnFkExwFacilityOriginId = n; }
+    public void setFkExwFacilityDestinationId(int n) { mnFkExwFacilityDestinationId = n; }
     public void setFkExternalDpsYearId_n(int n) { mnFkExternalDpsYearId_n = n; }
     public void setFkExternalDpsDocId_n(int n) { mnFkExternalDpsDocId_n = n; }
     public void setFkExternalDpsEntryId_n(int n) { mnFkExternalDpsEntryId_n = n; }
@@ -432,6 +451,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public int getFkWarehouseUnloadWarehouseId_n() { return mnFkWarehouseUnloadWarehouseId_n; }
     public int getFkTicketOriginId() { return mnFkTicketOriginId; }
     public int getFkTicketDestinationId() { return mnFkTicketDestinationId; }
+    public int getFkExwFacilityOriginId() { return mnFkExwFacilityOriginId; }
+    public int getFkExwFacilityDestinationId() { return mnFkExwFacilityDestinationId; }
     public int getFkExternalDpsYearId_n() { return mnFkExternalDpsYearId_n; }
     public int getFkExternalDpsDocId_n() { return mnFkExternalDpsDocId_n; }
     public int getFkExternalDpsEntryId_n() { return mnFkExternalDpsEntryId_n; }
@@ -459,15 +480,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setXtaInputSource(String s) { msXtaInputSource = s;  }
     public void setXtaProducer(String s) { msXtaProducer = s;  }
     public void setXtaProviderFiscalId(String s) { msXtaProducerFiscalId = s;  }
-    public void setXtaNumAlternative(String s) { msXtaNumAlternative = s;  }
-
-    public void setAuxMoveNextOnSend(boolean b) { mbAuxMoveNextOnSave = b; }
-    public void setAuxRequirePriceComputation(boolean b) { mbAuxRequirePriceComputation = b; }
-    public void setAuxSendMailOnSaveForItems(boolean b) { mbAuxSendMailOnSaveForItems = b; }
-    public void setAuxMailRecipientsForItems(String s) { msAuxMailRecipientsForItems = s; }
-    public void setAuxSendMailOnSaveForProducer(boolean b) { mbAuxSendMailOnSaveForProducer = b; }
-    public void setAuxMailRecipientsForProducer(String s) { msAuxMailRecipientsForProducer = s; }
-
+    
     public String getXtaScaleName() { return msXtaScaleName; }
     public String getXtaScaleCode() { return msXtaScaleCode; }
     public String getXtaSeason() { return msXtaSeason; }
@@ -479,6 +492,18 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public String getXtaInputSource() { return msXtaInputSource;  }
     public String getXtaProducer() { return msXtaProducer; }
     public String getXtaProducerFiscalId() { return msXtaProducerFiscalId; }
+    
+    // Exclusive set/get methods of SDbTicket, but not of its mirrowed SDbTicketAlternative:
+    
+    public void setXtaNumAlternative(String s) { msXtaNumAlternative = s;  }
+
+    public void setAuxMoveNextOnSend(boolean b) { mbAuxMoveNextOnSave = b; }
+    public void setAuxRequirePriceComputation(boolean b) { mbAuxRequirePriceComputation = b; }
+    public void setAuxSendMailOnSaveForItems(boolean b) { mbAuxSendMailOnSaveForItems = b; }
+    public void setAuxMailRecipientsForItems(String s) { msAuxMailRecipientsForItems = s; }
+    public void setAuxSendMailOnSaveForProducer(boolean b) { mbAuxSendMailOnSaveForProducer = b; }
+    public void setAuxMailRecipientsForProducer(String s) { msAuxMailRecipientsForProducer = s; }
+
     public String getXtaNumAlternative() { return msXtaNumAlternative; }
 
     public boolean isAuxMoveNextOnSend() { return mbAuxMoveNextOnSave; }
@@ -490,6 +515,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public Vector<SDbTicketNote> getChildTicketNotes() { return mvChildTicketNotes; }
     public Vector<SDbLaboratory> getChildLaboratories() { return mvChildLaboratories; }
+    
+    /*
+     * Overriden public methods
+     */
     
     @Override
     public String getName() {
@@ -578,6 +607,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mnFkWarehouseUnloadWarehouseId_n = 0;
         mnFkTicketOriginId = 0;
         mnFkTicketDestinationId = 0;
+        mnFkExwFacilityOriginId = 0;
+        mnFkExwFacilityDestinationId = 0;
         mnFkExternalDpsYearId_n = 0;
         mnFkExternalDpsDocId_n = 0;
         mnFkExternalDpsEntryId_n = 0;
@@ -751,6 +782,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mnFkWarehouseUnloadWarehouseId_n = resultSet.getInt("fk_wah_unld_wah_n");
             mnFkTicketOriginId = resultSet.getInt("fk_tic_orig");
             mnFkTicketDestinationId = resultSet.getInt("fk_tic_dest");
+            mnFkExwFacilityOriginId = resultSet.getInt("fk_exw_fac_orig");
+            mnFkExwFacilityDestinationId = resultSet.getInt("fk_exw_fac_dest");
             mnFkExternalDpsYearId_n = resultSet.getInt("t.fk_ext_dps_year_n");
             mnFkExternalDpsDocId_n = resultSet.getInt("t.fk_ext_dps_doc_n");
             mnFkExternalDpsEntryId_n = resultSet.getInt("t.fk_ext_dps_ety_n");
@@ -943,6 +976,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     (mnFkWarehouseUnloadWarehouseId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadWarehouseId_n) + ", " + 
                     mnFkTicketOriginId + ", " + 
                     mnFkTicketDestinationId + ", " + 
+                    mnFkExwFacilityOriginId + ", " + 
+                    mnFkExwFacilityDestinationId + ", " + 
                     (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
                     (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
@@ -1029,11 +1064,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "fk_prod = " + mnFkProducerId + ", " +
                     "fk_inp_src = " + mnFkInputSourceId + ", " +
                     "fk_lab_n = " + (mnFkLaboratoryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkLaboratoryId_n) + ", " +
-                    "fk_wah_unld_co_n = " + (mnFkWarehouseUnloadCompanyId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadBranchId_n) + ", " + 
+                    "fk_wah_unld_co_n = " + (mnFkWarehouseUnloadCompanyId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadBranchId_n) + ", " +
                     "fk_wah_unld_cob_n = " + (mnFkWarehouseUnloadBranchId_n == SLibConsts.UNDEFINED  ? "NULL" : mnFkWarehouseUnloadCompanyId_n) + ", " +
                     "fk_wah_unld_wah_n = " + (mnFkWarehouseUnloadWarehouseId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkWarehouseUnloadWarehouseId_n) + ", " +
                     "fk_tic_orig = " + mnFkTicketOriginId + ", " +
                     "fk_tic_dest = " + mnFkTicketDestinationId + ", " +
+                    "fk_exw_fac_orig = " + mnFkExwFacilityOriginId + ", " +
+                    "fk_exw_fac_dest = " + mnFkExwFacilityDestinationId + ", " +
                     "fk_ext_dps_year_n = " + (mnFkExternalDpsYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsYearId_n) + ", " +
                     "fk_ext_dps_doc_n = " + (mnFkExternalDpsDocId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsDocId_n) + ", " +
                     "fk_ext_dps_ety_n = " + (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
@@ -1159,6 +1196,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setFkWarehouseUnloadWarehouseId_n(this.getFkWarehouseUnloadWarehouseId_n());
         registry.setFkTicketOriginId(this.getFkTicketOriginId());
         registry.setFkTicketDestinationId(this.getFkTicketDestinationId());
+        registry.setFkExwFacilityOriginId(this.getFkExwFacilityOriginId());
+        registry.setFkExwFacilityDestinationId(this.getFkExwFacilityDestinationId());
         registry.setFkExternalDpsYearId_n(this.getFkExternalDpsYearId_n());
         registry.setFkExternalDpsDocId_n(this.getFkExternalDpsDocId_n());
         registry.setFkExternalDpsEntryId_n(this.getFkExternalDpsEntryId_n());
@@ -1400,6 +1439,39 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                 break;
             default:
         }
+    }
+
+    public void applyExwUpdate(SGuiSession session) throws SQLException, Exception {
+        initQueryMembers();
+        mnQueryResultId = SDbConsts.SAVE_ERROR;
+        
+        if (mbRegistryNew) {
+            throw new Exception("No se puede modificar un boleto que es nuevo.");
+        }
+        else {
+            mnFkUserUpdateId = session.getUser().getPkUserId();
+
+            msSql = "UPDATE " + getSqlTable() + " SET " +
+                    /*
+                    "id_tic = " + mnPkTicketId + ", " +
+                    */
+                    "fk_tic_orig = " + mnFkTicketOriginId + ", " +
+                    "fk_tic_dest = " + mnFkTicketDestinationId + ", " +
+                    "fk_exw_fac_orig = " + mnFkExwFacilityOriginId + ", " +
+                    "fk_exw_fac_dest = " + mnFkExwFacilityDestinationId + ", " +
+                    //"fk_usr_ins = " + mnFkUserInsertId + ", " +
+                    "fk_usr_upd = " + mnFkUserUpdateId + ", " +
+                    //"ts_usr_ins = " + "NOW()" + ", " +
+                    "ts_usr_upd = " + "NOW()" +
+                    getSqlWhere();
+        }
+
+        session.getStatement().execute(msSql);
+
+        // Finish registry updating:
+
+        mbRegistryNew = false;
+        mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     public boolean isLinkIog(final SGuiSession session) throws SQLException {

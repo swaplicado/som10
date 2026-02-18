@@ -42,23 +42,23 @@ public abstract class SModSysConsts {
     public static final int CS_USR_TP_ADM = 2;
     public static final int CS_USR_TP_SUP = 3;
 
-    public static final int CS_RIG_MAN_RM = 1;  // manager raw materials
-    public static final int CS_RIG_MAN_OM = 2;  // manager oil and meals
-    public static final int CS_RIG_WHS_RM = 3;  // warehouser raw materials
-    public static final int CS_RIG_WHS_OM = 4;  // warehouser oil and meals
-    public static final int CS_RIG_REP_RM = 5;  // reports raw materials
-    public static final int CS_RIG_REP_OM = 6;  // reports oil and meals
-    public static final int CS_RIG_SUP_LAB = 7; // laboratorist supervisor
-    public static final int CS_RIG_LAB = 8;     // laboratorist
-    public static final int CS_RIG_SUP_SCA = 9 ;// scale supervisor
-    public static final int CS_RIG_SCA = 10;    // scale operator
+    public static final int CS_RIG_MAN_RM = 1; // manager raw materials
+    public static final int CS_RIG_MAN_OM = 2; // manager oil and meals
+    public static final int CS_RIG_WHS_RM = 3; // warehouser raw materials
+    public static final int CS_RIG_WHS_OM = 4; // warehouser oil and meals
+    public static final int CS_RIG_REP_RM = 5; // reports raw materials
+    public static final int CS_RIG_REP_OM = 6; // reports oil and meals
+    public static final int CS_RIG_LAB_SUP = 7; // laboratorist supervisor
+    public static final int CS_RIG_LAB = 8; // laboratorist
+    public static final int CS_RIG_SCA_SUP = 9 ; // scale supervisor
+    public static final int CS_RIG_SCA = 10; // scale operator
     public static final int CS_RIG_PER_OC = 11; // periods opening and closing
     public static final int CS_RIG_DIS_RM = 12; // discharge raw materials
-    public static final int CS_RIG_LOG = 13;    // logistics
-    public static final int CS_RIG_VLR = 14;    // validation laboratory results
-    public static final int CS_RIG_RMEC = 15;   // raw material existences capturist
-    public static final int CS_RIG_RMES = 16;   // raw material existences supervisor
-    public static final int CS_RIG_RMEA = 17;   // raw material existences administrator
+    public static final int CS_RIG_LOG = 13; // logistics
+    public static final int CS_RIG_LAB_VAL = 14; // laboratory results validation
+    public static final int CS_RIG_RM_STK_DEO = 15; // raw material existences data entry operator
+    public static final int CS_RIG_RM_STK_SUP = 16; // raw material existences supervisor
+    public static final int CS_RIG_RM_STK_MAN = 17; // raw material existences manager
 
     public static final int CS_ALT_RIG_PUR = 1; // purchase
     public static final int CS_ALT_RIG_QTY = 2; // quality
@@ -157,6 +157,7 @@ public abstract class SModSysConsts {
     /**
      * Warehouse attributes
      */
+    
     public static final int SS_WHS_OR_VERTICAL = 1;
     public static final int SS_WHS_OR_HORIZONTAL = 2;
     
@@ -184,13 +185,15 @@ public abstract class SModSysConsts {
     public static final String SU_FUNC_AREA_TP_PLA = "P";
     public static final String SU_FUNC_AREA_TP_LAB = "L";
     
-    public static final int SU_ITEM_RM_AVO = 6;
-    public static final int SU_ITEM_OIL_AVO = 16;
-
     public static final int SU_UNIT_NA = 1;
     public static final int SU_UNIT_MT_TON = 2;
     public static final int SU_UNIT_KG = 3;
     
+    public static final int SU_ITEM_RM_AVO = 6;
+    public static final int SU_ITEM_OIL_AVO = 16;
+    
+    public static final int SU_SCA_REV = 1; // Báscula revuelta    
+
     public static final int SU_INP_SRC_NA = 1;
     
     public static final int SU_BY_PRODUCT_NA = 1;
@@ -237,11 +240,6 @@ public abstract class SModSysConsts {
     
     public static final ArrayList<SGuiItem> SX_REQ_FRE_OPTIONS;
     public static final HashMap<Integer, String> SX_REQ_FRE_CODE;
-    public static final String SX_REQ_FRE_NO = "N";
-    public static final String SX_REQ_FRE_YES = "Y";
-    
-    public static final String SX_FREIGHT_TIC_TP_FRE = "F";
-    public static final String SX_FREIGHT_TIC_TP_DEP = "D";
     
     public static final int[] MS_MVT_CL_IN_REC = new int[] { 1, 1 };
     public static final int[] MS_MVT_CL_IN_PRD = new int[] { 1, 6 };
@@ -259,6 +257,10 @@ public abstract class SModSysConsts {
     public static final int MS_EMP_TP_NA = 1;
     public static final int MS_EMP_TP_WAH_MAN = 2;
     public static final int MS_EMP_TP_MFG_SUP = 3;
+    
+    public static final int MU_EMP_ND = 0; // Not defined
+    
+    public static final int MU_EXW_FAC_NA = 0; // Not applicable
     
     public static final int MX_MVT = 1; // Vista de movimientos
     public static final int MX_MVT_DETAIL = 2; // Vista de movimientos a detalle
@@ -322,8 +324,8 @@ public abstract class SModSysConsts {
         
         SX_REQ_FRE_OPTIONS = new ArrayList<>();
         SX_REQ_FRE_OPTIONS.add(new SGuiItem(new int[] { 0 }, "- Control de fletes -"));
-        SX_REQ_FRE_OPTIONS.add(new SGuiItem(new int[] { 1 }, "NO"));
-        SX_REQ_FRE_OPTIONS.add(new SGuiItem(new int[] { 2 }, "SÍ"));
+        SX_REQ_FRE_OPTIONS.add(new SGuiItem(new int[] { 1 }, "No"));
+        SX_REQ_FRE_OPTIONS.add(new SGuiItem(new int[] { 2 }, "Sí"));
         
         SX_REQ_FRE_CODE = new HashMap<>();
         SX_REQ_FRE_CODE.put(1, "N");

@@ -685,7 +685,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jtfWeightDestinyNetUnit.setText(SSomConsts.KG);
         jlAccessWarning.setVisible(false);
         
-        mbIsUserScaleSupervisor = ((SDbUser) miClient.getSession().getUser()).hasPrivilege(SModSysConsts.CS_RIG_SUP_SCA);
+        mbIsUserScaleSupervisor = ((SDbUser) miClient.getSession().getUser()).hasPrivilege(SModSysConsts.CS_RIG_SCA_SUP);
         
         reloadCatalogues();
     }

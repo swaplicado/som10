@@ -57,6 +57,7 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.S_ALT_LAB,
             SModConsts.S_TIC,
             SModConsts.S_TIC_NOTE,
+            SModConsts.S_TIC_EXW_UPD_LOG,
             SModConsts.S_ALT_TIC,
             SModConsts.S_WAH_START,
             SModConsts.SX_TIC_TARE,
@@ -90,11 +91,18 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.MU_MAT_COND,
             SModConsts.MU_SHIFT,
             SModConsts.MU_EMP,
+            SModConsts.MU_EXW_ADJ_TP,
+            SModConsts.MU_EXW_FAC,
             SModConsts.M_MVT,
+            SModConsts.M_MVT_ETY,
             SModConsts.M_STK,
+            SModConsts.M_TIC_ST,
+            SModConsts.M_NOTE,
+            SModConsts.M_EXW_ADJ,
             SModConsts.MX_TIC_MVT,
             SModConsts.MX_TIC_REC,
-            SModConsts.MX_STK_TRANS
+            SModConsts.MX_STK_TRANS,
+            SModConsts.MX_EXW_STOCK
         });
     }
 

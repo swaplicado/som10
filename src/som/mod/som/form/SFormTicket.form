@@ -2,14 +2,13 @@
 
 <Form version="1.2" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <NonVisualComponents>
-    <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
+    <Component class="javax.swing.ButtonGroup" name="bgFreightType">
     </Component>
   </NonVisualComponents>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="2"/>
   </SyntheticProperties>
   <Events>
-    <EventHandler event="windowActivated" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowActivated"/>
     <EventHandler event="windowClosed" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosed"/>
   </Events>
   <AuxValues>
@@ -81,10 +80,11 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextScale">
+                <Component class="javax.swing.JTextField" name="jtfScale">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="text" type="java.lang.String" value="sBeanFieldText1"/>
+                    <Property name="text" type="java.lang.String" value="TEXT"/>
+                    <Property name="focusable" type="boolean" value="false"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[300, 23]"/>
                     </Property>
@@ -117,6 +117,9 @@
                   </Properties>
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextTicket">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="TEXT"/>
+                  </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jlDummy">
                   <Properties>
@@ -202,7 +205,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jlInputSource">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Origen insumo:*"/>
+                    <Property name="text" type="java.lang.String" value="Origen del insumo:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 23]"/>
                     </Property>
@@ -215,7 +218,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="jbInputSource">
+                <Component class="javax.swing.JButton" name="jbSetDefaultInputSource">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/som/gui/img/icon_std_wizard.gif"/>
@@ -259,7 +262,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jlPlates">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Placas veh&#xed;culo:*"/>
+                    <Property name="text" type="java.lang.String" value="Placas del veh&#xed;culo:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 23]"/>
                     </Property>
@@ -267,7 +270,7 @@
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextPlates">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="sBeanFieldText2"/>
+                    <Property name="text" type="java.lang.String" value="TEXT"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jlPlatesCage">
@@ -281,7 +284,18 @@
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextPlatesCage">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="sBeanFieldText2"/>
+                    <Property name="text" type="java.lang.String" value="TEXT"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPlatesCage1">
+                  <Properties>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="6d" green="6d" id="Text Inactive Text" palette="2" red="6d" type="palette"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="(Placas de la caja o remolque del veh&#xed;culo.)"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[250, 23]"/>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -295,7 +309,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jlDriver">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Chofer veh&#xed;culo:*"/>
+                    <Property name="text" type="java.lang.String" value="Chofer del veh&#xed;culo:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 23]"/>
                     </Property>
@@ -303,7 +317,7 @@
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextDriver">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="sBeanFieldText2"/>
+                    <Property name="text" type="java.lang.String" value="TEXT"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[300, 23]"/>
                     </Property>
@@ -331,6 +345,13 @@
                 <Component class="javax.swing.JLabel" name="jlWeightSourceUnit">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="UNIT"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" id="Active Caption Border" palette="2" red="b4" type="palette"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[35, 23]"/>
                     </Property>
@@ -355,7 +376,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jlWeightDestinyArrival">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Peso entrada:*"/>
+                    <Property name="text" type="java.lang.String" value="Peso en entrada:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 23]"/>
                     </Property>
@@ -366,6 +387,13 @@
                 <Component class="javax.swing.JLabel" name="jlWeightDestinyArrivalUnit">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="UNIT"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" id="Active Caption Border" palette="2" red="b4" type="palette"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[35, 23]"/>
                     </Property>
@@ -382,7 +410,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jlWeightDestinyDeparture">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Peso salida:*"/>
+                    <Property name="text" type="java.lang.String" value="Peso en salida:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 23]"/>
                     </Property>
@@ -393,12 +421,19 @@
                 <Component class="javax.swing.JLabel" name="jlWeightDestinyDepartureUnit">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="UNIT"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" id="Active Caption Border" palette="2" red="b4" type="palette"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[35, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="jbImportTareTicket">
+                <Component class="javax.swing.JButton" name="jbImportTicketTare">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Importar de Revuelta"/>
                     <Property name="toolTipText" type="java.lang.String" value="Importar de Revuelta (segunda pesada)"/>
@@ -407,7 +442,7 @@
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JButton" name="jbCleanTare">
+                <Component class="javax.swing.JButton" name="jbCleanTicketTare">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Limpiar"/>
                     <Property name="toolTipText" type="java.lang.String" value="Limpiar datos segunda pesada"/>
@@ -427,7 +462,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jlDatetimeArrival">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Fecha-hora entrada:*"/>
+                    <Property name="text" type="java.lang.String" value="Fecha-hora de entrada:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 23]"/>
                     </Property>
@@ -435,26 +470,26 @@
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldDatetime" name="moDatetimeArrival">
                 </Component>
-                <Component class="javax.swing.JLabel" name="jLabel1">
+                <Component class="javax.swing.JLabel" name="jlDatetimeArrival1">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[5, 23]"/>
+                      <Dimension value="[25, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jlOpeArr">
+                <Component class="javax.swing.JLabel" name="jlScaleOperatorArrival">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Operador b&#xe1;scula entrada:"/>
+                    <Property name="text" type="java.lang.String" value="Operador b&#xe1;scula en entrada:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[155, 23]"/>
+                      <Dimension value="[175, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextOpeArr">
+                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextScaleOperatorArrival">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="sBeanFieldText2"/>
+                    <Property name="text" type="java.lang.String" value="TEXT"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[260, 23]"/>
+                      <Dimension value="[227, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -469,7 +504,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jlDatetimeDeparture">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Fecha-hora salida:*"/>
+                    <Property name="text" type="java.lang.String" value="Fecha-hora de salida:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 23]"/>
                     </Property>
@@ -477,180 +512,26 @@
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldDatetime" name="moDatetimeDeparture">
                 </Component>
-                <Component class="javax.swing.JLabel" name="jLabel2">
+                <Component class="javax.swing.JLabel" name="jlDatetimeDeparture1">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[5, 23]"/>
+                      <Dimension value="[25, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jlOpeDep">
+                <Component class="javax.swing.JLabel" name="jlScaleOperatorDeparture">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Operador b&#xe1;scula salida:"/>
+                    <Property name="text" type="java.lang.String" value="Operador b&#xe1;scula en salida:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[155, 23]"/>
+                      <Dimension value="[175, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextOpeDep">
+                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextScaleOperatorDeparture">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="sBeanFieldText2"/>
+                    <Property name="text" type="java.lang.String" value="TEXT"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[260, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="jPanel16">
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                <Property name="alignment" type="int" value="0"/>
-                <Property name="verticalGap" type="int" value="0"/>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlPackingFullQuantityArrival">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Cant. empaque lleno entrada:"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackingFullQuantityArrival">
-                </Component>
-                <Component class="javax.swing.JLabel" name="jlPackingFullQuantityArrivalUnit">
-                  <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[50, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="jbPackingFullQuantityArrival">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Modificar"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Modificar cantidad empaque lleno"/>
-                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[0, 0, 0, 0]"/>
-                    </Property>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[75, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="jPanel18">
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                <Property name="alignment" type="int" value="0"/>
-                <Property name="verticalGap" type="int" value="0"/>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlPackingEmptyQuantityArrival">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Cant. empaque vac&#xed;o entrada:"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackingEmptyQuantityArrival">
-                </Component>
-                <Component class="javax.swing.JLabel" name="jlPackingEmptyQuantityArrivalUnit">
-                  <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[50, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="jbPackingEmptyQuantityArrival">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Modificar"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Modificar cantidad empaque vac&#xed;o"/>
-                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-                      <Insets value="[0, 0, 0, 0]"/>
-                    </Property>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[75, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="jPanel17">
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                <Property name="alignment" type="int" value="0"/>
-                <Property name="verticalGap" type="int" value="0"/>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlPackingFullQuantityDeparture">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Cant. empaque lleno salida:"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackingFullQuantityDeparture">
-                </Component>
-                <Component class="javax.swing.JLabel" name="jlPackingFullQuantityDepartureUnit">
-                  <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[50, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="jPanel19">
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                <Property name="alignment" type="int" value="0"/>
-                <Property name="verticalGap" type="int" value="0"/>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlPackingEmptyQuantityDeparture">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Cant. empaque vac&#xed;o salida:"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackingEmptyQuantityDeparture">
-                </Component>
-                <Component class="javax.swing.JLabel" name="jlPackingEmptyQuantityDepartureUnit">
-                  <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[50, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="jPanel20">
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
-                <Property name="alignment" type="int" value="0"/>
-                <Property name="verticalGap" type="int" value="0"/>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlWeightAverage">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Peso promedio:"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[150, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecWeightAverage">
-                </Component>
-                <Component class="javax.swing.JLabel" name="jlWeightAverageUnit">
-                  <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[50, 23]"/>
+                      <Dimension value="[227, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -665,7 +546,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jlNote">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Observaciones entrada:"/>
+                    <Property name="text" type="java.lang.String" value="Observaciones en entrada:"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 23]"/>
                     </Property>
@@ -673,9 +554,301 @@
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextNote">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="sBeanFieldText2"/>
+                    <Property name="text" type="java.lang.String" value="TEXT"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[600, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanel17">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlPacking">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[150, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingFull">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Envases llenos:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[100, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPacking1">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[50, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPacking2">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[23, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPacking3">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[25, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingEmpty">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Envases vac&#xed;os:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[100, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanel16">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlPackingQuantityArrival">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="N&#xfa;m. envases en entrada:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[150, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackingFullQuantityArrival">
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingFullQuantityArrivalUnits">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="PAQ"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" id="Active Caption Border" palette="2" red="b4" type="palette"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[50, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="jbEditPackingFullQuantityArrival">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/som/gui/img/icon_std_edit.gif"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Modificar cantidad empaque lleno"/>
+                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                      <Insets value="[0, 0, 0, 0]"/>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[23, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingQuantityArrival2">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[25, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackingEmptyQuantityArrival">
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingEmptyQuantityArrivalUnits">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="PAQ"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" id="Active Caption Border" palette="2" red="b4" type="palette"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[50, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="jbEditPackingEmptyQuantityArrival">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/som/gui/img/icon_std_edit.gif"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Modificar cantidad empaque vac&#xed;o"/>
+                    <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                      <Insets value="[0, 0, 0, 0]"/>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[23, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingQuantityArrival4">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[25, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingWeight">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Peso por envase:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[100, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackingWeight">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingWeightUnit">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="UNIT"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" id="Active Caption Border" palette="2" red="b4" type="palette"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[35, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanel18">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlPackingQuantityDeparture">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="N&#xfa;m. envases en salida:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[150, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackingFullQuantityDeparture">
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingFullQuantityDepartureUnits">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="PAQ"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" id="Active Caption Border" palette="2" red="b4" type="palette"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[50, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingQuantityDeparture1">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[23, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingQuantityDeparture2">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[25, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecPackingEmptyQuantityDeparture">
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingEmptyQuantityDepartureUnits">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="PAQ"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" id="Active Caption Border" palette="2" red="b4" type="palette"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[50, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingQuantityDeparture3">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[23, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPackingQuantityDeparture4">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[25, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlWeightAverage">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Peso promedio:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[100, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldDecimal" name="moDecWeightAverage">
+                  <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlWeightAverageUnits">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="PAQ / UNIT"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                        <LineBorder>
+                          <Color PropertyName="color" blue="b4" green="b4" id="Active Caption Border" palette="2" red="b4" type="palette"/>
+                        </LineBorder>
+                      </Border>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[75, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlWeightAverage1">
+                  <Properties>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="6d" green="6d" id="Text Inactive Text" palette="2" red="6d" type="palette"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="(De envases llenos.)"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[125, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -688,59 +861,55 @@
                 <Property name="verticalGap" type="int" value="0"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlTicOrig">
+                <Component class="javax.swing.JLabel" name="jlTicketOrigin">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Procedencia boleto:*"/>
+                    <Property name="text" type="java.lang.String" value="Procedencia del boleto:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyTicOrig">
+                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyTicketOrigin">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[250, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jlPackingFullQuantityDepartureUnit1">
+                <Component class="javax.swing.JLabel" name="jlTicketOrigin1">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[25, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldRadio" name="moRadFreight">
+                <Component class="javax.swing.JLabel" name="jlExwFacilityOrigin">
                   <Properties>
-                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                      <ComponentRef name="buttonGroup1"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="El boleto representa un flete"/>
+                    <Property name="text" type="java.lang.String" value="Almac&#xe9;n de procedencia:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[230, 23]"/>
+                      <Dimension value="[150, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jlPackingFullQuantityDepartureUnit3">
+                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyExwFacilityOrigin">
                   <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[5, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="jlFreightOrigin">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Origen flete:*"/>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[85, 23]"/>
-                    </Property>
-                  </Properties>
-                </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyFreightOrigin">
-                  <Properties>
-                    <Property name="enabled" type="boolean" value="false"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[200, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlExwFacilityOrigin1">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[25, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlExwUpdateNote">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Notas de la modificaci&#xf3;n:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[225, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -753,57 +922,152 @@
                 <Property name="verticalGap" type="int" value="0"/>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="jlTicDest">
+                <Component class="javax.swing.JLabel" name="jlTicketDestination">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Destino boleto:*"/>
+                    <Property name="text" type="java.lang.String" value="Destino del boleto:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[150, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyTicDest">
+                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyTicketDestination">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[250, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jlPackingFullQuantityDepartureUnit2">
+                <Component class="javax.swing.JLabel" name="jlTicketDestination1">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[25, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldRadio" name="moRadDependent">
+                <Component class="javax.swing.JLabel" name="jlExwFacilityDestination">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Almac&#xe9;n de destino:*"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[150, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyExwFacilityDestination">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[200, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlExwFacilityDestination1">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[25, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextExwUpdateNote">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="TEXT"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[225, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanel19">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlFreightControl">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Control de fletes:"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[150, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldRadio" name="moRadFreightFreight">
                   <Properties>
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                      <ComponentRef name="buttonGroup1"/>
+                      <ComponentRef name="bgFreightType"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="El boleto depende de otro con flete"/>
+                    <Property name="text" type="java.lang.String" value="El boleto implica un flete"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[230, 23]"/>
+                      <Dimension value="[200, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jlPackingFullQuantityDepartureUnit4">
+                <Component class="javax.swing.JLabel" name="jlFreightControlF1">
                   <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[5, 23]"/>
+                      <Dimension value="[25, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jlTicFreight">
+                <Component class="javax.swing.JLabel" name="jlFreightOrigin">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Boleto flete:*"/>
+                    <Property name="text" type="java.lang.String" value="Origen del flete:*"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[85, 23]"/>
+                      <Dimension value="[150, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
-                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyTicFreight">
+                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyFreightOrigin">
                   <Properties>
-                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[200, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="jPanel20">
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="alignment" type="int" value="0"/>
+                <Property name="verticalGap" type="int" value="0"/>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jlFreightControl1">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[150, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldRadio" name="moRadFreightDependent">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="bgFreightType"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="El flete depende de otro boleto"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[200, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlFreightControlD1">
+                  <Properties>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[25, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlTicketFreight">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Boleto del flete:*"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[150, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="sa.lib.gui.bean.SBeanFieldKey" name="moKeyTicketFreight">
+                  <Properties>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[200, 23]"/>
                     </Property>

@@ -47,6 +47,7 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
     protected double mdFruitYieldAdjustmentPercentage;
     protected int mnStartingSeasonMonth;
     protected String msRevueltaItemId;
+    protected String msExternalWarehousesAllowed;
     protected String msAutoMailNotificationBoxes;
     protected String msUserMailNotificationBoxes;
     protected boolean mbAutoMailNotification;
@@ -173,6 +174,7 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
     public void setFruitYieldAdjustmentPercentage(double d) { mdFruitYieldAdjustmentPercentage = d; }
     public void setStartingSeasonMonth(int n) { mnStartingSeasonMonth = n; }
     public void setRevueltaItemId(String s) { msRevueltaItemId = s; }
+    public void setExternalWarehousesAllowed(String s) { msExternalWarehousesAllowed = s; }
     public void setAutoMailNotificationBoxes(String s) { msAutoMailNotificationBoxes = s; }
     public void setUserMailNotificationBoxes(String s) { msUserMailNotificationBoxes = s; }
     public void setAutoMailNotification(boolean b) { mbAutoMailNotification = b; }
@@ -245,6 +247,7 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
     public double getFruitYieldAdjustmentPercentage() { return mdFruitYieldAdjustmentPercentage; }
     public int getStartingSeasonMonth() { return mnStartingSeasonMonth; }
     public String getRevueltaItemId() { return msRevueltaItemId; }
+    public String getExternalWarehousesAllowed() { return msExternalWarehousesAllowed; }
     public String getAutoMailNotificationBoxes() { return msAutoMailNotificationBoxes; }
     public String getUserMailNotificationBoxes() { return msUserMailNotificationBoxes; }
     public boolean isAutoMailNotification() { return mbAutoMailNotification; }
@@ -335,6 +338,7 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
         mdFruitYieldAdjustmentPercentage = 0;
         mnStartingSeasonMonth = 0;
         msRevueltaItemId = "";
+        msExternalWarehousesAllowed = "";
         msAutoMailNotificationBoxes = "";
         msUserMailNotificationBoxes = "";
         mbAutoMailNotification = false;
@@ -452,6 +456,7 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
             mdFruitYieldAdjustmentPercentage = resultSet.getDouble("fruit_yield_adj_per");
             mnStartingSeasonMonth = resultSet.getInt("sta_seas_mon");
             msRevueltaItemId = resultSet.getString("rev_item_id");
+            msExternalWarehousesAllowed = resultSet.getString("exw_fac_allow");
             msAutoMailNotificationBoxes = resultSet.getString("amn_box");
             msUserMailNotificationBoxes = resultSet.getString("umn_box");
             mbAutoMailNotification = resultSet.getBoolean("b_amn");
@@ -549,6 +554,7 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
                     mdFruitYieldAdjustmentPercentage + ", " + 
                     mnStartingSeasonMonth + ", " +
                     "'" + msRevueltaItemId + "', " +
+                    "'" + msExternalWarehousesAllowed + "', " + 
                     "'" + msAutoMailNotificationBoxes + "', " +
                     "'" + msUserMailNotificationBoxes + "', " +
                     (mbAutoMailNotification ? 1 : 0) + ", " +
@@ -626,6 +632,7 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
                     "fruit_yield_adj_per = " + mdFruitYieldAdjustmentPercentage + ", " +
                     "sta_seas_mon = " + mnStartingSeasonMonth + ", " +
                     "rev_item_id = '" + msRevueltaItemId + "', " +
+                    "exw_fac_allow = '" + msExternalWarehousesAllowed + "', " +
                     "amn_box = '" + msAutoMailNotificationBoxes + "', " +
                     "umn_box = '" + msUserMailNotificationBoxes + "', " +
                     "b_amn = " + (mbAutoMailNotification ? 1 : 0) + ", " +
@@ -711,6 +718,7 @@ public class SDbItem extends SDbRegistryUser implements SGridRow {
         registry.setFruitYieldAdjustmentPercentage(this.getFruitYieldAdjustmentPercentage());
         registry.setStartingSeasonMonth(this.getStartingSeasonMonth());
         registry.setRevueltaItemId(this.getRevueltaItemId());
+        registry.setExternalWarehousesAllowed(this.getExternalWarehousesAllowed());
         registry.setAutoMailNotificationBoxes(this.getAutoMailNotificationBoxes());
         registry.setUserMailNotificationBoxes(this.getUserMailNotificationBoxes());
         registry.setAutoMailNotification(this.isAutoMailNotification());

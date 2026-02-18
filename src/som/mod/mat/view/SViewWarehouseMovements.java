@@ -58,7 +58,7 @@ public class SViewWarehouseMovements extends SGridPaneView implements ActionList
     }
     
     private void initComponetsCustom() {
-        mbUserHasAdmRig = miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RMES, SModSysConsts.CS_RIG_RMEA });
+        mbUserHasAdmRig = miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RM_STK_SUP, SModSysConsts.CS_RIG_RM_STK_MAN });
         
         jbMovInRep = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_stk_adj_in.gif")), "Entrada de almacén por recepción", this);
         jbMovInProd = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_stk_inv_in.gif")), "Entrada de almacén por producción", this);

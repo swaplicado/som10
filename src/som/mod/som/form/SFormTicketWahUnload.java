@@ -21,9 +21,9 @@ import som.mod.som.db.SSomConsts;
 
 /**
  * Forma que ayuda a asignar el almacén de descarga.
- * @author Isabel Servín
+ * @author Isabel Servín, Sergio Flores
  */
-public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
+public class SFormTicketWahUnload extends SBeanForm implements ActionListener {
 
     private SDbTicket moRegistry;
     
@@ -32,7 +32,7 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
      * @param client
      * @param title
      */
-    public SFormTicketWahUnld(SGuiClient client, String title) {
+    public SFormTicketWahUnload(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.SX_TIC_WAH_UNLD, SLibConsts.UNDEFINED, title);
         initComponents();
         initComponentsCustom();
@@ -224,6 +224,7 @@ public class SFormTicketWahUnld extends SBeanForm implements ActionListener {
         jPanel23.add(moTextWeight);
 
         jlWeightDestinyDepartureUnit.setText("UNIT");
+        jlWeightDestinyDepartureUnit.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
         jlWeightDestinyDepartureUnit.setPreferredSize(new java.awt.Dimension(35, 23));
         jPanel23.add(jlWeightDestinyDepartureUnit);
 

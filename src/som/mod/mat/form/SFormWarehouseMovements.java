@@ -607,7 +607,7 @@ public class SFormWarehouseMovements extends SBeanForm implements ActionListener
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 960, 600);
         
-        mbUserHasSupAdmRig = miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RMES, SModSysConsts.CS_RIG_RMEA });
+        mbUserHasSupAdmRig = miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RM_STK_SUP, SModSysConsts.CS_RIG_RM_STK_MAN });
         
         moFieldsEty = new SGuiFields();
         

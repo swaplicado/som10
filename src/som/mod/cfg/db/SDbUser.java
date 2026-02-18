@@ -109,8 +109,8 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
      */
     public boolean hasInputCategoryAccess(final int registryType, final int inputCategoryId) {
         if (isAdministrator() || 
-                (registryType == SModConsts.S_TIC && hasPrivilege(SModSysConsts.CS_RIG_SUP_SCA)) ||
-                (registryType == SModConsts.S_LAB && hasPrivilege(SModSysConsts.CS_RIG_SUP_LAB))) {
+                (registryType == SModConsts.S_TIC && hasPrivilege(SModSysConsts.CS_RIG_SCA_SUP)) ||
+                (registryType == SModConsts.S_LAB && hasPrivilege(SModSysConsts.CS_RIG_LAB_SUP))) {
             return true;
         }
         else {
@@ -151,9 +151,9 @@ public class SDbUser extends SDbRegistryUser implements SGuiUser {
             case SModConsts.MOD_SOM_RM:
                 access = isAdministrator() ||
                         hasPrivilege(SModSysConsts.CS_RIG_MAN_RM) || hasPrivilege(SModSysConsts.CS_RIG_WHS_RM) || hasPrivilege(SModSysConsts.CS_RIG_REP_RM) ||
-                        hasPrivilege(SModSysConsts.CS_RIG_SUP_SCA) || hasPrivilege(SModSysConsts.CS_RIG_SCA) ||
-                        hasPrivilege(SModSysConsts.CS_RIG_SUP_LAB) || hasPrivilege(SModSysConsts.CS_RIG_LAB) ||
-                        hasPrivilege(SModSysConsts.CS_RIG_RMEC) || hasPrivilege(SModSysConsts.CS_RIG_RMES) || hasPrivilege(SModSysConsts.CS_RIG_RMEA);
+                        hasPrivilege(SModSysConsts.CS_RIG_SCA_SUP) || hasPrivilege(SModSysConsts.CS_RIG_SCA) ||
+                        hasPrivilege(SModSysConsts.CS_RIG_LAB_SUP) || hasPrivilege(SModSysConsts.CS_RIG_LAB) ||
+                        hasPrivilege(SModSysConsts.CS_RIG_RM_STK_DEO) || hasPrivilege(SModSysConsts.CS_RIG_RM_STK_SUP) || hasPrivilege(SModSysConsts.CS_RIG_RM_STK_MAN);
                 break;
             case SModConsts.MOD_SOM_OS:
                 access = isAdministrator() ||

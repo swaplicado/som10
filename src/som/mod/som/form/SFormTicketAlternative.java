@@ -11,9 +11,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -39,8 +36,9 @@ import som.mod.som.db.SSomConsts;
 import som.mod.som.db.SSomUtils;
 
 /**
- *
- * @author Isabel Servín
+ * Forma de captura de boletos de báscula alternativos.
+ * IMPORTANTE: Considérese que la forma no es propiamente para crear nuevos registro, sino solo para modificarlos.
+ * @author Isabel Servín, Sergio Flores
  */
 public class SFormTicketAlternative extends SBeanForm implements ActionListener, ItemListener, FocusListener {
 
@@ -55,8 +53,6 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private boolean mbIsRevImport2;
     
     String arrWeiChgIds[];
-
-    private boolean mbFirstTime;
     
     /**
      * Creates new form SFormTicket
@@ -64,7 +60,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
      * @param title Form title.
      * @param formSubType Form subtype: 1) normal ticket: SLibConsts.UNDEFINED; 2) ticket to be tared: SModConsts.SX_TIC_TARE_PEND.
      */
-    public SFormTicketAlternative(SGuiClient client, String title, int formSubType) {
+    public SFormTicketAlternative(SGuiClient client, int formSubType, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.S_ALT_TIC, formSubType, title);
         initComponents();
         initComponentsCustom();
@@ -84,7 +80,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jPanel13 = new javax.swing.JPanel();
         jlScale = new javax.swing.JLabel();
         moKeyScale = new sa.lib.gui.bean.SBeanFieldKey();
-        moTextScale = new sa.lib.gui.bean.SBeanFieldText();
+        jtfScale = new javax.swing.JTextField();
         moBoolTared = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel4 = new javax.swing.JPanel();
         jlTicket = new javax.swing.JLabel();
@@ -99,12 +95,13 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jPanel21 = new javax.swing.JPanel();
         jlInputSource = new javax.swing.JLabel();
         moKeyInputSource = new sa.lib.gui.bean.SBeanFieldKey();
-        jbInputSource = new javax.swing.JButton();
+        jbSetDefaultInputSource = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jlPlates = new javax.swing.JLabel();
         moTextPlates = new sa.lib.gui.bean.SBeanFieldText();
         jlPlatesCage = new javax.swing.JLabel();
         moTextPlatesCage = new sa.lib.gui.bean.SBeanFieldText();
+        jlPlatesCage1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jlDriver = new javax.swing.JLabel();
         moTextDriver = new sa.lib.gui.bean.SBeanFieldText();
@@ -125,58 +122,61 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jlDatetimeArrival = new javax.swing.JLabel();
         moDatetimeArrival = new sa.lib.gui.bean.SBeanFieldDatetime();
         jLabel1 = new javax.swing.JLabel();
-        jlOpeArr = new javax.swing.JLabel();
-        moTextOpeArr = new sa.lib.gui.bean.SBeanFieldText();
+        jlScaleOperatorArrival = new javax.swing.JLabel();
+        moTextScaleOperatorArrival = new sa.lib.gui.bean.SBeanFieldText();
         jPanel11 = new javax.swing.JPanel();
         jlDatetimeDeparture = new javax.swing.JLabel();
         moDatetimeDeparture = new sa.lib.gui.bean.SBeanFieldDatetime();
         jLabel2 = new javax.swing.JLabel();
-        jlOpeDep = new javax.swing.JLabel();
-        moTextOpeDep = new sa.lib.gui.bean.SBeanFieldText();
-        jPanel16 = new javax.swing.JPanel();
-        jlPackingFullQuantityArrival = new javax.swing.JLabel();
-        moDecPackingFullQuantityArrival = new sa.lib.gui.bean.SBeanFieldDecimal();
-        jlPackingFullQuantityArrivalUnit = new javax.swing.JLabel();
-        jPanel18 = new javax.swing.JPanel();
-        jlPackingEmptyQuantityArrival = new javax.swing.JLabel();
-        moDecPackingEmptyQuantityArrival = new sa.lib.gui.bean.SBeanFieldDecimal();
-        jlPackingEmptyQuantityArrivalUnit = new javax.swing.JLabel();
-        jPanel17 = new javax.swing.JPanel();
-        jlPackingFullQuantityDeparture = new javax.swing.JLabel();
-        moDecPackingFullQuantityDeparture = new sa.lib.gui.bean.SBeanFieldDecimal();
-        jlPackingFullQuantityDepartureUnit = new javax.swing.JLabel();
-        jPanel19 = new javax.swing.JPanel();
-        jlPackingEmptyQuantityDeparture = new javax.swing.JLabel();
-        moDecPackingEmptyQuantityDeparture = new sa.lib.gui.bean.SBeanFieldDecimal();
-        jlPackingEmptyQuantityDepartureUnit = new javax.swing.JLabel();
-        jlWeiNetCalc = new javax.swing.JLabel();
-        moDecWeiNetCalc = new sa.lib.gui.bean.SBeanFieldDecimal();
-        jPanel20 = new javax.swing.JPanel();
-        jlWeightAverage = new javax.swing.JLabel();
-        moDecWeightAverage = new sa.lib.gui.bean.SBeanFieldDecimal();
-        jlWeightAverageUnit = new javax.swing.JLabel();
-        jlWeiNetTic = new javax.swing.JLabel();
-        moDecWeiNetTic = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlScaleOperatorDeparture = new javax.swing.JLabel();
+        moTextScaleOperatorDeparture = new sa.lib.gui.bean.SBeanFieldText();
         jPanel5 = new javax.swing.JPanel();
         jlNote = new javax.swing.JLabel();
         moTextNote = new sa.lib.gui.bean.SBeanFieldText();
         jPanel14 = new javax.swing.JPanel();
         jlNote2 = new javax.swing.JLabel();
         moTextNote2 = new sa.lib.gui.bean.SBeanFieldText();
-
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowActivated(java.awt.event.WindowEvent evt) {
-                formWindowActivated(evt);
-            }
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                formWindowClosed(evt);
-            }
-        });
+        jPanel17 = new javax.swing.JPanel();
+        jlPacking = new javax.swing.JLabel();
+        jlPackingFull = new javax.swing.JLabel();
+        jlPacking1 = new javax.swing.JLabel();
+        jlPackingEmpty = new javax.swing.JLabel();
+        jPanel16 = new javax.swing.JPanel();
+        jlPackingQuantityArrival = new javax.swing.JLabel();
+        moDecPackingFullQuantityArrival = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlPackingFullQuantityArrivalUnits = new javax.swing.JLabel();
+        jlPackingQuantityArrival1 = new javax.swing.JLabel();
+        moDecPackingEmptyQuantityArrival = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlPackingEmptyQuantityArrivalUnits = new javax.swing.JLabel();
+        jlPackingQuantityArrival2 = new javax.swing.JLabel();
+        jlPackingWeight = new javax.swing.JLabel();
+        moDecPackingWeight = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlPackingWeightUnit = new javax.swing.JLabel();
+        jPanel18 = new javax.swing.JPanel();
+        jlPackingQuantityDeparture = new javax.swing.JLabel();
+        moDecPackingFullQuantityDeparture = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlPackingFullQuantityDepartureUnits = new javax.swing.JLabel();
+        jlPackingQuantityDeparture1 = new javax.swing.JLabel();
+        moDecPackingEmptyQuantityDeparture = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlPackingEmptyQuantityDepartureUnits = new javax.swing.JLabel();
+        jlPackingQuantityDeparture2 = new javax.swing.JLabel();
+        jlWeightAverage = new javax.swing.JLabel();
+        moDecWeightAverage = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlWeightAverageUnits = new javax.swing.JLabel();
+        jPanel22 = new javax.swing.JPanel();
+        jPanel19 = new javax.swing.JPanel();
+        jlWeightDestinyNetComputed = new javax.swing.JLabel();
+        moDecWeightDestinyNetComputed = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlWeightDestinyNetComputedUnit = new javax.swing.JLabel();
+        jPanel20 = new javax.swing.JPanel();
+        jlWeightDestinyNet = new javax.swing.JLabel();
+        moDecWeightDestinyNet = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jlWeightDestinyNetUnit = new javax.swing.JLabel();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(19, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(20, 1, 0, 5));
 
         jPanel13.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -188,10 +188,11 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moKeyScale.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel13.add(moKeyScale);
 
-        moTextScale.setEditable(false);
-        moTextScale.setText("sBeanFieldText1");
-        moTextScale.setPreferredSize(new java.awt.Dimension(300, 23));
-        jPanel13.add(moTextScale);
+        jtfScale.setEditable(false);
+        jtfScale.setText("TEXT");
+        jtfScale.setFocusable(false);
+        jtfScale.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel13.add(jtfScale);
 
         moBoolTared.setText("Boleto tarado");
         moBoolTared.setEditable(false);
@@ -204,6 +205,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jlTicket.setText("Boleto:*");
         jlTicket.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel4.add(jlTicket);
+
+        moTextTicket.setText("TEXT");
         jPanel4.add(moTextTicket);
 
         jlDummy.setPreferredSize(new java.awt.Dimension(25, 23));
@@ -235,27 +238,27 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlInputSource.setText("Origen insumo:*");
+        jlInputSource.setText("Origen del insumo:*");
         jlInputSource.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel21.add(jlInputSource);
 
         moKeyInputSource.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel21.add(moKeyInputSource);
 
-        jbInputSource.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_std_wizard.gif"))); // NOI18N
-        jbInputSource.setToolTipText("Seleccionar origen insumo del proveedor");
-        jbInputSource.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanel21.add(jbInputSource);
+        jbSetDefaultInputSource.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_std_wizard.gif"))); // NOI18N
+        jbSetDefaultInputSource.setToolTipText("Seleccionar origen insumo del proveedor");
+        jbSetDefaultInputSource.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel21.add(jbSetDefaultInputSource);
 
         jPanel2.add(jPanel21);
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlPlates.setText("Placas vehículo:*");
+        jlPlates.setText("Placas del vehículo:*");
         jlPlates.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel6.add(jlPlates);
 
-        moTextPlates.setText("sBeanFieldText2");
+        moTextPlates.setText("TEXT");
         jPanel6.add(moTextPlates);
 
         jlPlatesCage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -263,18 +266,23 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jlPlatesCage.setPreferredSize(new java.awt.Dimension(90, 23));
         jPanel6.add(jlPlatesCage);
 
-        moTextPlatesCage.setText("sBeanFieldText2");
+        moTextPlatesCage.setText("TEXT");
         jPanel6.add(moTextPlatesCage);
+
+        jlPlatesCage1.setForeground(java.awt.SystemColor.textInactiveText);
+        jlPlatesCage1.setText("(Placas de la caja o remolque del vehículo.)");
+        jlPlatesCage1.setPreferredSize(new java.awt.Dimension(250, 23));
+        jPanel6.add(jlPlatesCage1);
 
         jPanel2.add(jPanel6);
 
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlDriver.setText("Chofer vehículo:*");
+        jlDriver.setText("Chofer del vehículo:*");
         jlDriver.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel3.add(jlDriver);
 
-        moTextDriver.setText("sBeanFieldText2");
+        moTextDriver.setText("TEXT");
         moTextDriver.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel3.add(moTextDriver);
 
@@ -288,6 +296,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jPanel7.add(moDecWeightSource);
 
         jlWeightSourceUnit.setText("UNIT");
+        jlWeightSourceUnit.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
         jlWeightSourceUnit.setPreferredSize(new java.awt.Dimension(35, 23));
         jPanel7.add(jlWeightSourceUnit);
 
@@ -299,12 +308,13 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
         jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlWeightDestinyArrival.setText("Peso entrada:*");
+        jlWeightDestinyArrival.setText("Peso en entrada:*");
         jlWeightDestinyArrival.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel9.add(jlWeightDestinyArrival);
         jPanel9.add(moDecWeightDestinyArrival);
 
         jlWeightDestinyArrivalUnit.setText("UNIT");
+        jlWeightDestinyArrivalUnit.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
         jlWeightDestinyArrivalUnit.setPreferredSize(new java.awt.Dimension(35, 23));
         jPanel9.add(jlWeightDestinyArrivalUnit);
 
@@ -312,12 +322,13 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
         jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlWeightDestinyDeparture.setText("Peso salida:*");
+        jlWeightDestinyDeparture.setText("Peso en salida:*");
         jlWeightDestinyDeparture.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel15.add(jlWeightDestinyDeparture);
         jPanel15.add(moDecWeightDestinyDeparture);
 
         jlWeightDestinyDepartureUnit.setText("UNIT");
+        jlWeightDestinyDepartureUnit.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
         jlWeightDestinyDepartureUnit.setPreferredSize(new java.awt.Dimension(35, 23));
         jPanel15.add(jlWeightDestinyDepartureUnit);
 
@@ -325,115 +336,43 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
         jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlDatetimeArrival.setText("Fecha-hora entrada:*");
+        jlDatetimeArrival.setText("Fecha-hora de entrada:*");
         jlDatetimeArrival.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel8.add(jlDatetimeArrival);
         jPanel8.add(moDatetimeArrival);
 
-        jLabel1.setPreferredSize(new java.awt.Dimension(5, 23));
+        jLabel1.setPreferredSize(new java.awt.Dimension(25, 23));
         jPanel8.add(jLabel1);
 
-        jlOpeArr.setText("Operador báscula entrada:");
-        jlOpeArr.setPreferredSize(new java.awt.Dimension(155, 23));
-        jPanel8.add(jlOpeArr);
+        jlScaleOperatorArrival.setText("Operador báscula en entrada:");
+        jlScaleOperatorArrival.setPreferredSize(new java.awt.Dimension(175, 23));
+        jPanel8.add(jlScaleOperatorArrival);
 
-        moTextOpeArr.setText("sBeanFieldText2");
-        moTextOpeArr.setPreferredSize(new java.awt.Dimension(260, 23));
-        jPanel8.add(moTextOpeArr);
+        moTextScaleOperatorArrival.setText("TEXT");
+        moTextScaleOperatorArrival.setPreferredSize(new java.awt.Dimension(227, 23));
+        jPanel8.add(moTextScaleOperatorArrival);
 
         jPanel2.add(jPanel8);
 
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlDatetimeDeparture.setText("Fecha-hora salida:*");
+        jlDatetimeDeparture.setText("Fecha-hora de salida:*");
         jlDatetimeDeparture.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel11.add(jlDatetimeDeparture);
         jPanel11.add(moDatetimeDeparture);
 
-        jLabel2.setPreferredSize(new java.awt.Dimension(5, 23));
+        jLabel2.setPreferredSize(new java.awt.Dimension(25, 23));
         jPanel11.add(jLabel2);
 
-        jlOpeDep.setText("Operador báscula salida:");
-        jlOpeDep.setPreferredSize(new java.awt.Dimension(155, 23));
-        jPanel11.add(jlOpeDep);
+        jlScaleOperatorDeparture.setText("Operador báscula en salida:");
+        jlScaleOperatorDeparture.setPreferredSize(new java.awt.Dimension(175, 23));
+        jPanel11.add(jlScaleOperatorDeparture);
 
-        moTextOpeDep.setText("sBeanFieldText2");
-        moTextOpeDep.setPreferredSize(new java.awt.Dimension(260, 23));
-        jPanel11.add(moTextOpeDep);
+        moTextScaleOperatorDeparture.setText("TEXT");
+        moTextScaleOperatorDeparture.setPreferredSize(new java.awt.Dimension(227, 23));
+        jPanel11.add(moTextScaleOperatorDeparture);
 
         jPanel2.add(jPanel11);
-
-        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlPackingFullQuantityArrival.setText("Cant. empaque lleno entrada:");
-        jlPackingFullQuantityArrival.setPreferredSize(new java.awt.Dimension(150, 23));
-        jPanel16.add(jlPackingFullQuantityArrival);
-        jPanel16.add(moDecPackingFullQuantityArrival);
-
-        jlPackingFullQuantityArrivalUnit.setPreferredSize(new java.awt.Dimension(50, 23));
-        jPanel16.add(jlPackingFullQuantityArrivalUnit);
-
-        jPanel2.add(jPanel16);
-
-        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlPackingEmptyQuantityArrival.setText("Cant. empaque vacío entrada:");
-        jlPackingEmptyQuantityArrival.setPreferredSize(new java.awt.Dimension(150, 23));
-        jPanel18.add(jlPackingEmptyQuantityArrival);
-        jPanel18.add(moDecPackingEmptyQuantityArrival);
-
-        jlPackingEmptyQuantityArrivalUnit.setPreferredSize(new java.awt.Dimension(50, 23));
-        jPanel18.add(jlPackingEmptyQuantityArrivalUnit);
-
-        jPanel2.add(jPanel18);
-
-        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlPackingFullQuantityDeparture.setText("Cant. empaque lleno salida:");
-        jlPackingFullQuantityDeparture.setPreferredSize(new java.awt.Dimension(150, 23));
-        jPanel17.add(jlPackingFullQuantityDeparture);
-        jPanel17.add(moDecPackingFullQuantityDeparture);
-
-        jlPackingFullQuantityDepartureUnit.setPreferredSize(new java.awt.Dimension(50, 23));
-        jPanel17.add(jlPackingFullQuantityDepartureUnit);
-
-        jPanel2.add(jPanel17);
-
-        jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlPackingEmptyQuantityDeparture.setText("Cant. empaque vacío salida:");
-        jlPackingEmptyQuantityDeparture.setPreferredSize(new java.awt.Dimension(150, 23));
-        jPanel19.add(jlPackingEmptyQuantityDeparture);
-        jPanel19.add(moDecPackingEmptyQuantityDeparture);
-
-        jlPackingEmptyQuantityDepartureUnit.setPreferredSize(new java.awt.Dimension(65, 23));
-        jPanel19.add(jlPackingEmptyQuantityDepartureUnit);
-
-        jlWeiNetCalc.setText("Cálculo carga destino neta:");
-        jlWeiNetCalc.setMinimumSize(new java.awt.Dimension(110, 23));
-        jlWeiNetCalc.setPreferredSize(new java.awt.Dimension(155, 23));
-        jPanel19.add(jlWeiNetCalc);
-        jPanel19.add(moDecWeiNetCalc);
-
-        jPanel2.add(jPanel19);
-
-        jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlWeightAverage.setText("Peso promedio:");
-        jlWeightAverage.setPreferredSize(new java.awt.Dimension(150, 23));
-        jPanel20.add(jlWeightAverage);
-        jPanel20.add(moDecWeightAverage);
-
-        jlWeightAverageUnit.setPreferredSize(new java.awt.Dimension(65, 23));
-        jPanel20.add(jlWeightAverageUnit);
-
-        jlWeiNetTic.setText("Carga destino neta boleto:");
-        jlWeiNetTic.setMinimumSize(new java.awt.Dimension(110, 23));
-        jlWeiNetTic.setPreferredSize(new java.awt.Dimension(155, 23));
-        jPanel20.add(jlWeiNetTic);
-        jPanel20.add(moDecWeiNetTic);
-
-        jPanel2.add(jPanel20);
 
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -441,7 +380,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jlNote.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel5.add(jlNote);
 
-        moTextNote.setText("sBeanFieldText2");
+        moTextNote.setText("TEXT");
         moTextNote.setPreferredSize(new java.awt.Dimension(600, 23));
         jPanel5.add(moTextNote);
 
@@ -453,30 +392,147 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jlNote2.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel14.add(jlNote2);
 
-        moTextNote2.setText("sBeanFieldText2");
+        moTextNote2.setText("TEXT");
         moTextNote2.setPreferredSize(new java.awt.Dimension(600, 23));
         jPanel14.add(moTextNote2);
 
         jPanel2.add(jPanel14);
 
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlPacking.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel17.add(jlPacking);
+
+        jlPackingFull.setText("Envases llenos:");
+        jlPackingFull.setPreferredSize(new java.awt.Dimension(155, 23));
+        jPanel17.add(jlPackingFull);
+
+        jlPacking1.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel17.add(jlPacking1);
+
+        jlPackingEmpty.setText("Envases vacíos:");
+        jlPackingEmpty.setPreferredSize(new java.awt.Dimension(155, 23));
+        jPanel17.add(jlPackingEmpty);
+
+        jPanel2.add(jPanel17);
+
+        jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlPackingQuantityArrival.setText("Núm. envases en entrada:");
+        jlPackingQuantityArrival.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel16.add(jlPackingQuantityArrival);
+        jPanel16.add(moDecPackingFullQuantityArrival);
+
+        jlPackingFullQuantityArrivalUnits.setText("PAQ");
+        jlPackingFullQuantityArrivalUnits.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
+        jlPackingFullQuantityArrivalUnits.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel16.add(jlPackingFullQuantityArrivalUnits);
+
+        jlPackingQuantityArrival1.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel16.add(jlPackingQuantityArrival1);
+        jPanel16.add(moDecPackingEmptyQuantityArrival);
+
+        jlPackingEmptyQuantityArrivalUnits.setText("PAQ");
+        jlPackingEmptyQuantityArrivalUnits.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
+        jlPackingEmptyQuantityArrivalUnits.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel16.add(jlPackingEmptyQuantityArrivalUnits);
+
+        jlPackingQuantityArrival2.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel16.add(jlPackingQuantityArrival2);
+
+        jlPackingWeight.setText("Peso por envase:");
+        jlPackingWeight.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel16.add(jlPackingWeight);
+
+        moDecPackingWeight.setEditable(false);
+        jPanel16.add(moDecPackingWeight);
+
+        jlPackingWeightUnit.setText("UNIT");
+        jlPackingWeightUnit.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
+        jlPackingWeightUnit.setPreferredSize(new java.awt.Dimension(35, 23));
+        jPanel16.add(jlPackingWeightUnit);
+
+        jPanel2.add(jPanel16);
+
+        jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlPackingQuantityDeparture.setText("Núm. envases en salida:");
+        jlPackingQuantityDeparture.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel18.add(jlPackingQuantityDeparture);
+        jPanel18.add(moDecPackingFullQuantityDeparture);
+
+        jlPackingFullQuantityDepartureUnits.setText("PAQ");
+        jlPackingFullQuantityDepartureUnits.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
+        jlPackingFullQuantityDepartureUnits.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel18.add(jlPackingFullQuantityDepartureUnits);
+
+        jlPackingQuantityDeparture1.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel18.add(jlPackingQuantityDeparture1);
+        jPanel18.add(moDecPackingEmptyQuantityDeparture);
+
+        jlPackingEmptyQuantityDepartureUnits.setText("PAQ");
+        jlPackingEmptyQuantityDepartureUnits.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
+        jlPackingEmptyQuantityDepartureUnits.setPreferredSize(new java.awt.Dimension(50, 23));
+        jPanel18.add(jlPackingEmptyQuantityDepartureUnits);
+
+        jlPackingQuantityDeparture2.setPreferredSize(new java.awt.Dimension(25, 23));
+        jPanel18.add(jlPackingQuantityDeparture2);
+
+        jlWeightAverage.setText("Peso promedio:");
+        jlWeightAverage.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel18.add(jlWeightAverage);
+
+        moDecWeightAverage.setEditable(false);
+        jPanel18.add(moDecWeightAverage);
+
+        jlWeightAverageUnits.setText("PAQ / UNIT");
+        jlWeightAverageUnits.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
+        jlWeightAverageUnits.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel18.add(jlWeightAverageUnits);
+
+        jPanel2.add(jPanel18);
+
+        jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel2.add(jPanel22);
+
+        jPanel19.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlWeightDestinyNetComputed.setText("Carga destino neta calculada:");
+        jlWeightDestinyNetComputed.setMinimumSize(new java.awt.Dimension(110, 23));
+        jlWeightDestinyNetComputed.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel19.add(jlWeightDestinyNetComputed);
+
+        moDecWeightDestinyNetComputed.setEditable(false);
+        jPanel19.add(moDecWeightDestinyNetComputed);
+
+        jlWeightDestinyNetComputedUnit.setText("UNIT");
+        jlWeightDestinyNetComputedUnit.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
+        jlWeightDestinyNetComputedUnit.setPreferredSize(new java.awt.Dimension(35, 23));
+        jPanel19.add(jlWeightDestinyNetComputedUnit);
+
+        jPanel2.add(jPanel19);
+
+        jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlWeightDestinyNet.setText("Carga destino neta boleto:");
+        jlWeightDestinyNet.setMinimumSize(new java.awt.Dimension(110, 23));
+        jlWeightDestinyNet.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel20.add(jlWeightDestinyNet);
+
+        moDecWeightDestinyNet.setEditable(false);
+        jPanel20.add(moDecWeightDestinyNet);
+
+        jlWeightDestinyNetUnit.setText("UNIT");
+        jlWeightDestinyNetUnit.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.activeCaptionBorder));
+        jlWeightDestinyNetUnit.setPreferredSize(new java.awt.Dimension(35, 23));
+        jPanel20.add(jlWeightDestinyNetUnit);
+
+        jPanel2.add(jPanel20);
+
         jPanel1.add(jPanel2, java.awt.BorderLayout.NORTH);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        try {
-            handleWindowActivated();
-        }
-        catch (InstantiationException | IllegalAccessException e) {
-            SLibUtils.printException(this, e);
-            Logger.getLogger(SFormTicketAlternative.class.getName()).log(Level.SEVERE, null, e);
-        }
-    }//GEN-LAST:event_formWindowActivated
-
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        attendWindowClosed();
-    }//GEN-LAST:event_formWindowClosed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
@@ -495,6 +551,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel21;
+    private javax.swing.JPanel jPanel22;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -502,7 +559,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JButton jbInputSource;
+    private javax.swing.JButton jbSetDefaultInputSource;
     private javax.swing.JLabel jlDatetimeArrival;
     private javax.swing.JLabel jlDatetimeDeparture;
     private javax.swing.JLabel jlDriver;
@@ -511,31 +568,43 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private javax.swing.JLabel jlItem;
     private javax.swing.JLabel jlNote;
     private javax.swing.JLabel jlNote2;
-    private javax.swing.JLabel jlOpeArr;
-    private javax.swing.JLabel jlOpeDep;
-    private javax.swing.JLabel jlPackingEmptyQuantityArrival;
-    private javax.swing.JLabel jlPackingEmptyQuantityArrivalUnit;
-    private javax.swing.JLabel jlPackingEmptyQuantityDeparture;
-    private javax.swing.JLabel jlPackingEmptyQuantityDepartureUnit;
-    private javax.swing.JLabel jlPackingFullQuantityArrival;
-    private javax.swing.JLabel jlPackingFullQuantityArrivalUnit;
-    private javax.swing.JLabel jlPackingFullQuantityDeparture;
-    private javax.swing.JLabel jlPackingFullQuantityDepartureUnit;
+    private javax.swing.JLabel jlPacking;
+    private javax.swing.JLabel jlPacking1;
+    private javax.swing.JLabel jlPackingEmpty;
+    private javax.swing.JLabel jlPackingEmptyQuantityArrivalUnits;
+    private javax.swing.JLabel jlPackingEmptyQuantityDepartureUnits;
+    private javax.swing.JLabel jlPackingFull;
+    private javax.swing.JLabel jlPackingFullQuantityArrivalUnits;
+    private javax.swing.JLabel jlPackingFullQuantityDepartureUnits;
+    private javax.swing.JLabel jlPackingQuantityArrival;
+    private javax.swing.JLabel jlPackingQuantityArrival1;
+    private javax.swing.JLabel jlPackingQuantityArrival2;
+    private javax.swing.JLabel jlPackingQuantityDeparture;
+    private javax.swing.JLabel jlPackingQuantityDeparture1;
+    private javax.swing.JLabel jlPackingQuantityDeparture2;
+    private javax.swing.JLabel jlPackingWeight;
+    private javax.swing.JLabel jlPackingWeightUnit;
     private javax.swing.JLabel jlPlates;
     private javax.swing.JLabel jlPlatesCage;
+    private javax.swing.JLabel jlPlatesCage1;
     private javax.swing.JLabel jlProducer;
     private javax.swing.JLabel jlScale;
+    private javax.swing.JLabel jlScaleOperatorArrival;
+    private javax.swing.JLabel jlScaleOperatorDeparture;
     private javax.swing.JLabel jlTicket;
-    private javax.swing.JLabel jlWeiNetCalc;
-    private javax.swing.JLabel jlWeiNetTic;
     private javax.swing.JLabel jlWeightAverage;
-    private javax.swing.JLabel jlWeightAverageUnit;
+    private javax.swing.JLabel jlWeightAverageUnits;
     private javax.swing.JLabel jlWeightDestinyArrival;
     private javax.swing.JLabel jlWeightDestinyArrivalUnit;
     private javax.swing.JLabel jlWeightDestinyDeparture;
     private javax.swing.JLabel jlWeightDestinyDepartureUnit;
+    private javax.swing.JLabel jlWeightDestinyNet;
+    private javax.swing.JLabel jlWeightDestinyNetComputed;
+    private javax.swing.JLabel jlWeightDestinyNetComputedUnit;
+    private javax.swing.JLabel jlWeightDestinyNetUnit;
     private javax.swing.JLabel jlWeightSource;
     private javax.swing.JLabel jlWeightSourceUnit;
+    private javax.swing.JTextField jtfScale;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolTared;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolWeightSourceAvailable;
     private sa.lib.gui.bean.SBeanFieldDatetime moDatetimeArrival;
@@ -544,11 +613,12 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private sa.lib.gui.bean.SBeanFieldDecimal moDecPackingEmptyQuantityDeparture;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecPackingFullQuantityArrival;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecPackingFullQuantityDeparture;
-    private sa.lib.gui.bean.SBeanFieldDecimal moDecWeiNetCalc;
-    private sa.lib.gui.bean.SBeanFieldDecimal moDecWeiNetTic;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecPackingWeight;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightAverage;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightDestinyArrival;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightDestinyDeparture;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightDestinyNet;
+    private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightDestinyNetComputed;
     private sa.lib.gui.bean.SBeanFieldDecimal moDecWeightSource;
     private sa.lib.gui.bean.SBeanFieldKey moKeyInputSource;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
@@ -557,11 +627,10 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private sa.lib.gui.bean.SBeanFieldText moTextDriver;
     private sa.lib.gui.bean.SBeanFieldText moTextNote;
     private sa.lib.gui.bean.SBeanFieldText moTextNote2;
-    private sa.lib.gui.bean.SBeanFieldText moTextOpeArr;
-    private sa.lib.gui.bean.SBeanFieldText moTextOpeDep;
     private sa.lib.gui.bean.SBeanFieldText moTextPlates;
     private sa.lib.gui.bean.SBeanFieldText moTextPlatesCage;
-    private sa.lib.gui.bean.SBeanFieldText moTextScale;
+    private sa.lib.gui.bean.SBeanFieldText moTextScaleOperatorArrival;
+    private sa.lib.gui.bean.SBeanFieldText moTextScaleOperatorDeparture;
     private sa.lib.gui.bean.SBeanFieldText moTextTicket;
     // End of variables declaration//GEN-END:variables
 
@@ -580,19 +649,19 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moDecWeightSource.setDecimalSettings(SGuiUtils.getLabelName(jlWeightSource.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDecWeightDestinyArrival.setDecimalSettings(SGuiUtils.getLabelName(jlWeightDestinyArrival.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDecWeightDestinyDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlWeightDestinyDeparture.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
-        moDecWeightAverage.setDecimalSettings(SGuiUtils.getLabelName(jlWeightAverage.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDatetimeArrival.setDateSettings(miClient, SGuiUtils.getLabelName(jlDatetimeArrival.getText()), true);
+        moTextScaleOperatorArrival.setTextSettings(SGuiUtils.getLabelName(jlScaleOperatorArrival.getText()), 35, 0);
         moDatetimeDeparture.setDateSettings(miClient, SGuiUtils.getLabelName(jlDatetimeDeparture.getText()), true);
-        moTextOpeArr.setTextSettings(SGuiUtils.getLabelName(jlOpeArr.getText()), 35, 0);
-        moTextOpeDep.setTextSettings(SGuiUtils.getLabelName(jlOpeDep.getText()), 35, 0);
-        moDecPackingFullQuantityArrival.setDecimalSettings(SGuiUtils.getLabelName(jlPackingFullQuantityArrival.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moDecPackingEmptyQuantityArrival.setDecimalSettings(SGuiUtils.getLabelName(jlPackingEmptyQuantityArrival.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moDecPackingFullQuantityDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlPackingFullQuantityDeparture.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moDecPackingEmptyQuantityDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlPackingEmptyQuantityDeparture.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moDecWeiNetCalc.setDecimalSettings(SGuiUtils.getLabelName(jlWeiNetCalc.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
-        moDecWeiNetTic.setDecimalSettings(SGuiUtils.getLabelName(jlWeiNetCalc.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moTextScaleOperatorDeparture.setTextSettings(SGuiUtils.getLabelName(jlScaleOperatorDeparture.getText()), 35, 0);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 500, 0);
         moTextNote2.setTextSettings(SGuiUtils.getLabelName(jlNote2.getText()), 500, 0);
+        moDecPackingFullQuantityArrival.setDecimalSettings(SGuiUtils.getLabelName(jlPackingQuantityArrival.getText()) + "/ " + SGuiUtils.getLabelName(jlPackingFull.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecPackingEmptyQuantityArrival.setDecimalSettings(SGuiUtils.getLabelName(jlPackingQuantityArrival.getText()) + "/ " + SGuiUtils.getLabelName(jlPackingEmpty.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecPackingFullQuantityDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlPackingQuantityDeparture.getText()) + "/ " + SGuiUtils.getLabelName(jlPackingFull.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecPackingEmptyQuantityDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlPackingQuantityDeparture.getText()) + "/ " + SGuiUtils.getLabelName(jlPackingEmpty.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecWeightAverage.setDecimalSettings(SGuiUtils.getLabelName(jlWeightAverage.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecWeightDestinyNetComputed.setDecimalSettings(SGuiUtils.getLabelName(jlWeightDestinyNetComputed.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
+        moDecWeightDestinyNet.setDecimalSettings(SGuiUtils.getLabelName(jlWeightDestinyNetComputed.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         
         moFields.addField(moKeyScale);
         moFields.addField(moTextTicket);
@@ -606,143 +675,64 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moFields.addField(moDecWeightSource);
         moFields.addField(moDecWeightDestinyArrival);
         moFields.addField(moDecWeightDestinyDeparture);
-        moFields.addField(moDecWeightAverage);
         moFields.addField(moDatetimeArrival);
+        moFields.addField(moTextScaleOperatorArrival);
         moFields.addField(moDatetimeDeparture);
-        moFields.addField(moTextOpeArr);
-        moFields.addField(moTextOpeDep);
+        moFields.addField(moTextScaleOperatorDeparture);
+        moFields.addField(moTextNote);
+        moFields.addField(moTextNote2);
         moFields.addField(moDecPackingFullQuantityArrival);
         moFields.addField(moDecPackingEmptyQuantityArrival);
         moFields.addField(moDecPackingFullQuantityDeparture);
         moFields.addField(moDecPackingEmptyQuantityDeparture);
-        moFields.addField(moTextNote);
+        moFields.addField(moDecWeightAverage);
+        moFields.addField(moDecWeightDestinyNetComputed);
+        moFields.addField(moDecWeightDestinyNet);
 
         moFields.setFormButton(jbSave);
         
         jlWeightSourceUnit.setText(SSomConsts.KG);
         jlWeightDestinyArrivalUnit.setText(SSomConsts.KG);
         jlWeightDestinyDepartureUnit.setText(SSomConsts.KG);
+        jlPackingWeightUnit.setText(SSomConsts.KG);
+        jlWeightDestinyNetComputedUnit.setText(SSomConsts.KG);
+        jlWeightDestinyNetUnit.setText(SSomConsts.KG);
     }
 
-    private void handleWindowActivated() throws InstantiationException, IllegalAccessException {
-        if (mbFirstTime) {
-            mbFirstTime = false;
-            
-            setEnabledFields();
-        }
+    private boolean isRequiredInputSource() {
+        return moKeyInputSource.getItemCount() > 1;
     }
-
-    private void attendWindowClosed() {
-        
-    }
-
-    private void setEnabledFields() {
-        moBoolTared.setEditable(false);
+    
+    private void enableFields() {
+        moKeyScale.setEnabled(moRegistry.isRegistryNew() && moKeyScale.getItemCount() > 0 && moKeyScale.getItemCount() != 2);
         moTextTicket.setEditable(true);
         moKeyProducer.setEnabled(true);
         moKeyItem.setEnabled(true);
-        moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
-        jbInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+        moKeyInputSource.setEnabled(isRequiredInputSource());
+        jbSetDefaultInputSource.setEnabled(isRequiredInputSource());
+        
         moTextPlates.setEditable(true);
         moTextPlatesCage.setEditable(true);
         moTextDriver.setEditable(true);
-        moDecWeightSource.setEditable(false);
+        
         moBoolWeightSourceAvailable.setEnabled(false);
+        moDecWeightSource.setEditable(false);
         moDecWeightDestinyArrival.setEditable(true);
         moDecWeightDestinyDeparture.setEditable(true);
         moDatetimeArrival.setEditable(true);
+        moTextScaleOperatorArrival.setEditable(true);
         moDatetimeDeparture.setEditable(true);
+        moTextScaleOperatorDeparture.setEditable(true);
+        moTextNote.setEditable(true);
+        moTextNote2.setEditable(true);
+        
         moDecPackingFullQuantityArrival.setEditable(false);
         moDecPackingEmptyQuantityArrival.setEditable(false);
-        moDecPackingFullQuantityDeparture.setEditable(true);
-        moDecPackingEmptyQuantityDeparture.setEditable(true);
-        moTextOpeArr.setEnabled(true);
-        moTextOpeDep.setEnabled(true);
-        moDecWeiNetCalc.setEnabled(false);
-        moDecWeiNetTic.setEnabled(false);
-        itemStateKeyItem(false);
+        moDecPackingFullQuantityDeparture.setEditable(mbIsPacking);
+        moDecPackingEmptyQuantityDeparture.setEditable(mbIsPacking);
     }
 
-    private void itemStateKeyProducer() {
-        if (moKeyProducer.getSelectedIndex() <= 0) {
-            moProducer = null;
-        }
-        else {
-            moProducer = (SDbProducer) miClient.getSession().readRegistry(SModConsts.SU_PROD, moKeyProducer.getValue());
-            moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
-        }
-    }
-
-    private void itemStateKeyItem(boolean erase) {
-        mbIsPacking = false;
-        mbIsLaboratory = false;
-        if (erase){
-            moDecPackingFullQuantityArrival.setValue(0d);
-            moDecPackingEmptyQuantityArrival.setValue(0d);
-            moDecPackingFullQuantityDeparture.setValue(0d);
-            moDecPackingEmptyQuantityDeparture.setValue(0d);
-            jlPackingFullQuantityArrivalUnit.setText("");
-            jlPackingEmptyQuantityArrivalUnit.setText("");
-            jlPackingFullQuantityDepartureUnit.setText("");
-            jlPackingEmptyQuantityDepartureUnit.setText("");
-            jlWeightAverageUnit.setText("");
-        }
-        moDecPackingFullQuantityArrival.setEditable(mbIsPacking);
-        moDecPackingEmptyQuantityArrival.setEditable(mbIsPacking);
-        
-        moKeyInputSource.removeAllItems();
-        moKeyInputSource.setEnabled(false);
-
-        if (moKeyItem.getSelectedIndex() > 0) {
-            try {
-                readItem();
-
-                mbIsPacking = moItem.isPacking();
-                mbIsLaboratory = moItem.isLaboratory();
-                jlPackingFullQuantityArrivalUnit.setText(moItem.getPackingName());
-                jlPackingEmptyQuantityArrivalUnit.setText(moItem.getPackingName());
-                jlPackingFullQuantityDepartureUnit.setText(moItem.getPackingName());
-                jlPackingEmptyQuantityDepartureUnit.setText(moItem.getPackingName());
-                moDecPackingFullQuantityArrival.setEditable(mbIsPacking);
-                moDecPackingEmptyQuantityArrival.setEditable(mbIsPacking);
-
-                if (!jlWeightDestinyDepartureUnit.getText().isEmpty() && !moItem.getPackingName().isEmpty()) {
-                    jlWeightAverageUnit.setText(jlWeightDestinyDepartureUnit.getText() + "/" + moItem.getPackingName());
-                }
-                else {
-                    jlWeightAverageUnit.setText("");
-                }
-                
-                miClient.getSession().populateCatalogue(moKeyInputSource, SModConsts.SU_INP_SRC, SLibConsts.UNDEFINED, new SGuiParams(moItem.getFkInputCategoryId()));
-                moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
-                jbInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
-                if (moProducer != null) {
-                    moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
-                }
-            }
-            catch (SQLException e) {
-                SLibUtils.showException(this, e);
-            }
-            catch (Exception e) {
-                SLibUtils.showException(this, e);
-            }
-        }
-    }
-    
-    private void readItem() throws SQLException, Exception {
-        if (moKeyItem.getSelectedIndex() <= 0) {
-            moItem = null;
-        }
-        else {
-            moItem = (SDbItem) miClient.getSession().readRegistry(SModConsts.SU_ITEM, moKeyItem.getValue());
-        }
-    }
-
-    private void itemStateWeightSourceAvailable() {
-        moDecWeightSource.setEditable(moBoolWeightSourceAvailable.getValue());
-    }
-
-    private void computeWeight() {
+    private void computeWeightNet() {
         if (moDecWeightDestinyDeparture.getValue() > 0 && (moDecPackingFullQuantityArrival.getValue() > 0 || moDecPackingFullQuantityDeparture.getValue() > 0)) {
             // tare - packing_net_weight / full_packing_net_quantity:
             double average = ((moDecWeightDestinyArrival.getValue() - moDecWeightDestinyDeparture.getValue()) -
@@ -764,7 +754,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         double weiGross = moDecWeightDestinyArrival.getValue() - moDecWeightDestinyDeparture.getValue();
         double weiNet = moDecWeightDestinyDeparture.getValue() == 0.0 ? 0.0 : weiGross - weiPacNet;
         
-        moDecWeiNetCalc.setValue(weiNet);
+        moDecWeightDestinyNetComputed.setValue(weiNet);
     }
 
     private void getSeasonRegion() {
@@ -783,8 +773,76 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         }
     }
 
-    private void actionInputSource() {
-        if (jbInputSource.isEnabled()) {
+    private void itemStateKeyProducer() {
+        if (moKeyProducer.getSelectedIndex() <= 0) {
+            moProducer = null;
+        }
+        else {
+            moProducer = (SDbProducer) miClient.getSession().readRegistry(SModConsts.SU_PROD, moKeyProducer.getValue());
+            moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
+        }
+    }
+
+    private void itemStateKeyItem() {
+        moItem = null;
+        mbIsPacking = false;
+        mbIsLaboratory = false;
+        
+        moDecPackingFullQuantityArrival.setValue(0d);
+        moDecPackingEmptyQuantityArrival.setValue(0d);
+        moDecPackingFullQuantityDeparture.setValue(0d);
+        moDecPackingEmptyQuantityDeparture.setValue(0d);
+        jlPackingFullQuantityArrivalUnits.setText("");
+        jlPackingEmptyQuantityArrivalUnits.setText("");
+        jlPackingFullQuantityDepartureUnits.setText("");
+        jlPackingEmptyQuantityDepartureUnits.setText("");
+        
+        moDecPackingWeight.setValue(0d);
+        moDecWeightAverage.setValue(0d);
+        jlWeightAverageUnits.setText("");
+        
+        moDecPackingFullQuantityArrival.setEditable(false);
+        moDecPackingEmptyQuantityArrival.setEditable(false);
+        moDecPackingFullQuantityDeparture.setEditable(false);
+        moDecPackingEmptyQuantityDeparture.setEditable(false);
+        
+        moKeyInputSource.removeAllItems();
+        moKeyInputSource.setEnabled(false);
+
+        if (moKeyItem.getSelectedIndex() > 0) {
+            moItem = (SDbItem) miClient.getSession().readRegistry(SModConsts.SU_ITEM, moKeyItem.getValue());
+            mbIsPacking = moItem.isPacking();
+            mbIsLaboratory = moItem.isLaboratory();
+
+            if (mbIsPacking) {
+                jlPackingFullQuantityArrivalUnits.setText(moItem.getPackingName());
+                jlPackingEmptyQuantityArrivalUnits.setText(moItem.getPackingName());
+                jlPackingFullQuantityDepartureUnits.setText(moItem.getPackingName());
+                jlPackingEmptyQuantityDepartureUnits.setText(moItem.getPackingName());
+                
+                jlWeightAverageUnits.setText(SSomConsts.KG + " / " + moItem.getPackingName());
+                
+                moDecPackingWeight.setValue(moItem.getPackingWeight());
+            }
+
+            miClient.getSession().populateCatalogue(moKeyInputSource, SModConsts.SU_INP_SRC, SLibConsts.UNDEFINED, new SGuiParams(moItem.getFkInputCategoryId()));
+            moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+            jbSetDefaultInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
+
+            if (moProducer != null) {
+                moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
+            }
+            
+            enableFields();
+        }
+    }
+    
+    private void itemStateWeightSourceAvailable() {
+        moDecWeightSource.setEditable(moBoolWeightSourceAvailable.getValue());
+    }
+
+    private void actionSetDefaultInputSource() {
+        if (jbSetDefaultInputSource.isEnabled()) {
             try {
                 moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
             }
@@ -798,8 +856,10 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     public void addAllListeners() {
         moKeyProducer.addItemListener(this);
         moKeyItem.addItemListener(this);
-        jbInputSource.addActionListener(this);
         moBoolWeightSourceAvailable.addItemListener(this);
+        
+        jbSetDefaultInputSource.addActionListener(this);
+        
         moDecWeightSource.addFocusListener(this);
         moDecWeightDestinyArrival.addFocusListener(this);
         moDecWeightDestinyDeparture.addFocusListener(this);
@@ -813,8 +873,10 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     public void removeAllListeners() {
         moKeyProducer.removeItemListener(this);
         moKeyItem.removeItemListener(this);
-        jbInputSource.removeActionListener(this);
         moBoolWeightSourceAvailable.removeItemListener(this);
+        
+        jbSetDefaultInputSource.removeActionListener(this);
+        
         moDecWeightSource.removeFocusListener(this);
         moDecWeightDestinyArrival.removeFocusListener(this);
         moDecWeightDestinyDeparture.removeFocusListener(this);
@@ -846,30 +908,50 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
         mnFormResult = SLibConsts.UNDEFINED;
         mbFirstActivation = true;
-        mbFirstTime = true;
         
         removeAllListeners();
         reloadCatalogues();
 
         if (moRegistry.isRegistryNew()) {
+            // switch between combobox and text field for scalse:
+            
+            moKeyScale.setVisible(true);
+            jtfScale.setVisible(false);
+            jtfScale.setText("");
+            
+            // prepare registry creation:
+            
             moRegistry.initPrimaryKey();
             moRegistry.setDatetimeArrival(miClient.getSession().getWorkingDate());
             moRegistry.setDatetimeDeparture(miClient.getSession().getWorkingDate());
-            moKeyScale.setVisible(true);
-            moTextScale.setVisible(false);
+            moRegistry.setWeightSourceAvailable(true);
+            moRegistry.setFkTicketStatusId(SModSysConsts.SS_TIC_ST_SCA);
+            moRegistry.setFkExwFacilityOriginId(SModSysConsts.MU_EXW_FAC_NA);
+            moRegistry.setFkExwFacilityDestinationId(SModSysConsts.MU_EXW_FAC_NA);
+            
             jtfRegistryKey.setText("");
         }
         else {
+            // switch between combobox and text field for scalse:
+            
+            moKeyScale.setVisible(false);
+            jtfScale.setVisible(true);
+            jtfScale.setText(moRegistry.getXtaScaleName());
+            
+            // prepare registry edition:
+            
             jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
         }
 
         moKeyScale.setValue(new int[] { moRegistry.getFkScaleId() });
         moBoolTared.setValue(moRegistry.isTared());
         moTextTicket.setValue(moRegistry.getNumber());
+        
         moKeyProducer.setValue(new int[] { moRegistry.getFkProducerId() });
         itemStateKeyProducer();
+        
         moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
-        itemStateKeyItem(true);
+        itemStateKeyItem();
         
         if (moRegistry.getFkInputSourceId() == SModSysConsts.SU_INP_SRC_NA) {
             moKeyInputSource.resetField();
@@ -887,17 +969,16 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moDecWeightDestinyDeparture.setValue(moRegistry.getWeightDestinyDeparture());
         moDatetimeArrival.setValue(moRegistry.getDatetimeArrival());
         moDatetimeDeparture.setValue(moRegistry.getDatetimeDeparture());
-        moTextOpeArr.setValue(moRegistry.getScaleOperatorArrival());
-        moTextOpeDep.setValue(moRegistry.getScaleOperatorDeparture());
+        moTextScaleOperatorArrival.setValue(moRegistry.getScaleOperatorArrival());
+        moTextScaleOperatorDeparture.setValue(moRegistry.getScaleOperatorDeparture());
         moDecPackingFullQuantityArrival.setValue(moRegistry.getPackingFullQuantityArrival());
         moDecPackingEmptyQuantityArrival.setValue(moRegistry.getPackingEmptyQuantityArrival());
         moDecPackingFullQuantityDeparture.setValue(moRegistry.getPackingFullQuantityDeparture());
         moDecPackingEmptyQuantityDeparture.setValue(moRegistry.getPackingEmptyQuantityDeparture());
-        moDecWeiNetTic.setValue(moRegistry.getWeightDestinyNet_r());
+        moDecWeightDestinyNet.setValue(moRegistry.getWeightDestinyNet_r());
         moTextNote.setValue(moRegistry.getScaleCommentsArrival());
         moTextNote2.setValue(moRegistry.getScaleCommentsDeparture());
 
-        moTextScale.setValue(moRegistry.getXtaScaleName());
         mbIsRevImport1 = moRegistry.isRevueltaImport1();
         mbIsRevImport2 = moRegistry.isRevueltaImport2();
 
@@ -906,25 +987,19 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         if (moRegistry.isRegistryNew()) {
             if (moKeyScale.getItemCount() == 2) {
                 moKeyScale.setSelectedIndex(1);
-                moKeyScale.setEnabled(false);
             }
-            moBoolWeightSourceAvailable.setValue(true);
-
-            moTextScale.setVisible(false);
-            moTextScale.setEditable(false);
         }
         else {
-            moKeyScale.setVisible(false);
-            moKeyScale.setEnabled(false);
-            moTextScale.setVisible(true);
-            moTextScale.setEditable(false);
+
         }
         
         moKeyInputSource.setEnabled(moKeyInputSource.getItemCount() > 1);
         moDecWeightAverage.setEditable(false);
 
         itemStateWeightSourceAvailable();
-        computeWeight();
+        computeWeightNet();
+        
+        enableFields();
 
         addAllListeners();
     }
@@ -953,8 +1028,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         
         registry.setWeightSource(moDecWeightSource.getValue());
         registry.setWeightDestinyArrival(moDecWeightDestinyArrival.getValue());
-        registry.setScaleOperatorArrival(moTextOpeArr.getValue());
-        registry.setScaleOperatorDeparture(moTextOpeDep.getValue());
+        registry.setScaleOperatorArrival(moTextScaleOperatorArrival.getValue());
+        registry.setScaleOperatorDeparture(moTextScaleOperatorDeparture.getValue());
         registry.setScaleCommentsArrival(moTextNote.getValue());
         registry.setScaleCommentsDeparture(moTextNote2.getValue());
         
@@ -974,7 +1049,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         }
         
         //registry.setWeightDestinyGross_r(...);
-        registry.setWeightDestinyNet_r(moDecWeiNetCalc.getValue());
+        registry.setWeightDestinyNet_r(moDecWeightDestinyNetComputed.getValue());
         //registry.setSystemPenaltyPercentage(...);
         //registry.setSystemWeightPayment(...);
         //registry.setSystemPricePerTon(...);
@@ -1052,21 +1127,23 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
                     }
                 }
 
-                if (validation.isValid()) {
-                    if (moDecPackingFullQuantityArrival.isEditable() && moDecPackingFullQuantityArrival.getValue() == 0) {
-                        if (miClient.showMsgBoxConfirm("No tiene valor el campo '" + SGuiUtils.getLabelName(jlPackingFullQuantityArrival.getText()) + "',\n" + SGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
-                            validation.setMessage(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + SGuiUtils.getLabelName(jlPackingFullQuantityArrival.getText()) + "'.");
-                            validation.setComponent(moDecPackingFullQuantityArrival);
-                        }
+                if (validation.isValid() && mbIsPacking) {
+                    if (moDecPackingFullQuantityArrival.getValue() == 0 &&
+                            miClient.showMsgBoxConfirm("No se ha especificado un valor para el campo '" + moDecPackingFullQuantityArrival.getFieldName() + "'."
+                                    + "\n" + SGuiConsts.MSG_CNF_CONT_OMIT_VAL) != JOptionPane.YES_OPTION) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + moDecPackingFullQuantityArrival.getFieldName() + "'.");
+                        validation.setComponent(moDecPackingFullQuantityArrival);
                     }
-                    else if (moDecPackingFullQuantityDeparture.isEditable() && moDecPackingFullQuantityDeparture.getValue() == 0) {
-                        if (miClient.showMsgBoxConfirm("No tiene valor el campo '" + SGuiUtils.getLabelName(jlPackingFullQuantityDeparture.getText()) + "',\n" + SGuiConsts.MSG_CNF_CONT) != JOptionPane.YES_OPTION) {
-                            validation.setMessage(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + SGuiUtils.getLabelName(jlPackingFullQuantityDeparture.getText()) + "'.");
-                            validation.setComponent(moDecPackingFullQuantityDeparture);
-                        }
+                    else if (mnFormSubtype == SModConsts.SX_TIC_TARE_PEND && moDecPackingEmptyQuantityDeparture.isEditable() && moDecPackingEmptyQuantityDeparture.getValue() == 0 &&
+                            miClient.showMsgBoxConfirm("No se ha especificado un valor para el campo '" + moDecPackingEmptyQuantityDeparture.getFieldName() + "'."
+                                    + "\n" + SGuiConsts.MSG_CNF_CONT_OMIT_VAL) != JOptionPane.YES_OPTION) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + moDecPackingEmptyQuantityDeparture.getFieldName() + "'.");
+                        validation.setComponent(moDecPackingEmptyQuantityDeparture);
                     }
                 }
                 
+                computeWeightNet();
+                        
                 boolean weiChg = false;
                 for (String id : arrWeiChgIds) {
                     if (SLibUtilities.parseInt(id) == moKeyItem.getValue()[0]) {
@@ -1075,8 +1152,8 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
                 }
                 
                 if (validation.isValid() && !weiChg) {
-                    if (!SLibUtils.compareAmount(moDecWeiNetCalc.getValue(), moDecWeiNetTic.getValue())) {
-                        validation.setMessage("No se puede guardar debido a que el cálculo de la carga destino neta no corresponde a la carga destino neta boleto.");
+                    if (!SLibUtils.compareAmount(moDecWeightDestinyNetComputed.getValue(), moDecWeightDestinyNet.getValue())) {
+                        validation.setMessage("El valor de los campos '" + moDecWeightDestinyNetComputed.getFieldName() + "' y '" + moDecWeightDestinyNet.getFieldName() + "' no coincide.");
                     }
                 } 
             }
@@ -1086,12 +1163,23 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     }
 
     @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof JButton) {
+            JButton button = (JButton) e.getSource();
+
+            if (button == jbSetDefaultInputSource) {
+                actionSetDefaultInputSource();
+            }
+        }
+    }
+
+    @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() instanceof JComboBox && e.getStateChange() == ItemEvent.SELECTED) {
             JComboBox comboBox = (JComboBox) e.getSource();
 
             if (comboBox == moKeyItem) {
-                itemStateKeyItem(true);
+                itemStateKeyItem();
             }
             else if (comboBox == moKeyProducer) {
                 itemStateKeyProducer();
@@ -1102,17 +1190,6 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
             if (checkBox == moBoolWeightSourceAvailable) {
                 itemStateWeightSourceAvailable();
-            }
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() instanceof JButton) {
-            JButton button = (JButton) e.getSource();
-
-            if (button == jbInputSource) {
-                actionInputSource();
             }
         }
     }
@@ -1135,7 +1212,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
                 textField == moDecPackingFullQuantityDeparture.getComponent() ||
                 textField == moDecPackingEmptyQuantityDeparture.getComponent()) {
 
-                computeWeight();
+                computeWeightNet();
             }
         }
     }

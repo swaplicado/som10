@@ -33,7 +33,7 @@ public class SViewStockTransfer extends SGridPaneView {
     }
     
     private void initComponetsCustom() {
-        mbUserHasAdmRig = miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RMES, SModSysConsts.CS_RIG_RMEA });
+        mbUserHasAdmRig = miClient.getSession().getUser().hasPrivilege(new int[] { SModSysConsts.CS_RIG_RM_STK_SUP, SModSysConsts.CS_RIG_RM_STK_MAN });
         jbRowNew.setEnabled(mbUserHasAdmRig);
     }
 

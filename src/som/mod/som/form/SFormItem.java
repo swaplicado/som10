@@ -147,6 +147,10 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moDecMfgByproductPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
         moDecMfgWastePercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
         moDecMfgTotalPercentage = new sa.lib.gui.bean.SBeanFieldDecimal();
+        jPanel4 = new javax.swing.JPanel();
+        jlExternalWarehousesAllowed = new javax.swing.JLabel();
+        moTextExternalWarehousesAllowed = new sa.lib.gui.bean.SBeanFieldText();
+        jLabel3 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jPanel18 = new javax.swing.JPanel();
         jPanel50 = new javax.swing.JPanel();
@@ -211,25 +215,22 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         jPanel46 = new javax.swing.JPanel();
         jlAutoMailNotificationBoxes = new javax.swing.JLabel();
         moTextAutoMailNotificationBoxes = new sa.lib.gui.bean.SBeanFieldText();
-        jLabel1 = new javax.swing.JLabel();
+        jlAutoMailNotificationBoxesTip = new javax.swing.JLabel();
         jPanel47 = new javax.swing.JPanel();
         moBoolUserMailNotification = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel38 = new javax.swing.JPanel();
         jlUserMailNotificationBoxes = new javax.swing.JLabel();
         moTextUserMailNotificationBoxes = new sa.lib.gui.bean.SBeanFieldText();
-        jLabel2 = new javax.swing.JLabel();
+        jlUserMailNotificationBoxesTip = new javax.swing.JLabel();
         jPanel23 = new javax.swing.JPanel();
         moBoolUserMailNotificationOnlyWhenMoves = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel42 = new javax.swing.JPanel();
-        jPanel52 = new javax.swing.JPanel();
         jlRevueltaItemId = new javax.swing.JLabel();
         moTextRevueltaItemId = new sa.lib.gui.bean.SBeanFieldText();
         jLabel8 = new javax.swing.JLabel();
         moBoolPrintInputType = new sa.lib.gui.bean.SBeanFieldBoolean();
         jPanel55 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-
-        setPreferredSize(new java.awt.Dimension(1040, 650));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos del registro:"));
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -238,7 +239,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel7.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout(21, 1, 0, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(22, 1, 0, 5));
 
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -523,6 +524,23 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel2.add(jPanel15);
 
+        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlExternalWarehousesAllowed.setText("ID almacenes externos:");
+        jlExternalWarehousesAllowed.setPreferredSize(new java.awt.Dimension(125, 23));
+        jPanel4.add(jlExternalWarehousesAllowed);
+
+        moTextExternalWarehousesAllowed.setEditable(false);
+        moTextExternalWarehousesAllowed.setPreferredSize(new java.awt.Dimension(150, 23));
+        jPanel4.add(moTextExternalWarehousesAllowed);
+
+        jLabel3.setForeground(java.awt.Color.gray);
+        jLabel3.setText("separar con ';'");
+        jLabel3.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel4.add(jLabel3);
+
+        jPanel2.add(jPanel4);
+
         jPanel7.add(jPanel2, java.awt.BorderLayout.NORTH);
 
         jPanel5.add(jPanel7, java.awt.BorderLayout.WEST);
@@ -723,12 +741,12 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        moBoolPacking.setText("Aplica información empaque");
+        moBoolPacking.setText("Aplica información envase");
         moBoolPacking.setPreferredSize(new java.awt.Dimension(200, 23));
         jPanel21.add(moBoolPacking);
 
         jlPackagingHint.setForeground(java.awt.Color.gray);
-        jlPackagingHint.setText("(Información de empaque requerida en la captura de boletos.)");
+        jlPackagingHint.setText("(Información de envase requerida en la captura de boletos.)");
         jlPackagingHint.setPreferredSize(new java.awt.Dimension(400, 23));
         jPanel21.add(jlPackagingHint);
 
@@ -736,8 +754,8 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel22.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlPackingName.setText("Nombre empaque:*");
-        jlPackingName.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlPackingName.setText("Nombre envase:*");
+        jlPackingName.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel22.add(jlPackingName);
 
         moTextPackingName.setPreferredSize(new java.awt.Dimension(200, 23));
@@ -747,13 +765,13 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel33.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlPackingWeight.setText("Peso empaque:*");
-        jlPackingWeight.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlPackingWeight.setText("Peso por envase:*");
+        jlPackingWeight.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel33.add(jlPackingWeight);
         jPanel33.add(moDecPackingWeight);
 
         jlPackingWeightUnit.setText("UNIT");
-        jlPackingWeightUnit.setPreferredSize(new java.awt.Dimension(75, 23));
+        jlPackingWeightUnit.setPreferredSize(new java.awt.Dimension(35, 23));
         jPanel33.add(jlPackingWeightUnit);
 
         moBoolAutoMailNotification.setText("Aplica envío automático de mail (al tararse boleto en báscula)");
@@ -766,16 +784,16 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jlAutoMailNotificationBoxes.setForeground(new java.awt.Color(0, 102, 102));
         jlAutoMailNotificationBoxes.setText("Destinatario(s) mail:");
-        jlAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel46.add(jlAutoMailNotificationBoxes);
 
         moTextAutoMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(350, 23));
         jPanel46.add(moTextAutoMailNotificationBoxes);
 
-        jLabel1.setForeground(java.awt.Color.gray);
-        jLabel1.setText("separar con ';'");
-        jLabel1.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel46.add(jLabel1);
+        jlAutoMailNotificationBoxesTip.setForeground(java.awt.Color.gray);
+        jlAutoMailNotificationBoxesTip.setText("separar con ';'");
+        jlAutoMailNotificationBoxesTip.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel46.add(jlAutoMailNotificationBoxesTip);
 
         jPanel18.add(jPanel46);
 
@@ -791,16 +809,16 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jlUserMailNotificationBoxes.setForeground(new java.awt.Color(0, 102, 102));
         jlUserMailNotificationBoxes.setText("Destinatario(s) mail:");
-        jlUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel38.add(jlUserMailNotificationBoxes);
 
         moTextUserMailNotificationBoxes.setPreferredSize(new java.awt.Dimension(350, 23));
         jPanel38.add(moTextUserMailNotificationBoxes);
 
-        jLabel2.setForeground(java.awt.Color.gray);
-        jLabel2.setText("separar con ';'");
-        jLabel2.setPreferredSize(new java.awt.Dimension(75, 23));
-        jPanel38.add(jLabel2);
+        jlUserMailNotificationBoxesTip.setForeground(java.awt.Color.gray);
+        jlUserMailNotificationBoxesTip.setText("separar con ';'");
+        jlUserMailNotificationBoxesTip.setPreferredSize(new java.awt.Dimension(75, 23));
+        jPanel38.add(jlUserMailNotificationBoxesTip);
 
         jPanel18.add(jPanel38);
 
@@ -814,11 +832,8 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
 
         jPanel42.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jPanel52.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-        jPanel42.add(jPanel52);
-
         jlRevueltaItemId.setText("Clave Revuelta:");
-        jlRevueltaItemId.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlRevueltaItemId.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel42.add(jlRevueltaItemId);
         jPanel42.add(moTextRevueltaItemId);
 
@@ -866,9 +881,8 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     }//GEN-LAST:event_moDecMfgWastePercentageFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -906,6 +920,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JPanel jPanel37;
     private javax.swing.JPanel jPanel38;
     private javax.swing.JPanel jPanel39;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel40;
     private javax.swing.JPanel jPanel41;
     private javax.swing.JPanel jPanel42;
@@ -919,7 +934,6 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel50;
     private javax.swing.JPanel jPanel51;
-    private javax.swing.JPanel jPanel52;
     private javax.swing.JPanel jPanel53;
     private javax.swing.JPanel jPanel55;
     private javax.swing.JPanel jPanel6;
@@ -927,6 +941,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JLabel jlAutoMailNotificationBoxes;
+    private javax.swing.JLabel jlAutoMailNotificationBoxesTip;
     private javax.swing.JLabel jlBranch;
     private javax.swing.JLabel jlCode;
     private javax.swing.JLabel jlDensity;
@@ -935,6 +950,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JLabel jlExternalItem;
     private javax.swing.JLabel jlExternalName;
     private javax.swing.JLabel jlExternalWarehouse_n;
+    private javax.swing.JLabel jlExternalWarehousesAllowed;
     private javax.swing.JLabel jlFruitYieldAdjustmentPercentage;
     private javax.swing.JLabel jlInputCategory;
     private javax.swing.JLabel jlInputClass;
@@ -966,6 +982,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private javax.swing.JLabel jlUnitaryWeight;
     private javax.swing.JLabel jlUnitaryWeightUnit;
     private javax.swing.JLabel jlUserMailNotificationBoxes;
+    private javax.swing.JLabel jlUserMailNotificationBoxesTip;
     private javax.swing.JLabel jlWarehouse;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolAcidityAvgPercentage;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolAcidityPercentage;
@@ -1019,6 +1036,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
     private sa.lib.gui.bean.SBeanFieldText moTextCode;
     private sa.lib.gui.bean.SBeanFieldText moTextExternalCode;
     private sa.lib.gui.bean.SBeanFieldText moTextExternalName;
+    private sa.lib.gui.bean.SBeanFieldText moTextExternalWarehousesAllowed;
     private sa.lib.gui.bean.SBeanFieldText moTextName;
     private sa.lib.gui.bean.SBeanFieldText moTextNameShort;
     private sa.lib.gui.bean.SBeanFieldText moTextPackingName;
@@ -1045,7 +1063,6 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moDecDensity.setDecimalSettings(SGuiUtils.getLabelName(jlDensity), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moIntStartingSeasonMonth.setIntegerSettings(SGuiUtils.getLabelName(jlStartingSeasonMonth), SGuiConsts.GUI_TYPE_INT_CAL_MONTH, false);
         moIntStartingSeasonMonth.setMaxInteger(SLibTimeConsts.MONTH_MAX);
-
         moKeyOilClass.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilClass.getText()), false);
         moKeyOilType.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilType.getText()), false);
         moKeyOilFamilyGroup.setKeySettings(miClient, SGuiUtils.getLabelName(jlOilFamilyGroup.getText()), false);
@@ -1062,6 +1079,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moDecMfgByproductPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlMfgByproductPercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moDecMfgWastePercentage.setDecimalSettings(SGuiUtils.getLabelName(jlMfgWastePercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
         moDecMfgTotalPercentage.setDecimalSettings(SGuiUtils.getLabelName(jlMfgWastePercentage), SGuiConsts.GUI_TYPE_DEC_PER_DISC, false);
+        moTextExternalWarehousesAllowed.setTextSettings(SGuiUtils.getLabelName(jlExternalWarehousesAllowed), 10);
         moKeyBranch.setKeySettings(miClient, SGuiUtils.getLabelName(jlBranch), false);
         moKeyWarehouse.setKeySettings(miClient, SGuiUtils.getLabelName(jlWarehouse), true);
         moKeyExternalWarehouse_n.setKeySettings(miClient, SGuiUtils.getLabelName(jlExternalWarehouse_n), true);
@@ -1124,6 +1142,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moFields.addField(moDecMfgByproductPercentage);
         moFields.addField(moDecMfgWastePercentage);
         moFields.addField(moDecMfgTotalPercentage);
+        moFields.addField(moTextExternalWarehousesAllowed);
         moFields.addField(moKeyBranch);
         moFields.addField(moKeyWarehouse);
         moFields.addField(moKeyExternalWarehouse_n);
@@ -1421,6 +1440,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moDecMfgFinishedGoodPercentage.setValue(moRegistry.getMfgFinishedGoodPercentage());
         moDecMfgByproductPercentage.setValue(moRegistry.getMfgByproductPercentage());
         moDecMfgWastePercentage.setValue(moRegistry.getMfgCullPercentage());
+        moTextExternalWarehousesAllowed.setValue(moRegistry.getExternalWarehousesAllowed());
         moTextPackingName.setValue(moRegistry.getPackingName());
         moDecPackingWeight.setValue(moRegistry.getPackingWeight());
         moDecUnitaryWeight.setValue(moRegistry.getUnitaryWeight());
@@ -1475,6 +1495,7 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
         moTextExternalCode.setEditable(false);
         moTextExternalName.setEditable(false);
         moDecMfgTotalPercentage.setEditable(false);
+        moTextExternalWarehousesAllowed.setEditable(false);
         moKeyUnit.setEnabled(false);
 
         moKeyBranch.setValue(((SGuiClientSessionCustom) miClient.getSession().getSessionCustom()).getCompany().getChildBranches().get(0).getPrimaryKey());
@@ -1523,6 +1544,8 @@ public class SFormItem extends SBeanForm implements ItemListener, FocusListener 
             registry.setMfgByproductPercentage(0d);
             registry.setMfgCullPercentage(0d);
         }
+        
+        registry.setExternalWarehousesAllowed(moTextExternalWarehousesAllowed.getValue());
 
         if (moBoolPacking.getValue()) {
             registry.setPackingName(moTextPackingName.getValue());

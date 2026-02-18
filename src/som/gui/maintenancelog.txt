@@ -1,4 +1,15 @@
 ================================================================================
+2026-02-18, 1.0 096.0
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Control de existencias en bodegas externas:
+- Refactorización y remodelación de formas de captura de boletos y boletos alternativos.
+- Incorporación de captura de almacenes externos de procedencia y de destino en forma de captura de boletos, cuando la procedencia y/o el destino del boleto son 'bodega externa' precisamente.
+- Implementación de modificación y bitácora de modificaciones de procedencia y destino de boletos.
+- Implementación de consulta de existencias de materiales en bodegas externas, por ítem y por ítem y almacén externo.
+- Implementación de gestión de ajustes de existencias de materiales en bodegas externas.
+
+================================================================================
 2026-02-03, 1.0 095.5
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

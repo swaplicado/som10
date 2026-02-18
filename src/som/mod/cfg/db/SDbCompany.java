@@ -461,8 +461,8 @@ public class SDbCompany extends SDbRegistryUser implements SGuiConfigCompany {
             mbSystem = resultSet.getBoolean("b_sys");
             mnFkLanguageId = resultSet.getInt("fk_lan");
             mnFkDivisionDefaultId = resultSet.getInt("fk_div_def");
-//            mnFkProducerCarrier_n = resultSet.getInt("fk_prod_carrier_n");
-//            mnFkProducerReceiver_n = resultSet.getInt("fk_prod_receiver_n");
+            mnFkProducerCarrier_n = resultSet.getInt("fk_prod_carrier_n");
+            mnFkProducerReceiver_n = resultSet.getInt("fk_prod_receiver_n");
             mnFkExternalCoId_n = resultSet.getInt("fk_ext_co_n");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");

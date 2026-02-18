@@ -38,7 +38,7 @@ public class SViewStock extends SGridPaneView implements ActionListener {
 
     private SGridFilterDate moFilterDate;
     private SDialogStockCardex moDialogStockCardex;
-    private SPaneFilter moPaneFilter;
+    private SPaneFilter moPaneFilterItemType;
     private SPaneFilter moPaneFilterInputCategory;
     private SPaneFilter moPaneFilterWarehouse;
     private SPaneFilter moPaneFilterDivision;
@@ -59,8 +59,8 @@ public class SViewStock extends SGridPaneView implements ActionListener {
 
         moDialogStockCardex = new SDialogStockCardex(miClient);
 
-        moPaneFilter = new SPaneFilter(this, SModConsts.SS_ITEM_TP);
-        moPaneFilter.initFilter(null);
+        moPaneFilterItemType = new SPaneFilter(this, SModConsts.SS_ITEM_TP);
+        moPaneFilterItemType.initFilter(null);
         moPaneFilterInputCategory = new SPaneFilter(this, SModConsts.SU_INP_CT);
         moPaneFilterInputCategory.initFilter(null);
 
@@ -76,7 +76,7 @@ public class SViewStock extends SGridPaneView implements ActionListener {
 
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDate);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbCardex);
-        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilter);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterItemType);
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterInputCategory);
 
         if (showWarehouses()) {
@@ -86,7 +86,6 @@ public class SViewStock extends SGridPaneView implements ActionListener {
         if (showDivision()) {
             getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moPaneFilterDivision);
         }
-
     }
 
     private void actionShowCardex() {

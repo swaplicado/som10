@@ -108,6 +108,7 @@ public abstract class SModConsts {
     public static final int S_TIC = 330011;
     public static final int S_TIC_NOTE = 330012;
     public static final int S_TIC_DIV = 330013;
+    public static final int S_TIC_EXW_UPD_LOG = 330015;
     public static final int S_ALT_TIC = 330102;
     public static final int S_WAH_LAB = 330016;
     public static final int S_WAH_LAB_TEST = 330017;
@@ -146,6 +147,7 @@ public abstract class SModConsts {
     public static final int SX_PROD_ITEM = 340011;
     public static final int SX_TIC_SEAS = 340012;
     public static final int SX_TIC_REG = 340013;
+    public static final int SX_TIC_UPD = 340016;
     public static final int SX_TIC_TARE = 340021;
     public static final int SX_TIC_TARE_PEND = 340022;
     public static final int SX_IOG_PROD = 340024;
@@ -207,7 +209,7 @@ public abstract class SModConsts {
     public static final int SX_WAH_LAB_DET = 340115;
     public static final int SX_TIC_DIV_PROC = 340116;
     public static final int SX_TIC_FREIGHT = 340117;
-    public static final int SX_TIC_DATE = 340118;
+    public static final int SX_PARAM_TIC_DATE = 340201;
 
     public static final int SR_TIC = 350001;
     public static final int SR_ALT_TIC = 350025;
@@ -241,12 +243,15 @@ public abstract class SModConsts {
     public static final int MU_MAT_COND = 420006;
     public static final int MU_SHIFT = 420021;
     public static final int MU_EMP = 420022;
+    public static final int MU_EXW_FAC = 420101;
+    public static final int MU_EXW_ADJ_TP = 420106;
 
     public static final int M_MVT = 430001;
     public static final int M_MVT_ETY = 430002;
     public static final int M_STK = 430006;
     public static final int M_TIC_ST = 430011;
     public static final int M_NOTE = 430051;
+    public static final int M_EXW_ADJ = 430101;
 
     public static final int E_TIC_REV = 450001;
     
@@ -256,6 +261,7 @@ public abstract class SModConsts {
     public static final int MX_STK_CARDEX = 460004;
     public static final int MX_NOTE_CARDEX = 460005;
     public static final int MX_REF_PICKER = 460007;
+    public static final int MX_EXW_STOCK = 460101;
     
     public static final HashMap<Integer, String> TablesMap = new HashMap<>();
 
@@ -343,6 +349,7 @@ public abstract class SModConsts {
         TablesMap.put(S_TIC, "s_tic");
         TablesMap.put(S_TIC_NOTE, "s_tic_note");
         TablesMap.put(S_TIC_DIV, "s_tic_div");
+        TablesMap.put(S_TIC_EXW_UPD_LOG, "s_tic_exw_upd_log");
         TablesMap.put(S_ALT_TIC, "s_alt_tic");
         TablesMap.put(S_WAH_LAB, "s_wah_lab");
         TablesMap.put(S_WAH_LAB_TEST, "s_wah_lab_test");
@@ -379,11 +386,14 @@ public abstract class SModConsts {
         TablesMap.put(MU_MAT_COND, "mu_mat_cond");
         TablesMap.put(MU_SHIFT, "mu_shift");
         TablesMap.put(MU_EMP, "mu_emp");
+        TablesMap.put(MU_EXW_FAC, "mu_exw_fac");
+        TablesMap.put(MU_EXW_ADJ_TP, "mu_exw_adj_tp");
         TablesMap.put(M_MVT, "m_mvt");
         TablesMap.put(M_MVT_ETY, "m_mvt_ety");
         TablesMap.put(M_STK, "m_stk");
         TablesMap.put(M_TIC_ST, "m_tic_st");
         TablesMap.put(M_NOTE, "m_note");
+        TablesMap.put(M_EXW_ADJ, "m_exw_adj");
         
         TablesMap.put(E_TIC_REV, "e_tic_rev");
     }

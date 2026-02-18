@@ -59,6 +59,7 @@ public class SViewItem extends SGridPaneView {
                 + "v.mfg_fg_per, "
                 + "v.mfg_bp_per, "
                 + "v.mfg_cu_per, "
+                + "v.exw_fac_allow, "
                 + "v.paq_name, "
                 + "v.paq_wei, "
                 + "v.rev_item_id, "
@@ -143,7 +144,7 @@ public class SViewItem extends SGridPaneView {
         int col = 0;
         SGridColumnView[] columns = null;
 
-        columns = new SGridColumnView[55];
+        columns = new SGridColumnView[56];
 
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_L, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, SDbConsts.FIELD_CODE, SGridConsts.COL_TITLE_CODE);
@@ -168,9 +169,10 @@ public class SViewItem extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "v.mfg_fg_per", "Producto %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "v.mfg_bp_per", "Subproducto %");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_PER_4D, "v.mfg_cu_per", "Desecho %");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_paq", "Aplica información empaque");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.paq_name", "Nombre empaque");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.paq_wei", "Peso empaque (" + SSomConsts.KG + ")");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "v.exw_fac_allow", "ID almacenes externos");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_paq", "Aplica información envase");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.paq_name", "Nombre envase");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_4D, "v.paq_wei", "Peso envase (" + SSomConsts.KG + ")");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_amn", "Envío automático mail");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "v.amn_box", "Destinatario(s) mail automático");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_umn", "Envío manual mail");

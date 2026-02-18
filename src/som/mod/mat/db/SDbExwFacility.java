@@ -15,12 +15,12 @@ import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
 
 /**
- *
- * @author Isabel Servín
+ * Instalaciones de bodegas externas (External Warehouse Facility)
+ * @author Sergio Flores
  */
-public class SDbEmployee extends SDbRegistryUser {
+public class SDbExwFacility extends SDbRegistryUser {
 
-    protected int mnPkEmployeeId;
+    protected int mnPkExwFacilityId;
     protected String msCode;
     protected String msName;
     /*
@@ -30,20 +30,17 @@ public class SDbEmployee extends SDbRegistryUser {
     protected boolean mbDisabled;
     protected boolean mbDeleted;
     protected boolean mbSystem;
-    */
-    protected int mnFkEmployeeTypeId;
-    /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
     protected Date mtTsUserInsert;
     protected Date mtTsUserUpdate;
     */
     
-    public SDbEmployee() {
-        super(SModConsts.MU_EMP);
+    public SDbExwFacility() {
+        super(SModConsts.MU_EXW_FAC);
     }
     
-    public void setPkEmployeeId(int n) { mnPkEmployeeId = n; }
+    public void setPkExwFacilityId(int n) { mnPkExwFacilityId = n; }
     public void setCode(String s) { msCode = s; }
     public void setName(String s) { msName = s; }
     public void setUpdatable(boolean b) { mbUpdatable = b; }
@@ -52,13 +49,12 @@ public class SDbEmployee extends SDbRegistryUser {
     public void setDisabled(boolean b) { mbDisabled = b; }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setSystem(boolean b) { mbSystem = b; }
-    public void setFkEmployeeTypeId(int n) { mnFkEmployeeTypeId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setTsUserInsert(Date t) { mtTsUserInsert = t; }
     public void setTsUserUpdate(Date t) { mtTsUserUpdate = t; }
 
-    public int getPkEmployeeId() { return mnPkEmployeeId; }
+    public int getPkExwFacilityId() { return mnPkExwFacilityId; }
     public String getCode() { return msCode; }
     public String getName() { return msName; }
     public boolean isUpdatable() { return mbUpdatable; }
@@ -67,7 +63,6 @@ public class SDbEmployee extends SDbRegistryUser {
     public boolean isDisabled() { return mbDisabled; }
     public boolean isDeleted() { return mbDeleted; }
     public boolean isSystem() { return mbSystem; }
-    public int getFkEmployeeTypeId() { return mnFkEmployeeTypeId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public Date getTsUserInsert() { return mtTsUserInsert; }
@@ -76,19 +71,19 @@ public class SDbEmployee extends SDbRegistryUser {
 
     @Override
     public void setPrimaryKey(int[] pk) {
-        mnPkEmployeeId = pk[0];
+        mnPkExwFacilityId = pk[0];
     }
 
     @Override
     public int[] getPrimaryKey() {
-        return new int[] { mnPkEmployeeId };
+        return new int[] { mnPkExwFacilityId };
     }
 
     @Override
     public void initRegistry() {
         initBaseRegistry();
         
-        mnPkEmployeeId = 0;
+        mnPkExwFacilityId = 0;
         msCode = "";
         msName = "";
         mbUpdatable = false;
@@ -97,7 +92,6 @@ public class SDbEmployee extends SDbRegistryUser {
         mbDisabled = false;
         mbDeleted = false;
         mbSystem = false;
-        mnFkEmployeeTypeId = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
@@ -111,24 +105,24 @@ public class SDbEmployee extends SDbRegistryUser {
 
     @Override
     public String getSqlWhere() {
-        return "WHERE id_emp = " + mnPkEmployeeId + " ";
+        return "WHERE id_exw_fac = " + mnPkExwFacilityId + " ";
     }
 
     @Override
     public String getSqlWhere(int[] pk) {
-        return "WHERE id_emp = " + pk[0] + " ";
+        return "WHERE id_exw_fac = " + pk[0] + " ";
     }
 
     @Override
     public void computePrimaryKey(SGuiSession session) throws SQLException, Exception {
         ResultSet resultSet;
         
-        mnPkEmployeeId = 0;
+        mnPkExwFacilityId = 0;
         
-        msSql = "SELECT COALESCE(MAX(id_emp), 0) + 1 FROM " + getSqlTable() + " ";
+        msSql = "SELECT COALESCE(MAX(id_exw_fac), 0) + 1 FROM " + getSqlTable() + " ";
         resultSet = session.getStatement().executeQuery(msSql);
         if (resultSet.next()) {
-            mnPkEmployeeId = resultSet.getInt(1);
+            mnPkExwFacilityId = resultSet.getInt(1);
         }
     }
 
@@ -146,7 +140,7 @@ public class SDbEmployee extends SDbRegistryUser {
             throw new Exception(SDbConsts.ERR_MSG_REG_NOT_FOUND);
         }
         else {
-            mnPkEmployeeId = resultSet.getInt("id_emp");
+            mnPkExwFacilityId = resultSet.getInt("id_exw_fac");
             msCode = resultSet.getString("code");
             msName = resultSet.getString("name");
             mbUpdatable = resultSet.getBoolean("b_can_upd");
@@ -155,7 +149,6 @@ public class SDbEmployee extends SDbRegistryUser {
             mbDisabled = resultSet.getBoolean("b_dis");
             mbDeleted = resultSet.getBoolean("b_del");
             mbSystem = resultSet.getBoolean("b_sys");
-            mnFkEmployeeTypeId = resultSet.getInt("fk_emp_tp");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
             mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
@@ -184,7 +177,7 @@ public class SDbEmployee extends SDbRegistryUser {
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
             
             msSql = "INSERT INTO " + getSqlTable() + " VALUES (" +
-                    mnPkEmployeeId + ", " + 
+                    mnPkExwFacilityId + ", " + 
                     "'" + msCode + "', " + 
                     "'" + msName + "', " + 
                     (mbUpdatable ? 1 : 0) + ", " + 
@@ -193,7 +186,6 @@ public class SDbEmployee extends SDbRegistryUser {
                     (mbDisabled ? 1 : 0) + ", " + 
                     (mbDeleted ? 1 : 0) + ", " + 
                     (mbSystem ? 1 : 0) + ", " + 
-                    mnFkEmployeeTypeId + ", " + 
                     mnFkUserInsertId + ", " + 
                     mnFkUserUpdateId + ", " + 
                     "NOW()" + ", " + 
@@ -204,7 +196,7 @@ public class SDbEmployee extends SDbRegistryUser {
             mnFkUserUpdateId = session.getUser().getPkUserId();
             
             msSql = "UPDATE " + getSqlTable() + " SET " + 
-                    //"id_emp = " + mnPkEmployeeId + ", " +
+                    //"id_exw_fac = " + mnPkExwFacilityId + ", " +
                     "code = '" + msCode + "', " +
                     "name = '" + msName + "', " +
                     "b_can_upd = " + (mbUpdatable ? 1 : 0) + ", " +
@@ -213,7 +205,6 @@ public class SDbEmployee extends SDbRegistryUser {
                     "b_dis = " + (mbDisabled ? 1 : 0) + ", " +
                     "b_del = " + (mbDeleted ? 1 : 0) + ", " +
                     "b_sys = " + (mbSystem ? 1 : 0) + ", " +
-                    "fk_emp_tp = " + mnFkEmployeeTypeId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     //"ts_usr_ins = " + "NOW()" + ", " +
@@ -227,10 +218,10 @@ public class SDbEmployee extends SDbRegistryUser {
     }
 
     @Override
-    public SDbEmployee clone() throws CloneNotSupportedException {
-        SDbEmployee registry = new SDbEmployee();
+    public SDbExwFacility clone() throws CloneNotSupportedException {
+        SDbExwFacility registry = new SDbExwFacility();
         
-        registry.setPkEmployeeId(this.getPkEmployeeId());
+        registry.setPkExwFacilityId(this.getPkExwFacilityId());
         registry.setCode(this.getCode());
         registry.setName(this.getName());
         registry.setUpdatable(this.isUpdatable());
@@ -239,7 +230,6 @@ public class SDbEmployee extends SDbRegistryUser {
         registry.setDisabled(this.isDisabled());
         registry.setDeleted(this.isDeleted());
         registry.setSystem(this.isSystem());
-        registry.setFkEmployeeTypeId(this.getFkEmployeeTypeId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setTsUserInsert(this.getTsUserInsert());

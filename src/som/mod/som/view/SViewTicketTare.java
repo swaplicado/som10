@@ -118,7 +118,7 @@ public class SViewTicketTare extends SGridPaneView implements ActionListener {
                     ticket = (SDbTicket) miClient.getSession().readRegistry(SModConsts.S_TIC, gridRow.getRowPrimaryKey());
                     
                     if (!ticket.isAlternative()) {
-                        if (ticket.getFkTicketStatusId() < SModSysConsts.SS_TIC_ST_ADM) {
+                        if (ticket.getFkTicketStatusId() <= SModSysConsts.SS_TIC_ST_LAB) {
                             if (miClient.showMsgBoxConfirm("¿Está seguro(a) que desea destarar el boleto?") == JOptionPane.YES_OPTION) {
                                 miClient.getSession().saveField(SModConsts.S_TIC, gridRow.getRowPrimaryKey(), SDbTicket.FIELD_TARED, false);
 
