@@ -67,7 +67,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private boolean mbIsLaboratory;
     private boolean mbIsFreightRequired;
     private boolean mbSaveSendCalled;
-    private boolean mbProcessingGui;
+    private boolean mbSettingForm; // flag to prevent from dispatching item events when setting form fields
+    private boolean mbProcessingProducer; // flag to prevent from dispatching item events when processing producer and related fields
     private boolean mbIsRevImport1;
     private boolean mbIsRevImport2;
     private String msScaleRevuelta;
@@ -138,6 +139,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moDecWeightSource = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlWeightSourceUnit = new javax.swing.JLabel();
         moBoolWeightSourceAvailable = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jlWeightSource1 = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
         jlWeightDestinyArrival = new javax.swing.JLabel();
         moDecWeightDestinyArrival = new sa.lib.gui.bean.SBeanFieldDecimal();
@@ -351,7 +353,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
         jlPlatesCage1.setForeground(java.awt.SystemColor.textInactiveText);
         jlPlatesCage1.setText("(Placas de la caja o remolque del vehículo.)");
-        jlPlatesCage1.setPreferredSize(new java.awt.Dimension(250, 23));
+        jlPlatesCage1.setPreferredSize(new java.awt.Dimension(295, 23));
         jPanel6.add(jlPlatesCage1);
 
         jPanel2.add(jPanel6);
@@ -381,8 +383,13 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jPanel7.add(jlWeightSourceUnit);
 
         moBoolWeightSourceAvailable.setText("Peso origen disponible");
-        moBoolWeightSourceAvailable.setPreferredSize(new java.awt.Dimension(165, 23));
+        moBoolWeightSourceAvailable.setPreferredSize(new java.awt.Dimension(155, 23));
         jPanel7.add(moBoolWeightSourceAvailable);
+
+        jlWeightSource1.setForeground(java.awt.SystemColor.textInactiveText);
+        jlWeightSource1.setText("(Tara manifestada por el proveedor desde el origen.)");
+        jlWeightSource1.setPreferredSize(new java.awt.Dimension(295, 23));
+        jPanel7.add(jlWeightSource1);
 
         jPanel2.add(jPanel7);
 
@@ -438,6 +445,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jlScaleOperatorArrival.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel8.add(jlScaleOperatorArrival);
 
+        moTextScaleOperatorArrival.setEditable(false);
         moTextScaleOperatorArrival.setText("TEXT");
         moTextScaleOperatorArrival.setPreferredSize(new java.awt.Dimension(227, 23));
         jPanel8.add(moTextScaleOperatorArrival);
@@ -458,6 +466,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jlScaleOperatorDeparture.setPreferredSize(new java.awt.Dimension(175, 23));
         jPanel11.add(jlScaleOperatorDeparture);
 
+        moTextScaleOperatorDeparture.setEditable(false);
         moTextScaleOperatorDeparture.setText("TEXT");
         moTextScaleOperatorDeparture.setPreferredSize(new java.awt.Dimension(227, 23));
         jPanel11.add(moTextScaleOperatorDeparture);
@@ -802,6 +811,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JLabel jlWeightDestinyDeparture;
     private javax.swing.JLabel jlWeightDestinyDepartureUnit;
     private javax.swing.JLabel jlWeightSource;
+    private javax.swing.JLabel jlWeightSource1;
     private javax.swing.JLabel jlWeightSourceUnit;
     private javax.swing.JTextField jtfScale;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolTared;
@@ -844,11 +854,6 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private void initComponentsCustom() {
         SGuiUtils.setWindowBounds(this, 1040, 650);
         
-        moConnectionRevuelta = SSomUtils.openConnectionRevueltaJdbc(miClient.getSession());
-        if (moConnectionRevuelta == null) {
-            miClient.showMsgBoxError("No se pudo establecer comunicación con el sistema Revuelta.");
-        }
-        
         mnCompanyId = ((SDbCompany) (((SGuiClientSessionCustom) miClient.getSession().getSessionCustom())).getCompany()).getFkProducerReceiver_n();
         
         jbSaveSend = new JButton("Guardar y enviar al estado siguiente");
@@ -869,9 +874,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moDecWeightDestinyArrival.setDecimalSettings(SGuiUtils.getLabelName(jlWeightDestinyArrival.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDecWeightDestinyDeparture.setDecimalSettings(SGuiUtils.getLabelName(jlWeightDestinyDeparture.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, true);
         moDatetimeArrival.setDateSettings(miClient, SGuiUtils.getLabelName(jlDatetimeArrival.getText()), true);
-        moTextScaleOperatorArrival.setTextSettings(SGuiUtils.getLabelName(jlScaleOperatorArrival.getText()), 35, 0);
         moDatetimeDeparture.setDateSettings(miClient, SGuiUtils.getLabelName(jlDatetimeDeparture.getText()), true);
-        moTextScaleOperatorDeparture.setTextSettings(SGuiUtils.getLabelName(jlScaleOperatorDeparture.getText()), 35, 0);
         moTextNote.setTextSettings(SGuiUtils.getLabelName(jlNote.getText()), 255, 0);
         moDecPackingFullQuantityArrival.setDecimalSettings(SGuiUtils.getLabelName(jlPackingQuantityArrival.getText()) + "/ " + SGuiUtils.getLabelName(jlPackingFull.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecPackingEmptyQuantityArrival.setDecimalSettings(SGuiUtils.getLabelName(jlPackingQuantityArrival.getText()) + "/ " + SGuiUtils.getLabelName(jlPackingEmpty.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
@@ -901,9 +904,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moFields.addField(moDecWeightDestinyArrival);
         moFields.addField(moDecWeightDestinyDeparture);
         moFields.addField(moDatetimeArrival);
-        moFields.addField(moTextScaleOperatorArrival);
         moFields.addField(moDatetimeDeparture);
-        moFields.addField(moTextScaleOperatorDeparture);
         moFields.addField(moTextNote);
         moFields.addField(moDecPackingFullQuantityArrival);
         moFields.addField(moDecPackingEmptyQuantityArrival);
@@ -921,6 +922,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         
         // read-only fields:
 
+        moTextScaleOperatorArrival.setTextSettings(SGuiUtils.getLabelName(jlScaleOperatorArrival.getText()), 35, 0);
+        moTextScaleOperatorDeparture.setTextSettings(SGuiUtils.getLabelName(jlScaleOperatorDeparture.getText()), 35, 0);
         moDecPackingWeight.setDecimalSettings(SGuiUtils.getLabelName(jlPackingWeight.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         moDecWeightAverage.setDecimalSettings(SGuiUtils.getLabelName(jlWeightAverage.getText()), SGuiConsts.GUI_TYPE_DEC_QTY, false);
         
@@ -955,19 +958,19 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             }
         }
     }
-    
+
     private boolean isFormForTicketTare() {
         return mnFormSubtype == SModConsts.SX_TIC_TARE_PEND;
     }
-    
+
     private boolean isFormForTicketExwUpdate() {
         return mnFormSubtype == SModConsts.SX_TIC_UPD;
     }
-    
+
     private boolean isRequireItem() {
         return moKeyProducer.getSelectedIndex() > 0;
     }
-    
+
     private boolean isRequiredRegion() {
         return moKeyRegion.getItemCount() > 2;
     }
@@ -975,7 +978,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private boolean isRequiredInputSource() {
         return moKeyInputSource.getItemCount() > 1;
     }
-    
+
     private boolean isRequiredExwFacilityOrigin() {
         return moKeyTicketOrigin.getSelectedIndex() > 0 && moKeyTicketOrigin.getValue()[0] == SModSysConsts.SU_TIC_ORIG_EXW;
     }
@@ -983,7 +986,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private boolean isRequiredExwFacilityDestination() {
         return moKeyTicketDestination.getSelectedIndex() > 0 && moKeyTicketDestination.getValue()[0] == SModSysConsts.SU_TIC_DEST_EXW;
     }
-    
+
     private boolean checkFreightRequired() {
         boolean isRequired = false;
         
@@ -999,7 +1002,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         return isRequired;
     }
 
-    private void enableFields(final boolean enableFields) {
+    private void enableFields() {
         if (moRegistry.isAlternative() && !isFormForTicketExwUpdate()) {
             moKeyScale.setEnabled(false);
             moTextTicket.setEditable(false);
@@ -1022,9 +1025,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             jbImportTicketTare.setEnabled(false);
             jbCleanTicketTare.setEnabled(false);
             moDatetimeArrival.setEditable(false);
-            moTextScaleOperatorArrival.setEnabled(false);
             moDatetimeDeparture.setEditable(false);
-            moTextScaleOperatorDeparture.setEnabled(false);
             moTextNote.setEnabled(false);
             
             moDecPackingFullQuantityArrival.setEditable(false);
@@ -1038,6 +1039,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moKeyExwFacilityOrigin.setEnabled(false);
             moKeyTicketDestination.setEnabled(false);
             moKeyExwFacilityDestination.setEnabled(false);
+            
             moTextExwUpdateNote.setEditable(false);
             
             moRadFreightFreight.setEnabled(false);
@@ -1082,9 +1084,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 jbImportTicketTare.setEnabled(false);
                 jbCleanTicketTare.setEnabled(false);
                 moDatetimeArrival.setEditable(false);
-                moTextScaleOperatorArrival.setEnabled(false);
                 moDatetimeDeparture.setEditable(false);
-                moTextScaleOperatorDeparture.setEnabled(false);
                 moTextNote.setEnabled(false);
                 
                 moDecPackingFullQuantityArrival.setEditable(false);
@@ -1094,11 +1094,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 moDecPackingFullQuantityDeparture.setEditable(false);
                 moDecPackingEmptyQuantityDeparture.setEditable(false);
                 
-                moKeyTicketOrigin.setEnabled(enableFields);
-                moKeyExwFacilityOrigin.setEnabled(enableFields && isRequiredExwFacilityOrigin() && moKeyItem.getSelectedIndex() > 0);
-                moKeyTicketDestination.setEnabled(enableFields);
-                moKeyExwFacilityDestination.setEnabled(enableFields && isRequiredExwFacilityDestination() && moKeyItem.getSelectedIndex() > 0);
-                moTextExwUpdateNote.setEditable(enableFields);
+                moKeyTicketOrigin.setEnabled(true);
+                moKeyExwFacilityOrigin.setEnabled(isRequiredExwFacilityOrigin() && moKeyItem.getSelectedIndex() > 0);
+                moKeyTicketDestination.setEnabled(true);
+                moKeyExwFacilityDestination.setEnabled(isRequiredExwFacilityDestination() && moKeyItem.getSelectedIndex() > 0);
+                
+                moTextExwUpdateNote.setEditable(true);
                 
                 moRadFreightFreight.setEnabled(false);
                 moRadFreightDependent.setEnabled(false);
@@ -1126,14 +1127,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 moBoolWeightSourceAvailable.setEnabled(false);
                 moDecWeightSource.setEditable(false);
                 moDecWeightDestinyArrival.setEditable(false);
-                moDecWeightDestinyDeparture.setEditable(enableFields);
-                jbImportTicketTare.setEnabled(enableFields && moConnectionRevuelta != null);
-                jbCleanTicketTare.setEnabled(!enableFields);
+                moDecWeightDestinyDeparture.setEditable(!mbIsRevImport2);
+                jbImportTicketTare.setEnabled(moConnectionRevuelta != null);
+                jbCleanTicketTare.setEnabled(mbIsRevImport2);
                 moDatetimeArrival.setEditable(false);
-                moTextScaleOperatorArrival.setEnabled(false);
-                moDatetimeDeparture.setEditable(enableFields);
-                moTextScaleOperatorDeparture.setEnabled(false);
-                moTextNote.setEnabled(true);
+                moDatetimeDeparture.setEditable(!mbIsRevImport2);
+                moTextNote.setEnabled(!mbIsRevImport1);
                 
                 moDecPackingFullQuantityArrival.setEditable(false);
                 moDecPackingEmptyQuantityArrival.setEditable(false);
@@ -1142,47 +1141,48 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 moDecPackingFullQuantityDeparture.setEditable(mbIsPacking);
                 moDecPackingEmptyQuantityDeparture.setEditable(mbIsPacking);
                 
-                moKeyTicketOrigin.setEnabled(enableFields);
-                moKeyExwFacilityOrigin.setEnabled(enableFields && isRequiredExwFacilityOrigin() && moKeyItem.getSelectedIndex() > 0);
-                moKeyTicketDestination.setEnabled(enableFields);
-                moKeyExwFacilityDestination.setEnabled(enableFields && isRequiredExwFacilityDestination() && moKeyItem.getSelectedIndex() > 0);
+                moKeyTicketOrigin.setEnabled(true);
+                moKeyExwFacilityOrigin.setEnabled(isRequiredExwFacilityOrigin() && moKeyItem.getSelectedIndex() > 0);
+                moKeyTicketDestination.setEnabled(true);
+                moKeyExwFacilityDestination.setEnabled(isRequiredExwFacilityDestination() && moKeyItem.getSelectedIndex() > 0);
+                
                 moTextExwUpdateNote.setEditable(false);
                 
                 moRadFreightFreight.setEnabled(mbIsFreightRequired);
                 moRadFreightDependent.setEnabled(mbIsFreightRequired);
                 actionRadEnableFreight();
                 
-                jbSaveSend.setEnabled(enableFields && moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA);
+                jbSaveSend.setEnabled(moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA);
             }
             else {
                 if (moRegistry.isRegistryNew()) {
                     // Case 3: Ticket creation (not tared yet obviously!)
                     
-                    moKeyScale.setEnabled(moKeyScale.getItemCount() > 0 && moKeyScale.getItemCount() != 2);
-                    moTextTicket.setEditable(enableFields);
-                    jbImportTicket.setEnabled(enableFields && moConnectionRevuelta != null);
-                    jbCleanTicket.setEnabled(!enableFields);
-                    moKeyProducer.setEnabled(enableFields);
-                    moKeyItem.setEnabled(enableFields && isRequireItem());
-                    moKeyInputSource.setEnabled(enableFields && isRequiredInputSource());
-                    jbSetDefaultInputSource.setEnabled(enableFields && isRequiredInputSource()); 
+                    // NOTICE: Argument "enableFields" ONLY enables/disables fields related to 1st data imported from Revuelta!
+                    
+                    moKeyScale.setEnabled(!mbIsRevImport1 && moKeyScale.getItemCount() > 0 && moKeyScale.getItemCount() != 2);
+                    moTextTicket.setEditable(!mbIsRevImport1);
+                    jbImportTicket.setEnabled(moConnectionRevuelta != null);
+                    jbCleanTicket.setEnabled(mbIsRevImport1);
+                    moKeyProducer.setEnabled(!mbIsRevImport1);
+                    moKeyItem.setEnabled(!mbIsRevImport1 && isRequireItem());
+                    moKeyInputSource.setEnabled(isRequiredInputSource());
+                    jbSetDefaultInputSource.setEnabled(isRequiredInputSource()); 
                     moKeyRegion.setEnabled(isRequiredRegion());
                     
-                    moTextPlates.setEditable(enableFields);
-                    moTextPlatesCage.setEditable(enableFields);
-                    moTextDriver.setEditable(enableFields);
+                    moTextPlates.setEditable(!mbIsRevImport1);
+                    moTextPlatesCage.setEditable(true);
+                    moTextDriver.setEditable(!mbIsRevImport1);
                     
                     moBoolWeightSourceAvailable.setEnabled(true);
                     moDecWeightSource.setEditable(moBoolWeightSourceAvailable.isSelected());
-                    moDecWeightDestinyArrival.setEditable(enableFields);
+                    moDecWeightDestinyArrival.setEditable(!mbIsRevImport1);
                     moDecWeightDestinyDeparture.setEditable(false);
                     jbImportTicketTare.setEnabled(false);
                     jbCleanTicketTare.setEnabled(false);
-                    moDatetimeArrival.setEditable(enableFields);
-                    moTextScaleOperatorArrival.setEnabled(false);
+                    moDatetimeArrival.setEditable(!mbIsRevImport1);
                     moDatetimeDeparture.setEditable(false);
-                    moTextScaleOperatorDeparture.setEnabled(false);
-                    moTextNote.setEnabled(true);
+                    moTextNote.setEnabled(!mbIsRevImport1);
                     
                     moDecPackingFullQuantityArrival.setEditable(mbIsPacking);
                     moDecPackingEmptyQuantityArrival.setEditable(mbIsPacking);
@@ -1191,10 +1191,11 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                     moDecPackingFullQuantityDeparture.setEditable(false);
                     moDecPackingEmptyQuantityDeparture.setEditable(false);
                     
-                    moKeyTicketOrigin.setEnabled(enableFields);
-                    moKeyExwFacilityOrigin.setEnabled(enableFields && isRequiredExwFacilityOrigin() && moKeyItem.getSelectedIndex() > 0);
-                    moKeyTicketDestination.setEnabled(enableFields);
-                    moKeyExwFacilityDestination.setEnabled(enableFields && isRequiredExwFacilityDestination() && moKeyItem.getSelectedIndex() > 0);
+                    moKeyTicketOrigin.setEnabled(true);
+                    moKeyExwFacilityOrigin.setEnabled(isRequiredExwFacilityOrigin() && moKeyItem.getSelectedIndex() > 0);
+                    moKeyTicketDestination.setEnabled(true);
+                    moKeyExwFacilityDestination.setEnabled(isRequiredExwFacilityDestination() && moKeyItem.getSelectedIndex() > 0);
+                    
                     moTextExwUpdateNote.setEditable(false);
                     
                     moRadFreightFreight.setEnabled(mbIsFreightRequired);
@@ -1206,33 +1207,29 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 else {
                     // Case 4: Ticket modification (may or not be tared)
                     
-                    boolean notRevImportedNorTared = !mbIsRevImport1 && !moRegistry.isTared();
-
-                    moKeyScale.setEnabled(false);
-                    moTextTicket.setEditable(notRevImportedNorTared);
-                    jbImportTicket.setEnabled(notRevImportedNorTared && !moRegistry.isTared() && moConnectionRevuelta != null);
-                    jbCleanTicket.setEnabled(!notRevImportedNorTared && !moRegistry.isTared());
-                    moKeyProducer.setEnabled(notRevImportedNorTared);
-                    moKeyItem.setEnabled(notRevImportedNorTared && isRequireItem());
+                    moKeyScale.setEnabled(!moRegistry.isTared() && !mbIsRevImport1 && moKeyScale.getItemCount() > 0 && moKeyScale.getItemCount() != 2);
+                    moTextTicket.setEditable(!moRegistry.isTared() && !mbIsRevImport1);
+                    jbImportTicket.setEnabled(!moRegistry.isTared() && moConnectionRevuelta != null);
+                    jbCleanTicket.setEnabled(!moRegistry.isTared() && mbIsRevImport1);
+                    moKeyProducer.setEnabled(!moRegistry.isTared() && !mbIsRevImport1);
+                    moKeyItem.setEnabled(!moRegistry.isTared() && !mbIsRevImport1 && isRequireItem());
                     moKeyInputSource.setEnabled(!moRegistry.isTared() && isRequiredInputSource());
                     jbSetDefaultInputSource.setEnabled(!moRegistry.isTared() && isRequiredInputSource());
                     moKeyRegion.setEnabled(!moRegistry.isTared() && isRequiredRegion());
                     
-                    moTextPlates.setEditable(notRevImportedNorTared);
-                    moTextPlatesCage.setEditable(notRevImportedNorTared);
-                    moTextDriver.setEditable(notRevImportedNorTared);
+                    moTextPlates.setEditable(!moRegistry.isTared() && !mbIsRevImport1);
+                    moTextPlatesCage.setEditable(!moRegistry.isTared());
+                    moTextDriver.setEditable(!moRegistry.isTared() && !mbIsRevImport1);
                     
                     moBoolWeightSourceAvailable.setEnabled(!moRegistry.isTared());
                     moDecWeightSource.setEditable(!moRegistry.isTared() && moBoolWeightSourceAvailable.isSelected());
-                    moDecWeightDestinyArrival.setEditable(notRevImportedNorTared);
+                    moDecWeightDestinyArrival.setEditable(!moRegistry.isTared() && !mbIsRevImport1);
                     moDecWeightDestinyDeparture.setEditable(false);
                     jbImportTicketTare.setEnabled(false);
                     jbCleanTicketTare.setEnabled(false);
-                    moDatetimeArrival.setEditable(notRevImportedNorTared);
-                    moTextScaleOperatorArrival.setEnabled(false);
+                    moDatetimeArrival.setEditable(!moRegistry.isTared() && !mbIsRevImport1);
                     moDatetimeDeparture.setEditable(false);
-                    moTextScaleOperatorDeparture.setEnabled(false);
-                    moTextNote.setEnabled(true);
+                    moTextNote.setEnabled(!moRegistry.isTared() && !mbIsRevImport1);
                     
                     moDecPackingFullQuantityArrival.setEditable(!moRegistry.isTared() && mbIsPacking);
                     moDecPackingEmptyQuantityArrival.setEditable(!moRegistry.isTared() && mbIsPacking);
@@ -1241,39 +1238,39 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                     moDecPackingFullQuantityDeparture.setEditable(false);
                     moDecPackingEmptyQuantityDeparture.setEditable(false);
 
-                    moKeyTicketOrigin.setEnabled(!moRegistry.isTared());
-                    moKeyExwFacilityOrigin.setEnabled(!moRegistry.isTared() && isRequiredExwFacilityOrigin() && moKeyItem.getSelectedIndex() > 0);
-                    moKeyTicketDestination.setEnabled(!moRegistry.isTared());
-                    moKeyExwFacilityDestination.setEnabled(!moRegistry.isTared() && isRequiredExwFacilityDestination() && moKeyItem.getSelectedIndex() > 0);
+                    moKeyTicketOrigin.setEnabled(true);
+                    moKeyExwFacilityOrigin.setEnabled(isRequiredExwFacilityOrigin() && moKeyItem.getSelectedIndex() > 0);
+                    moKeyTicketDestination.setEnabled(true);
+                    moKeyExwFacilityDestination.setEnabled(isRequiredExwFacilityDestination() && moKeyItem.getSelectedIndex() > 0);
+                    
                     moTextExwUpdateNote.setEditable(false);
                     
-                    moRadFreightFreight.setEnabled(!moRegistry.isTared() && mbIsFreightRequired);
-                    moRadFreightDependent.setEnabled(!moRegistry.isTared() && mbIsFreightRequired);
+                    moRadFreightFreight.setEnabled(mbIsFreightRequired);
+                    moRadFreightDependent.setEnabled(mbIsFreightRequired);
                     actionRadEnableFreight();
                     
-                    jbSaveSend.setEnabled(enableFields && moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA && moRegistry.isTared());
+                    jbSaveSend.setEnabled(moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA && moRegistry.isTared());
                 }
             }
         }
     }
-    
+
     private void readRegion() {
         mnSeasonId = 0;
+        moKeyRegion.removeAllItems();
 
         try {
-            if (moKeyItem.getSelectedIndex() > 0) {
+            if (moKeyProducer.getSelectedIndex() > 0 && moKeyItem.getSelectedIndex() > 0) {
                 mnSeasonId = SSomUtils.getProperSeasonId(miClient.getSession(), moDatetimeArrival.getValue(), moKeyItem.getValue()[0], moKeyProducer.getValue()[0]);
 
                 SGuiParams params = new SGuiParams();
                 params.getParamsMap().put(SModConsts.SU_SEAS, mnSeasonId);
-                params.getParamsMap().put(SModConsts.SU_ITEM, moKeyItem.getValue()[0]);
                 params.getParamsMap().put(SModConsts.SU_PROD, moKeyProducer.getValue()[0]);
+                params.getParamsMap().put(SModConsts.SU_ITEM, moKeyItem.getValue()[0]);
+                
                 miClient.getSession().populateCatalogue(moKeyRegion, SModConsts.SX_PROD_REG_ITEM_SEAS, 0, params);
                 
-                enableFields(moKeyItem.isEnabled());
-                
                 if (moKeyRegion.getItemCount() == 2) {
-                    moKeyRegion.setEnabled(false);
                     moKeyRegion.setSelectedIndex(1);
                 }
             }
@@ -1300,18 +1297,19 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         SGuiParams params = new SGuiParams();
         params.getParamsMap().put(SModConsts.SU_INP_CT, moItem != null ? moItem.getFkInputCategoryId() : 0);
         params.getParamsMap().put(SModConsts.SX_PARAM_TIC_DATE, moRegistry.getDate() != null ? moRegistry.getDate() : miClient.getSession().getWorkingDate());
+        
         miClient.getSession().populateCatalogue(moKeyTicketFreight, SModConsts.SX_TIC_FREIGHT, 0, params);
     }
-    
+
     private void itemStateKeyProducer() {
         try {
-            mbProcessingGui = true;
+            mbProcessingProducer = true;
             
             // reset member:
 
             moProducer = null;
 
-            // reset items fields:
+            // disable items fields:
 
             moKeyItem.setEnabled(false);
             moKeyInputSource.setEnabled(false);
@@ -1328,7 +1326,6 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
                 // reset items fields:
 
-                moKeyItem.setEnabled(true);
                 moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
 
                 // set ticket's origin and destination fields:
@@ -1346,14 +1343,15 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
                 // complete producer setup:
 
-                readRegion(); // invokes enableFields()!
+                readRegion();
+                enableFields();
             }
         }
         catch (Exception e) {
             SLibUtils.showException(this, e);
         }
         finally {
-            mbProcessingGui = false;
+            mbProcessingProducer = false;
         }
     }
 
@@ -1440,6 +1438,10 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
             }
             
+            if (moKeyInputSource.getSelectedIndex() <= 0 && moKeyInputSource.getItemCount() == 2) {
+                moKeyInputSource.setSelectedIndex(1);
+            }
+            
             // set external warehouses fields:
             
             if (moItem.getExternalWarehousesAllowed().isEmpty()) {
@@ -1471,11 +1473,13 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             
             // complete item setup:
 
-            readRegion(); // invokes enableFields()!
             reloadFreightTicketsCatalog();
+            
+            readRegion();
+            enableFields();
         }
     }
-    
+
     private void itemStateKeyTicketOrigin() {
         if (isRequiredExwFacilityOrigin()) {
             moKeyExwFacilityOrigin.setEnabled(moKeyItem.getSelectedIndex() > 0);
@@ -1489,7 +1493,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moKeyExwFacilityOrigin.resetField();
         }
     }
-    
+
     private void itemStateKeyTicketDestination() {
         if (isRequiredExwFacilityDestination()) {
             moKeyExwFacilityDestination.setEnabled(moKeyItem.getSelectedIndex() > 0);
@@ -1503,7 +1507,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moKeyExwFacilityDestination.resetField();
         }
     }
-    
+
     private void itemStateWeightSourceAvailable() {
         moDecWeightSource.setEditable(moBoolWeightSourceAvailable.isSelected());
     }
@@ -1569,20 +1573,41 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                                                 moDatetimeArrival.setValue(datetimeParser.parse(resulset.getString(2).replaceAll("a.m.", "AM").replaceAll("p.m.", "PM")));
                                                 moTextNote.setValue(resulset.getString(4));
                                                 */
-                                                moKeyProducer.setValue(new int [] { producerId });
-                                                moKeyItem.setValue(new int [] { itemId });
-                                                moTextPlates.setValue(resulset.getString("Pes_Placas"));
-                                                moTextDriver.setValue(resulset.getString("Pes_Chofer"));
-                                                moDecWeightDestinyArrival.setValue(resulset.getDouble("Pes_PesoPri"));
-                                                moDatetimeArrival.setValue((resulset.getTimestamp("Pes_FecHorPri")));
-                                                moTextScaleOperatorArrival.setValue(resulset.getString("Pes_OpeNomPri"));
-                                                moTextNote.setValue(resulset.getString("Pes_ObsPri"));
-                                                msComentArrival = resulset.getString("Pes_ObsPri");
-                                                moKeyScale.setEnabled(false);
-                                                mbIsRevImport1 = true;
+                                                
+                                                try {
+                                                    mbSettingForm = true;
+                                                    
+                                                    mbIsRevImport1 = true;
+                                                    
+                                                    moKeyProducer.setValue(new int [] { producerId });
+                                                    itemStateKeyProducer();
+                                                    
+                                                    moKeyItem.setValue(new int [] { itemId });
+                                                    itemStateKeyItem();
 
-                                                enableFields(false);
-                                                itemStateKeyItem();
+                                                    moTextPlates.setValue(resulset.getString("Pes_Placas"));
+                                                    moTextDriver.setValue(resulset.getString("Pes_Chofer"));
+
+                                                    moDecWeightDestinyArrival.setValue(resulset.getDouble("Pes_PesoPri"));
+                                                    moDatetimeArrival.setValue((resulset.getTimestamp("Pes_FecHorPri")));
+                                                    String operator = resulset.getString("Pes_OpeNomPri");
+                                                    moTextScaleOperatorArrival.setValue(operator == null || operator.equals("null") ? "" : operator);
+                                                    String note = resulset.getString("Pes_ObsPri");
+                                                    msComentArrival = note == null || note.equals("null") ? "" : note;
+                                                    moTextNote.setValue(msComentArrival);
+                                                }
+                                                catch (Exception e) {
+                                                    mbIsRevImport1 = false;
+                                                    SLibUtils.showException(this, e);
+                                                }
+                                                finally {
+                                                    enableFields();
+                                                    mbSettingForm = false;
+                                                    
+                                                    if (mbIsRevImport1) {
+                                                        moKeyInputSource.requestFocusInWindow();
+                                                    }
+                                                }
                                             }
                                             else {
                                                 miClient.showMsgBoxInformation("No se encontró el mapeo para el producto '" + resulset.getString("Pro_Nombre") + "', en el catálogo de ítems de SOM.");
@@ -1656,13 +1681,24 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                                     moDatetimeDeparture.setValue(SLibUtils.DbmsDateFormatDatetime.parse(resulset.getString(2)));
                                     moDatetimeDeparture.setValue(datetimeParser.parse(resulset.getString(2).replaceAll("a.m.", "AM").replaceAll("p.m.", "PM")));
                                     */
+                                    
+                                    mbIsRevImport2 = true;
+                                    
                                     moDecWeightDestinyDeparture.setValue(resulset.getDouble("Pes_PesoSeg"));
                                     moDatetimeDeparture.setValue(resulset.getTimestamp("Pes_FecHorSeg"));
-                                    moTextScaleOperatorDeparture.setValue(resulset.getString("Pes_OpeNomSeg"));
-                                    msComentDeparture = resulset.getString("Pes_ObsSeg");
-                                    mbIsRevImport2 = true;
+                                    String operator = resulset.getString("Pes_OpeNomSeg");
+                                    moTextScaleOperatorDeparture.setValue(operator == null || operator.equals("null") ? "" : operator);
+                                    String note = resulset.getString("Pes_ObsSeg");
+                                    msComentDeparture = note == null || note.equals("null") ? "" : note;
 
-                                    enableFields(false);
+                                    enableFields();
+                                    
+                                    if (moDecPackingFullQuantityDeparture.isEditable()) {
+                                        moDecPackingFullQuantityDeparture.requestFocusInWindow();
+                                    }
+                                    else if (moKeyTicketOrigin.isEnabled()) {
+                                        moKeyTicketOrigin.requestFocusInWindow();
+                                    }
                                 }
                                 else {
                                     miClient.showMsgBoxInformation("No se encontró ningún registro para el boleto '" + moTextTicket.getValue() + "', del día '" + SLibUtils.DateFormatDate.format(moDatetimeDeparture.getValue()) + ".");
@@ -1692,36 +1728,46 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
     private void actionCleanTicket() {
         if (miClient.showMsgBoxConfirm("¿Está seguro(a) que desea borrar los datos de la primer pesada?") == JOptionPane.YES_OPTION) {
-            moTextTicket.setValue("");
-            moKeyProducer.setSelectedIndex(0);
-            moKeyItem.setSelectedIndex(0);
-            moTextPlates.setValue("");
-            moTextPlatesCage.setValue("");
-            moTextDriver.setValue("");
-            moDecWeightDestinyArrival.setValue(0d);
-            moDecWeightSource.setValue(0d);
-            moDatetimeArrival.setValue(miClient.getSession().getWorkingDate());
-            moTextScaleOperatorArrival.setValue("");
-            moTextNote.setValue("");
-            msComentArrival = "";
-            mbIsRevImport1 = false;
+            try {
+                mbSettingForm = true;
+                
+                mbIsRevImport1 = false;
 
-            enableFields(true);
+                moKeyProducer.resetField();
+                moKeyItem.resetField();
+
+                moTextPlates.resetField();
+                moTextDriver.resetField();
+
+                moDecWeightDestinyArrival.resetField();
+                //moDatetimeArrival.resetField(); // preserve date!
+                moTextScaleOperatorArrival.resetField();
+                msComentArrival = "";
+                moTextNote.resetField();
+            }
+            catch (Exception e) {
+                SLibUtils.showException(this, e);
+            }
+            finally {
+                enableFields();
+                mbSettingForm = false;
+            }
         }
     }
 
     private void actionCleanTicketTare() {
         if (miClient.showMsgBoxConfirm("¿Está seguro(a) que desea borrar los datos de la segunda pesada?") == JOptionPane.YES_OPTION) {
-            moDecWeightDestinyDeparture.setValue(0d);
-            moDatetimeDeparture.setValue(miClient.getSession().getWorkingDate());
-            moTextScaleOperatorDeparture.setValue("");
-            msComentDeparture = "";
             mbIsRevImport2 = false;
 
-            enableFields(true);
+            moDecWeightDestinyDeparture.resetField();
+            //moDatetimeDeparture.resetField(); // preserve date!
+            moTextScaleOperatorDeparture.resetField();
+            msComentDeparture = "";
+            
+            enableFields();
         }
     }
-    
+
     private void actionSetDefaultInputSource() {
         if (jbSetDefaultInputSource.isEnabled()) {
             try {
@@ -1749,7 +1795,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moDecPackingEmptyQuantityArrival.setEditable(true);
         moDecPackingEmptyQuantityArrival.requestFocus();
     }
-    
+
     private void actionRadEnableFreight() {
         moKeyFreightOrigin.setEnabled(moRadFreightFreight.isEnabled() && moRadFreightFreight.isSelected());
         moKeyTicketFreight.setEnabled(moRadFreightDependent.isEnabled() && moRadFreightDependent.isSelected());
@@ -1836,154 +1882,169 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
     @Override
     public void setRegistry(SDbRegistry registry) throws Exception {
-        moRegistry = (SDbTicket) registry;
-
-        mnFormResult = SLibConsts.UNDEFINED;
-        mbFirstActivation = true;
-        
-        mbSaveSendCalled = false;
-        mbProcessingGui = false;
-
-        removeAllListeners();
-        reloadCatalogues();
-        
-        if (moRegistry.isAlternative() && !isFormForTicketExwUpdate()) {
-            miClient.showMsgBoxInformation("No se puede modificar este boleto porque tiene un registro en el sistema SOM Orgánico.\n"
-                    + "Si es necesario, elimine primero el registro " + moRegistry.getXtaNumAlternative() + " en SOM Orgánico para modificar este boleto."
-                    + (moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA && moRegistry.isTared() ? "\nPara enviar este boleto al estado siguiente, puede hacerlo directamente en la vista \"Boletos báscula\"." : ""));
-        }
-        
-        if (moRegistry.isRegistryNew()) {
-            // switch between combobox and text field for scalse:
+        try {
+            mbSettingForm = true;
             
-            moKeyScale.setVisible(true);
-            jtfScale.setVisible(false);
-            jtfScale.setText("");
-            
-            // hide external warehouse note field:
-            
-            jlExwUpdateNote.setVisible(false);
-            moTextExwUpdateNote.setVisible(false);
-            
-            // prepare registry creation:
-            
-            moRegistry.initPrimaryKey();
-            moRegistry.setDatetimeArrival(miClient.getSession().getWorkingDate());
-            moRegistry.setDatetimeDeparture(miClient.getSession().getWorkingDate());
-            moRegistry.setWeightSourceAvailable(true);
-            moRegistry.setFkTicketStatusId(SModSysConsts.SS_TIC_ST_SCA);
-            moRegistry.setFkExwFacilityOriginId(SModSysConsts.MU_EXW_FAC_NA);
-            moRegistry.setFkExwFacilityDestinationId(SModSysConsts.MU_EXW_FAC_NA);
-            
-            jtfRegistryKey.setText("");
-        }
-        else {
-            // switch between combobox and text field for scalse:
-            
-            moKeyScale.setVisible(false);
-            jtfScale.setVisible(true);
-            jtfScale.setText(moRegistry.getXtaScaleName());
-            
-            // show, if necessary, external warehouse note field:
-            
-            jlExwUpdateNote.setVisible(isFormForTicketExwUpdate());
-            moTextExwUpdateNote.setVisible(isFormForTicketExwUpdate());
-            
-            // prepare registry edition:
-            
-            jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
-        }
-
-        moKeyScale.setValue(new int[] { moRegistry.getFkScaleId() });
-        moBoolTared.setValue(moRegistry.isTared());
-        moTextTicket.setValue(moRegistry.getNumber());
-        
-        moKeyProducer.setValue(new int[] { moRegistry.getFkProducerId() });
-        itemStateKeyProducer();
-        
-        moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
-        itemStateKeyItem();
-        
-        if (moRegistry.getFkInputSourceId() == SModSysConsts.SU_INP_SRC_NA) {
-            moKeyInputSource.resetField();
-        }
-        else {
-            moKeyInputSource.setValue(new int[] { moRegistry.getFkInputSourceId() });
-        }
-        
-        moKeyRegion.setValue(new int[] { moRegistry.getFkRegionId_n()} );
-        
-        moTextPlates.setValue(moRegistry.getPlate());
-        moTextPlatesCage.setValue(moRegistry.getPlateCage());
-        moTextDriver.setValue(moRegistry.getDriver());
-        moDecWeightSource.setValue(moRegistry.getWeightSource());
-        moBoolWeightSourceAvailable.setValue(moRegistry.isWeightSourceAvailable());
-        moDecWeightDestinyArrival.setValue(moRegistry.getWeightDestinyArrival());
-        moDecWeightDestinyDeparture.setValue(moRegistry.getWeightDestinyDeparture());
-        moDatetimeArrival.setValue(moRegistry.getDatetimeArrival());
-        moDatetimeDeparture.setValue(moRegistry.getDatetimeDeparture());
-        moTextScaleOperatorArrival.setValue(moRegistry.getScaleOperatorArrival());
-        moTextScaleOperatorDeparture.setValue(moRegistry.getScaleOperatorDeparture());
-        moDecPackingFullQuantityArrival.setValue(moRegistry.getPackingFullQuantityArrival());
-        moDecPackingEmptyQuantityArrival.setValue(moRegistry.getPackingEmptyQuantityArrival());
-        moDecPackingFullQuantityDeparture.setValue(moRegistry.getPackingFullQuantityDeparture());
-        moDecPackingEmptyQuantityDeparture.setValue(moRegistry.getPackingEmptyQuantityDeparture());
-        
-        msComentArrival = moRegistry.getScaleCommentsArrival();
-        msComentDeparture = moRegistry.getScaleCommentsDeparture();
-
-        mbIsRevImport1 = moRegistry.isRevueltaImport1();
-        mbIsRevImport2 = moRegistry.isRevueltaImport2();
-
-        if (moRegistry.getChildTicketNotes().size() > 0) {
-            moTextNote.setValue(moRegistry.getChildTicketNotes().get(0).getNote());
-        }
-        else {
-            moTextNote.setValue("");
-        }
-
-        moKeyTicketOrigin.setValue(new int[] { moRegistry.getFkTicketOriginId() });
-        
-        if (moRegistry.getFkExwFacilityOriginId() != SModSysConsts.MU_EXW_FAC_NA) {
-            moKeyExwFacilityOrigin.setValue(new int[] { moRegistry.getFkExwFacilityOriginId() });
-        }
-        else {
-            moKeyExwFacilityOrigin.resetField();
-        }
-        
-        moKeyTicketDestination.setValue(new int[] { moRegistry.getFkTicketDestinationId() });
-        
-        if (moRegistry.getFkExwFacilityDestinationId() != SModSysConsts.MU_EXW_FAC_NA) {
-            moKeyExwFacilityDestination.setValue(new int[] { moRegistry.getFkExwFacilityDestinationId() });
-        }
-        else {
-            moKeyExwFacilityDestination.resetField();
-        }
-        
-        moTextExwUpdateNote.setValue(""); // field allways cleared for eventual input
-        
-        bgFreightType.clearSelection();
-        moRadFreightFreight.setSelected(moRegistry.getFkFreightOriginId_n() != 0);
-        moRadFreightDependent.setSelected(moRegistry.getFkFreightTicketId_n() != 0);
-        moKeyFreightOrigin.setValue(new int[] { moRegistry.getFkFreightOriginId_n() });
-        moKeyTicketFreight.setValue(new int[] { moRegistry.getFkFreightTicketId_n() });
-        
-        setFormEditable(true);
-
-        if (moRegistry.isRegistryNew()) {
-            if (moKeyScale.getItemCount() == 2) {
-                moKeyScale.setSelectedIndex(1);
+            moConnectionRevuelta = SSomUtils.openConnectionRevueltaJdbc(miClient.getSession());
+            if (moConnectionRevuelta == null) {
+                miClient.showMsgBoxError("No se pudo establecer comunicación con el sistema Revuelta.");
             }
-        }
-        else {
-            
-        }
 
-        computeWeightAverage();
-        
-        enableFields(true);
+            moRegistry = (SDbTicket) registry;
 
-        addAllListeners();
+            mnFormResult = SLibConsts.UNDEFINED;
+            mbFirstActivation = true;
+
+            mbSaveSendCalled = false;
+
+            removeAllListeners();
+            reloadCatalogues();
+
+            if (moRegistry.isAlternative() && !isFormForTicketExwUpdate()) {
+                miClient.showMsgBoxInformation("No se puede modificar este boleto porque tiene un registro en el sistema SOM Orgánico.\n"
+                        + "Si es necesario, elimine primero el registro " + moRegistry.getXtaNumAlternative() + " en SOM Orgánico para modificar este boleto."
+                        + (moRegistry.getFkTicketStatusId() == SModSysConsts.SS_TIC_ST_SCA && moRegistry.isTared() ? "\nPara enviar este boleto al estado siguiente, puede hacerlo directamente en la vista \"Boletos báscula\"." : ""));
+            }
+
+            if (moRegistry.isRegistryNew()) {
+                // switch between combobox and text field for scalse:
+
+                moKeyScale.setVisible(true);
+                jtfScale.setVisible(false);
+                jtfScale.setText("");
+
+                // hide external warehouse note field:
+
+                jlExwUpdateNote.setVisible(false);
+                moTextExwUpdateNote.setVisible(false);
+
+                // prepare registry creation:
+
+                moRegistry.initPrimaryKey();
+                moRegistry.setDatetimeArrival(miClient.getSession().getWorkingDate());
+                moRegistry.setDatetimeDeparture(miClient.getSession().getWorkingDate());
+                moRegistry.setWeightSourceAvailable(true); // force user to input source weight
+                moRegistry.setFkTicketStatusId(SModSysConsts.SS_TIC_ST_SCA);
+                moRegistry.setFkExwFacilityOriginId(SModSysConsts.MU_EXW_FAC_NA);
+                moRegistry.setFkExwFacilityDestinationId(SModSysConsts.MU_EXW_FAC_NA);
+
+                jtfRegistryKey.setText("");
+            }
+            else {
+                // switch between combobox and text field for scalse:
+
+                moKeyScale.setVisible(false);
+                jtfScale.setVisible(true);
+                jtfScale.setText(moRegistry.getXtaScaleName());
+
+                // show, if necessary, external warehouse note field:
+
+                jlExwUpdateNote.setVisible(isFormForTicketExwUpdate());
+                moTextExwUpdateNote.setVisible(isFormForTicketExwUpdate());
+
+                // prepare registry edition:
+
+                jtfRegistryKey.setText(SLibUtils.textKey(moRegistry.getPrimaryKey()));
+            }
+
+            moKeyScale.setValue(new int[] { moRegistry.getFkScaleId() });
+            moBoolTared.setValue(moRegistry.isTared());
+            moTextTicket.setValue(moRegistry.getNumber());
+
+            moKeyProducer.setValue(new int[] { moRegistry.getFkProducerId() });
+            itemStateKeyProducer();
+
+            moKeyItem.setValue(new int[] { moRegistry.getFkItemId() });
+            itemStateKeyItem();
+
+            if (moRegistry.getFkInputSourceId() == SModSysConsts.SU_INP_SRC_NA) {
+                moKeyInputSource.resetField();
+            }
+            else {
+                moKeyInputSource.setValue(new int[] { moRegistry.getFkInputSourceId() });
+            }
+
+            moKeyRegion.setValue(new int[] { moRegistry.getFkRegionId_n()} );
+
+            moTextPlates.setValue(moRegistry.getPlate());
+            moTextPlatesCage.setValue(moRegistry.getPlateCage());
+            moTextDriver.setValue(moRegistry.getDriver());
+
+            moDecWeightSource.setValue(moRegistry.getWeightSource());
+            moBoolWeightSourceAvailable.setValue(moRegistry.isWeightSourceAvailable() || moRegistry.getWeightSource() != 0);
+            moDecWeightDestinyArrival.setValue(moRegistry.getWeightDestinyArrival());
+            moDecWeightDestinyDeparture.setValue(moRegistry.getWeightDestinyDeparture());
+            moDatetimeArrival.setValue(moRegistry.getDatetimeArrival());
+            moDatetimeDeparture.setValue(moRegistry.getDatetimeDeparture());
+            moTextScaleOperatorArrival.setValue(moRegistry.getScaleOperatorArrival());
+            moTextScaleOperatorDeparture.setValue(moRegistry.getScaleOperatorDeparture());
+            moDecPackingFullQuantityArrival.setValue(moRegistry.getPackingFullQuantityArrival());
+            moDecPackingEmptyQuantityArrival.setValue(moRegistry.getPackingEmptyQuantityArrival());
+            moDecPackingFullQuantityDeparture.setValue(moRegistry.getPackingFullQuantityDeparture());
+            moDecPackingEmptyQuantityDeparture.setValue(moRegistry.getPackingEmptyQuantityDeparture());
+
+            mbIsRevImport1 = moRegistry.isRevueltaImport1();
+            mbIsRevImport2 = moRegistry.isRevueltaImport2();
+
+            msComentArrival = moRegistry.getScaleCommentsArrival();
+            msComentDeparture = moRegistry.getScaleCommentsDeparture();
+
+            if (moRegistry.getChildTicketNotes().size() > 0) {
+                moTextNote.setValue(moRegistry.getChildTicketNotes().get(0).getNote());
+            }
+            else {
+                moTextNote.setValue("");
+            }
+
+            moKeyTicketOrigin.setValue(new int[] { moRegistry.getFkTicketOriginId() });
+
+            if (moRegistry.getFkExwFacilityOriginId() != SModSysConsts.MU_EXW_FAC_NA) {
+                moKeyExwFacilityOrigin.setValue(new int[] { moRegistry.getFkExwFacilityOriginId() });
+            }
+            else {
+                moKeyExwFacilityOrigin.resetField();
+            }
+
+            moKeyTicketDestination.setValue(new int[] { moRegistry.getFkTicketDestinationId() });
+
+            if (moRegistry.getFkExwFacilityDestinationId() != SModSysConsts.MU_EXW_FAC_NA) {
+                moKeyExwFacilityDestination.setValue(new int[] { moRegistry.getFkExwFacilityDestinationId() });
+            }
+            else {
+                moKeyExwFacilityDestination.resetField();
+            }
+
+            moTextExwUpdateNote.setValue(""); // field allways cleared for eventual input
+
+            bgFreightType.clearSelection();
+            moRadFreightFreight.setSelected(moRegistry.getFkFreightOriginId_n() != 0);
+            moRadFreightDependent.setSelected(moRegistry.getFkFreightTicketId_n() != 0);
+            moKeyFreightOrigin.setValue(new int[] { moRegistry.getFkFreightOriginId_n() });
+            moKeyTicketFreight.setValue(new int[] { moRegistry.getFkFreightTicketId_n() });
+
+            setFormEditable(true);
+
+            if (moRegistry.isRegistryNew()) {
+                if (moKeyScale.getItemCount() == 2) {
+                    moKeyScale.setSelectedIndex(1);
+                }
+            }
+            else {
+
+            }
+
+            computeWeightAverage();
+
+            enableFields();
+
+            addAllListeners();
+        }
+        catch (Exception e) {
+            SLibUtils.showException(this, e);
+        }
+        finally {
+            mbSettingForm = false;
+        }
     }
 
     @Override
@@ -2196,7 +2257,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                                 miClient.showMsgBoxConfirm("No se ha especificado un valor para el campo '" + moDecPackingFullQuantityArrival.getFieldName() + "'."
                                         + "\n" + SGuiConsts.MSG_CNF_CONT_OMIT_VAL) != JOptionPane.YES_OPTION) {
                             validation.setMessage(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + moDecPackingFullQuantityArrival.getFieldName() + "'.");
-                            validation.setComponent(moDecPackingFullQuantityArrival);
+                            validation.setComponent(moDecPackingFullQuantityArrival.isEditable() ? moDecPackingFullQuantityArrival : jbEditPackingFullQuantityArrival);
                         }
                         else if (isFormForTicketTare() && moDecPackingEmptyQuantityDeparture.isEditable() && moDecPackingEmptyQuantityDeparture.getValue() == 0 &&
                                 miClient.showMsgBoxConfirm("No se ha especificado un valor para el campo '" + moDecPackingEmptyQuantityDeparture.getFieldName() + "'."
@@ -2319,7 +2380,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (!mbProcessingGui) {
+        if (!mbSettingForm && !mbProcessingProducer) {
             if (e.getSource() instanceof JComboBox && e.getStateChange() == ItemEvent.SELECTED) {
                 JComboBox comboBox = (JComboBox)  e.getSource();
 
@@ -2375,7 +2436,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             JSpinner spinner = (JSpinner) e.getSource();
             
             if (spinner == moDatetimeArrival.getComponent()) {
-                readRegion(); // invokes enableFields()!
+                readRegion();
+                enableFields();
             }
         }
     }

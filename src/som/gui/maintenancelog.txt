@@ -1,4 +1,17 @@
 ================================================================================
+2026-02-20, 1.0 096.2
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Optimización de flujo de captura en la forma de captura de boletos.
+
+================================================================================
+2026-02-19, 1.0 096.1
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Corrección a habilitación y deshabilitación de campos en forma de captura de boletos de báscula.
+2) Corrección a conexión a Revuelta en forma de captura de boletos de báscula.
+
+================================================================================
 2026-02-18, 1.0 096.0
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

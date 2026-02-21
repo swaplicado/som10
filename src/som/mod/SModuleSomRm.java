@@ -760,18 +760,18 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.SX_PROD_REG_ITEM_SEAS:
                 settings = new SGuiCatalogueSettings("Región", 1);
+                int seassonId = 0;
+                int producerId = 0;
                 int itemId = 0;
-                int prodId = 0;
-                int seasId = 0;
                 if (params != null) {
+                    seassonId = (int) params.getParamsMap().get(SModConsts.SU_SEAS);
+                    producerId = (int) params.getParamsMap().get(SModConsts.SU_PROD);
                     itemId = (int) params.getParamsMap().get(SModConsts.SU_ITEM);
-                    prodId = (int) params.getParamsMap().get(SModConsts.SU_PROD);
-                    seasId = (int) params.getParamsMap().get(SModConsts.SU_SEAS);
                 }
                 sql = "SELECT s.id_reg AS " + SDbConsts.FIELD_ID + "1, re.name AS " + SDbConsts.FIELD_ITEM + " " 
                         + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_PROD) + " AS s "
                         + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_REG) + " AS re ON s.id_reg = re.id_reg "
-                        + "WHERE s.b_del = 0 AND s.b_dis = 0 AND s.id_seas = " + seasId + " AND s.id_item = " + itemId + " AND s.id_prod = " + prodId + " " 
+                        + "WHERE s.b_del = 0 AND s.b_dis = 0 AND s.id_seas = " + seassonId + " AND s.id_item = " + itemId + " AND s.id_prod = " + producerId + " " 
                         + "ORDER BY re.name, s.id_seas, s.id_reg, s.id_item, s.id_prod ";
                 break;
             case SModConsts.SX_TIC_FREIGHT:

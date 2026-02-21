@@ -10,7 +10,7 @@ import sa.lib.gui.SGuiModuleUtils;
 
 /**
  *
- * @author Néstor Ávalos, Sergio Flores, Isabel Servín
+ * @author Néstor Ávalos, Isabel Servín, Sergio Flores
  */
 public class SModUtils implements SGuiModuleUtils {
 
@@ -102,7 +102,8 @@ public class SModUtils implements SGuiModuleUtils {
             SModConsts.MX_TIC_MVT,
             SModConsts.MX_TIC_REC,
             SModConsts.MX_STK_TRANS,
-            SModConsts.MX_EXW_STOCK
+            SModConsts.MX_EXW_STOCK,
+            SModConsts.MX_EXW_STOCK_CARDEX
         });
     }
 

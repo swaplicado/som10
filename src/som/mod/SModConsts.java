@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 /**
  *
- * @author Sergio Flores, Isabel Servín
+ * @author Sergio Flores, Isabel Servín, Sergio Flores
  */
 public abstract class SModConsts {
 
@@ -262,6 +262,7 @@ public abstract class SModConsts {
     public static final int MX_NOTE_CARDEX = 460005;
     public static final int MX_REF_PICKER = 460007;
     public static final int MX_EXW_STOCK = 460101;
+    public static final int MX_EXW_STOCK_CARDEX = 460106;
     
     public static final HashMap<Integer, String> TablesMap = new HashMap<>();
 

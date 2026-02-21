@@ -29,7 +29,7 @@ import som.mod.som.db.SSomConsts;
 
 /**
  *
- * @author Sergio Flores, Isabel Servín
+ * @author Sergio Flores, Isabel Servín, Sergio Flores
  */
 public final class SDialogTicketsSearch extends SBeanFormDialog implements ActionListener {
 
@@ -172,6 +172,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
 
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        jlNumber.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jlNumber.setText("Boleto:");
         jlNumber.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel18.add(jlNumber);
@@ -342,7 +343,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
 
         jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlWeightDestinyArrival.setText("Peso entrada:");
+        jlWeightDestinyArrival.setText("Peso en entrada:");
         jlWeightDestinyArrival.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel10.add(jlWeightDestinyArrival);
 
@@ -359,8 +360,8 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jtfWeightDestinyArrivalUnit.setPreferredSize(new java.awt.Dimension(35, 23));
         jPanel10.add(jtfWeightDestinyArrivalUnit);
 
-        jlPackingWeightArrival.setText(" Empaque entrada:");
-        jlPackingWeightArrival.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlPackingWeightArrival.setText(" Peso envases en entrada:");
+        jlPackingWeightArrival.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel10.add(jlPackingWeightArrival);
 
         jtfPackingWeightArrival.setEditable(false);
@@ -380,7 +381,7 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
 
         jPanel11.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlWeightDestinyDeparture.setText("Peso salida:");
+        jlWeightDestinyDeparture.setText("Peso en salida:");
         jlWeightDestinyDeparture.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel11.add(jlWeightDestinyDeparture);
 
@@ -397,8 +398,8 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jtfWeightDestinyDepartureUnit.setPreferredSize(new java.awt.Dimension(35, 23));
         jPanel11.add(jtfWeightDestinyDepartureUnit);
 
-        jlPackingWeightDeparture.setText(" Empaque salida:");
-        jlPackingWeightDeparture.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlPackingWeightDeparture.setText(" Peso envases en salida:");
+        jlPackingWeightDeparture.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel11.add(jlPackingWeightDeparture);
 
         jtfPackingWeightDeparture.setEditable(false);
@@ -435,8 +436,9 @@ public final class SDialogTicketsSearch extends SBeanFormDialog implements Actio
         jtfWeightDestinyGrossUnit.setPreferredSize(new java.awt.Dimension(35, 23));
         jPanel17.add(jtfWeightDestinyGrossUnit);
 
+        jlWeightDestinyNet.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jlWeightDestinyNet.setText(" Carga neta:");
-        jlWeightDestinyNet.setPreferredSize(new java.awt.Dimension(100, 23));
+        jlWeightDestinyNet.setPreferredSize(new java.awt.Dimension(150, 23));
         jPanel17.add(jlWeightDestinyNet);
 
         jtfWeightDestinyNet.setEditable(false);

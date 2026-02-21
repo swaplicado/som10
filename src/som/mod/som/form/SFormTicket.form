@@ -294,7 +294,7 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="(Placas de la caja o remolque del veh&#xed;culo.)"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[250, 23]"/>
+                      <Dimension value="[295, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -361,7 +361,18 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Peso origen disponible"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[165, 23]"/>
+                      <Dimension value="[155, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlWeightSource1">
+                  <Properties>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="6d" green="6d" id="Text Inactive Text" palette="2" red="6d" type="palette"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="(Tara manifestada por el proveedor desde el origen.)"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[295, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -487,6 +498,7 @@
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextScaleOperatorArrival">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="text" type="java.lang.String" value="TEXT"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[227, 23]"/>
@@ -529,6 +541,7 @@
                 </Component>
                 <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextScaleOperatorDeparture">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="text" type="java.lang.String" value="TEXT"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[227, 23]"/>

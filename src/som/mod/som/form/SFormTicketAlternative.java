@@ -110,6 +110,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         moDecWeightSource = new sa.lib.gui.bean.SBeanFieldDecimal();
         jlWeightSourceUnit = new javax.swing.JLabel();
         moBoolWeightSourceAvailable = new sa.lib.gui.bean.SBeanFieldBoolean();
+        jlWeightSource1 = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
         jlWeightDestinyArrival = new javax.swing.JLabel();
         moDecWeightDestinyArrival = new sa.lib.gui.bean.SBeanFieldDecimal();
@@ -271,7 +272,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
 
         jlPlatesCage1.setForeground(java.awt.SystemColor.textInactiveText);
         jlPlatesCage1.setText("(Placas de la caja o remolque del vehículo.)");
-        jlPlatesCage1.setPreferredSize(new java.awt.Dimension(250, 23));
+        jlPlatesCage1.setPreferredSize(new java.awt.Dimension(295, 23));
         jPanel6.add(jlPlatesCage1);
 
         jPanel2.add(jPanel6);
@@ -301,8 +302,13 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
         jPanel7.add(jlWeightSourceUnit);
 
         moBoolWeightSourceAvailable.setText("Peso origen disponible");
-        moBoolWeightSourceAvailable.setPreferredSize(new java.awt.Dimension(165, 23));
+        moBoolWeightSourceAvailable.setPreferredSize(new java.awt.Dimension(155, 23));
         jPanel7.add(moBoolWeightSourceAvailable);
+
+        jlWeightSource1.setForeground(java.awt.SystemColor.textInactiveText);
+        jlWeightSource1.setText("(Tara manifestada por el proveedor desde el origen.)");
+        jlWeightSource1.setPreferredSize(new java.awt.Dimension(295, 23));
+        jPanel7.add(jlWeightSource1);
 
         jPanel2.add(jPanel7);
 
@@ -603,6 +609,7 @@ public class SFormTicketAlternative extends SBeanForm implements ActionListener,
     private javax.swing.JLabel jlWeightDestinyNetComputedUnit;
     private javax.swing.JLabel jlWeightDestinyNetUnit;
     private javax.swing.JLabel jlWeightSource;
+    private javax.swing.JLabel jlWeightSource1;
     private javax.swing.JLabel jlWeightSourceUnit;
     private javax.swing.JTextField jtfScale;
     private sa.lib.gui.bean.SBeanFieldBoolean moBoolTared;

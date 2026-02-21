@@ -65,7 +65,7 @@ import som.mod.som.form.SDialogRepItemTickets;
 
 /**
  *
- * @author Isabel Servín
+ * @author Isabel Servín, Sergio Flores
  */
 public class SGuiClientAppAlternative extends JFrame implements SGuiClient, ActionListener {
 
