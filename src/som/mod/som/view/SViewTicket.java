@@ -108,7 +108,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 break;
                 
             case SModSysConsts.SS_TIC_ST_ADM:
-            case SModSysConsts.SS_TIC_ST_ALL_LOG:
+            case SModSysConsts.SX_TIC_FOR_LOG:
             case SLibConsts.UNDEFINED:
                 moFilterDatePeriod = new SGridFilterDatePeriod(miClient, this, SGuiConsts.DATE_PICKER_DATE_PERIOD);
                 moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
@@ -179,7 +179,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 setRowButtonsEnabled(false);
                 break;
                 
-            case SModSysConsts.SS_TIC_ST_ALL_LOG:
+            case SModSysConsts.SX_TIC_FOR_LOG:
                 mjbDivideTicket.setEnabled(false);
                 mjbDivideTicketRevert.setEnabled(false);
                 mjbManifest.setEnabled(true);
@@ -645,7 +645,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 break;
                 
             case SModSysConsts.SS_TIC_ST_ADM:
-            case SModSysConsts.SS_TIC_ST_ALL_LOG:
+            case SModSysConsts.SX_TIC_FOR_LOG:
             case SLibConsts.UNDEFINED:
                 filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE_PERIOD);
                 if (filter != null) {
@@ -682,6 +682,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             sqlWhere += (sqlWhere.length() == 0 ? "" : "AND ") + SGridUtils.getSqlFilterKey(new String[] { "v.fk_sca" }, (int[]) filter);
         }
         
+        boolean showOpCalendar = false;
+        
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
                 sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + "v.fk_tic_st = " + mnGridSubtype + " ";
@@ -690,12 +692,15 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + "v.fk_tic_st = " + mnGridSubtype + " ";
                 break;
             case SModSysConsts.SS_TIC_ST_ADM:
+                showOpCalendar = true;
                 sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + "v.fk_tic_st = " + mnGridSubtype + " ";
                 break;
-            case SModSysConsts.SS_TIC_ST_ALL_LOG:
+            case SModSysConsts.SX_TIC_FOR_LOG:
+                showOpCalendar = true;
                 sqlWhere += (sqlWhere.isEmpty() ? "" : "AND ") + "prd.b_log ";
                 break;
             case SLibConsts.UNDEFINED:
+                showOpCalendar = true;
                 break;
             default:
         }
@@ -789,6 +794,8 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "fror.name, "
                 + "frtic.num, "
                 + "if (lab.b_done, " + SGridConsts.ICON_OK + ", " + SGridConsts.ICON_NULL + ") AS _lab_done, "
+                + (!showOpCalendar ? "" : "ocy.name AS _op_cal_year, ")
+                + (!showOpCalendar ? "" : "ocm.name AS _op_cal_month, ")
                 + "COALESCE(seareg.prc_ton, 0.0) AS _prc_ton_reg, "
                 + "COALESCE(seaprd.prc_ton, 0.0) AS _prc_ton_prd, "
                 + "(v.pac_qty_arr * itm.paq_wei) AS _pac_wei_arr, "
@@ -839,12 +846,16 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 + "v.fk_seas_n = seareg.id_seas AND v.fk_reg_n = seareg.id_reg AND v.fk_item = seareg.id_item "
                 + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SEAS_PROD) + " AS seaprd ON "
                 + "v.fk_seas_n = seaprd.id_seas AND v.fk_reg_n = seaprd.id_reg AND v.fk_item = seaprd.id_item AND v.fk_prod = seaprd.id_prod "
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS wah ON " 
-                + "v.fk_wah_unld_co_n = wah.id_co AND v.fk_wah_unld_cob_n = wah.id_cob AND v.fk_wah_unld_wah_n = wah.id_wah "                
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_FREIGHT_ORIG) + " AS fror ON " 
-                + "v.fk_freight_orig_n = fror.id_freight_orig "                
-                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS frtic ON " 
-                + "v.fk_freight_tic_n = frtic.id_tic "                
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_WAH) + " AS wah ON "
+                + "v.fk_wah_unld_co_n = wah.id_co AND v.fk_wah_unld_cob_n = wah.id_cob AND v.fk_wah_unld_wah_n = wah.id_wah "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_FREIGHT_ORIG) + " AS fror ON "
+                + "v.fk_freight_orig_n = fror.id_freight_orig "
+                + "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " AS frtic ON "
+                + "v.fk_freight_tic_n = frtic.id_tic "
+                + (!showOpCalendar ? "" : "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_OP_CAL_YEAR) + " AS ocy ON "
+                + "v.fk_op_cal_n = ocy.id_op_cal AND v.fk_op_cal_year_n = ocy.id_year ")
+                + (!showOpCalendar ? "" : "LEFT OUTER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_OP_CAL_YEAR_MONTH) + " AS ocm ON "
+                + "v.fk_op_cal_n = ocm.id_op_cal AND v.fk_op_cal_year_n = ocm.id_year AND v.fk_op_cal_month_n = ocm.id_month ")
                 + (sqlWhere.isEmpty() ? "" : "WHERE " + sqlWhere)
                 + "ORDER BY sca.code, sca.id_sca, v.num, v.id_tic ";
     }
@@ -852,7 +863,9 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
     @Override
     public void createGridColumns() {
         int cols = 50;
-
+        
+        boolean showOpCalendar = false;
+        
         switch (mnGridSubtype) {
             case SModSysConsts.SS_TIC_ST_SCA:
                 break;
@@ -860,14 +873,20 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
                 cols += 3;
                 break;
             case SModSysConsts.SS_TIC_ST_ADM:
-                cols += 15;
+                showOpCalendar = true;
+                cols += 17;
+                break;
+            case SModSysConsts.SX_TIC_FOR_LOG:
+                showOpCalendar = true;
+                cols += 2;
                 break;
             case SLibConsts.UNDEFINED:
-                cols += 1;
+                showOpCalendar = true;
+                cols += 3;
                 break;
             default:
         }
-
+        
         int col = 0;
         SGridColumnView[] columns = new SGridColumnView[cols];
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "sca.code", "Báscula");
@@ -878,17 +897,17 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_BPR, "prd.code", "Proveedor código");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "itm.name", "Ítem");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "itm.code", "Ítem código");
-
+        
         if (mnGridSubtype == SLibConsts.UNDEFINED) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "tst.name", "Estatus boleto");
         }
-
+        
         if (mnGridSubtype == SModSysConsts.SS_TIC_ST_LAB) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_RAW, "lab.num", "Folio análisis lab");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE,  "lab.dt", SGridConsts.COL_TITLE_DATE + " análisis lab");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_INT_ICON, "_lab_done", "Análisis lab terminado");
         }
-
+        
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "sea.name", "Temporada");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "reg.name", "Región");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "tor.code", "Procedencia boleto");
@@ -937,7 +956,7 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_rev_2", "2a pesada Revuelta");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "wah.name", "Almacén descarga");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_ITM, "wah.code", "Almacén descarga código");
-
+        
         if (mnGridSubtype == SModSysConsts.SS_TIC_ST_ADM) {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "_prc_ton_reg", "Precio ton reg $");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "_prc_ton_prd", "Precio ton prod $");
@@ -957,10 +976,16 @@ public class SViewTicket extends SGridPaneView implements ActionListener {
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DEC_2D, "v.usr_tot_r", "Total usr $");
             columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_M, "v.b_pay", "Pagado");
         }
-
+        
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "_frt_tic_tp", "Control fletes");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "fror.name", "Origen flete");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "frtic.num", "Boleto flete", 75);
+        
+        if (showOpCalendar) {
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "_op_cal_year", "Año operativo", 150);
+            columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "_op_cal_month", "Mes operativo");
+        }
+        
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_SYS, SGridConsts.COL_TITLE_IS_SYS);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);

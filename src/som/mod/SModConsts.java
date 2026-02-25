@@ -98,8 +98,9 @@ public abstract class SModConsts {
     public static final int SU_CLOSING_CAL = 320031;
     public static final int SU_FUNC_AREA = 320032;
     public static final int SU_CONS_WAH = 320033;
-    public static final int SU_INP_CL_ALL = 320101;
-    public static final int SU_INP_TP_ALL = 320102;
+    public static final int SU_OP_CAL = 320101;
+    public static final int SU_OP_CAL_YEAR = 320106;
+    public static final int SU_OP_CAL_YEAR_MONTH = 320107;
 
     public static final int S_LAB = 330001;
     public static final int S_LAB_NOTE = 330002;
@@ -191,6 +192,8 @@ public abstract class SModConsts {
     public static final int SX_INV_IN_FG = 340074;
     public static final int SX_INV_OUT_FG = 340075;
     public static final int SX_STK_CLO = 340076;
+    public static final int SX_INP_CL_ALL = 340092;
+    public static final int SX_INP_TP_ALL = 340093;
     public static final int SX_EXT_ITEM = 340101;
     public static final int SX_EXT_DPS = 340102;
     public static final int SX_EXT_PLA = 340111;
@@ -342,6 +345,9 @@ public abstract class SModConsts {
         TablesMap.put(SU_CLOSING_CAL, "su_closing_cal");
         TablesMap.put(SU_FUNC_AREA, "su_func_area");
         TablesMap.put(SU_CONS_WAH, "su_cons_wah");
+        TablesMap.put(SU_OP_CAL, "su_op_cal");
+        TablesMap.put(SU_OP_CAL_YEAR, "su_op_cal_year");
+        TablesMap.put(SU_OP_CAL_YEAR_MONTH, "su_op_cal_year_month");
 
         TablesMap.put(S_LAB, "s_lab");
         TablesMap.put(S_LAB_NOTE, "s_lab_note");

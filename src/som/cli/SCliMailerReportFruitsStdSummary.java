@@ -38,7 +38,7 @@ public class SCliMailerReportFruitsStdSummary {
     private static final String ARG_DATE_TODAY = "TODAY";
     private static final String ARG_DATE_YESTERDAY = "YESTERDAY";
 
-    private static final int[] DEF_ITEM_IDS = new int[] { SCliConsts.ID_AVO_FRUIT_CNV, /*SCliConsts.ID_AVO_FRUIT_ORG,*/ SCliConsts.ID_AVO_CHAFF, SCliConsts.ID_AVO_KERNEL, SCliConsts.ID_AVO_PULP };
+    private static final int[] DEF_ITEM_IDS = new int[] { SCliConsts.ID_AVO_FRUIT_CONV, /*SCliConsts.ID_AVO_FRUIT_ORG,*/ SCliConsts.ID_AVO_CHAFF, SCliConsts.ID_AVO_KERNEL, SCliConsts.ID_AVO_PULP };
     private static final Date DEF_DATE = SLibTimeUtils.createDate(2026, 1, 28);
     private static final int DEF_REP_MODE = REP_MODE_COMPARATIVE;
     private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
@@ -96,7 +96,7 @@ public class SCliMailerReportFruitsStdSummary {
             
             // generate mail body:
 
-            SReportHtmlTicketStdSummary reportHtml = new SReportHtmlTicketStdSummary(SCliUtils.createSession());
+            SReportHtmlTicketSummaryStd reportHtml = new SReportHtmlTicketSummaryStd(SCliUtils.createSession());
             String mailBody = reportHtml.generateReportHtml(argItemIds, argDate, argRepMode, SModSysConsts.SU_TIC_ORIG_SUP, 0);
             
             // send mail report:

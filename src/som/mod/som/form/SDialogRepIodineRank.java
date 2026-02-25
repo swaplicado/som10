@@ -449,8 +449,8 @@ public class SDialogRepIodineRank extends SBeanDialogReport implements ItemListe
         moFieldKeyGroup.resetGroup();
         
         miClient.getSession().populateCatalogue(moKeyInputCategory, SModConsts.SU_INP_CT, SLibConsts.UNDEFINED, null);
-        miClient.getSession().populateCatalogue(moKeyInputClass, SModConsts.SU_INP_CL_ALL, SLibConsts.UNDEFINED, null);
-        miClient.getSession().populateCatalogue(moKeyInputType, SModConsts.SU_INP_TP_ALL, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyInputClass, SModConsts.SU_INP_CL, SModConsts.SX_INP_CL_ALL, null);
+        miClient.getSession().populateCatalogue(moKeyInputType, SModConsts.SU_INP_TP, SModConsts.SX_INP_TP_ALL, null);
         miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
         miClient.getSession().populateCatalogue(moKeyTicketScale, SModConsts.SU_SCA, SLibConsts.UNDEFINED, null);

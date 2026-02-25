@@ -226,7 +226,7 @@ public class SViewTicketSupplyDps extends SGridPaneView implements java.awt.even
                         if (miClient.showMsgBoxConfirm("Se desligará el boleto '" + ticket.getNumber() + "' de la factura. \n" +
                                 SGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION) {
                             try {
-                                ticket.saveField(miClient.getSession().getStatement(), gridRow.getRowPrimaryKey(), SDbTicket.FIELD_DPS_NULL, null);
+                                ticket.saveField(miClient.getSession().getStatement(), gridRow.getRowPrimaryKey(), SDbTicket.FIELD_EXT_DPS, null);
 
                                 miClient.getSession().notifySuscriptors(mnGridType);
                                 miClient.getSession().notifySuscriptors(mnGridSubtype);

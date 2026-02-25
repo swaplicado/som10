@@ -83,7 +83,7 @@ public abstract class SModSysConsts {
     public static final int SS_TIC_ST_SCA = 1;
     public static final int SS_TIC_ST_LAB = 2;
     public static final int SS_TIC_ST_ADM = 3;
-    public static final int SS_TIC_ST_ALL_LOG = 4;
+    public static final int SX_TIC_FOR_LOG = 4; // it is not a ticket status!
     
     public static final int SS_TIC_WAH_UNLD_N_ASIGNED = 1;
     public static final int SS_TIC_WAH_UNLD_ASIGNED = 2;

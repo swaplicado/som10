@@ -13,23 +13,27 @@ import java.util.HashMap;
  */
 public abstract class SCliConsts {
     
-    public static final int ID_AVO_FRUIT_CNV = 6; // aguacate, fruta convencional
+    public static final int ID_AVO_FRUIT_CONV = 6; // aguacate, fruta convencional
     public static final int ID_AVO_FRUIT_ORG = 64; // aguacate, fruta orgánica
     public static final int ID_AVO_CHAFF = 23; // aguacate, bagazo
-    public static final int ID_AVO_KERNEL = 100; // aguacate, hueso y cáscara
+    public static final int ID_AVO_PELLET = 99; // aguacate, pellet
+    public static final int ID_AVO_KERNEL = 100; // aguacate, hueso y cáscara (HyC)
     public static final int ID_AVO_PULP = 103; // aguacate, pulpa
+    public static final int ID_MAN_KERNEL = 197; // mango, hueso y cáscara (HyC)
     
     public static final HashMap<Integer, String> ItemNames = new HashMap<>();
     
     static {
-        ItemNames.put(ID_AVO_FRUIT_CNV, "Fruta");
-        ItemNames.put(ID_AVO_FRUIT_ORG, "Fruta orgánica");
-        ItemNames.put(ID_AVO_CHAFF, "Bagazo");
-        ItemNames.put(ID_AVO_KERNEL, "Hueso y cáscara");
-        ItemNames.put(ID_AVO_PULP, "Pulpa");
+        ItemNames.put(ID_AVO_FRUIT_CONV, "Fruta aguacate");
+        ItemNames.put(ID_AVO_FRUIT_ORG, "Fruta aguacate orgánico");
+        ItemNames.put(ID_AVO_CHAFF, "Bagazo aguacate");
+        ItemNames.put(ID_AVO_PELLET, "Pellet aguacate");
+        ItemNames.put(ID_AVO_KERNEL, "Hueso y cáscara aguacate");
+        ItemNames.put(ID_AVO_PULP, "Pulpa aguacate");
+        ItemNames.put(ID_MAN_KERNEL, "Hueso y cáscara mango");
     }
     
-    public static final String IDS_PAIR_AVO_FRUIT_CNV_ORG = ID_AVO_FRUIT_CNV + "-" + ID_AVO_FRUIT_ORG;
+    public static final String IDS_PAIR_AVO_FRUIT_CNV_ORG = ID_AVO_FRUIT_CONV + "-" + ID_AVO_FRUIT_ORG;
     
     public static final HashMap<String, String> ItemsPairsNames = new HashMap<>();
     

@@ -191,12 +191,10 @@ public class SReportHtmlTicketSeasonMonthAlt {
         // process list of items for report:
 
         int lastInputCategoryId = 0; // to control when a new input category stages, to stand it out as a new title
+        DecimalFormat decimalFormatPct = isUnitsTon ? new DecimalFormat("#0%") : new DecimalFormat("#0.0%");
+        DecimalFormat decimalFormatVal = isUnitsTon ? SLibUtils.DecimalFormatInteger : SLibUtils.getDecimalFormatAmount();
         
         for (String itemIdsPair : itemIdsPairs) {
-            // formatters:
-            DecimalFormat decimalFormatPct = isUnitsTon ? new DecimalFormat("#0%") : new DecimalFormat("#0.0%");
-            DecimalFormat decimalFormatVal = isUnitsTon ? SLibUtils.DecimalFormatInteger : SLibUtils.getDecimalFormatAmount();
-            
             // read requested item for report:
             String[] ids = itemIdsPair.split("-");
             int itemCnvId = SLibUtils.parseInt(ids[0]); // conventional item

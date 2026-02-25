@@ -49,7 +49,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public static final int FIELD_TARED = SDbRegistry.FIELD_BASE + 4;
     public static final int FIELD_ASSORTED = SDbRegistry.FIELD_BASE + 5;
     public static final int FIELD_DPS = SDbRegistry.FIELD_BASE + 6;
-    public static final int FIELD_DPS_NULL = SDbRegistry.FIELD_BASE + 7;
+    public static final int FIELD_EXT_DPS = SDbRegistry.FIELD_BASE + 7;
+    public static final int FIELD_OP_CALENDAR = SDbRegistry.FIELD_BASE + 11;
     
     public static final String REQ_FRT_NO = "N";
     public static final String REQ_FRT_YES = "Y";
@@ -139,6 +140,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     protected int mnFkExternalDpsEntryId_n;
     protected int mnFkFreightOriginId_n;
     protected int mnFkFreightTicketId_n;
+    protected int mnFkOpCalendarId_n;
+    protected int mnFkOpCalendarYearId_n;
+    protected int mnFkOpCalendarMonthId_n;
     /*
     protected int mnFkUserInsertId;
     protected int mnFkUserUpdateId;
@@ -372,6 +376,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public void setFkExternalDpsEntryId_n(int n) { mnFkExternalDpsEntryId_n = n; }
     public void setFkFreightOriginId_n(int n) { mnFkFreightOriginId_n = n; }
     public void setFkFreightTicketId_n(int n) { mnFkFreightTicketId_n = n; }
+    public void setFkOpCalendarId_n(int n) { mnFkOpCalendarId_n = n; }
+    public void setFkOpCalendarYearId_n(int n) { mnFkOpCalendarYearId_n = n; }
+    public void setFkOpCalendarMonthId_n(int n) { mnFkOpCalendarMonthId_n = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
     public void setFkUserUpdateId(int n) { mnFkUserUpdateId = n; }
     public void setFkUserTaredId(int n) { mnFkUserTaredId = n; }
@@ -458,6 +465,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     public int getFkExternalDpsEntryId_n() { return mnFkExternalDpsEntryId_n; }
     public int getFkFreightOriginId_n() { return mnFkFreightOriginId_n; }
     public int getFkFreightTicketId_n() { return mnFkFreightTicketId_n; }
+    public int getFkOpCalendarId_n() { return mnFkOpCalendarId_n; }
+    public int getFkOpCalendarYearId_n() { return mnFkOpCalendarYearId_n; }
+    public int getFkOpCalendarMonthId_n() { return mnFkOpCalendarMonthId_n; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
     public int getFkUserUpdateId() { return mnFkUserUpdateId; }
     public int getFkUserTaredId() { return mnFkUserTaredId; }
@@ -515,6 +525,23 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
     public Vector<SDbTicketNote> getChildTicketNotes() { return mvChildTicketNotes; }
     public Vector<SDbLaboratory> getChildLaboratories() { return mvChildLaboratories; }
+    
+    /**
+     * Get primary key of operating calendar month.
+     * Index 0: ID of operating calendar.
+     * Index 1: Operating year.
+     * Index 2: Operating month.
+     * @return 
+     */
+    public int[] getOpCalendarMonthKey() {
+        int[] key = null;
+        
+        if (mnFkOpCalendarId_n != 0 && mnFkOpCalendarYearId_n != 0 && mnFkOpCalendarMonthId_n != 0) {
+            key = new int[] { mnFkOpCalendarId_n, mnFkOpCalendarYearId_n, mnFkOpCalendarMonthId_n };
+        }
+        
+        return key;
+    }
     
     /*
      * Overriden public methods
@@ -614,6 +641,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mnFkExternalDpsEntryId_n = 0;
         mnFkFreightOriginId_n = 0;
         mnFkFreightTicketId_n = 0;
+        mnFkOpCalendarId_n = 0;
+        mnFkOpCalendarYearId_n = 0;
+        mnFkOpCalendarMonthId_n = 0;
         mnFkUserInsertId = 0;
         mnFkUserUpdateId = 0;
         mnFkUserTaredId = 0;
@@ -735,10 +765,10 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mdWeightDestinyDeparture = resultSet.getDouble("t.wei_des_dep");
             mdWeightDestinyGross_r = resultSet.getDouble("t.wei_des_gro_r");
             mdWeightDestinyNet_r = resultSet.getDouble("t.wei_des_net_r");
-            msScaleOperatorArrival = resultSet.getString("sca_ope_arr");
-            msScaleOperatorDeparture = resultSet.getString("sca_ope_dep");
-            msScaleCommentsArrival = resultSet.getString("sca_cmt_arr");
-            msScaleCommentsDeparture = resultSet.getString("sca_cmt_dep");
+            msScaleOperatorArrival = resultSet.getString("t.sca_ope_arr");
+            msScaleOperatorDeparture = resultSet.getString("t.sca_ope_dep");
+            msScaleCommentsArrival = resultSet.getString("t.sca_cmt_arr");
+            msScaleCommentsDeparture = resultSet.getString("t.sca_cmt_dep");
             mdSystemPenaltyPercentage = resultSet.getDouble("t.sys_pen_per");
             mdSystemWeightPayment = resultSet.getDouble("t.sys_wei_pay");
             mdSystemPricePerTon = resultSet.getDouble("t.sys_prc_ton");
@@ -752,8 +782,8 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mdUserFreight = resultSet.getDouble("t.usr_fre");
             mdUserTotal_r = resultSet.getDouble("t.usr_tot_r");
             mtDpsSupplyDate_n = resultSet.getDate("t.dps_dt_n");
-            msRequiredFreight = resultSet.getString("req_freight");
-            msFreightTicketType = resultSet.getString("freight_tic_tp");
+            msRequiredFreight = resultSet.getString("t.req_freight");
+            msFreightTicketType = resultSet.getString("t.freight_tic_tp");
             mbRevueltaImport1 = resultSet.getBoolean("t.b_rev_1");
             mbRevueltaImport2 = resultSet.getBoolean("t.b_rev_2");
             mbWeightSourceAvailable = resultSet.getBoolean("t.b_wei_src");
@@ -763,11 +793,11 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mbAssorted = resultSet.getBoolean("t.b_ass");
             mbPacking = resultSet.getBoolean("t.b_paq");
             mbLaboratory = resultSet.getBoolean("t.b_lab");
-            mbWarehouseUnloadRequired = resultSet.getBoolean("b_wah_unld_req");
-            mbDpsSupply = resultSet.getBoolean("b_dps");
+            mbWarehouseUnloadRequired = resultSet.getBoolean("t.b_wah_unld_req");
+            mbDpsSupply = resultSet.getBoolean("t.b_dps");
             mbDeleted = resultSet.getBoolean("t.b_del");
             mbSystem = resultSet.getBoolean("t.b_sys");
-            mbAlternative = resultSet.getBoolean("b_alt");
+            mbAlternative = resultSet.getBoolean("t.b_alt");
             mnFkScaleId = resultSet.getInt("t.fk_sca");
             mnFkTicketStatusId = resultSet.getInt("t.fk_tic_st");
             mnFkSeasonId_n = resultSet.getInt("t.fk_seas_n");
@@ -777,18 +807,21 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             mnFkProducerId = resultSet.getInt("t.fk_prod");
             mnFkInputSourceId = resultSet.getInt("t.fk_inp_src");
             mnFkLaboratoryId_n = resultSet.getInt("t.fk_lab_n");
-            mnFkWarehouseUnloadCompanyId_n = resultSet.getInt("fk_wah_unld_co_n");
-            mnFkWarehouseUnloadBranchId_n = resultSet.getInt("fk_wah_unld_cob_n");
-            mnFkWarehouseUnloadWarehouseId_n = resultSet.getInt("fk_wah_unld_wah_n");
-            mnFkTicketOriginId = resultSet.getInt("fk_tic_orig");
-            mnFkTicketDestinationId = resultSet.getInt("fk_tic_dest");
-            mnFkExwFacilityOriginId = resultSet.getInt("fk_exw_fac_orig");
-            mnFkExwFacilityDestinationId = resultSet.getInt("fk_exw_fac_dest");
+            mnFkWarehouseUnloadCompanyId_n = resultSet.getInt("t.fk_wah_unld_co_n");
+            mnFkWarehouseUnloadBranchId_n = resultSet.getInt("t.fk_wah_unld_cob_n");
+            mnFkWarehouseUnloadWarehouseId_n = resultSet.getInt("t.fk_wah_unld_wah_n");
+            mnFkTicketOriginId = resultSet.getInt("t.fk_tic_orig");
+            mnFkTicketDestinationId = resultSet.getInt("t.fk_tic_dest");
+            mnFkExwFacilityOriginId = resultSet.getInt("t.fk_exw_fac_orig");
+            mnFkExwFacilityDestinationId = resultSet.getInt("t.fk_exw_fac_dest");
             mnFkExternalDpsYearId_n = resultSet.getInt("t.fk_ext_dps_year_n");
             mnFkExternalDpsDocId_n = resultSet.getInt("t.fk_ext_dps_doc_n");
             mnFkExternalDpsEntryId_n = resultSet.getInt("t.fk_ext_dps_ety_n");
-            mnFkFreightOriginId_n = resultSet.getInt("fk_freight_orig_n");
-            mnFkFreightTicketId_n = resultSet.getInt("fk_freight_tic_n");
+            mnFkFreightOriginId_n = resultSet.getInt("t.fk_freight_orig_n");
+            mnFkFreightTicketId_n = resultSet.getInt("t.fk_freight_tic_n");
+            mnFkOpCalendarId_n = resultSet.getInt("t.fk_op_cal_n");
+            mnFkOpCalendarYearId_n = resultSet.getInt("t.fk_op_cal_year_n");
+            mnFkOpCalendarMonthId_n = resultSet.getInt("t.fk_op_cal_month_n");
             mnFkUserInsertId = resultSet.getInt("t.fk_usr_ins");
             mnFkUserUpdateId = resultSet.getInt("t.fk_usr_upd");
             mnFkUserTaredId = resultSet.getInt("t.fk_usr_tar");
@@ -867,6 +900,19 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         
         if (mbAuxMoveNextOnSave) {
             moveNext(session);
+        }
+        
+        int[] opCalendarMonthKey = SOpCalendarUtils.getOpCalendarMonthKey(session, mnFkItemId, mtDate);
+        
+        if (opCalendarMonthKey != null) {
+            mnFkOpCalendarId_n = opCalendarMonthKey[0];
+            mnFkOpCalendarYearId_n = opCalendarMonthKey[1];
+            mnFkOpCalendarMonthId_n = opCalendarMonthKey[2];
+        }
+        else {
+            mnFkOpCalendarId_n = 0;
+            mnFkOpCalendarYearId_n = 0;
+            mnFkOpCalendarMonthId_n = 0;
         }
         
         if (mbTared && !mbOldTared) {
@@ -983,6 +1029,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
                     (mnFkFreightOriginId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightOriginId_n) + ", " + 
                     (mnFkFreightTicketId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightTicketId_n) + ", " + 
+                    (mnFkOpCalendarId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOpCalendarId_n) + ", " + 
+                    (mnFkOpCalendarYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOpCalendarYearId_n) + ", " + 
+                    (mnFkOpCalendarMonthId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOpCalendarMonthId_n) + ", " + 
                     mnFkUserInsertId + ", " +
                     mnFkUserUpdateId + ", " +
                     mnFkUserTaredId + ", " +
@@ -1076,6 +1125,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
                     "fk_ext_dps_ety_n = " + (mnFkExternalDpsEntryId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkExternalDpsEntryId_n) + ", " +
                     "fk_freight_orig_n = " + (mnFkFreightOriginId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightOriginId_n) + ", " +
                     "fk_freight_tic_n = " + (mnFkFreightTicketId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkFreightTicketId_n) + ", " +
+                    "fk_op_cal_n = " + (mnFkOpCalendarId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOpCalendarId_n) + ", " +
+                    "fk_op_cal_year_n = " + (mnFkOpCalendarYearId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOpCalendarYearId_n) + ", " +
+                    "fk_op_cal_month_n = " + (mnFkOpCalendarMonthId_n == SLibConsts.UNDEFINED ? "NULL" : mnFkOpCalendarMonthId_n) + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
                     "fk_usr_upd = " + mnFkUserUpdateId + ", " +
                     "fk_usr_tar = " + mnFkUserTaredId + ", " +
@@ -1203,6 +1255,9 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         registry.setFkExternalDpsEntryId_n(this.getFkExternalDpsEntryId_n());
         registry.setFkFreightOriginId_n(this.getFkFreightOriginId_n());
         registry.setFkFreightTicketId_n(this.getFkFreightTicketId_n());
+        registry.setFkOpCalendarId_n(this.getFkOpCalendarId_n());
+        registry.setFkOpCalendarYearId_n(this.getFkOpCalendarYearId_n());
+        registry.setFkOpCalendarMonthId_n(this.getFkOpCalendarMonthId_n());
         registry.setFkUserInsertId(this.getFkUserInsertId());
         registry.setFkUserUpdateId(this.getFkUserUpdateId());
         registry.setFkUserTaredId(this.getFkUserTaredId());
@@ -1314,8 +1369,23 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             case FIELD_DPS:
                 msSql += "b_dps = " + value + " ";
                 break;
-            case FIELD_DPS_NULL:
-                msSql += "fk_ext_dps_year_n = NULL, fk_ext_dps_doc_n = NULL, fk_ext_dps_ety_n = NULL ";
+            case FIELD_EXT_DPS:
+                if (value == null) {
+                    msSql += "fk_ext_dps_year_n = NULL, fk_ext_dps_doc_n = NULL, fk_ext_dps_ety_n = NULL ";
+                }
+                else {
+                    int[] key = (int[]) value;
+                    msSql += "fk_ext_dps_year_n = " + key[0] + ", fk_ext_dps_doc_n = " + key[1] + ", fk_ext_dps_ety_n = " + key[2] + " ";
+                }
+                break;
+            case FIELD_OP_CALENDAR:
+                if (value == null) {
+                    msSql += "fk_op_cal_n = NULL, fk_op_cal_n = NULL, fk_op_cal_n = NULL ";
+                }
+                else {
+                    int[] key = (int[]) value;
+                    msSql += "fk_op_cal_n = " + key[0] + ", fk_op_cal_year_n = " + key[1] + ", fk_op_cal_month_n = " + key[2] + " ";
+                }
                 break;
             default:
                 throw new Exception(SLibConsts.ERR_MSG_OPTION_UNKNOWN);

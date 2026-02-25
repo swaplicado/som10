@@ -139,7 +139,7 @@ public class SModuleSomLog extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.S_TIC:
                 switch (subtype) {
-                    case SModSysConsts.SS_TIC_ST_ALL_LOG:
+                    case SModSysConsts.SX_TIC_FOR_LOG:
                         view = new SViewTicket(miClient, subtype, "Boletos (todos logística)");
                         break;
                     case SLibConsts.UNDEFINED:
@@ -205,7 +205,7 @@ public class SModuleSomLog extends SGuiModule implements ActionListener {
                 miClient.getSession().showView(SModConsts.SU_VEH_CONT_TYPE, SLibConsts.UNDEFINED, null);
             }
             else if (menuItem == mjTicTicketAllLog) {
-                showView(SModConsts.S_TIC, SModSysConsts.SS_TIC_ST_ALL_LOG, null);
+                showView(SModConsts.S_TIC, SModSysConsts.SX_TIC_FOR_LOG, null);
             }
         }
     }

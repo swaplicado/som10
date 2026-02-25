@@ -38,8 +38,8 @@ import static som.mod.som.db.SSomUtils.getProperRegionId;
 import static som.mod.som.db.SSomUtils.getProperSeasonId;
 
 /**
- *
- * @author Alfredo Pérez, Isabel Servín
+ * Import scale tickets from Revuelta's database (Sybase).
+ * @author Alfredo Pérez, Isabel Servín, Sergio Flores
  * TODO 2019-09-20 Sergio Flores: ¡Refactorizar esta clase y convertirla al paradigma OO!
  */
 public class SImportTicketsRevuelta {
@@ -104,16 +104,16 @@ public class SImportTicketsRevuelta {
         } 
     }
 
-    private static void run(int idTicketStart) throws Exception {
-        Statement stmSoom = moSession.getStatement().getConnection().createStatement();
-        Statement stmRev = moConnectionRev.createStatement();
-        ResultSet rstSoom;
+    private static void run(final int idTicketStart) throws Exception {
+        Statement stSom = moSession.getStatement().getConnection().createStatement();
+        Statement stRevuelta = moConnectionRev.createStatement();
+        ResultSet rsSom;
 
         deleteLog();
         
-        rstSoom = stmSoom.executeQuery("SELECT MAX(num) FROM som_com.s_tic s WHERE dt >= '2019-01-01' AND NOT b_del");
-        rstSoom.next();
-        setLastImportedTicket(rstSoom.getString(1));
+        rsSom = stSom.executeQuery("SELECT MAX(num) FROM som_com.s_tic s WHERE dt >= '2019-01-01' AND NOT b_del");
+        rsSom.next();
+        setLastImportedTicket(rsSom.getString(1));
         String sql = "SELECT "
                 + "Pes_ID, Pes_FecHorPri, Pes_ObsPri, Pes_PesoPri, Pes_Bruto, Pes_OpeNomPri, "
                 + "Pes_FecHorSeg, Pes_UnidadPri, Pes_PesoSeg, Pes_ObsSeg, Pes_OpeNomSeg, "
@@ -124,7 +124,7 @@ public class SImportTicketsRevuelta {
                 //+ "where pes_id = 149844 "
                 + "AND Usb_ID = 'ACTH' ORDER BY Pes_ID";
 
-        ResultSet rstRev = stmRev.executeQuery(sql);
+        ResultSet rstRev = stRevuelta.executeQuery(sql);
 
         int id;
         int seasonId;
@@ -138,118 +138,127 @@ public class SImportTicketsRevuelta {
 
         while (rstRev.next()) {
             id = rstRev.getInt("Pes_ID");
-            rstSoom = stmSoom.executeQuery("SELECT num FROM som_com.s_tic s WHERE num = '" + id + "'");
+            rsSom = stSom.executeQuery("SELECT num FROM som_com.s_tic s WHERE num = '" + id + "'");
             now = SLibUtils.DateFormatDatetime.format(rstRev.getDate("now"));
-            if (!rstSoom.next()) {
+            if (!rsSom.next()) {
                 idItem = SSomUtils.mapItemSomRevuelta(moSession, rstRev.getString("Pro_ID"));
                 idProducer = SSomUtils.mapProducerSomRevuelta(moSession, rstRev.getString("Emp_ID"));
                 
                 if (idItem != 0 && idProducer != 0) {
-                    SDbItem dbItem = new SDbItem();
-                    dbItem.read(moSession, new int[] { idItem });
+                    SDbItem item = new SDbItem();
+                    item.read(moSession, new int[] { idItem });
                     
-                    SDbProducer dbProducer = new SDbProducer();
-                    dbProducer.read(moSession, new int[] { idProducer });
+                    SDbProducer producer = new SDbProducer();
+                    producer.read(moSession, new int[] { idProducer });
                     
-                    SDbTicket registry = new SDbTicket();
-                    //registry.setPkTicketId(rstSoom.getInt("newId"));
-                    registry.setNumber(rstRev.getString("Pes_ID"));
-                    registry.setDate(rstRev.getDate("Pes_FecHorPri"));
-                    //registry.setQuantity(Quantity());
-                    registry.setPlate(rstRev.getString("Pes_Placas"));
-                    registry.setPlateCage(getContainerPlates(msPlateCageLabels, rstRev.getString("Pes_ObsPri")));
-                    registry.setDriver(rstRev.getString("Pes_Chofer"));
-                    registry.setDatetimeArrival(rstRev.getTimestamp("Pes_FecHorPri"));
-                    registry.setDatetimeDeparture(rstRev.getTimestamp("Pes_FecHorSeg") == null ? rstRev.getTimestamp("Pes_FecHorPri") : rstRev.getTimestamp("Pes_FecHorSeg"));
-                    //registry.setPackingFullQuantityArrival(PackingFullQuantityArrival());
-                    //registry.setPackingFullQuantityDeparture(PackingFullQuantityDeparture());
-                    //registry.setPackingEmptyQuantityArrival(PackingEmptyQuantityArrival());
-                    //registry.setPackingEmptyQuantityDeparture(PackingEmptyQuantityDeparture());
-                    //registry.setPackingWeightArrival(PackingWeightArrival());
-                    //registry.setPackingWeightDeparture(PackingWeightDeparture());
-                    //registry.setPackingWeightNet_r(PackingWeightNet_r());
-                    //registry.setWeightSource(WeightSource());
-                    registry.setWeightDestinyArrival(rstRev.getDouble("Pes_PesoPri"));
-                    registry.setWeightDestinyDeparture(rstRev.getString("Pes_PesoSeg") == null ? 0 : rstRev.getDouble("Pes_PesoSeg"));
-                    registry.setWeightDestinyGross_r(rstRev.getInt("Pes_PesoPri"));
-                    registry.setQuantity(id);
-                    //registry.setWeightDestinyNet_r(WeightDestinyNet_r());
-                    registry.setScaleOperatorArrival(rstRev.getString("Pes_OpeNomPri"));
-                    registry.setScaleOperatorDeparture(rstRev.getString("Pes_OpeNomSeg"));
-                    registry.setScaleCommentsArrival(rstRev.getString("Pes_ObsPri"));
-                    registry.setScaleCommentsDeparture(rstRev.getString("Pes_ObsSeg"));
-                    //registry.setSystemPenaltyPercentage(SystemPenaltyPercentage());
-                    //registry.setSystemWeightPayment(SystemWeightPayment());
-                    //registry.setSystemPricePerTon(SystemPricePerTon());
-                    //registry.setSystemPayment_r(SystemPayment_r());
-                    //registry.setSystemFreight(SystemFreight());
-                    //registry.setSystemTotal_r(SystemTotal_r());
-                    //registry.setUserPenaltyPercentage(UserPenaltyPercentage());
-                    //registry.setUserWeightPayment(UserWeightPayment());
-                    //registry.setUserPricePerTon(UserPricePerTon());
-                    //registry.setUserPayment_r(UserPayment_r());
-                    //registry.setUserFreight(UserFreight());
-                    //registry.setUserTotal_r(UserTotal_r());
-                    //registry.setDpsSupplyDate_n(DpsSupplyDate_n()); 
-                    registry.setRevueltaImport1(true);
-                    //registry.setRevueltaImport2(this.isRevueltaImport2());
-                    //registry.setWeightSourceAvailable(this.isWeightSourceAvailable());
-                    //registry.setMfgOutsourcing(this.isMfgOutsourcing());
-                    //registry.setTared(this.isTared());
-                    //registry.setPayed(this.isPayed());
-                    //registry.setAssorted(this.isAssorted());
-                    registry.setPacking(dbItem.isPacking());
-                    registry.setLaboratory(dbItem.isLaboratory());
-                    //registry.setDpsSupply(this.isDpsSupply());
-                    //registry.setDeleted(this.isDeleted());
-                    //registry.setSystem(this.isSystem());
-                    registry.setFkScaleId(1); // Revuelta XXX
-                    registry.setFkTicketStatusId(SModSysConsts.SS_TIC_ST_SCA);
-                    registry.setFkProducerId(idProducer);
-                    registry.setFkItemId(idItem);
-                    seasonId = getProperSeasonId(moSession, registry.getDate(), registry.getFkItemId(), registry.getFkProducerId());
-                    registry.setFkSeasonId_n(seasonId);
-                    registry.setFkRegionId_n(getProperRegionId(moSession, seasonId, registry.getFkItemId(), registry.getFkProducerId()));
-                    registry.setFkUnitId(dbItem.getFkUnitId());
+                    String comments;
+                    String operator;
+                    
+                    SDbTicket ticket = new SDbTicket();
+                    //ticket.setPkTicketId(rstSoom.getInt(...));
+                    ticket.setNumber(rstRev.getString("Pes_ID"));
+                    ticket.setDate(rstRev.getDate("Pes_FecHorPri"));
+                    //ticket.setQuantity(...);
+                    ticket.setPlate(rstRev.getString("Pes_Placas"));
+                    comments = getContainerPlates(msPlateCageLabels, rstRev.getString("Pes_ObsPri"));
+                    ticket.setPlateCage(comments == null || comments.equals("null") ? "" : comments);
+                    ticket.setDriver(rstRev.getString("Pes_Chofer"));
+                    ticket.setDatetimeArrival(rstRev.getTimestamp("Pes_FecHorPri"));
+                    ticket.setDatetimeDeparture(rstRev.getTimestamp("Pes_FecHorSeg") == null ? rstRev.getTimestamp("Pes_FecHorPri") : rstRev.getTimestamp("Pes_FecHorSeg"));
+                    //ticket.setPackingFullQuantityArrival(...);
+                    //ticket.setPackingFullQuantityDeparture(...);
+                    //ticket.setPackingEmptyQuantityArrival(...);
+                    //ticket.setPackingEmptyQuantityDeparture(...);
+                    //ticket.setPackingWeightArrival(...);
+                    //ticket.setPackingWeightDeparture(...);
+                    //ticket.setPackingWeightNet_r(...);
+                    //ticket.setWeightSource(...);
+                    ticket.setWeightDestinyArrival(rstRev.getDouble("Pes_PesoPri"));
+                    ticket.setWeightDestinyDeparture(rstRev.getString("Pes_PesoSeg") == null ? 0 : rstRev.getDouble("Pes_PesoSeg"));
+                    ticket.setWeightDestinyGross_r(rstRev.getInt("Pes_PesoPri"));
+                    //ticket.setWeightDestinyNet_r(...);
+                    operator = rstRev.getString("Pes_OpeNomPri");
+                    ticket.setScaleOperatorArrival(operator == null || operator.equals("") ? "" : operator);
+                    operator = rstRev.getString("Pes_OpeNomSeg");
+                    ticket.setScaleOperatorDeparture(operator == null || operator.equals("") ? "" : operator);
+                    comments = rstRev.getString("Pes_ObsPri");
+                    ticket.setScaleCommentsArrival(comments == null || comments.equals("null") ? "" : comments);
+                    comments = rstRev.getString("Pes_ObsSeg");
+                    ticket.setScaleCommentsDeparture(comments == null || comments.equals("null") ? "" : comments);
+                    //ticket.setSystemPenaltyPercentage(...);
+                    //ticket.setSystemWeightPayment(...);
+                    //ticket.setSystemPricePerTon(...);
+                    //ticket.setSystemPayment_r(...);
+                    //ticket.setSystemFreight(...);
+                    //ticket.setSystemTotal_r(...);
+                    //ticket.setUserPenaltyPercentage(...);
+                    //ticket.setUserWeightPayment(...);
+                    //ticket.setUserPricePerTon(...);
+                    //ticket.setUserPayment_r(...);
+                    //ticket.setUserFreight(...);
+                    //ticket.setUserTotal_r(...);
+                    //ticket.setDpsSupplyDate_n(...); 
+                    ticket.setRequiredFreight(SSomUtils.getRequiredFreightForItem(moSession, idItem));
+                    ticket.setFreightTicketType("");
+                    ticket.setRevueltaImport1(true);
+                    //ticket.setRevueltaImport2(...);
+                    //ticket.setWeightSourceAvailable(...);
+                    //ticket.setMfgOutsourcing(...);
+                    //ticket.setTared(...);
+                    //ticket.setPayed(...);
+                    //ticket.setAssorted(...);
+                    ticket.setPacking(item.isPacking());
+                    ticket.setLaboratory(item.isLaboratory());
+                    //ticket.setDpsSupply(...);
+                    //ticket.setDeleted(...);
+                    //ticket.setSystem(...);
+                    
+                    ticket.setFkScaleId(SModSysConsts.SU_SCA_REV);
+                    ticket.setFkTicketStatusId(SModSysConsts.SS_TIC_ST_SCA);
+                    
+                    seasonId = getProperSeasonId(moSession, ticket.getDate(), ticket.getFkItemId(), ticket.getFkProducerId());
+                    ticket.setFkSeasonId_n(seasonId);
+                    ticket.setFkRegionId_n(getProperRegionId(moSession, seasonId, ticket.getFkItemId(), ticket.getFkProducerId()));
+                    
+                    ticket.setFkItemId(idItem);
+                    ticket.setFkUnitId(item.getFkUnitId());
+                    ticket.setFkProducerId(idProducer);
                     
                     HashMap<Integer, String> originsMap = SSomUtils.createOriginsMap(moSession, idItem);
-                    registry.setFkInputSourceId((originsMap.containsKey(dbProducer.getFkInputSourceId()) ? dbProducer.getFkInputSourceId() : SModSysConsts.SU_INP_SRC_NA));
-                    registry.setFkLaboratoryId_n(0);
-                    registry.setFkTicketOriginId(SModSysConsts.SU_TIC_ORIG_NA);
-                    registry.setFkTicketDestinationId(SModSysConsts.SU_TIC_DEST_NA);
-                    //registry.setFkExternalDpsYearId_n(...);
-                    //registry.setFkExternalDpsDocId_n(...);
-                    //registry.setFkExternalDpsEntryId_n(..);
-                    //registry.setFkUserInsertId(...);
-                    //registry.setFkUserUpdateId(...);
-                    //registry.setFkUserTaredId(...);
-                    //registry.setFkUserPayedId(...);
-                    //registry.setFkUserAssortedId(...);
-                    //registry.setTsUserInsert(...);
-                    //registry.setTsUserUpdate(...);
-                    //registry.setTsUserTared(...);
-                    //registry.setTsUserPayed(...);
-                    //registry.setTsUserAssorted(...);
-                    //registry.setXtaScaleName(...);
-                    //registry.setXtaScaleCode(...);
-                    //registry.setXtaSeason(...);
-                    //registry.setXtaRegion(...);
-                    //registry.setXtaItem(...);
-                    //registry.setXtaProducer(...);
-                    //registry.setXtaProviderFiscalId(...);
-                    //registry.setAuxFormerTared(...);
-                    //registry.setAuxFormerPayed(...);
-                    //registry.setAuxFormerAssorted(...);
-                    //registry.setAuxMoveNextOnSend(...);
-                    //registry.setAuxRequiredCalculation(...);
-                    //registry.setAuxItemSendMail(...);
-                    //registry.setAuxItemRecipientsTo(...);
-                    //registry.setAuxProducerSendMail(...);
-                    //registry.setAuxProducerRecipientsTo(...);
+                    ticket.setFkInputSourceId((originsMap.containsKey(producer.getFkInputSourceId()) ? producer.getFkInputSourceId() : SModSysConsts.SU_INP_SRC_NA));
+                    
+                    //ticket.setFkLaboratoryId_n(...);
+                    //ticket.setFkWarehouseUnloadCompanyId_n(...);
+                    //ticket.setFkWarehouseUnloadBranchId_n(...);
+                    //ticket.setFkWarehouseUnloadWarehouseId_n(...);
+                    ticket.setFkTicketOriginId(SModSysConsts.SU_TIC_ORIG_NA);
+                    ticket.setFkTicketDestinationId(SModSysConsts.SU_TIC_DEST_NA);
+                    ticket.setFkExwFacilityOriginId(SModSysConsts.MU_EXW_FAC_NA);
+                    ticket.setFkExwFacilityDestinationId(SModSysConsts.MU_EXW_FAC_NA);
+                    //ticket.setFkExternalDpsYearId_n(...);
+                    //ticket.setFkExternalDpsDocId_n(...);
+                    //ticket.setFkExternalDpsEntryId_n(..);
+                    //ticket.setFkFreightOriginId_n(...);
+                    //ticket.setFkFreightTicketId_n(...);
+                    //ticket.setPkOpCalendarId_n(...);
+                    //ticket.setPkOpCalendarYearId_n(...);
+                    //ticket.setPkOpCalendarMonthId_n(...);
+                    
+                    //ticket.setFkUserInsertId(...);
+                    //ticket.setFkUserUpdateId(...);
+                    //ticket.setFkUserTaredId(...);
+                    //ticket.setFkUserPayedId(...);
+                    //ticket.setFkUserAssortedId(...);
+                    //ticket.setTsUserInsert(...);
+                    //ticket.setTsUserUpdate(...);
+                    //ticket.setTsUserTared(...);
+                    //ticket.setTsUserPayed(...);
+                    //ticket.setTsUserAssorted(...);
+                    
                     SDbTicketNote note = new SDbTicketNote();
                     note.setNote(rstRev.getString("Pes_ObsPri"));
-                    registry.getChildTicketNotes().add(note);
-                    registry.save(moSession);
+                    ticket.getChildTicketNotes().add(note);
+                    ticket.save(moSession);
                     
                     String entry = "Boleto no. " + rstRev.getInt("Pes_ID") + " importado!";
                     writeLog(entry);

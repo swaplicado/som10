@@ -25,6 +25,7 @@ import som.mod.som.db.SSomMailUtils;
  *
  * @author Sergio Flores
  */
+@Deprecated
 public class SReportHtmlTicketSeasonMonthStd_20260116 {
     
     public static final int MODE_UNIT_ITEM = 1;

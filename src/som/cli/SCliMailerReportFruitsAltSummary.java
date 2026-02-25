@@ -95,7 +95,7 @@ public class SCliMailerReportFruitsAltSummary {
             
             // generate mail body:
 
-            SReportHtmlScaleSummaryAlternative reportHtml = new SReportHtmlScaleSummaryAlternative(SCliUtils.createSession());
+            SReportHtmlTicketSummaryAlt reportHtml = new SReportHtmlTicketSummaryAlt(SCliUtils.createSession());
             String mailBody = reportHtml.generateReportHtml(argItemIds, argDate, /*argRepMode, */SModSysConsts.SU_TIC_ORIG_SUP, 0);
             
             // send mail report:

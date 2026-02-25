@@ -16,12 +16,11 @@ import som.mod.som.db.SSomUtils;
  *
  * @author Sergio Flores, Isabel Servín, Sergio Flores
  */
-@Deprecated
-public class SReportHtmlScaleSummaryAlternative {
+public class SReportHtmlTicketSummaryAlt {
     
     private final SGuiSession moSession;
     
-    public SReportHtmlScaleSummaryAlternative(final SGuiSession session) {
+    public SReportHtmlTicketSummaryAlt(final SGuiSession session) {
         moSession = session;
     }
     

@@ -5,10 +5,6 @@
  */
 package som.cli;
 
-/**
- *
- * @author Isabel Servín
- */
 import erp.lib.SLibUtilities;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -58,7 +54,7 @@ public class SCliMailerReportFruitsStdXls {
     /** Argument index for list of mail-Bcc recipients. */
     private static final int ARG_IDX_MAIL_BCC = 4;
 
-    private static final int[] DEF_ITEM_IDS = new int[] { SCliConsts.ID_AVO_FRUIT_CNV, /*SCliConsts.ID_AVO_FRUIT_ORG,*/ SCliConsts.ID_AVO_CHAFF, SCliConsts.ID_AVO_KERNEL, SCliConsts.ID_AVO_PULP };
+    private static final int[] DEF_ITEM_IDS = new int[] { SCliConsts.ID_AVO_FRUIT_CONV, /*SCliConsts.ID_AVO_FRUIT_ORG,*/ SCliConsts.ID_AVO_CHAFF, SCliConsts.ID_AVO_KERNEL, SCliConsts.ID_AVO_PULP };
     private static final int DEF_YEAR_BASE = SCliConsts.FRUIT_FIRST_YEAR; // año/temporada tope hacia atrás
     //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes

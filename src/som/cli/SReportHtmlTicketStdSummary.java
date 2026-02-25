@@ -17,6 +17,7 @@ import som.mod.som.db.SSomUtils;
  *
  * @author Sergio Flores
  */
+@Deprecated
 public class SReportHtmlTicketStdSummary {
     
     private final SGuiSession moSession;

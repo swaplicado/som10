@@ -9,32 +9,33 @@ import java.util.Date;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiSession;
+import som.mod.som.db.SDbItem;
 import som.mod.som.db.SSomMailUtils;
 import som.mod.som.db.SSomUtils;
 
 /**
  *
- * @author Sergio Flores, Isabel Servín, Sergio Flores
+ * @author Sergio Flores
  */
-@Deprecated
-public class SReportHtmlScaleSummaryAlternative {
+public class SReportHtmlTicketSummaryStd {
     
     private final SGuiSession moSession;
     
-    public SReportHtmlScaleSummaryAlternative(final SGuiSession session) {
+    public SReportHtmlTicketSummaryStd(final SGuiSession session) {
         moSession = session;
     }
     
     /**
      * Generates report in HTML 5 format.
-     * @param itemIdsPairs Array of pairs of ID of items to report.
+     * @param itemIds Array of ID of items to report.
      * @param date Date.
+     * @param reportMode Report mode (SCliMailerReportFruitsStdSummary.REP_MODE_...)
      * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
      * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final String[] itemIdsPairs, final Date date, final int ticketOrigin, final int ticketDestination) throws Exception {
+    public String generateReportHtml(final int[] itemIds, final Date date, int reportMode, final int ticketOrigin, final int ticketDestination) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -135,26 +136,26 @@ public class SReportHtmlScaleSummaryAlternative {
         }
         
         // process list of items for report:
-
+        
         boolean processingFirstItem = true;
 
-        for (String itemIdsPair : itemIdsPairs) {
+        for (int itemId : itemIds) {
             if (!processingFirstItem) {
                 html += "<hr>\n";
             }
             
-            String[] ids = itemIdsPair.split("-");
-            int itemCnvId = SLibUtils.parseInt(ids[0]);
-            int itemAltId = SLibUtils.parseInt(ids[1]);
+            // read requested item for report:
+            SDbItem item = new SDbItem();
+            item.read(moSession, new int[] { itemId });
             
             // compose summary:
-            html += "<h1>" + SLibUtils.textToHtml(SCliConsts.ItemsPairsNames.get(itemIdsPair).toUpperCase()) + "</h1>\n";
-            html += SSomUtils.composeHtmlSummaryItemAlt(moSession, itemCnvId, itemAltId, SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, date, ticketOrigin, ticketDestination);
+            html += "<h1>" + SLibUtils.textToHtml(item.getName()) + "</h1>\n";
+            html += SSomUtils.composeHtmlSummaryItem(moSession, itemId, SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, date, reportMode, ticketOrigin, ticketDestination);
             
             processingFirstItem = false;
         }
         
-        html += SSomMailUtils.composeSomAlternativeMailWarning();
+        html += SSomMailUtils.composeSomMailWarning();
         
         html += "</body>\n";
         

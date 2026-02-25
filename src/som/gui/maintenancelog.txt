@@ -1,4 +1,12 @@
 ================================================================================
+2026-02-25, 1.0 097.0
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Implementación del control de recepción de insumos mediante calendarios operativos en boletos de báscula y boletos de báscula alternativos.
+2) Optimización de la importación de boletos y sanitización de datos extraídos de Revuelta (operadores de báscula y comentarios de la 1er. y 2da. pesadas).
+3) Estandarización de clases de generación de reportes mail de recepción de fruta y adecuación de constantes de ítems para reportes mail.
+
+================================================================================
 2026-02-20, 1.0 096.2
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

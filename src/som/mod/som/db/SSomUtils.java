@@ -571,20 +571,23 @@ public abstract class SSomUtils {
     
     /**
      * Obtain required freight by item id
-     * @param session
-     * @param itemId
+     * @param session GUI session.
+     * @param itemId Item ID.
      * @return
      * @throws Exception 
      */
-    public static String getReqFreightByItem(SGuiSession session, int itemId) throws Exception {
+    public static String getRequiredFreightForItem(final SGuiSession session, final int itemId) throws Exception {
         String reqFreight = "";
         String sql = "SELECT c.req_freight FROM " + SModConsts.TablesMap.get(SModConsts.SU_INP_CT) + " AS c " +
                 "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON c.id_inp_ct = i.fk_inp_ct " +
                 "WHERE i.id_item = " + itemId + ";";
-        ResultSet resultSet = session.getStatement().executeQuery(sql);
-        if (resultSet.next()) {
-            reqFreight = resultSet.getString(1);
+        
+        try (ResultSet resultSet = session.getStatement().executeQuery(sql)) {
+            if (resultSet.next()) {
+                reqFreight = resultSet.getString(1);
+            }
         }
+        
         return reqFreight;
     }
     
