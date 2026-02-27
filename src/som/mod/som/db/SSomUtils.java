@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,11 +38,12 @@ import som.mod.cfg.db.SDbCompany;
  */
 public abstract class SSomUtils {
     
-    private static final int IDX_CNV = 0;
+    private static final int IDX_CONV = 0;
     private static final int IDX_ALT = 1;
     private static final int IDX_TOT = 2;
-    private static final double LAGGING_PERCENTAGE = 0.15;
-    private static final DecimalFormat moDecimalFormatNegativeValue2D = new DecimalFormat("#,##0.00;(#,##0.00)");
+    private static final double LAGGING_PCT = 0.15;
+    private static final DecimalFormat DecimalFormatNegativeValue2D = new DecimalFormat("#,##0.00;(#,##0.00)");
+    private static final SimpleDateFormat DateFormatGui = new SimpleDateFormat("dd/MMM./yyyy");
     
     /**
      * Gets proper season for ticket defined by date, item and producer.
@@ -1434,8 +1436,135 @@ public abstract class SSomUtils {
         return arr;
     }
 
-    private static String composeHtmlTableKgPctMonthComparativeHeader(final String table, final String itemName, final String month, final int year, final String conceptName) {
-        return "<b>Resumen y comparativa " + SLibUtils.textToHtml(table) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
+    private static String trimEnding(final String text, final String ending) {
+        String textTrimmed;
+        
+        if (text.endsWith(ending)) {
+            textTrimmed = text.substring(0, text.length() - 1);
+        }
+        else {
+            textTrimmed = text;
+        }
+        
+        return textTrimmed;
+    }
+
+    private static String composeHtmlTableStdHeader(final String title, final String itemName, final String conceptName) {
+        return "<b>Resumen " + SLibUtils.textToHtml(title) + " (" + SLibUtils.textToHtml(itemName) + ")</b><br>"
+                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                + "<tr>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>"
+                + "</tr>";
+    }
+    
+    private static String composeHtmlTableStdHeaderSeasons(final String title, final String itemName, final String conceptName) {
+        return "<b>Resumen " + SLibUtils.textToHtml(title) + " (" + SLibUtils.textToHtml(itemName) + ")</b><br>"
+                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                + "<tr>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
+                + "</tr>";
+    }
+    
+    private static String composeHtmlTableStdHeaderAlt(final String title, final String conceptName) {
+        return "<b>Resumen " + SLibUtils.textToHtml(title) + ": </b><br>"
+                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                + "<tr>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Convenc.") + "</b></td>"
+                + "<td class='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Orgánico") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Total") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>"
+                + "</tr>";
+    }
+
+    private static String composeHtmlTableStdHeaderSeasonsAlt(final String title, final String conceptName) {
+        return "<b>Resumen " + SLibUtils.textToHtml(title) + ": </b><br>"
+                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
+                + "<tr><td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Convenc.") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Orgánico") + "</b></td>"
+                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Total") + "</b></td></tr>";
+    }
+    
+    private static String composeHtmlTableStdRow(final String concept, final double weight, final double weightTotal) {
+        return "<tr>"
+                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>"
+                + "</tr>";
+    }
+    
+    private static String composeHtmlTableStdRowSeasons(final String concept, final double weight) {
+        return "<tr>"
+                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
+                + "</tr>";
+    }
+    
+    private static String composeHtmlTableStdRowAlt(final String concept, final double weightConv, final double weightAlt, final double weightTot, final double weightTotal) {
+        return "<tr>"
+                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightConv) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightAlt) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightTot) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weightTot / weightTotal) + "</td>"
+                + "</tr>";
+    }
+
+    private static String composeHtmlTableStdSeasonsAlt(final String concept, final double weightConv, final double weightAlt, final double weightTot) {
+        return "<tr>"
+                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightConv) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightAlt) + "</td>"
+                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightTot) + "</td>"
+                + "</tr>";
+    }
+
+    private static String composeHtmlTableStdFooter(final String title, final double weightTotal) {
+        return "<tr>"
+                + "<td><b>Total " + SLibUtils.textToHtml(title) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
+                + "</tr>"
+                + "</table>";
+    }
+    
+    private static String composeHtmlTableStdFooterSeasons(final String title, final double weightTotal) {
+        return "<tr>"
+                + "<td><b>Total " + SLibUtils.textToHtml(title) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
+                + "</tr>"
+                + "</table>";
+    }
+    
+    private static String composeHtmlTableStdFooterAlt(final String title, final double weightTotalConv, final double weightTotalAlt, final double weightTotalTot) {
+        return "<tr>"
+                + "<td><b>Total " + SLibUtils.textToHtml(title) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalConv) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalAlt) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalTot) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
+                + "</tr>"
+                + "</table>";
+    }
+    
+    private static String composeHtmlTableStdFooterSeasonsAlt(final String title, final double weightTotalConv, final double weightTotalAlt, final double weightTotalTot) {
+        return "<tr>"
+                + "<td><b>Total " + SLibUtils.textToHtml(title) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalConv) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalAlt) + "</b></td>"
+                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalTot) + "</b></td>"
+                + "</tr>"
+                + "</table>";
+    }
+    
+    private static String composeHtmlTableCompHeader(final String title, final String itemName, final String month, final int year, final String conceptName) {
+        return "<b>Resumen y comparativa " + SLibUtils.textToHtml(title) + " (" + SLibUtils.textToHtml(itemName) + ")</b><br>"
+                + "<div style='color: tomato;'><small>" + SLibUtils.textToHtml("(Se marcan en rojo los proveedores rezagados " 
+                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PCT) + " o más respecto al mes del año anterior.)") + "</small></div>"
                 + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
                 + "<tr>"
                 + "<td align='center' rowspan='2'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
@@ -1456,8 +1585,10 @@ public abstract class SSomUtils {
                 + "</tr>";
     }
     
-    private static String composeHtmlTableKgPctSeasonComparativeHeader(final String table, final String itemName, Date seasonStart, Date seasonEnd, final String conceptName) {
-        return "<b>Resumen y comparativa " + SLibUtils.textToHtml(table) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
+    private static String composeHtmlTableCompHeaderSeasons(final String title, final String itemName, final Date seasonStart, final Date seasonEnd, final String conceptName) {
+        return "<b>Resumen y comparativa " + SLibUtils.textToHtml(title) + " (" + SLibUtils.textToHtml(itemName) + ")</b><br>"
+                + "<div style='color: tomato;'><small>" + SLibUtils.textToHtml("(Se marcan en rojo los proveedores rezagados " 
+                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PCT) + " o más respecto al mes del año anterior.)") + "</small></div>"
                 + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
                 + "<tr>"
                 + "<td align='center' rowspan='2'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
@@ -1478,157 +1609,31 @@ public abstract class SSomUtils {
                 + "</tr>";
     }
     
-    private static String composeHtmlTableKgPctComparativeRow(final String concept, final double weight, final double weightTotal, double weight1yAgo, double weight2yAgo, double weight3yAgo) {
+    private static String composeHtmlTableCompRow(final String concept, final double weight, final double weightTotal, double weight1Y, double weight2Y, double weight3Y) {
         return "<tr>"
-                + "<td" + ((weight1yAgo - weight) / weight1yAgo >= LAGGING_PERCENTAGE ? " style='background-color: tomato;'" : "") + ">" + SLibUtils.textToHtml(concept) + "</td>"
-                + "<td align='right'" + ((weight1yAgo - weight) / weight1yAgo >= LAGGING_PERCENTAGE ? " style='background-color: tomato;'" : "") + ">" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
+                + "<td" + ((weight1Y - weight) / weight1Y >= LAGGING_PCT ? " style='background-color: tomato;'" : "") + ">" + SLibUtils.textToHtml(concept) + "</td>"
+                + "<td align='right'" + ((weight1Y - weight) / weight1Y >= LAGGING_PCT ? " style='background-color: tomato;'" : "") + ">" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
                 + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>"
-                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight1yAgo) + "</td>"
-                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight - weight1yAgo) + "</td>"
-                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight2yAgo) + "</td>"
-                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight - weight2yAgo) + "</td>"
-                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight3yAgo) + "</td>"
-                + "<td align='right'>" + moDecimalFormatNegativeValue2D.format(weight - weight3yAgo) + "</td>"
+                + "<td align='right'>" + DecimalFormatNegativeValue2D.format(weight1Y) + "</td>"
+                + "<td align='right'>" + DecimalFormatNegativeValue2D.format(weight - weight1Y) + "</td>"
+                + "<td align='right'>" + DecimalFormatNegativeValue2D.format(weight2Y) + "</td>"
+                + "<td align='right'>" + DecimalFormatNegativeValue2D.format(weight - weight2Y) + "</td>"
+                + "<td align='right'>" + DecimalFormatNegativeValue2D.format(weight3Y) + "</td>"
+                + "<td align='right'>" + DecimalFormatNegativeValue2D.format(weight - weight3Y) + "</td>"
                 + "</tr>";
     }
     
-    private static String composeHtmlTableKgPctComparativeFooter(final String table, final double weightTotal, final double weight1yAgoTotal, final double diference1yAgoTotal, 
-            final double weight2yAgoTotal, final double diference2yAgoTotal, final double weight3yAgoTotal, final double diference3yAgoTotal) {
+    private static String composeHtmlTableCompFooter(final String title, final double weightTotal, final double weightTotal1Y, final double diffTotal1Y, final double weightTotal2Y, final double diffTotal2Y, final double weightTotal3Y, final double diffTotal3Y) {
         return "<tr>"
-                + "<td><b>Total " + SLibUtils.textToHtml(table) + "</b></td>"
+                + "<td><b>Total " + SLibUtils.textToHtml(title) + "</b></td>"
                 + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
                 + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
-                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(weight1yAgoTotal) + "</b></td>"
-                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(diference1yAgoTotal) + "</b></td>"
-                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(weight2yAgoTotal) + "</b></td>"
-                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(diference2yAgoTotal) + "</b></td>"
-                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(weight3yAgoTotal) + "</b></td>"
-                + "<td align='right'><b>" + moDecimalFormatNegativeValue2D.format(diference3yAgoTotal) + "</b></td>"
-                + "</tr>"
-                + "</table>";
-    }
-    
-    private static String trimEnding(final String text, final String ending) {
-        String textTrimmed;
-        
-        if (text.endsWith(ending)) {
-            textTrimmed = text.substring(0, text.length() - 1);
-        }
-        else {
-            textTrimmed = text;
-        }
-        
-        return textTrimmed;
-    }
-
-    private static String composeHtmlTableKgPctHeader(final String concept, final String itemName, final String conceptName) {
-        return "<b>Resumen " + SLibUtils.textToHtml(concept) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
-                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
-                + "<tr>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>"
-                + "</tr>";
-    }
-    
-    private static String composeHtmlTableKgPctHeaderSeasons(final String concept, final String itemName, final String conceptName) {
-        return "<b>Resumen " + SLibUtils.textToHtml(concept) + ": " + SLibUtils.textToHtml(itemName) + "</b><br>"
-                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
-                + "<tr>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG) + "</b></td>"
-                + "</tr>";
-    }
-    
-    private static String composeHtmlTableKgPctHeaderAlt(final String concept, final String conceptName) {
-        return "<b>Resumen " + SLibUtils.textToHtml(concept) + ": </b><br>"
-                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
-                + "<tr>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Convenc.") + "</b></td>"
-                + "<td class=Forms align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Orgánico.") + "</b></td>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml(SSomConsts.KG + " Total") + "</b></td>"
-                + "<td align='center'><b>" + SLibUtils.textToHtml("%") + "</b></td>"
-                + "</tr>";
-    }
-
-    private static String composeHtmlTableKgPctHeaderSeasonsAlt(final String concept, final String conceptName) {
-        return "<b>Resumen " + SLibUtils.textToHtml(concept) + ": </b><br>"
-                + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
-                + "<tr><td align='center'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
-                + "<td align='center'><b>" + SSomConsts.KG + " Convenc.</b></td>"
-                + "<td align='center'><b>" + SSomConsts.KG + " Orgánico.</b></td>"
-                + "<td align='center'><b>" + SSomConsts.KG + " Total</b></td></tr>";
-    }
-    
-    private static String composeHtmlTableKgPctRow(final String concept, final double weight, final double weightTotal) {
-        return "<tr>"
-                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weight / weightTotal) + "</td>"
-                + "</tr>";
-    }
-    
-    private static String composeHtmlTableKgPctRowSeasons(final String concept, final double weight) {
-        return "<tr>"
-                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weight) + "</td>"
-                + "</tr>";
-    }
-    
-    private static String composeHtmlTableKgPctRowAlt(final String concept, final double weightCnv, final double weightAlt, final double weightTot, final double weightTotal) {
-        return "<tr>"
-                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightCnv) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightAlt) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightTot) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatPercentage2D.format(weightTotal == 0 ? 0 : weightTot / weightTotal) + "</td>"
-                + "</tr>";
-    }
-
-    private static String composeHtmlTableKgPctRowSeasonsAlt(final String concept, final double weightCnv, final double weightAlt, final double weightTot) {
-        return "<tr>"
-                + "<td>" + SLibUtils.textToHtml(concept) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightCnv) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightAlt) + "</td>"
-                + "<td align='right'>" + SLibUtils.DecimalFormatValue2D.format(weightTot) + "</td>"
-                + "</tr>";
-    }
-
-    private static String composeHtmlTableKgPctFooter(final String concept, final double weightTotal) {
-        return "<tr>"
-                + "<td><b>Total " + SLibUtils.textToHtml(concept) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
-                + "</tr>"
-                + "</table>";
-    }
-    
-    private static String composeHtmlTableKgPctFooterSeasons(final String concept, final double weightTotal) {
-        return "<tr>"
-                + "<td><b>Total " + SLibUtils.textToHtml(concept) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotal) + "</b></td>"
-                + "</tr>"
-                + "</table>";
-    }
-    
-    private static String composeHtmlTableKgPctFooterAlt(final String concept, final double weightTotalCnv, final double weightTotalAlt, final double weightTotalTot) {
-        return "<tr>"
-                + "<td><b>Total " + SLibUtils.textToHtml(concept) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalCnv) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalAlt) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalTot) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatPercentage2D.format(1.0) + "</b></td>"
-                + "</tr>"
-                + "</table>";
-    }
-    
-    private static String composeHtmlTableKgPctFooterSeasonsAlt(final String concept, final double weightTotalCnv, final double weightTotalAlt, final double weightTotalTot) {
-        return "<tr>"
-                + "<td><b>Total " + SLibUtils.textToHtml(concept) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalCnv) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalAlt) + "</b></td>"
-                + "<td align='right'><b>" + SLibUtils.DecimalFormatValue2D.format(weightTotalTot) + "</b></td>"
+                + "<td align='right'><b>" + DecimalFormatNegativeValue2D.format(weightTotal1Y) + "</b></td>"
+                + "<td align='right'><b>" + DecimalFormatNegativeValue2D.format(diffTotal1Y) + "</b></td>"
+                + "<td align='right'><b>" + DecimalFormatNegativeValue2D.format(weightTotal2Y) + "</b></td>"
+                + "<td align='right'><b>" + DecimalFormatNegativeValue2D.format(diffTotal2Y) + "</b></td>"
+                + "<td align='right'><b>" + DecimalFormatNegativeValue2D.format(weightTotal3Y) + "</b></td>"
+                + "<td align='right'><b>" + DecimalFormatNegativeValue2D.format(diffTotal3Y) + "</b></td>"
                 + "</tr>"
                 + "</table>";
     }
@@ -1657,7 +1662,7 @@ public abstract class SSomUtils {
         
         SDbItem item = new SDbItem();
         item.read(session, new int[] { itemId }); // read this way due to session is moduleless
-        String itemName = SLibUtils.textProperCase(item.getName());
+        String itemName = item.getName().toLowerCase();
 
         // retrieve list of all reporting groups:
 
@@ -1685,15 +1690,15 @@ public abstract class SSomUtils {
         Date dateEnd;
         double weight;
         double weightTotal;
-        double weight1yAgo;
-        double weight1yAgoTotal;
-        double weight2yAgo;
-        double weight2yAgoTotal;
-        double weight3yAgo;
-        double weight3yAgoTotal;
+        double weight1Y;
+        double weightTotal1Y;
+        double weight2Y;
+        double weightTotal2Y;
+        double weight3Y;
+        double weightTotal3Y;
         String section;
         String[] months = SLibTimeUtils.createMonthsOfYear(Locale.getDefault(), Calendar.SHORT);
-        DateSettings dateSettings = new DateSettings(date, seasonFirstMonth, monthFirstDay);
+        DateProps dateProps = new DateProps(session, date, SCliConsts.FRUIT_FIRST_YEAR, seasonFirstMonth, monthFirstDay, SCliConsts.FRUIT_BY_OP_CALENDARS, itemId);
         
         String html = "";
         
@@ -1701,31 +1706,31 @@ public abstract class SSomUtils {
         // SECTION 1. Current day:
         // ---------------------------------------------------------------------
 
-        dateStart = dateSettings.Today;
-        dateEnd = dateSettings.Today;
+        dateStart = dateProps.Today;
+        dateEnd = dateProps.Today;
+        section = dateProps.composeTodayDescrip();
         weightTotal = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
-        section = "día " + SLibUtils.DateFormatDate.format(date);
 
         // SECTION 1.1. Current day summary by reporting group:
 
-        html += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
+        html += composeHtmlTableStdHeader(section, itemName, "Proveedor");
 
         // compute reporting groups:
 
         while (repGroupResultSet.next()) { // first reading, cursor before first row
             weight = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
             if (weight != 0) {
-                html += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+                html += composeHtmlTableStdRow(repGroupResultSet.getString("name"), weight, weightTotal);
             }
         }
 
-        html += composeHtmlTableKgPctFooter(section, weightTotal);
+        html += composeHtmlTableStdFooter(section, weightTotal);
 
         // SECTION 1.2. Current day summary by scale:
 
         int scaleRows = 0;
         boolean scaleForceRendering = false;
-        String scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+        String scaleHtml = composeHtmlTableStdHeader(section, itemName, "Báscula");
 
         // compute scales:
 
@@ -1733,7 +1738,7 @@ public abstract class SSomUtils {
             weight = obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
             
             if (weight != 0) {
-                scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                scaleHtml += composeHtmlTableStdRow(scaleResultSet.getString("name"), weight, weightTotal);
                 scaleRows++;
                 if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
                     scaleForceRendering = true;
@@ -1741,7 +1746,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+        scaleHtml += composeHtmlTableStdFooter(section, weightTotal);
 
         if (scaleForceRendering || scaleRows > 1) {
             html += "<br>";
@@ -1754,10 +1759,10 @@ public abstract class SSomUtils {
         // SECTION 2. Current month:
         // ---------------------------------------------------------------------
 
-        dateStart = dateSettings.MonthStartDate;
-        dateEnd = dateSettings.MonthEndDate;
+        dateStart = dateProps.OpMonthStart;
+        dateEnd = dateProps.OpMonthEnd;
+        section = dateProps.composeOpMonthDescrip();
         weightTotal = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
-        section = "mes " + months[dateSettings.CurrentMonth - 1] + ". " + dateSettings.CurrentYear + (dateSettings.isMonthOutdated() ? "*" : "");
 
         // SECTION 2.1. Current month summary by reporting group:
 
@@ -1768,49 +1773,48 @@ public abstract class SSomUtils {
         }
 
         if (reportMode == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
-            html += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
+            html += composeHtmlTableStdHeader(section, itemName, "Proveedor");
 
             while (repGroupResultSet.next()) {
                 weight = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
                 if (weight != 0) {
-                    html += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+                    html += composeHtmlTableStdRow(repGroupResultSet.getString("name"), weight, weightTotal);
                 }
             }
 
-            html += composeHtmlTableKgPctFooter(section, weightTotal);
+            html += composeHtmlTableStdFooter(section, weightTotal);
         }
         else {
-            double diference1yAgoTotal = 0;
-            double diference2yAgoTotal = 0;
-            double diference3yAgoTotal = 0;
-            weight1yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, ticketOrigin, ticketDestination);
-            weight2yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, ticketOrigin, ticketDestination);
-            weight3yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, ticketOrigin, ticketDestination);
-            html += composeHtmlTableKgPctMonthComparativeHeader(section, itemName, months[dateSettings.CurrentMonth - 1], dateSettings.CurrentYear, "Proveedor");
+            double diffTotal1Y = 0;
+            double diffTotal2Y = 0;
+            double diffTotal3y = 0;
+            weightTotal1Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            weightTotal2Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            weightTotal3Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            
+            html += composeHtmlTableCompHeader(section, itemName, months[dateProps.OpMonth - 1], dateProps.OpYear, "Proveedor");
             
             while (repGroupResultSet.next()) {
                 weight = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
-                weight1yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
-                weight2yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
-                weight3yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
-                diference1yAgoTotal += weight - weight1yAgo;
-                diference2yAgoTotal += weight - weight2yAgo;
-                diference3yAgoTotal += weight - weight3yAgo;
-                if (weight != 0 || weight1yAgo != 0 || weight2yAgo != 0 || weight3yAgo != 0) {
-                    html += composeHtmlTableKgPctComparativeRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1yAgo, weight2yAgo, weight3yAgo);
+                weight1Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                weight2Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                weight3Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                diffTotal1Y += weight - weight1Y;
+                diffTotal2Y += weight - weight2Y;
+                diffTotal3y += weight - weight3Y;
+                if (weight != 0 || weight1Y != 0 || weight2Y != 0 || weight3Y != 0) {
+                    html += composeHtmlTableCompRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1Y, weight2Y, weight3Y);
                 }
             }
             
-            html += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
-            html += "<p style='font-size: 11px; color: tomato;'><b>" + SLibUtils.textToHtml("Nota:") + "</b>&nbsp;" + SLibUtils.textToHtml("Se marcan en rojo los proveedores rezagados " 
-                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PERCENTAGE) + " o más respecto al mes del año anterior.") + "</p>";
+            html += composeHtmlTableCompFooter(section, weightTotal, weightTotal1Y, diffTotal1Y, weightTotal2Y, diffTotal2Y, weightTotal3Y, diffTotal3y);
         }
 
         // SECTION 2.2: Current month summary by scale: 
 
         scaleRows = 0;
         scaleForceRendering = false;
-        scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+        scaleHtml = composeHtmlTableStdHeader(section, itemName, "Báscula");
 
         // compute scales:
 
@@ -1822,7 +1826,7 @@ public abstract class SSomUtils {
             weight = obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
             
             if (weight != 0) {
-                scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                scaleHtml += composeHtmlTableStdRow(scaleResultSet.getString("name"), weight, weightTotal);
                 scaleRows++;
                 if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
                     scaleForceRendering = true;
@@ -1830,17 +1834,15 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+        scaleHtml += composeHtmlTableStdFooter(section, weightTotal);
 
         if (scaleForceRendering || scaleRows > 1) {
-            if (reportMode == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
-                html += "<br>";
-            }
+            html += "<br>";
             html += scaleHtml; // more than one scale present or receptions done in a non-default scale
         }
 
-        if (dateSettings.isMonthOutdated()) {
-            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateSettings.getCurrentMonthPeriod() + ".") + "</p>";
+        if (dateProps.isOpMonthCustom()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateProps.composeOpMonthPeriod() + ".") + "</p>";
         }
         else {
             html += "<br>";
@@ -1852,10 +1854,10 @@ public abstract class SSomUtils {
 
         // SECTION 3.1 Current season summary by reporting group:
         
-        dateStart = dateSettings.SeasonStartDate;
-        dateEnd = dateSettings.SeasonEndDate;
+        dateStart = dateProps.OpSeasonStart;
+        dateEnd = dateProps.OpSeasonEnd;
+        section = dateProps.composeOpSeasonDescrip();
         weightTotal = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
-        section = "temporada " + dateSettings.getCurrentSeasonTitle() + (dateSettings.isMonthOutdated() ? "*" : "");
         
         // compute reporting groups:
 
@@ -1864,49 +1866,48 @@ public abstract class SSomUtils {
         }
 
         if (reportMode == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
-            html += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
+            html += composeHtmlTableStdHeader(section, itemName, "Proveedor");
 
             while (repGroupResultSet.next()) {
                 weight = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
                 if (weight != 0) {
-                    html += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+                    html += composeHtmlTableStdRow(repGroupResultSet.getString("name"), weight, weightTotal);
                 }
             }
 
-            html += composeHtmlTableKgPctFooter(section, weightTotal);
+            html += composeHtmlTableStdFooter(section, weightTotal);
         }
         else {
-            double diference1yAgoTotal = 0;
-            double diference2yAgoTotal = 0;
-            double diference3yAgoTotal = 0;
-            weight1yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, ticketOrigin, ticketDestination);
-            weight2yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, ticketOrigin, ticketDestination);
-            weight3yAgoTotal = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, ticketOrigin, ticketDestination);
-            html += composeHtmlTableKgPctSeasonComparativeHeader(section, itemName, dateStart, dateEnd, "Proveedor");
+            double diffTotal1Y = 0;
+            double diffTotal2Y = 0;
+            double diffTotal3Y = 0;
+            weightTotal1Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            weightTotal2Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            weightTotal3Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, ticketOrigin, ticketDestination);
+            
+            html += composeHtmlTableCompHeaderSeasons(section, itemName, dateStart, dateEnd, "Proveedor");
             
             while (repGroupResultSet.next()) {
                 weight = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
-                weight1yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
-                weight2yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
-                weight3yAgo = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
-                diference1yAgoTotal += weight - weight1yAgo;
-                diference2yAgoTotal += weight - weight2yAgo;
-                diference3yAgoTotal += weight - weight3yAgo;
-                if (weight != 0 || weight1yAgo != 0 || weight2yAgo != 0 || weight3yAgo != 0) {
-                    html += composeHtmlTableKgPctComparativeRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1yAgo, weight2yAgo, weight3yAgo);
+                weight1Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                weight2Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                weight3Y = obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+                diffTotal1Y += weight - weight1Y;
+                diffTotal2Y += weight - weight2Y;
+                diffTotal3Y += weight - weight3Y;
+                if (weight != 0 || weight1Y != 0 || weight2Y != 0 || weight3Y != 0) {
+                    html += composeHtmlTableCompRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1Y, weight2Y, weight3Y);
                 }
             }
             
-            html += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
-            html += "<p style='font-size: 11px; color: tomato;'><b>" + SLibUtils.textToHtml("Nota:") + "</b>&nbsp;" + SLibUtils.textToHtml("Se marcan en rojo los proveedores rezagados " 
-                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PERCENTAGE) + " o más respecto a la temporada anterior.") + "</p>";
+            html += composeHtmlTableCompFooter(section, weightTotal, weightTotal1Y, diffTotal1Y, weightTotal2Y, diffTotal2Y, weightTotal3Y, diffTotal3Y);
         }
         
         // SECTION 3.2 Current season summary by scale:
 
         scaleRows = 0;
         scaleForceRendering = false;
-        scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+        scaleHtml = composeHtmlTableStdHeader(section, itemName, "Báscula");
 
         // compute scales:
 
@@ -1918,7 +1919,7 @@ public abstract class SSomUtils {
             weight = obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
             
             if (weight != 0) {
-                scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                scaleHtml += composeHtmlTableStdRow(scaleResultSet.getString("name"), weight, weightTotal);
                 scaleRows++;
                 if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
                     scaleForceRendering = true;
@@ -1926,17 +1927,15 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+        scaleHtml += composeHtmlTableStdFooter(section, weightTotal);
 
         if (scaleForceRendering || scaleRows > 1) {
-            if (reportMode == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
-                html += "<br>";
-            }
+            html += "<br>";
             html += scaleHtml; // more than one scale present or receptions done in a non-default scale
         }
 
-        if (dateSettings.isMonthOutdated()) {
-            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateSettings.getCurrentSeasonPeriod() + ".") + "</p>";
+        if (dateProps.isOpSeasonCustom()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateProps.composeOpSeasonPeriod() + ".") + "</p>";
         }
         else {
             html += "<br>";
@@ -1946,29 +1945,30 @@ public abstract class SSomUtils {
         // SECTION 4. Season summary by month:
         // ---------------------------------------------------------------------
 
-        dateStart = dateSettings.SeasonStartDate;
-        dateEnd = dateSettings.SeasonEndDate;
+        dateStart = dateProps.OpSeasonStart;
+        dateEnd = dateProps.OpSeasonEnd;
+        section = dateProps.composeOpSeasonDescrip();
         weightTotal = obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
-        section = "temporada " + dateSettings.getCurrentSeasonTitle() + (dateSettings.isMonthOutdated() ? "*" : "");
 
-        html += composeHtmlTableKgPctHeader(section, itemName, "Mes");
+        html += composeHtmlTableStdHeader(section, itemName, "Mes");
 
         // compute session months:
 
         for (int i = 0; i < SLibTimeConsts.MONTHS; i++) {
-            Date[] boundaries = dateSettings.SeasonMonthsBoundaries.get(i);
+            Date[] boundaries = dateProps.OpSeasonMonthsBoundaries.get(i);
             Date start = boundaries[0];
             Date end = boundaries[1];
             int[] monthDigestion = SLibTimeUtils.digestMonth(end);
 
             weight = obtainWeightDestinyByPeriod(session, itemId, start, end, 0, 0, ticketOrigin, ticketDestination);
-            html += composeHtmlTableKgPctRow(monthDigestion[0] + " " + months[monthDigestion[1] - 1] + ".", weight, weightTotal);
+            html += composeHtmlTableStdRow(monthDigestion[0] + " " + months[monthDigestion[1] - 1] + ".", weight, weightTotal);
         }
 
-        html += composeHtmlTableKgPctFooter(section, weightTotal);
+        html += composeHtmlTableStdFooter(section, weightTotal);
 
-        if (dateSettings.isMonthOutdated()) {
-            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + dateSettings.getCurrentSeasonInfo() + ".") + "</p>";
+        if (dateProps.isOpSeasonCustom()) {
+            String[] info = dateProps.composeOpSeasonHtmlInfo();
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + info[0]) + (info.length == 1 ? "" : "<br>" + SLibUtils.textToHtml(info[1])) + "</p>";
         }
         else {
             html += "<br>";
@@ -1979,18 +1979,16 @@ public abstract class SSomUtils {
         // ---------------------------------------------------------------------
         
         weightTotal = 0;
-        section = "temporadas" + (dateSettings.isMonthOutdated() ? "*" : "");
+        section = "temporadas" + (dateProps.isOpSeasonOrMonthCustom() ? "*" : "");
 
-        html += composeHtmlTableKgPctHeaderSeasons(section, itemName, "Temporada");
+        html += composeHtmlTableStdHeaderSeasons(section, itemName, "Temporada");
         
-        ArrayList<Date[]> seasonsYearsBoundaries = dateSettings.createSeasonsYearsBoundaries(SCliConsts.FRUIT_FIRST_YEAR);
-        
-        for (Date[] boundary : seasonsYearsBoundaries) {
+        for (Date[] boundary : dateProps.OpSeasonsBoundaries) {
             Date start = boundary[0];
             Date end = boundary[1];
             String concept;
             
-            if (dateSettings.SeasonFirstMonth == SLibTimeConsts.MONTH_JAN && dateSettings.MonthFirstDay == 1) {
+            if (!dateProps.isOpSeasonOrMonthCustom()) {
                 concept = "" + SLibTimeUtils.digestYear(start)[0];
             }
             else {
@@ -1998,15 +1996,16 @@ public abstract class SSomUtils {
             }
             
             weight = obtainWeightDestinyByPeriod(session, itemId, start, end, 0, 0, ticketOrigin, ticketDestination);
-            html += composeHtmlTableKgPctRowSeasons(concept, weight);
+            html += composeHtmlTableStdRowSeasons(concept, weight);
             
             weightTotal += weight;
         }
         
-        html += composeHtmlTableKgPctFooterSeasons(section, weightTotal);
+        html += composeHtmlTableStdFooterSeasons(section, weightTotal);
         
-        if (dateSettings.isSeasonOutdated() || dateSettings.isMonthOutdated()) {
-            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + dateSettings.getSeasonsInfo() + ".") + "</p>";
+        if (dateProps.isOpSeasonOrMonthCustom()) {
+            String[] info = dateProps.composeOpSeasonHtmlInfo();
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + info[0]) + (info.length == 1 ? "" : "<br>" + SLibUtils.textToHtml(info[1])) + "</p>";
         }
         else {
             html += "<br>";
@@ -2018,7 +2017,7 @@ public abstract class SSomUtils {
     /**
      * Compose an HTML summary of all receptions from requested conventional and alternative items.
      * @param session GUI session.
-     * @param itemCnvId Conventional item ID.
+     * @param itemConvId Conventional item ID.
      * @param itemAltId Alternative item alt ID.
      * @param seasonFirstMonth Season first month (1 = January; 0 = item's start month.)
      * @param monthFirstDay Month first day (0 | 1 = 1st. of start month; > 1 = nth of previous month.)
@@ -2028,7 +2027,7 @@ public abstract class SSomUtils {
      * @return HTML snippet.
      * @throws Exception 
      */
-    public static String composeHtmlSummaryItemAlt(final SGuiSession session, final int itemCnvId, final int itemAltId, final int seasonFirstMonth, final int monthFirstDay, final Date date, final int ticketOrigin, final int ticketDestination) throws Exception {
+    public static String composeHtmlSummaryItemAlt(final SGuiSession session, final int itemConvId, final int itemAltId, final int seasonFirstMonth, final int monthFirstDay, final Date date, final int ticketOrigin, final int ticketDestination) throws Exception {
         // ---------------------------------------------------------------------
         // REPORT REPORT PREPARATION ///////////////////////////////////////////
         // ---------------------------------------------------------------------
@@ -2038,7 +2037,7 @@ public abstract class SSomUtils {
         // retrieve item:
         
         SDbItem item = new SDbItem();
-        item.read(session, new int[] { itemCnvId }); // read this way due to session is moduleless
+        item.read(session, new int[] { itemConvId }); // read this way due to session is moduleless
 
         // retrieve list of all reporting groups:
 
@@ -2068,7 +2067,7 @@ public abstract class SSomUtils {
         double[] weightsTotals;
         String section;
         String[] months = SLibTimeUtils.createMonthsOfYear(Locale.getDefault(), Calendar.SHORT);
-        DateSettings dateSettings = new DateSettings(date, seasonFirstMonth, monthFirstDay);
+        DateProps dateProps = new DateProps(session, date, SCliConsts.FRUIT_FIRST_YEAR, seasonFirstMonth, monthFirstDay, SCliConsts.FRUIT_BY_OP_CALENDARS, itemConvId);
         
         String html = "";
         
@@ -2076,39 +2075,39 @@ public abstract class SSomUtils {
         // SECTION 1. Current day:
         // ---------------------------------------------------------------------
 
-        dateStart = dateSettings.Today;
-        dateEnd = dateSettings.Today;
-        weightsTotals = obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
-        section = "día " + SLibUtils.DateFormatDate.format(date);
+        dateStart = dateProps.Today;
+        dateEnd = dateProps.Today;
+        section = dateProps.composeTodayDescrip();
+        weightsTotals = obtainWeightDestinyByPeriodAlt(session, itemConvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
 
         // SECTION 1.1. Current day summary by reporting group:
 
-        html += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
+        html += composeHtmlTableStdHeaderAlt(section, "Proveedor");
 
         // compute reporting groups:
 
         while (repGroupResultSet.next()) { // first reading, cursor before first row
-            weights = obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+            weights = obtainWeightDestinyByPeriodAlt(session, itemConvId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
             if (weights != null && weights[IDX_TOT] != 0.0) {
-                html += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+                html += composeHtmlTableStdRowAlt(repGroupResultSet.getString("name"), weights[IDX_CONV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
             }
         }
 
-        html += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+        html += composeHtmlTableStdFooterAlt(section, weightsTotals[IDX_CONV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
 
         // SECTION 1.2. Current day summary by scale:
 
         int scaleRows = 0;
         boolean scaleForceRendering = false;
-        String scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
+        String scaleHtml = composeHtmlTableStdHeaderAlt(section, "Báscula");
 
         // compute scales:
 
         while (scaleResultSet.next()) { // first reading, cursor before first row
-            weights = obtainWeightDestinyByScaleAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
+            weights = obtainWeightDestinyByScaleAlt(session, itemConvId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
             
             if (weights != null && weights[IDX_TOT] != 0.0) {
-                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+                scaleHtml += composeHtmlTableStdRowAlt(scaleResultSet.getString("name"), weights[IDX_CONV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
                 scaleRows++;
                 if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
                     scaleForceRendering = true;
@@ -2116,7 +2115,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+        scaleHtml += composeHtmlTableStdFooterAlt(section, weightsTotals[IDX_CONV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
 
         if (scaleForceRendering || scaleRows > 1) {
             html += "<br>";
@@ -2129,10 +2128,10 @@ public abstract class SSomUtils {
         // SECTION 2. Current month:
         // ---------------------------------------------------------------------
 
-        dateStart = dateSettings.MonthStartDate;
-        dateEnd = dateSettings.MonthEndDate;
-        weightsTotals = obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
-        section = "mes " + months[dateSettings.CurrentMonth - 1] + ". " + dateSettings.CurrentYear + (dateSettings.isMonthOutdated() ? "*" : "");
+        dateStart = dateProps.OpMonthStart;
+        dateEnd = dateProps.OpMonthEnd;
+        section = dateProps.composeOpMonthDescrip();
+        weightsTotals = obtainWeightDestinyByPeriodAlt(session, itemConvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
 
         // SECTION 2.1. Current month summary by reporting group:
         
@@ -2142,22 +2141,22 @@ public abstract class SSomUtils {
             repGroupResultSet.beforeFirst();
         }
 
-        html += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
+        html += composeHtmlTableStdHeaderAlt(section, "Proveedor");
 
         while (repGroupResultSet.next()) {
-            weights = obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+            weights = obtainWeightDestinyByPeriodAlt(session, itemConvId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
             if (weights != null && weights[IDX_TOT] != 0.0) {
-                html += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+                html += composeHtmlTableStdRowAlt(repGroupResultSet.getString("name"), weights[IDX_CONV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
             }
         }
 
-        html += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+        html += composeHtmlTableStdFooterAlt(section, weightsTotals[IDX_CONV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
         
         // SECTION 2.2: Current month summary by scale: 
 
         scaleRows = 0;
         scaleForceRendering = false;
-        scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
+        scaleHtml = composeHtmlTableStdHeaderAlt(section, "Báscula");
 
         // compute scales:
 
@@ -2166,10 +2165,10 @@ public abstract class SSomUtils {
         }
 
         while (scaleResultSet.next()) {
-            weights = obtainWeightDestinyByScaleAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
+            weights = obtainWeightDestinyByScaleAlt(session, itemConvId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
             
             if (weights != null && weights[IDX_TOT] != 0.0) {
-                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+                scaleHtml += composeHtmlTableStdRowAlt(scaleResultSet.getString("name"), weights[IDX_CONV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
                 scaleRows++;
                 if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
                     scaleForceRendering = true;
@@ -2177,15 +2176,15 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+        scaleHtml += composeHtmlTableStdFooterAlt(section, weightsTotals[IDX_CONV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
 
         if (scaleForceRendering || scaleRows > 1) {
             html += "<br>";
             html += scaleHtml; // more than one scale present or receptions done in a non-default scale
         }
 
-        if (dateSettings.isMonthOutdated()) {
-            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateSettings.getCurrentMonthPeriod() + ".") + "</p>";
+        if (dateProps.isOpMonthCustom()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateProps.composeOpMonthPeriod() + ".") + "</p>";
         }
         else {
             html += "<br>";
@@ -2197,10 +2196,10 @@ public abstract class SSomUtils {
 
         // SECTION 3.1 Current season summary by reporting group:
         
-        dateStart = dateSettings.SeasonStartDate;
-        dateEnd = dateSettings.SeasonEndDate;
-        weightsTotals = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
-        section = "temporada " + dateSettings.getCurrentSeasonTitle() + (dateSettings.isMonthOutdated() ? "*" : "");
+        dateStart = dateProps.OpSeasonStart;
+        dateEnd = dateProps.OpSeasonEnd;
+        section = dateProps.composeOpSeasonDescrip();
+        weightsTotals = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemConvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
 
         // compute reporting groups:
 
@@ -2208,22 +2207,22 @@ public abstract class SSomUtils {
             repGroupResultSet.beforeFirst();
         }
 
-        html += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
+        html += composeHtmlTableStdHeaderAlt(section, "Proveedor");
 
         while (repGroupResultSet.next()) {
-            weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
+            weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemConvId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, ticketOrigin, ticketDestination);
             if (weights != null && weights[IDX_TOT] != 0.0) {
-                html += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+                html += composeHtmlTableStdRowAlt(repGroupResultSet.getString("name"), weights[IDX_CONV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
             }
         }
 
-        html += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+        html += composeHtmlTableStdFooterAlt(section, weightsTotals[IDX_CONV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
 
         // SECTION 3.2 Current season summary by scale:
 
         scaleRows = 0;
         scaleForceRendering = false;
-        scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
+        scaleHtml = composeHtmlTableStdHeaderAlt(section, "Báscula");
 
         // compute scales:
 
@@ -2232,10 +2231,10 @@ public abstract class SSomUtils {
         }
 
         while (scaleResultSet.next()) {
-            weights = SSomUtils.obtainWeightDestinyByScaleAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
+            weights = SSomUtils.obtainWeightDestinyByScaleAlt(session, itemConvId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), ticketOrigin, ticketDestination);
             
             if (weights != null && weights[IDX_TOT] != 0.0) {
-                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+                scaleHtml += composeHtmlTableStdRowAlt(scaleResultSet.getString("name"), weights[IDX_CONV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
                 scaleRows++;
                 if (!scaleForceRendering && !scaleResultSet.getBoolean("b_def")) {
                     scaleForceRendering = true;
@@ -2243,15 +2242,15 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+        scaleHtml += composeHtmlTableStdFooterAlt(section, weightsTotals[IDX_CONV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
 
         if (scaleForceRendering || scaleRows > 1) {
             html += "<br>";
             html += scaleHtml; // more than one scale present or receptions done in a non-default scale
         }
 
-        if (dateSettings.isMonthOutdated()) {
-            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateSettings.getCurrentSeasonPeriod() + ".") + "</p>";
+        if (dateProps.isOpSeasonCustom()) {
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Período " + trimEnding(section, "*") + ": " + dateProps.composeOpSeasonPeriod() + ".") + "</p>";
         }
         else {
             html += "<br>";
@@ -2261,29 +2260,30 @@ public abstract class SSomUtils {
         // SECTION 4. Season summary by month:
         // ---------------------------------------------------------------------
 
-        dateStart = dateSettings.SeasonStartDate;
-        dateEnd = dateSettings.SeasonEndDate;
-        weightsTotals = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
-        section = "temporada " + dateSettings.getCurrentSeasonTitle() + (dateSettings.isMonthOutdated() ? "*" : "");
+        dateStart = dateProps.OpSeasonStart;
+        dateEnd = dateProps.OpSeasonEnd;
+        section = dateProps.composeOpSeasonDescrip();
+        weightsTotals = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemConvId, itemAltId, dateStart, dateEnd, 0, 0, ticketOrigin, ticketDestination);
 
-        html += composeHtmlTableKgPctHeaderAlt(section, "Período");
+        html += composeHtmlTableStdHeaderAlt(section, "Período");
 
         // compute months:
 
         for (int i = 0; i < SLibTimeConsts.MONTHS; i++) {
-            Date[] boundaries = dateSettings.SeasonMonthsBoundaries.get(i);
+            Date[] boundaries = dateProps.OpSeasonMonthsBoundaries.get(i);
             Date start = boundaries[0];
             Date end = boundaries[1];
             int[] monthDigestion = SLibTimeUtils.digestMonth(end);
 
-            weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, start, end, 0, 0, ticketOrigin, ticketDestination);
-            html += composeHtmlTableKgPctRowAlt(monthDigestion[0] + " " + months[monthDigestion[1] - 1] + ".", weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
+            weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemConvId, itemAltId, start, end, 0, 0, ticketOrigin, ticketDestination);
+            html += composeHtmlTableStdRowAlt(monthDigestion[0] + " " + months[monthDigestion[1] - 1] + ".", weights[IDX_CONV], weights[IDX_ALT], weights[IDX_TOT], weightsTotals[IDX_TOT]);
         }
 
-        html += composeHtmlTableKgPctFooterAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+        html += composeHtmlTableStdFooterAlt(section, weightsTotals[IDX_CONV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
 
-        if (dateSettings.isMonthOutdated()) {
-            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + dateSettings.getCurrentSeasonInfo() + ".") + "</p>";
+        if (dateProps.isOpSeasonCustom()) {
+            String[] info = dateProps.composeOpSeasonHtmlInfo();
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + info[0]) + (info.length == 1 ? "" : "<br>" + SLibUtils.textToHtml(info[1])) + "</p>";
         }
         else {
             html += "<br>";
@@ -2294,36 +2294,35 @@ public abstract class SSomUtils {
         // ---------------------------------------------------------------------
 
         weightsTotals = new double[] { 0, 0, 0};
-        section = "temporadas" + (dateSettings.isMonthOutdated() ? "*" : "");
+        section = "temporadas" + (dateProps.isOpSeasonOrMonthCustom() ? "*" : "");
 
-        html += composeHtmlTableKgPctHeaderSeasonsAlt(section, "Temporada");
+        html += composeHtmlTableStdHeaderSeasonsAlt(section, "Temporada");
         
-        ArrayList<Date[]> seasonsYearsBoundaries = dateSettings.createSeasonsYearsBoundaries(SCliConsts.FRUIT_FIRST_YEAR);
-        
-        for (Date[] boundary : seasonsYearsBoundaries) {
+        for (Date[] boundary : dateProps.OpSeasonsBoundaries) {
             Date start = boundary[0];
             Date end = boundary[1];
             String concept;
             
-            if (dateSettings.SeasonFirstMonth == SLibTimeConsts.MONTH_JAN && dateSettings.MonthFirstDay == 1) {
+            if (!dateProps.isOpSeasonOrMonthCustom()) {
                 concept = "" + SLibTimeUtils.digestYear(start)[0];
             }
             else {
                 concept = "" + SLibTimeUtils.digestYear(start)[0] + "-" + SLibTimeUtils.digestYear(end)[0];
             }
             
-            weights = obtainWeightDestinyByPeriodAlt(session, itemCnvId, itemAltId, start, end, 0, 0, ticketOrigin, ticketDestination);
-            html += composeHtmlTableKgPctRowSeasonsAlt(concept, weights[IDX_CNV], weights[IDX_ALT], weights[IDX_TOT]);
+            weights = obtainWeightDestinyByPeriodAlt(session, itemConvId, itemAltId, start, end, 0, 0, ticketOrigin, ticketDestination);
+            html += composeHtmlTableStdSeasonsAlt(concept, weights[IDX_CONV], weights[IDX_ALT], weights[IDX_TOT]);
             
-            weightsTotals[IDX_CNV] += weights[IDX_CNV];
+            weightsTotals[IDX_CONV] += weights[IDX_CONV];
             weightsTotals[IDX_ALT] += weights[IDX_ALT];
             weightsTotals[IDX_TOT] += weights[IDX_TOT];
         }
         
-        html += composeHtmlTableKgPctFooterSeasonsAlt(section, weightsTotals[IDX_CNV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
+        html += composeHtmlTableStdFooterSeasonsAlt(section, weightsTotals[IDX_CONV], weightsTotals[IDX_ALT], weightsTotals[IDX_TOT]);
         
-        if (dateSettings.isSeasonOutdated() || dateSettings.isMonthOutdated()) {
-            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + dateSettings.getSeasonsInfo() + ".") + "</p>";
+        if (dateProps.isOpSeasonOrMonthCustom()) {
+            String[] info = dateProps.composeOpSeasonHtmlInfo();
+            html += "<p style='font-size: 11px;'>" + SLibUtils.textToHtml("* Info. " + trimEnding(section, "*") + ": " + info[0]) + (info.length == 1 ? "" : "<br>" + SLibUtils.textToHtml(info[1])) + "</p>";
         }
         else {
             html += "<br>";
@@ -2349,12 +2348,12 @@ public abstract class SSomUtils {
 
         double weight;
         double weightTotal;
-        double weight1yAgo;
-        double weight1yAgoTotal;
-        double weight2yAgo;
-        double weight2yAgoTotal;
+        double weight1Y;
+        double weightTotal1Y;
+        double weight2Y;
+        double weightTotal2Y;
         double weight3yAgo;
-        double weight3yAgoTotal;
+        double weightTotal3Y;
         Date dateStart;
         Date dateEnd;
         String sql;
@@ -2397,31 +2396,31 @@ public abstract class SSomUtils {
 
         // SECTION 1.1. Current day summary by reporting group:
 
-        body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
+        body += composeHtmlTableStdHeader(section, itemName, "Proveedor");
 
         // compute reporting groups:
 
         while (repGroupResultSet.next()) { // first reading, cursor before first row
             weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
             if (weight != 0) {
-                body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+                body += composeHtmlTableStdRow(repGroupResultSet.getString("name"), weight, weightTotal);
             }
         }
 
-        body += composeHtmlTableKgPctFooter(section, weightTotal);
+        body += composeHtmlTableStdFooter(section, weightTotal);
 
         // SECTION 1.2. Current day summary by scale:
 
         int scaleRows = 0;
         boolean scaleForce = false;
-        String scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+        String scaleHtml = composeHtmlTableStdHeader(section, itemName, "Báscula");
 
         // compute scales:
 
         while (scaleResultSet.next()) { // first reading, cursor before first row
             weight = SSomUtils.obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             if (weight != 0) {
-                scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                scaleHtml += composeHtmlTableStdRow(scaleResultSet.getString("name"), weight, weightTotal);
                 scaleRows++;
                 if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
                     scaleForce = true;
@@ -2429,7 +2428,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+        scaleHtml += composeHtmlTableStdFooter(section, weightTotal);
 
         if (scaleForce || scaleRows > 1) {
             body += scaleHtml; // more than one scale present or receptions done in a non-default scale
@@ -2451,49 +2450,48 @@ public abstract class SSomUtils {
         }
 
         if (repType == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
-            body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
+            body += composeHtmlTableStdHeader(section, itemName, "Proveedor");
 
             while (repGroupResultSet.next()) {
                 weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
                 if (weight != 0) {
-                    body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+                    body += composeHtmlTableStdRow(repGroupResultSet.getString("name"), weight, weightTotal);
                 }
             }
 
-            body += composeHtmlTableKgPctFooter(section, weightTotal);
+            body += composeHtmlTableStdFooter(section, weightTotal);
         }
         else {
-            double diference1yAgoTotal = 0;
-            double diference2yAgoTotal = 0;
-            double diference3yAgoTotal = 0;
-            weight1yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, idTicOrig, idTicDest);
-            weight2yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, idTicOrig, idTicDest);
-            weight3yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, idTicOrig, idTicDest);
-            body += composeHtmlTableKgPctMonthComparativeHeader(section, itemName, months[curMonth - 1], curYear, "Proveedor");
+            double diffTotal1Y = 0;
+            double diffTotal2Y = 0;
+            double diffTotal3Y = 0;
+            weightTotal1Y = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, idTicOrig, idTicDest);
+            weightTotal2Y = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, idTicOrig, idTicDest);
+            weightTotal3Y = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, idTicOrig, idTicDest);
+            
+            body += composeHtmlTableCompHeader(section, itemName, months[curMonth - 1], curYear, "Proveedor");
             
             while (repGroupResultSet.next()) {
                 weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
-                weight1yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
-                weight2yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                weight1Y = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                weight2Y = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
                 weight3yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
-                diference1yAgoTotal += weight - weight1yAgo;
-                diference2yAgoTotal += weight - weight2yAgo;
-                diference3yAgoTotal += weight - weight3yAgo;
-                if (weight != 0 || weight1yAgo != 0 || weight2yAgo != 0 || weight3yAgo != 0) {
-                    body += composeHtmlTableKgPctComparativeRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1yAgo, weight2yAgo, weight3yAgo);
+                diffTotal1Y += weight - weight1Y;
+                diffTotal2Y += weight - weight2Y;
+                diffTotal3Y += weight - weight3yAgo;
+                if (weight != 0 || weight1Y != 0 || weight2Y != 0 || weight3yAgo != 0) {
+                    body += composeHtmlTableCompRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1Y, weight2Y, weight3yAgo);
                 }
             }
             
-            body += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
-            body += "<p style='font-size: 11px; color: tomato;'><b>" + SLibUtils.textToHtml("Nota:") + "</b>&nbsp;" + SLibUtils.textToHtml("Se marcan en rojo los proveedores rezagados " 
-                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PERCENTAGE) + " o más respecto al mes del año anterior.") + "</p>";
+            body += composeHtmlTableCompFooter(section, weightTotal, weightTotal1Y, diffTotal1Y, weightTotal2Y, diffTotal2Y, weightTotal3Y, diffTotal3Y);
         }
 
         // SECTION 2.2: Current month summary by scale: 
 
         scaleRows = 0;
         scaleForce = false;
-        scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+        scaleHtml = composeHtmlTableStdHeader(section, itemName, "Báscula");
 
         // compute scales:
 
@@ -2504,7 +2502,7 @@ public abstract class SSomUtils {
         while (scaleResultSet.next()) {
             weight = SSomUtils.obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             if (weight != 0) {
-                scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                scaleHtml += composeHtmlTableStdRow(scaleResultSet.getString("name"), weight, weightTotal);
                 scaleRows++;
                 if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
                     scaleForce = true;
@@ -2512,7 +2510,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+        scaleHtml += composeHtmlTableStdFooter(section, weightTotal);
 
         if (scaleForce || scaleRows > 1) {
             body += scaleHtml; // more than one scale present or receptions done in a non-default scale
@@ -2550,49 +2548,48 @@ public abstract class SSomUtils {
         }
 
         if (repType == SCliMailerReportFruitsStdSummary.REP_MODE_STANDARD) {
-            body += composeHtmlTableKgPctHeader(section, itemName, "Proveedor");
+            body += composeHtmlTableStdHeader(section, itemName, "Proveedor");
 
             while (repGroupResultSet.next()) {
                 weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
                 if (weight != 0) {
-                    body += composeHtmlTableKgPctRow(repGroupResultSet.getString("name"), weight, weightTotal);
+                    body += composeHtmlTableStdRow(repGroupResultSet.getString("name"), weight, weightTotal);
                 }
             }
 
-            body += composeHtmlTableKgPctFooter(section, weightTotal);
+            body += composeHtmlTableStdFooter(section, weightTotal);
         }
         else {
-            double diference1yAgoTotal = 0;
-            double diference2yAgoTotal = 0;
-            double diference3yAgoTotal = 0;
-            weight1yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, idTicOrig, idTicDest);
-            weight2yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, idTicOrig, idTicDest);
-            weight3yAgoTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, idTicOrig, idTicDest);
-            body += composeHtmlTableKgPctSeasonComparativeHeader(section, itemName, dateSeasonStart, dateSeasonEnd, "Proveedor");
+            double diffTotal1Y = 0;
+            double diffTotal2Y = 0;
+            double diffTotal3Y = 0;
+            weightTotal1Y = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), 0, 0, idTicOrig, idTicDest);
+            weightTotal2Y = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), 0, 0, idTicOrig, idTicDest);
+            weightTotal3Y = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), 0, 0, idTicOrig, idTicDest);
+            
+            body += composeHtmlTableCompHeaderSeasons(section, itemName, dateSeasonStart, dateSeasonEnd, "Proveedor");
             
             while (repGroupResultSet.next()) {
                 weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
-                weight1yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
-                weight2yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                weight1Y = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 1, 0, 0), SLibTimeUtils.addDate(dateEnd, - 1, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
+                weight2Y = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 2, 0, 0), SLibTimeUtils.addDate(dateEnd, - 2, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
                 weight3yAgo = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, SLibTimeUtils.addDate(dateStart, - 3, 0, 0), SLibTimeUtils.addDate(dateEnd, - 3, 0, 0), repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
-                diference1yAgoTotal += weight - weight1yAgo;
-                diference2yAgoTotal += weight - weight2yAgo;
-                diference3yAgoTotal += weight - weight3yAgo;
-                if (weight != 0 || weight1yAgo != 0 || weight2yAgo != 0 || weight3yAgo != 0) {
-                    body += composeHtmlTableKgPctComparativeRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1yAgo, weight2yAgo, weight3yAgo);
+                diffTotal1Y += weight - weight1Y;
+                diffTotal2Y += weight - weight2Y;
+                diffTotal3Y += weight - weight3yAgo;
+                if (weight != 0 || weight1Y != 0 || weight2Y != 0 || weight3yAgo != 0) {
+                    body += composeHtmlTableCompRow(repGroupResultSet.getString("name"), weight, weightTotal, weight1Y, weight2Y, weight3yAgo);
                 }
             }
             
-            body += composeHtmlTableKgPctComparativeFooter(section, weightTotal, weight1yAgoTotal, diference1yAgoTotal, weight2yAgoTotal, diference2yAgoTotal, weight3yAgoTotal, diference3yAgoTotal);
-            body += "<p style='font-size: 11px; color: tomato;'><b>" + SLibUtils.textToHtml("Nota:") + "</b>&nbsp;" + SLibUtils.textToHtml("Se marcan en rojo los proveedores rezagados " 
-                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PERCENTAGE) + " o más respecto a la temporada anterior.") + "</p>";
+            body += composeHtmlTableCompFooter(section, weightTotal, weightTotal1Y, diffTotal1Y, weightTotal2Y, diffTotal2Y, weightTotal3Y, diffTotal3Y);
         }
         
         // SECTION 3.2 Current season summary by scale:
 
         scaleRows = 0;
         scaleForce = false;
-        scaleHtml = composeHtmlTableKgPctHeader(section, itemName, "Báscula");
+        scaleHtml = composeHtmlTableStdHeader(section, itemName, "Báscula");
 
         // compute scales:
 
@@ -2603,7 +2600,7 @@ public abstract class SSomUtils {
         while (scaleResultSet.next()) {
             weight = SSomUtils.obtainWeightDestinyByScale(session, itemId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             if (weight != 0) {
-                scaleHtml += composeHtmlTableKgPctRow(scaleResultSet.getString("name"), weight, weightTotal);
+                scaleHtml += composeHtmlTableStdRow(scaleResultSet.getString("name"), weight, weightTotal);
                 scaleRows++;
                 if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
                     scaleForce = true;
@@ -2611,7 +2608,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooter(section, weightTotal);
+        scaleHtml += composeHtmlTableStdFooter(section, weightTotal);
 
         if (scaleForce || scaleRows > 1) {
             body += scaleHtml; // more than one scale present or receptions done in a non-default scale
@@ -2624,7 +2621,7 @@ public abstract class SSomUtils {
         weightTotal = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "temporada";
 
-        body += composeHtmlTableKgPctHeader(section, itemName, "Período");
+        body += composeHtmlTableStdHeader(section, itemName, "Período");
 
         // compute months:
 
@@ -2641,11 +2638,11 @@ public abstract class SSomUtils {
             dateEnd = SLibTimeUtils.getEndOfMonth(dateStart);
 
             weight = SSomUtils.obtainWeightDestinyByPeriod(session, itemId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
-            body += composeHtmlTableKgPctRow("" + year + " " + months[month - 1] + ".", weight, weightTotal);
+            body += composeHtmlTableStdRow("" + year + " " + months[month - 1] + ".", weight, weightTotal);
             month++;
         }
 
-        body += composeHtmlTableKgPctFooter(section, weightTotal);
+        body += composeHtmlTableStdFooter(section, weightTotal);
 
         // SECTION 5: History of all past seasons:
 
@@ -2738,31 +2735,31 @@ public abstract class SSomUtils {
 
         // SECTION 1.1. Current day summary by reporting group:
 
-        body += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
+        body += composeHtmlTableStdHeaderAlt(section, "Proveedor");
 
         // compute reporting groups:
 
         while (repGroupResultSet.next()) { // first reading, cursor before first row
             weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
             if (weights != null && weights[2] != 0.0) {
-                body += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                body += composeHtmlTableStdRowAlt(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
             }
         }
 
-        body += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        body += composeHtmlTableStdFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         // SECTION 1.2. Current day summary by scale:
 
         int scaleRows = 0;
         boolean scaleForce = false;
-        String scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
+        String scaleHtml = composeHtmlTableStdHeaderAlt(section, "Báscula");
 
         // compute scales:
 
         while (scaleResultSet.next()) { // first reading, cursor before first row
             weights = SSomUtils.obtainWeightDestinyByScaleAlt(session, itemId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             if (weights != null && weights[2] != 0.0) {
-                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                scaleHtml += composeHtmlTableStdRowAlt(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
                 scaleRows++;
                 if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
                     scaleForce = true;
@@ -2770,7 +2767,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        scaleHtml += composeHtmlTableStdFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         if (scaleForce || scaleRows > 1) {
             body += scaleHtml; // more than one scale present or receptions done in a non-default scale
@@ -2785,7 +2782,7 @@ public abstract class SSomUtils {
 
         // SECTION 2.1. Current month summary by reporting group:
         
-        body += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
+        body += composeHtmlTableStdHeaderAlt(section, "Proveedor");
 
         // compute reporting groups:
 
@@ -2797,17 +2794,17 @@ public abstract class SSomUtils {
             weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
 
             if (weights != null && weights[2] != 0.0) {
-                body += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                body += composeHtmlTableStdRowAlt(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
             }
         }
 
-        body += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        body += composeHtmlTableStdFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
         
         // SECTION 2.2: Current month summary by scale: 
 
         scaleRows = 0;
         scaleForce = false;
-        scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
+        scaleHtml = composeHtmlTableStdHeaderAlt(section, "Báscula");
 
         // compute scales:
 
@@ -2819,7 +2816,7 @@ public abstract class SSomUtils {
             weights = SSomUtils.obtainWeightDestinyByScaleAlt(session, itemId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             
             if (weights != null && weights[2] != 0.0) {
-                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                scaleHtml += composeHtmlTableStdRowAlt(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
                 scaleRows++;
                 if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
                     scaleForce = true;
@@ -2827,7 +2824,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        scaleHtml += composeHtmlTableStdFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         if (scaleForce || scaleRows > 1) {
             body += scaleHtml; // more than one scale present or receptions done in a non-default scale
@@ -2858,7 +2855,7 @@ public abstract class SSomUtils {
 
         // SECTION 3.1 Current season summary by reporting group:
 
-        body += composeHtmlTableKgPctHeaderAlt(section, "Proveedor");
+        body += composeHtmlTableStdHeaderAlt(section, "Proveedor");
 
         // compute reporting groups:
 
@@ -2869,17 +2866,17 @@ public abstract class SSomUtils {
         while (repGroupResultSet.next()) {
             weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, repGroupResultSet.getInt("id_rep_grp"), 0, idTicOrig, idTicDest);
             if (weights != null && weights[2] != 0.0) {
-                body += composeHtmlTableKgPctRowAlt(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                body += composeHtmlTableStdRowAlt(repGroupResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
             }
         }
 
-        body += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        body += composeHtmlTableStdFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         // SECTION 3.2 Current season summary by scale:
 
         scaleRows = 0;
         scaleForce = false;
-        scaleHtml = composeHtmlTableKgPctHeaderAlt(section, "Báscula");
+        scaleHtml = composeHtmlTableStdHeaderAlt(section, "Báscula");
 
         // compute scales:
 
@@ -2891,7 +2888,7 @@ public abstract class SSomUtils {
             weights = SSomUtils.obtainWeightDestinyByScaleAlt(session, itemId, itemAltId, dateStart, dateEnd, scaleResultSet.getInt("id_sca"), idTicOrig, idTicDest);
             
             if (weights != null && weights[2] != 0.0) {
-                scaleHtml += composeHtmlTableKgPctRowAlt(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
+                scaleHtml += composeHtmlTableStdRowAlt(scaleResultSet.getString("name"), weights[0], weights[1], weights[2], weightsTots[2]);
                 scaleRows++;
                 if (!scaleForce && !scaleResultSet.getBoolean("b_def")) {
                     scaleForce = true;
@@ -2899,7 +2896,7 @@ public abstract class SSomUtils {
             }
         }
 
-        scaleHtml += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        scaleHtml += composeHtmlTableStdFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         if (scaleForce || scaleRows > 1) {
             body += scaleHtml; // more than one scale present or receptions done in a non-default scale
@@ -2912,7 +2909,7 @@ public abstract class SSomUtils {
         weightsTots = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
         section = "temporada";
 
-        body += composeHtmlTableKgPctHeaderAlt(section, "Período");
+        body += composeHtmlTableStdHeaderAlt(section, "Período");
 
         // compute months:
 
@@ -2929,11 +2926,11 @@ public abstract class SSomUtils {
             dateEnd = SLibTimeUtils.getEndOfMonth(dateStart);
 
             weights = SSomUtils.obtainWeightDestinyByPeriodAlt(session, itemId, itemAltId, dateStart, dateEnd, 0, 0, idTicOrig, idTicDest);
-            body += composeHtmlTableKgPctRowAlt("" + year + " " + months[month - 1] + ".", weights[0], weights[1], weights[2], weightsTots[2]);
+            body += composeHtmlTableStdRowAlt("" + year + " " + months[month - 1] + ".", weights[0], weights[1], weights[2], weightsTots[2]);
             month++;
         }
 
-        body += composeHtmlTableKgPctFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
+        body += composeHtmlTableStdFooterAlt(section, weightsTots[0], weightsTots[1], weightsTots[2]);
 
         // SECTION 5: History of all past seasons:
 
@@ -3026,40 +3023,54 @@ public abstract class SSomUtils {
     }
     
     /**
-     * Clase de utilerías para obtención de datos relativos a una fecha para la generación de reportes de recepción de insumos en báscula.
+     * Clase de utilerías para obtención de atributos relativos a una fecha, para la generación de reportes de recepción de insumos en báscula.
      */
-    public static class DateSettings {
+    public static class DateProps {
         
         public Date Today;
-        public int SeasonFirstMonth;
-        public int MonthFirstDay;
         
-        /** Current "calendar" year. */
-        public int CurrentYear;
-        /** Current "calendar" month. */
-        public int CurrentMonth;
+        private int OldestYear;
+        private int SeasonFirstMonth;
+        private int MonthFirstDay;
+        private boolean UseOpCalendars;
+        private int TargetItemId;
         
-        /** Start of current "operative" month. */
-        public Date MonthStartDate;
-        /** End of current "operative" month. */
-        public Date MonthEndDate;
+        private String[] MonthsShort;
+        private String[] MonthsLong;
         
-        /** Start of current "operative" season. */
-        public Date SeasonStartDate;
-        /** End of current "operative" season. */
-        public Date SeasonEndDate;
+        /** Current operating year. */
+        public int OpYear;
+        /** Current operating month. */
+        public int OpMonth;
         
-        /** Boundaries (starting and anding dates) of twelve months of season. */
-        public ArrayList<Date[]> SeasonMonthsBoundaries;
+        /** Start of current operating month. */
+        public Date OpMonthStart;
+        /** End of current operating month. */
+        public Date OpMonthEnd;
+        
+        /** Start of current operating season. */
+        public Date OpSeasonStart;
+        /** End of current operating season. */
+        public Date OpSeasonEnd;
+        
+        /** Boundaries (starting and ending dates) of twelve months of season. */
+        public ArrayList<Date[]> OpSeasonMonthsBoundaries;
+        
+        /** Boundaries (starting and ending dates) of seasons from oldest year up to current operating year. */
+        public ArrayList<Date[]> OpSeasonsBoundaries;
         
         /**
-         * Create a new instance of DatesSettings.
+         * Create a new instance of DatesProps.
+         * @param session GUI session.
          * @param today Today.
+         * @param oldestYear Oldest year for date properties.
          * @param seasonFirstMonth Season first month (1 = January; 0 = item's start month.)
          * @param monthFirstDay Month first day (0 | 1 = 1st. of start month; > 1 = nth of previous month.)
+         * @param useOpCalendars Flag to use operative calendars.
+         * @param targetItemId Target item ID.
          * @throws Exception 
          */
-        public DateSettings(final Date today, final int seasonFirstMonth, final int monthFirstDay) throws Exception {
+        public DateProps(final SGuiSession session, final Date today, final int oldestYear, final int seasonFirstMonth, final int monthFirstDay, final boolean useOpCalendars, final int targetItemId) throws Exception {
             // validate arguments:
             
             if (seasonFirstMonth < SLibTimeConsts.MONTH_MIN || seasonFirstMonth > SLibTimeConsts.MONTH_MAX) {
@@ -3070,220 +3081,328 @@ public abstract class SSomUtils {
                 throw new Exception("El día de inicio de mes, " + monthFirstDay + ", debe estar entre " + 1 + " y " + SCliConsts.MAX_MONTH_START_DAY + ".");
             }
             
-            // process date settings:
+            // setup date properties processing:
             
             Today = today;
+            
+            OldestYear = oldestYear;
             SeasonFirstMonth = seasonFirstMonth;
             MonthFirstDay = monthFirstDay;
+            UseOpCalendars = useOpCalendars;
+            TargetItemId = targetItemId;
             
-            int[] dateDigestion = SLibTimeUtils.digestDate(today); // 0 = year, 1 = month, 2 = day
-            int todayYear = dateDigestion[0];
-            int todayMonth = dateDigestion[1];
-            int todayDay = dateDigestion[2];
+            // months descriptions:
             
-            if (MonthFirstDay == 1) {
-                // month starts on 1st.
+            MonthsShort = SLibTimeUtils.createMonthsOfYearStd(Calendar.SHORT);
+            MonthsLong = SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG);
+            
+            // process date properties:
+            
+            if (UseOpCalendars) {
+                // set properties based on matching operating calendar:
                 
-                CurrentYear = todayYear;
-                CurrentMonth = todayMonth;
+                SDbOpCalendarYear todayOpYear;
+                SDbOpCalendarYearMonth todayOpMonth;
+                int[] todayOpYearKey = SOpCalendarUtils.getOpCalendarYearKey(session, TargetItemId, Today);
                 
-                MonthStartDate = SLibTimeUtils.createDate(CurrentYear, CurrentMonth, 1);
-                MonthEndDate = SLibTimeUtils.getEndOfMonth(MonthStartDate);
+                if (todayOpYearKey == null) {
+                    throw new Exception("No se encontró el año operativo.");
+                }
+                
+                todayOpYear = new SDbOpCalendarYear();
+                todayOpYear.read(session, todayOpYearKey); // registries must be read directly, not from available dummy session!
+                
+                todayOpMonth = todayOpYear.getChildMonthByDate(Today);
+                
+                if (todayOpMonth == null) {
+                    throw new Exception("No se encontró el mes operativo.");
+                }
+                
+                int[] monthEndDigestion = SLibTimeUtils.digestMonth(todayOpMonth.getMonthEnd()); // 0 = year, 1 = month
+                int monthEndYear = monthEndDigestion[0];
+                int monthEndMonth = monthEndDigestion[1];
+
+                OpYear = monthEndYear;
+                OpMonth = monthEndMonth;
+
+                OpMonthStart = todayOpMonth.getMonthStart();
+                OpMonthEnd = todayOpMonth.getMonthEnd();
+                
+                if (OldestYear > OpYear) {
+                    throw new Exception("El año más antiguo, " + OldestYear + ", no puede ser mayor al año actual, " + OpYear + ".");
+                }
+
+                OpSeasonStart = todayOpYear.getYearStart();
+                OpSeasonEnd = todayOpYear.getYearEnd();
+
+                // operating season months boundaries:
+
+                OpSeasonMonthsBoundaries = new ArrayList<>();
+
+                for (SDbOpCalendarYearMonth month : todayOpYear.getChildMonths()) {
+                    OpSeasonMonthsBoundaries.add(month.getPeriod());
+                }
+                
+                // operating seasons boundaries:
+
+                OpSeasonsBoundaries = new ArrayList<>();
+
+                for (int year = OldestYear; year < todayOpYear.getPkYearId(); year++) {
+                    SDbOpCalendarYear ocy = new SDbOpCalendarYear();
+                    ocy.read(session, new int[] { todayOpYear.getPkOpCalendarId(), year }); // registries must be read directly, not from available dummy session!
+                    OpSeasonsBoundaries.add(ocy.getPeriod());
+                }
+                
+                OpSeasonsBoundaries.add(todayOpYear.getPeriod());
             }
             else {
-                // month starts after 1st.
+                // set properties by hand:
                 
-                if (todayDay < MonthFirstDay) {
-                    // today belongs to "current" month:
-                    
-                    CurrentYear = todayYear;
-                    CurrentMonth = todayMonth;
-                    
-                    if (CurrentMonth > SLibTimeConsts.MONTH_JAN) {
-                        MonthStartDate = SLibTimeUtils.createDate(CurrentYear, CurrentMonth - 1, MonthFirstDay);
+                int[] todayDigestion = SLibTimeUtils.digestDate(today); // 0 = year, 1 = month, 2 = day
+                int todayYear = todayDigestion[0];
+                int todayMonth = todayDigestion[1];
+                int todayDay = todayDigestion[2];
+
+                if (MonthFirstDay == 1) {
+                    // month starts on 1st.
+
+                    OpYear = todayYear;
+                    OpMonth = todayMonth;
+
+                    OpMonthStart = SLibTimeUtils.createDate(OpYear, OpMonth, 1);
+                    OpMonthEnd = SLibTimeUtils.getEndOfMonth(OpMonthStart);
+                }
+                else {
+                    // month starts after 1st.
+
+                    if (todayDay < MonthFirstDay) {
+                        // today belongs to "current" month:
+
+                        OpYear = todayYear;
+                        OpMonth = todayMonth;
+
+                        if (OpMonth > SLibTimeConsts.MONTH_JAN) {
+                            OpMonthStart = SLibTimeUtils.createDate(OpYear, OpMonth - 1, MonthFirstDay);
+                        }
+                        else {
+                            OpMonthStart = SLibTimeUtils.createDate(OpYear - 1, SLibTimeConsts.MONTH_DEC, MonthFirstDay);
+                        }
                     }
                     else {
-                        MonthStartDate = SLibTimeUtils.createDate(CurrentYear - 1, SLibTimeConsts.MONTH_DEC, MonthFirstDay);
+                        // today belongs to "next" month:
+
+                        if (todayMonth < SLibTimeConsts.MONTH_DEC) {
+                            OpYear = todayYear;
+                            OpMonth = todayMonth + 1;
+                        }
+                        else {
+                            OpYear = todayYear + 1;
+                            OpMonth = SLibTimeConsts.MONTH_JAN;
+                        }
+
+                        OpMonthStart = SLibTimeUtils.createDate(todayYear, todayMonth, MonthFirstDay);
+                    }
+
+                    OpMonthEnd = SLibTimeUtils.createDate(OpYear, OpMonth, MonthFirstDay - 1);
+                }
+
+                if (OldestYear > OpYear) {
+                    throw new Exception("El año más antiguo, " + OldestYear + ", no puede ser mayor al año actual, " + OpYear + ".");
+                }
+
+                int firstSeasonYear = OpMonth >= SeasonFirstMonth ? OpYear : OpYear - 1;
+                int firstSeasonMonth = SeasonFirstMonth - (MonthFirstDay == 1 ? 0 : 1);
+
+                OpSeasonStart = SLibTimeUtils.createDate(firstSeasonYear, firstSeasonMonth, MonthFirstDay);
+                OpSeasonEnd = SLibTimeUtils.addDate(OpSeasonStart, 1, MonthFirstDay == 1 ? 0 : 1, -1);
+
+                // operating season months boundaries:
+
+                OpSeasonMonthsBoundaries = new ArrayList<>();
+
+                if (MonthFirstDay == 1) {
+                    // month starts on 1st.
+
+                    int year = firstSeasonYear;
+                    int month = firstSeasonMonth;
+
+                    for (int i = 0; i < SLibTimeConsts.MONTHS; i++, month++) {
+                        if (month > SLibTimeConsts.MONTH_DEC) {
+                            month = SLibTimeConsts.MONTH_JAN;
+                            year++;
+                        }
+
+                        Date start = SLibTimeUtils.createDate(year, month, 1);
+                        Date end = SLibTimeUtils.getEndOfMonth(start);
+
+                        OpSeasonMonthsBoundaries.add(new Date[] { start, end });
                     }
                 }
                 else {
-                    // today belongs to "next" month:
-                    
-                    if (todayMonth < SLibTimeConsts.MONTH_DEC) {
-                        CurrentYear = todayYear;
-                        CurrentMonth = todayMonth + 1;
+                    // month starts after 1st.
+
+                    Date start = null;
+                    Date end = null;
+
+                    for (int i = 0; i < SLibTimeConsts.MONTHS; i++) {
+                        if (start == null) {
+                            start = OpSeasonStart;
+                        }
+                        else {
+                            start = SLibTimeUtils.addDate(start, 0, 1, 0);
+                        }
+
+                        end = SLibTimeUtils.addDate(start, 0, 1, -1);
+
+                        OpSeasonMonthsBoundaries.add(new Date[] { start, end });
                     }
-                    else {
-                        CurrentYear = todayYear + 1;
-                        CurrentMonth = SLibTimeConsts.MONTH_JAN;
-                    }
-                    
-                    MonthStartDate = SLibTimeUtils.createDate(todayYear, todayMonth, MonthFirstDay);
                 }
-                
-                MonthEndDate = SLibTimeUtils.createDate(CurrentYear, CurrentMonth, MonthFirstDay - 1);
-            }
-            
-            int firstSeasonYear = CurrentMonth >= SeasonFirstMonth ? CurrentYear : CurrentYear - 1;
-            int firstSeasonMonth = SeasonFirstMonth - (MonthFirstDay == 1 ? 0 : 1);
-            
-            SeasonStartDate = SLibTimeUtils.createDate(firstSeasonYear, firstSeasonMonth, MonthFirstDay);
-            SeasonEndDate = SLibTimeUtils.addDate(SeasonStartDate, 1, MonthFirstDay == 1 ? 0 : 1, -1);
-            
-            SeasonMonthsBoundaries = new ArrayList<>();
-            
-            if (MonthFirstDay == 1) {
-                // month starts on 1st.
-                
-                int year = firstSeasonYear;
-                int month = firstSeasonMonth;
-                
-                for (int i = 0; i < SLibTimeConsts.MONTHS; i++, month++) {
-                    if (month > SLibTimeConsts.MONTH_DEC) {
-                        month = SLibTimeConsts.MONTH_JAN;
-                        year++;
-                    }
-                    
-                    Date start = SLibTimeUtils.createDate(year, month, 1);
-                    Date end = SLibTimeUtils.getEndOfMonth(start);
-                    
-                    SeasonMonthsBoundaries.add(new Date[] { start, end });
-                }
-            }
-            else {
-                // month starts after 1st.
-                
-                Date start = null;
-                Date end = null;
-                
-                for (int i = 0; i < SLibTimeConsts.MONTHS; i++) {
-                    if (start == null) {
-                        start = SeasonStartDate;
-                    }
-                    else {
-                        start = SLibTimeUtils.addDate(start, 0, 1, 0);
-                    }
-                    
-                    end = SLibTimeUtils.addDate(start, 0, 1, -1);
-                    
-                    SeasonMonthsBoundaries.add(new Date[] { start, end });
+
+                // operating seasons boundaries:
+
+                OpSeasonsBoundaries = new ArrayList<>();
+
+                for (int year = OldestYear; isOpSeasonCustom() ? year < OpYear : year <= OpYear; year++) {
+                    Date start = SLibTimeUtils.createDate(year, SeasonFirstMonth, MonthFirstDay);
+                    Date end = SLibTimeUtils.addDate(start, 1, 0, -1);
+                    OpSeasonsBoundaries.add(new Date[] { start, end });
                 }
             }
         }
 
         /**
-         * Check if season is outdated, that is if it does not start in January.
+         * Check if operating season is customized, that is if it does not start in January.
          * @return <code>true</code> if season does not start in January.
          */
-        public boolean isSeasonOutdated() {
+        public final boolean isOpSeasonCustom() {
             return SeasonFirstMonth != SLibTimeConsts.MONTH_JAN;
         }
         
         /**
-         * Check if month is outdated, that is if it does not start in the 1st.
+         * Check if operating month is customized, that is if it does not start in the 1st.
          * @return <code>true</code> if month does not start in the 1st.
          */
-        public boolean isMonthOutdated() {
+        public final boolean isOpMonthCustom() {
             return MonthFirstDay != 1;
         }
         
         /**
-         * Get period of current month in format "from A to B".
-         * @return Period of current month.
+         * Check if operating season or month are customized.
+         * @return <code>true</code> if season does not start in January.
          */
-        public String getCurrentMonthPeriod() {
-            return "del " + SLibUtils.DateFormatDate.format(MonthStartDate) + " al " + SLibUtils.DateFormatDate.format(MonthEndDate);
+        public final boolean isOpSeasonOrMonthCustom() {
+            return isOpSeasonCustom() || isOpMonthCustom();
         }
         
         /**
-         * Get period of current season in format "from A to B".
-         * @return Period of current season.
-         */
-        public String getCurrentSeasonPeriod() {
-            return "del " + SLibUtils.DateFormatDate.format(SeasonStartDate) + " al " + SLibUtils.DateFormatDate.format(SeasonEndDate);
-        }
-        
-        /**
-         * Get title for current season in format "yyyy" or "xxxx-yyyy" if season is outdated.
+         * Get operative season as text, either in "yyyy" or "yyyy-yyyy" format, depending of season is out of sync or not.
          * @return 
          */
-        public String getCurrentSeasonTitle() {
-            String season;
+        private String getOpSeasonAsText() {
+            String text;
             
             if (SeasonFirstMonth == SLibTimeConsts.MONTH_JAN && MonthFirstDay == 1) {
-                season = "" + SLibTimeUtils.digestYear(SeasonStartDate)[0];
+                text = "" + SLibTimeUtils.digestYear(OpSeasonStart)[0];
             }
             else {
-                season = "" + SLibTimeUtils.digestYear(SeasonStartDate)[0] + "-" + SLibTimeUtils.digestYear(SeasonEndDate)[0];
+                text = "" + SLibTimeUtils.digestYear(OpSeasonStart)[0] + "-" + SLibTimeUtils.digestYear(OpSeasonEnd)[0];
             }
             
-            return season;
+            return text;
         }
         
         /**
-         * Get season information.
+         * Compose description for today.
          * @return 
          */
-        public String getCurrentSeasonInfo() {
-            String info = "";
+        public String composeTodayDescrip() {
+            return "día " + DateFormatGui.format(Today);
+        }
+        
+        /**
+         * Compose description for operating season.
+         * @return 
+         */
+        public String composeOpSeasonDescrip() {
+            return "temporada " + getOpSeasonAsText() + (isOpSeasonCustom()? "*" : "");
+        }
+        
+        /**
+         * Compose description for operating month.
+         * @return 
+         */
+        public String composeOpMonthDescrip() {
+            return "mes " + MonthsShort[OpMonth - 1] + ". " + OpYear + (isOpMonthCustom() ? "*" : "");
+        }
+        
+        /**
+         * Compose period for operating season in format "from A to B".
+         * @return 
+         */
+        public String composeOpSeasonPeriod() {
+            return "del " + DateFormatGui.format(OpSeasonStart) + " al " + DateFormatGui.format(OpSeasonEnd);
+        }
+        
+        /**
+         * Compose period for operating month in format "from A to B".
+         * @return 
+         */
+        public String composeOpMonthPeriod() {
+            return "del " + DateFormatGui.format(OpMonthStart) + " al " + DateFormatGui.format(OpMonthEnd);
+        }
+        
+        /**
+         * Compose information for operating season.
+         * @return 
+         */
+        public String[] composeOpSeasonHtmlInfo() {
+            String[] info = new String[isOpMonthCustom() ? 2 : 1];
             
-            info += "Inicio temporada: "
-                    + "mes " + SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[SeasonFirstMonth - 1] + "; "
-                    + "día " + SLibUtils.DateFormatDate.format(SeasonStartDate) + ". ";
+            info[0] = "Inicio temporada: "
+                    + "mes " + MonthsLong[SeasonFirstMonth - 1] + "; "
+                    + "día " + DateFormatGui.format(OpSeasonStart) + ". ";
             
-            if (isMonthOutdated()) {
-                info += "Día corte mensual: " + (MonthFirstDay - 1) + ".";
+            if (isOpMonthCustom()) {
+                info[1] = "Día cierre mensual: ";
+                
+                if (UseOpCalendars) {
+                    info[1] += "según el calendario operativo aplicable (cierre mes actual: " + DateFormatGui.format(OpMonthEnd) + ").";
+                }
+                else {
+                    info[1] += "días " + (MonthFirstDay - 1) + " de cada mes.";
+                }
             }
             else {
-                info += "Día inicio mensual: " + MonthFirstDay + ".";
+                info[0] += "Día inicio mensual: " + MonthFirstDay + ".";
             }
             
             return info;
         }
         
+        private String composeBoundariesAsString(final ArrayList<Date[]> boundaries) {
+            String string = "";
+            
+            for (Date[] boundary : boundaries) {
+                string += (string.isEmpty() ? "" : "\n") + SLibUtils.IsoFormatDate.format(boundary[0]) + " - " + SLibUtils.IsoFormatDate.format(boundary[1]);
+            }
+            
+            return string;
+        }
+        
         /**
-         * Get seasons information.
+         * Compose string for operative season months boundaries.
          * @return 
          */
-        public String getSeasonsInfo() {
-            String info = "";
-            
-            info += "Inicio temporadas: "
-                    + "mes " + SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[SeasonFirstMonth - 1] + ". ";
-            
-            if (isMonthOutdated()) {
-                info += "Día corte mensual: " + (MonthFirstDay - 1) + ".";
-            }
-            else {
-                info += "Día inicio mensual: " + MonthFirstDay + ".";
-            }
-            
-            return info;
+        public String composeOpSeasonMonthsBoundariesAsString() {
+            return composeBoundariesAsString(OpSeasonMonthsBoundaries);
         }
         
         /**
-         * Create boundaries of seasons years.
-         * @param firstYear First year.
-         * @return Array of seasons years boudaries, within each element is a season start (index 0) and end (index 1) dates.
+         * Compose string for operative season months boundaries.
+         * @return 
          */
-        public ArrayList<Date[]> createSeasonsYearsBoundaries(final int firstYear) throws Exception {
-            ArrayList<Date[]> boundaries = new ArrayList<>();
-            
-            if (firstYear > CurrentYear) {
-                throw new Exception("El primer año, " + firstYear + ", no puede ser mayor al año actual, " + CurrentYear + ".");
-            }
-            
-            for (int year = firstYear; year <= CurrentYear; year++) {
-                Date start = SLibTimeUtils.createDate(year, SeasonFirstMonth, MonthFirstDay);
-                Date end = SLibTimeUtils.addDate(start, 1, 0, -1);
-                boundaries.add(new Date[] { start, end });
-            }
-            
-            return boundaries;
-        }
-        
-        public String getSeasonMonthsBoundariesAsString() {
-            return DateSettings.getSeasonMonthsBoundariesAsString(SeasonMonthsBoundaries);
+        public String composeOpSeasonsBoundariesAsString() {
+            return composeBoundariesAsString(OpSeasonsBoundaries);
         }
         
         @Override
@@ -3294,25 +3413,15 @@ public abstract class SSomUtils {
             string += "MonthStartDay: " + MonthFirstDay + "; ";
             string += "SeasonFirstMonth: " + SeasonFirstMonth + "; ";
 
-            string += "CurrentYear: " + CurrentYear + "; ";
-            string += "CurrentMonth: " + CurrentMonth + "; ";
+            string += "CurrentYear: " + OpYear + "; ";
+            string += "CurrentMonth: " + OpMonth + "; ";
 
-            string += "MonthStartDate: " + SLibUtils.IsoFormatDate.format(MonthStartDate) + "; ";
-            string += "MonthEndDate: " + SLibUtils.IsoFormatDate.format(MonthEndDate) + "; ";
+            string += "MonthStartDate: " + SLibUtils.IsoFormatDate.format(OpMonthStart) + "; ";
+            string += "MonthEndDate: " + SLibUtils.IsoFormatDate.format(OpMonthEnd) + "; ";
             
-            string += "SeasonStartDate: " + SLibUtils.IsoFormatDate.format(SeasonStartDate) + "; ";
-            string += "SeasonEndDate: " + SLibUtils.IsoFormatDate.format(SeasonEndDate) + "; ";
-            string += "SeasonMonthsBoundaries.size(): " + SeasonMonthsBoundaries.size() + ".";
-            
-            return string;
-        }
-        
-        public static String getSeasonMonthsBoundariesAsString(final ArrayList<Date[]> boundaries) {
-            String string = "";
-            
-            for (Date[] boundary : boundaries) {
-                string += (string.isEmpty() ? "" : "\n") + SLibUtils.IsoFormatDate.format(boundary[0]) + " - " + SLibUtils.IsoFormatDate.format(boundary[1]);
-            }
+            string += "SeasonStartDate: " + SLibUtils.IsoFormatDate.format(OpSeasonStart) + "; ";
+            string += "SeasonEndDate: " + SLibUtils.IsoFormatDate.format(OpSeasonEnd) + "; ";
+            string += "SeasonMonthsBoundaries.size(): " + OpSeasonMonthsBoundaries.size() + ".";
             
             return string;
         }

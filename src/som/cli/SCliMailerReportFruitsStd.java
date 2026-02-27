@@ -31,7 +31,7 @@ public class SCliMailerReportFruitsStd {
     /** Argument index for list of mail-Bcc recipients. */
     private static final int ARG_IDX_MAIL_BCC = 4;
 
-    private static final int[] DEF_ITEM_IDS = new int[] { SCliConsts.ID_AVO_FRUIT_CONV, /*SCliConsts.ID_AVO_FRUIT_ORG,*/ SCliConsts.ID_AVO_CHAFF, SCliConsts.ID_AVO_KERNEL, SCliConsts.ID_AVO_PULP };
+    private static final int[] DEF_ITEM_IDS = new int[] { SCliConsts.ID_AVO_FRUIT_CONV, /*SCliConsts.ID_AVO_FRUIT_ORG,*/ SCliConsts.ID_AVO_CHAFF, SCliConsts.ID_AVO_KERNEL, SCliConsts.ID_AVO_PULP, SCliConsts.ID_MAN_KERNEL };
     private static final int DEF_YEAR_BASE = SCliConsts.FRUIT_FIRST_YEAR; // año/temporada tope hacia atrás
     //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
@@ -84,7 +84,9 @@ public class SCliMailerReportFruitsStd {
             Date cutoff = now;
             
             SReportHtmlTicketSeasonMonthStd reportHtml = new SReportHtmlTicketSeasonMonthStd(SCliUtils.createSession());
-            String mailBody = reportHtml.generateReportHtml(argItemIds, argYearBase, argIntvlDays, SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthStd.MODE_UNIT_TON);
+            String mailBody = reportHtml.generateReportHtml(argItemIds, argYearBase, argIntvlDays,
+                    SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, SCliConsts.FRUIT_BY_OP_CALENDARS,
+                    cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthStd.MODE_UNIT_TON);
             
             // send mail report:
             
@@ -95,7 +97,7 @@ public class SCliMailerReportFruitsStd {
             SCliUtils.sendMailReport(mailSubject, mailBody, recipientsTo, recipientsBcc, null);
         }
         catch (Exception e) {
-            SLibUtils.printException("main()", e);
+            SLibUtils.printException(SCliMailerReportFruitsStd.class.getName(), e);
         }
     }
 }

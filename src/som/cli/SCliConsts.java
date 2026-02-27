@@ -47,9 +47,12 @@ public abstract class SCliConsts {
     /** Día de corte de mes operativo: 19. */
     public static final int FRUIT_MONTH_FIRST_DAY = 19;
     
-    /** Primer mes operativo de temporada de fruta: julio. Aplica a la fecha de corte del primer mes operativo de la temporada. */
+    /** Primer mes operativo de temporada de fruta: julio. Aplica a la fecha de cierre del primer mes operativo de la temporada. */
     public static final int FRUIT_SEASON_FIRST_MONTH = 7;
     
     /** Primer año de recepción de fruta: 2010. */
     public static final int FRUIT_FIRST_YEAR = 2010;
+    
+    /** ¿Usar calendarios operativos para agrupar mensualmente la recepción de fruta? */
+    public static final boolean FRUIT_BY_OP_CALENDARS = true;
 }

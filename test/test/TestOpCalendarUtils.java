@@ -42,7 +42,7 @@ public class TestOpCalendarUtils {
                 System.out.println("ITEM: " + id);
                 
                 for (Date date : new Date[] { SLibTimeUtils.createDate(2009, 1, 1), SLibTimeUtils.createDate(2010, 6, 21), SLibTimeUtils.createDate(2011, 6, 20), SLibTimeUtils.createDate(2019, 9, 1), SLibTimeUtils.createDate(2031, 4, 2)}) {
-                    int[] key = SOpCalendarUtils.getOpCalendarMonthKey(session, id, date);
+                    int[] key = SOpCalendarUtils.getOpCalendarYearMonthKey(session, id, date);
                     System.out.println("ID: " + id + "; date: " + SLibUtils.DateFormatDate.format(date) + "; key: " + (key == null ? "null" : SLibUtils.textKey(key)));
                 }
             }

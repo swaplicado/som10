@@ -131,26 +131,39 @@ public class SCliMailerReportFruitsStdXls {
             }
             
             SReportHtmlTicketSeasonMonthStd reportHtml = new SReportHtmlTicketSeasonMonthStd(SCliUtils.createSession());
-            String mailBodyHtml = reportHtml.generateReportHtml(argItemIds, argYearBase, argIntvlDays, SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthStd.MODE_UNIT_TON);
-            File file = createReportFile(mailBodyHtml);
+            String mailBodyHtml = reportHtml.generateReportHtml(argItemIds, argYearBase, argIntvlDays,
+                    SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, SCliConsts.FRUIT_BY_OP_CALENDARS,
+                    cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthStd.MODE_UNIT_TON);
             
-            // send mail report:
+            File file = null;
             
-            String mailSubject = SLibUtils.textToAscii("[SOM] Histórico mensual báscula fruta Excel " + SLibUtils.DateFormatDate.format(now));
-            ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(argMailTo, ";")));
-            ArrayList<String> recipientsBcc = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(argMailBcc, ";")));
-            
-            String mailBody = generateBodyHtml(cutoff, now);
-            SCliUtils.sendMailReport(mailSubject, mailBody, recipientsTo, recipientsBcc, file);
-                    
-            file.delete();
+            try {
+                file = createReportFile(mailBodyHtml, cutoff, SCliConsts.FRUIT_MONTH_FIRST_DAY > 1, SCliConsts.FRUIT_BY_OP_CALENDARS);
+
+                // send mail report:
+
+                String mailSubject = SLibUtils.textToAscii("[SOM] Histórico mensual báscula fruta Excel " + SLibUtils.DateFormatDate.format(now));
+                ArrayList<String> recipientsTo = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(argMailTo, ";")));
+                ArrayList<String> recipientsBcc = new ArrayList<>(Arrays.asList(SLibUtilities.textExplode(argMailBcc, ";")));
+
+                String mailBody = generateBodyHtml(cutoff, now);
+                SCliUtils.sendMailReport(mailSubject, mailBody, recipientsTo, recipientsBcc, file);
+            }
+            catch (Exception e) {
+                throw e;
+            }
+            finally {
+                if (file != null) {
+                    file.delete();
+                }
+            }
         }
         catch (Exception e) {
-            SLibUtils.printException("main()", e);
+            SLibUtils.printException(SCliMailerReportFruitsStdXls.class.getName(), e);
         }
     }
     
-    private static File createReportFile(final String mailBodyHtml) throws Exception {
+    private static File createReportFile(final String mailBodyHtml, final Date cutoff, final boolean isCustomMonth, final boolean useOpCalendars) throws Exception {
         Document doc = Jsoup.parse(mailBodyHtml);
         Workbook = new XSSFWorkbook();
         Sheet sheet = Workbook.createSheet("Hoja 1");
@@ -199,7 +212,13 @@ public class SCliMailerReportFruitsStdXls {
         pctStyleAccum.setAlignment(HorizontalAlignment.CENTER);
 
         CellStyle notesStyle = createCellStyle(false, false, null, IndexedColors.BLACK.getIndex(), 9);
-        String notes = "* Inicio de temporada: " + SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[SCliConsts.FRUIT_SEASON_FIRST_MONTH - 1] + "; día de corte mensual: " + (SCliConsts.FRUIT_MONTH_FIRST_DAY - 1) + ".";
+        String notes = "";
+        
+        if (isCustomMonth) {
+            int[] cutoffDigestion = SLibTimeUtils.digestMonth(cutoff);
+            String monthClosing = useOpCalendars ? "según el calendario operativo aplicable (cierre mes actual: " + SLibUtils.DecimalFormatCalendarMonth.format(SCliConsts.FRUIT_MONTH_FIRST_DAY - 1) + "/" + SLibTimeUtils.createMonthsOfYearStd(Calendar.SHORT)[cutoffDigestion[1] - 1] + "./" + cutoffDigestion[0] + ")" : "los días " + SLibUtils.DecimalFormatCalendarMonth.format(SCliConsts.FRUIT_MONTH_FIRST_DAY - 1) + " de cada mes";
+            notes = "* Inicio de temporada: " + SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[SCliConsts.FRUIT_SEASON_FIRST_MONTH - 1] + ". Día de cierre mensual: " + monthClosing + ".";
+        }
 
         for (Element table : doc.select("table")) {
             Element title = doc.select("h4").get(tableTitle);

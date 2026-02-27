@@ -39,7 +39,7 @@ public class SCliMailerReportFruitsAltSummary {
     private static final String ARG_DATE_YESTERDAY = "YESTERDAY";
 
     private static final String[] DEF_ITEM_IDS = new String[] { SCliConsts.IDS_PAIR_AVO_FRUIT_CNV_ORG };
-    private static final Date DEF_DATE = SLibTimeUtils.createDate(2026, 1, 28);
+    private static final Date DEF_DATE = SLibTimeUtils.createDate(2026, 2, 25);
     //private static final int DEF_REP_MODE = REP_MODE_COMPARATIVE;
     private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
@@ -107,7 +107,7 @@ public class SCliMailerReportFruitsAltSummary {
             SCliUtils.sendMailReport(mailSubject, mailBody, recipientsTo, recipientsBcc, null);
         }
         catch (Exception e) {
-            SLibUtils.printException("main()", e);
+            SLibUtils.printException(SCliMailerReportFruitsAltSummary.class.getName(), e);
         }
     }
 }

@@ -6,8 +6,6 @@
 package som.cli;
 
 import sa.lib.SLibUtils;
-import sa.lib.db.SDbConsts;
-import sa.lib.db.SDbDatabase;
 import sa.lib.gui.SGuiSession;
 import som.mod.som.db.SOpCalendarUtils;
 
@@ -15,30 +13,35 @@ import som.mod.som.db.SOpCalendarUtils;
  *
  * @author Sergio Flores
  */
-public class SUtilAssignOpCalendarToAllTickets {
+public class SCliUpdateOpCalendarToAllTickets {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         try {
+            SGuiSession session = SCliUtils.createSession();
+            
+            /*
             SGuiSession session = new SGuiSession(null);
             
             SDbDatabase database = new SDbDatabase(SDbConsts.DBMS_MYSQL);
 
             database.connect(
-                    "localhost",
+                    //"localhost",
+                    "192.168.1.233",
                     "3306",
                     "som_com",
                     "root",
                     "msroot");
             
             session.setDatabase(database);
+            */
             
-            SOpCalendarUtils.assignOpCalendarToAllTickets(session);
+            SOpCalendarUtils.updateOpCalendarToAllTickets(session);
         }
         catch (Exception e) {
-            SLibUtils.printException(SUtilAssignOpCalendarToAllTickets.class.getName(), e);
+            SLibUtils.printException(SCliUpdateOpCalendarToAllTickets.class.getName(), e);
         }
     }
     

@@ -40,80 +40,7 @@ public class SReportHtmlTicketSummaryStd {
         
         String html = "<html>\n";
         
-        // HTML head:
-        
-        html += "<head>\n";
-        html += "<style>\n"
-                + "body {"
-                + " font-size: 100%;"
-                + "} "
-                + "h1 {"
-                + " font-size: 2.00em;"
-                + " font-family: sans-serif;"
-                + "} "
-                + "h2 {"
-                + " font-size: 1.75em;"
-                + " font-family: sans-serif;"
-                + "} "
-                + "h3 {"
-                + " font-size: 1.50em;"
-                + " font-family: sans-serif;"
-                + "} "
-                + "h4 {"
-                + " font-size: 1.25em;"
-                + " font-family: sans-serif;"
-                + "} "
-                + "p {"
-                + " font-size: 0.875em;"
-                + " font-family: sans-serif;"
-                + "} "
-                + "table {"
-                + " /*width:100%;*/" // nullified attribute
-                + " font-size: 0.875em;"
-                + " font-family: sans-serif;"
-                + "} "
-                + "table, th, td {"
-                + " border: 1px solid black;"
-                + " border-collapse: collapse;"
-                + "} "
-                + "th {"
-                + " padding: 2px;"
-                + " text-align: center;"
-                + " background-color: DarkSlateGray;"
-                + " color: white;"
-                + " word-break: keep-all;"
-                + " white-space: nowrap;"
-                + "} "
-                + "td {"
-                + " padding: 2px;"
-                + " word-break: keep-all;"
-                + " white-space: nowrap;"
-                + "} "
-                + "td.colmonth {"
-                + " text-align: left;"
-                + "} "
-                + "td.coldata {"
-                + " text-align: right;"
-                + "} "
-                + "td.coldatamax {"
-                + " text-align: right;"
-                + " background-color: PaleTurquoise;"
-                + "} "
-                + "td.coldatapct {"
-                + " text-align: center;"
-                + " font-size: 0.75em;"
-                + " font-family: sans-serif;"
-                + "} "
-                + "td.coldatapctmax {"
-                + " text-align: center;"
-                + " font-size: 0.75em;"
-                + " font-family: sans-serif;"
-                + " background-color: PaleTurquoise;"
-                + "}"
-                + "\n"
-                + "</style>\n";
-        
-        html += "</head>\n";
+        html += SCliUtils.composeHtmlHeadForSummary();
         
         // HTML body:
         
@@ -146,7 +73,7 @@ public class SReportHtmlTicketSummaryStd {
             
             // read requested item for report:
             SDbItem item = new SDbItem();
-            item.read(moSession, new int[] { itemId });
+            item.read(moSession, new int[] { itemId }); // registries must be read directly, not from available dummy session!
             
             // compose summary:
             html += "<h1>" + SLibUtils.textToHtml(item.getName()) + "</h1>\n";

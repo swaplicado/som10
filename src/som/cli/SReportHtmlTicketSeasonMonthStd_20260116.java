@@ -22,7 +22,7 @@ import som.mod.som.db.SDbUnit;
 import som.mod.som.db.SSomMailUtils;
 
 /**
- *
+ * Generación de las tablas comparativas históricas mensuales de recepción de fruta en base a meses calendario.
  * @author Sergio Flores
  */
 @Deprecated

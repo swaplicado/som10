@@ -70,7 +70,7 @@ public abstract class SCliUtils {
      * @param seasonFirstMonth Season fisrt month.
      * @return Row index limit.
      */
-    public static int getRowAccumsForMonth(final int currentMonth, final int seasonFirstMonth) {
+    public static int getRowIndexLimitForAccumValues(final int currentMonth, final int seasonFirstMonth) {
         if (currentMonth >= seasonFirstMonth) {
             return currentMonth - seasonFirstMonth;
         }
@@ -102,5 +102,198 @@ public abstract class SCliUtils {
         mail.send();
 
         System.out.println("¡El correo ha sido enviado!");
+    }
+
+    /**
+     * Compose HTML head tag for season-month mail reports.
+     * @return 
+     */
+    public static String composeHtmlHeadForSeasonMonth() {
+        String html = "<head>\n";
+        
+        html += "<style>\n"
+                + "body {"
+                + " font-size: 100%;"
+                + "} "
+                + "h1 {"
+                + " font-size: 2.00em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h2 {"
+                + " font-size: 1.75em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h3 {"
+                + " font-size: 1.50em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h4 {"
+                + " font-size: 1.25em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "p {"
+                + " font-size: 0.875em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "table {"
+                + " /*width:100%;*/" // nullified attribute
+                + " font-size: 0.875em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "table, th, td {"
+                + " border: 1px solid black;"
+                + " border-collapse: collapse;"
+                + "} "
+                + "th {"
+                + " padding: 2px;"
+                + " text-align: center;"
+                + " background-color: #008080;"
+                + " color: white;"
+                + " word-break: keep-all;"
+                + " white-space: nowrap;"
+                + "} "
+                + "td {"
+                + " padding: 2px;"
+                + " word-break: keep-all;"
+                + " white-space: nowrap;"
+                + "} "
+                + "td.colmonth {"
+                + " text-align: left;"
+                + "} "
+                + "td.coldata {"
+                + " text-align: right;"
+                + "} "
+                + "td.coldatamax {"
+                + " text-align: right;"
+                + " background-color: Aqua;"
+                + "} "
+                + "td.coldatapct {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "td.coldatapctmax {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + " background-color: Aqua;"
+                + "}"
+                + "td.coldatapctaccum {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + " background-color: #E5E7E9;"
+                + "} "
+                + "td.colmonthaccum {"
+                + " text-align: left;"
+                + " background-color: #E5E7E9;"
+                + " white-space: nowrap;"
+                + "} "
+                + "td.coldataaccum {"
+                + " text-align: right;"
+                + " background-color: #E5E7E9;"
+                + "} "
+                + "td.coldatatotal {"
+                + " text-align: right;"
+                + " background-color: #80bfbf;"
+                + "} "
+                + "td.coldatapcttotal {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + " background-color: #80bfbf;"
+                + "} "
+                + "td.colmonthtotal {"
+                + " text-align: left;"
+                + " background-color: #80bfbf;"
+                + "} "
+                + "\n"
+                + "</style>\n";
+        
+        html += "</head>\n";
+        
+        return html;
+    }
+    
+    /**
+     * Compose HTML head tag for summary mail reports.
+     * @return 
+     */
+    public static String composeHtmlHeadForSummary() {
+        String html = "<head>\n";
+        
+        html += "<style>\n"
+                + "body {"
+                + " font-size: 100%;"
+                + "} "
+                + "h1 {"
+                + " font-size: 2.00em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h2 {"
+                + " font-size: 1.75em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h3 {"
+                + " font-size: 1.50em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h4 {"
+                + " font-size: 1.25em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "p {"
+                + " font-size: 0.875em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "table {"
+                + " /*width:100%;*/" // nullified attribute
+                + " font-size: 0.875em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "table, th, td {"
+                + " border: 1px solid black;"
+                + " border-collapse: collapse;"
+                + "} "
+                + "th {"
+                + " padding: 2px;"
+                + " text-align: center;"
+                + " background-color: DarkSlateGray;"
+                + " color: white;"
+                + " word-break: keep-all;"
+                + " white-space: nowrap;"
+                + "} "
+                + "td {"
+                + " padding: 2px;"
+                + " word-break: keep-all;"
+                + " white-space: nowrap;"
+                + "} "
+                + "td.colmonth {"
+                + " text-align: left;"
+                + "} "
+                + "td.coldata {"
+                + " text-align: right;"
+                + "} "
+                + "td.coldatamax {"
+                + " text-align: right;"
+                + " background-color: PaleTurquoise;"
+                + "} "
+                + "td.coldatapct {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "td.coldatapctmax {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + " background-color: PaleTurquoise;"
+                + "}"
+                + "\n"
+                + "</style>\n";
+        
+        html += "</head>\n";
+        
+        return html;
     }
 }

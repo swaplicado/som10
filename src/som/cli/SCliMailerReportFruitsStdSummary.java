@@ -38,8 +38,8 @@ public class SCliMailerReportFruitsStdSummary {
     private static final String ARG_DATE_TODAY = "TODAY";
     private static final String ARG_DATE_YESTERDAY = "YESTERDAY";
 
-    private static final int[] DEF_ITEM_IDS = new int[] { SCliConsts.ID_AVO_FRUIT_CONV, /*SCliConsts.ID_AVO_FRUIT_ORG,*/ SCliConsts.ID_AVO_CHAFF, SCliConsts.ID_AVO_KERNEL, SCliConsts.ID_AVO_PULP };
-    private static final Date DEF_DATE = SLibTimeUtils.createDate(2026, 1, 28);
+    private static final int[] DEF_ITEM_IDS = new int[] { SCliConsts.ID_AVO_FRUIT_CONV, /*SCliConsts.ID_AVO_FRUIT_ORG,*/ SCliConsts.ID_AVO_CHAFF, SCliConsts.ID_AVO_KERNEL, SCliConsts.ID_AVO_PULP, SCliConsts.ID_MAN_KERNEL };
+    private static final Date DEF_DATE = SLibTimeUtils.createDate(2026, 2, 25);
     private static final int DEF_REP_MODE = REP_MODE_COMPARATIVE;
     private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
@@ -108,7 +108,7 @@ public class SCliMailerReportFruitsStdSummary {
             SCliUtils.sendMailReport(mailSubject, mailBody, recipientsTo, recipientsBcc, null);
         }
         catch (Exception e) {
-            SLibUtils.printException("main()", e);
+            SLibUtils.printException(SCliMailerReportFruitsStdSummary.class.getName(), e);
         }
     }
 }

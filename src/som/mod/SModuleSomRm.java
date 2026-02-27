@@ -56,6 +56,9 @@ import som.mod.som.db.SDbLaboratory;
 import som.mod.som.db.SDbLaboratoryTest;
 import som.mod.som.db.SDbMgmtTicketsSupplierInputType;
 import som.mod.som.db.SDbMgmtTicketsSupplierItem;
+import som.mod.som.db.SDbOpCalendar;
+import som.mod.som.db.SDbOpCalendarYear;
+import som.mod.som.db.SDbOpCalendarYearMonth;
 import som.mod.som.db.SDbRegion;
 import som.mod.som.db.SDbSeason;
 import som.mod.som.db.SDbSeasonProducer;
@@ -615,6 +618,15 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.SX_SEAS_REG:
                 registry = new SDbSeason();
+                break;
+            case SModConsts.SU_OP_CAL:
+                registry = new SDbOpCalendar();
+                break;
+            case SModConsts.SU_OP_CAL_YEAR:
+                registry = new SDbOpCalendarYear();
+                break;
+            case SModConsts.SU_OP_CAL_YEAR_MONTH:
+                registry = new SDbOpCalendarYearMonth();
                 break;
             case SModConsts.S_GRINDING_EVENT:
                 registry = new SDbGrindingEvent();

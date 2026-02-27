@@ -902,7 +902,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
             moveNext(session);
         }
         
-        int[] opCalendarMonthKey = SOpCalendarUtils.getOpCalendarMonthKey(session, mnFkItemId, mtDate);
+        int[] opCalendarMonthKey = SOpCalendarUtils.getOpCalendarYearMonthKey(session, mnFkItemId, mtDate);
         
         if (opCalendarMonthKey != null) {
             mnFkOpCalendarId_n = opCalendarMonthKey[0];

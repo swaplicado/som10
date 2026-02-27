@@ -19,15 +19,13 @@ import sa.lib.gui.SGuiSession;
 import som.mod.som.db.SDbInputCategory;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbUnit;
-import static som.mod.som.db.SOpCalendarUtils.createOpCalendarsMap;
-import static som.mod.som.db.SOpCalendarUtils.getOpCalendarId;
 import som.mod.som.db.SSomMailUtils;
 
 /**
-  * Generación de las tablas comparativas históricas mensuales de recepción de fruta en base a meses con cierre de acuerdo el calendario operativo aplicable, si aplica, o a meses con cierre fijo los días 18.
+  * Generación de las tablas comparativas históricas mensuales de recepción de fruta en base a meses con cierre fijo los días 18.
  * @author Sergio Flores, Isabel Servín, Sergio Flores
  */
-public class SReportHtmlTicketSeasonMonthAlt {
+public class SReportHtmlTicketSeasonMonthAlt_20260225 {
     
     /** Report in unit of measure of item. */
     public static final int MODE_UNIT_ITEM = 1;
@@ -36,7 +34,7 @@ public class SReportHtmlTicketSeasonMonthAlt {
     
     private final SGuiSession moSession;
     
-    public SReportHtmlTicketSeasonMonthAlt(final SGuiSession session) {
+    public SReportHtmlTicketSeasonMonthAlt_20260225(final SGuiSession session) {
         moSession = session;
     }
     
@@ -47,7 +45,6 @@ public class SReportHtmlTicketSeasonMonthAlt {
      * @param intvlDays Interval days for invocation of this report mailer.
      * @param seasonFirstMonth Season first month (1 = January; 0 = item's start month.)
      * @param monthFirstDay Month first day (0 | 1 = 1st. of start month; > 1 = nth of previous month.)
-     * @param useOpCalendars Flag to use operative calendars.
      * @param cutoff Cutoff date.
      * @param now The very moment of processing.
      * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
@@ -56,33 +53,128 @@ public class SReportHtmlTicketSeasonMonthAlt {
      * @return
      * @throws Exception 
      */
-    public String generateReportHtml(final String[] itemIdsPairs, final int yearRef, final int intvlDays,
-            final int seasonFirstMonth, final int monthFirstDay, final boolean useOpCalendars,
-            final Date cutoff, final Date now, final int ticketOrigin, final int ticketDestination, final int mode) throws Exception {
+    public String generateReportHtml(final String[] itemIdsPairs, final int yearRef, final int intvlDays, final int seasonFirstMonth, final int monthFirstDay, final Date cutoff, final Date now, final int ticketOrigin, final int ticketDestination, final int mode) throws Exception {
         // HTML:
         
         String html = "<html>\n";
         
-        html += SCliUtils.composeHtmlHeadForSeasonMonth();
+        // HTML head:
+        
+        html += "<head>\n";
+        html += "<style>\n"
+                + "body {"
+                + " font-size: 100%;"
+                + "} "
+                + "h1 {"
+                + " font-size: 2.00em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h2 {"
+                + " font-size: 1.75em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h3 {"
+                + " font-size: 1.50em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "h4 {"
+                + " font-size: 1.25em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "p {"
+                + " font-size: 0.875em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "table {"
+                + " /*width:100%;*/" // nullified attribute
+                + " font-size: 0.875em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "table, th, td {"
+                + " border: 1px solid black;"
+                + " border-collapse: collapse;"
+                + "} "
+                + "th {"
+                + " padding: 2px;"
+                + " text-align: center;"
+                + " background-color: #008080;"
+                + " color: white;"
+                + " word-break: keep-all;"
+                + " white-space: nowrap;"
+                + "} "
+                + "td {"
+                + " padding: 2px;"
+                + " word-break: keep-all;"
+                + " white-space: nowrap;"
+                + "} "
+                + "td.colmonth {"
+                + " text-align: left;"
+                + "} "
+                + "td.coldata {"
+                + " text-align: right;"
+                + "} "
+                + "td.coldatamax {"
+                + " text-align: right;"
+                + " background-color: Aqua;"
+                + "} "
+                + "td.coldatapct {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + "} "
+                + "td.coldatapctmax {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + " background-color: Aqua;"
+                + "}"
+                + "td.coldatapctaccum {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + " background-color: #E5E7E9;"
+                + "} "
+                + "td.colmonthaccum {"
+                + " text-align: left;"
+                + " background-color: #E5E7E9;"
+                + " white-space: nowrap;"
+                + "} "
+                + "td.coldataaccum {"
+                + " text-align: right;"
+                + " background-color: #E5E7E9;"
+                + "} "
+                + "td.coldatatotal {"
+                + " text-align: right;"
+                + " background-color: #80bfbf;"
+                + "} "
+                + "td.coldatapcttotal {"
+                + " text-align: center;"
+                + " font-size: 0.75em;"
+                + " font-family: sans-serif;"
+                + " background-color: #80bfbf;"
+                + "} "
+                + "td.colmonthtotal {"
+                + " text-align: left;"
+                + " background-color: #80bfbf;"
+                + "} "
+                + "\n"
+                + "</style>\n";
+        
+        html += "</head>\n";
         
         // HTML body:
         
         html += "<body>\n";
         
-        // setup control variables for report:
+        // define start and end date for report:
         
         int[] cutoffDigestion = SLibTimeUtils.digestDate(cutoff);
         int cutoffYear = cutoffDigestion[0];
         int cutoffMonth = cutoffDigestion[1];
-        int cutoffDay = cutoffDigestion[2];
-        boolean isCustomMonth = monthFirstDay > 1;
+        boolean isCustomSeason = seasonFirstMonth > 0 && monthFirstDay > 0;
         boolean isUnitsTon = mode == MODE_UNIT_TON;
         double unitsDivisor = isUnitsTon ? 1000 : 1;
         String[] months = SLibTimeUtils.createMonthsOfYearStd(Calendar.SHORT); // month names for first column in table of each item
-        
-        if (isCustomMonth && cutoffDay >= monthFirstDay) {
-            cutoffMonth++;
-        }
         
         // HTML heading 1 (main title):
         
@@ -101,19 +193,14 @@ public class SReportHtmlTicketSeasonMonthAlt {
         int lastInputCategoryId = 0; // to control when a new input category stages, to stand it out as a new title
         DecimalFormat decimalFormatPct = isUnitsTon ? new DecimalFormat("#0%") : new DecimalFormat("#0.0%");
         DecimalFormat decimalFormatVal = isUnitsTon ? SLibUtils.DecimalFormatInteger : SLibUtils.getDecimalFormatAmount();
-        HashMap<Integer, ArrayList<Integer>> opCalendarsMap = null;
-        
-        if (useOpCalendars) {
-            opCalendarsMap = createOpCalendarsMap(moSession);
-        }
         
         for (String itemIdsPair : itemIdsPairs) {
             // read requested item for report:
             String[] ids = itemIdsPair.split("-");
-            int itemConvId = SLibUtils.parseInt(ids[0]); // conventional item
+            int itemCnvId = SLibUtils.parseInt(ids[0]); // conventional item
             int itemAltId = SLibUtils.parseInt(ids[1]); // alternative item, e.g., organic
             SDbItem item = new SDbItem();
-            item.read(moSession, new int[] { itemConvId }); // read this way due to session is moduleless
+            item.read(moSession, new int[] { itemCnvId }); // read this way due to session is moduleless
             SDbUnit unit = new SDbUnit();
             unit.read(moSession, new int[] { item.getFkUnitId() }); // read this way due to session is moduleless
             SDbInputCategory inputCategory = new SDbInputCategory();
@@ -169,24 +256,19 @@ public class SReportHtmlTicketSeasonMonthAlt {
             
             // HTML heading 3 (item subtitle):
             
-            String name = SCliConsts.ItemNames.get(itemConvId);
+            String name = SCliConsts.ItemNames.get(itemCnvId);
             html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (valores en " + (isUnitsTon ? "ton" : unit.getCode()) + ")") + "</h4>\n";
 
             // obtain report data:
 
-            String sql;
-            int opCalendarId = 0;
-            PreparedStatement preparedWeights = null;
-            PreparedStatement prepStatementMonths = null;
-            
-            sql = "SELECT " 
-                    + "SUM(IF(x.b_alt = 0, x.wei_des_net_r, 0.0)) AS _conv, " 
+            String sql = "SELECT " 
+                    + "SUM(IF(x.b_alt = 0, x.wei_des_net_r, 0.0)) AS _cnv, " 
                     + "SUM(IF(x.b_alt = 1, x.wei_des_net_r, 0.0)) AS _alt, " 
                     + "SUM(x.wei_des_net_r) AS _tot "
                     + "FROM (" 
                     + "SELECT t_.b_alt, t_.wei_des_net_r, t_.b_del, t_.b_tar, t_.fk_tic_orig, t_.fk_tic_dest, t_.dt "
                     + "FROM s_tic AS t_ " // most tickets are conventional, some alternative
-                    + "WHERE NOT t_.b_alt AND t_.fk_item = " + itemConvId + " " 
+                    + "WHERE NOT t_.b_alt AND t_.fk_item = " + itemCnvId + " " 
                     + "UNION " 
                     + "SELECT at.b_alt, at.wei_des_net_r, at.b_del, at.b_tar, at.fk_tic_orig, at.fk_tic_dest, tt.dt " // date taken from its corresponding conventional ticket!
                     + "FROM s_alt_tic AS at " // all tickets are alternative (mirrored from their corresponding conventional one)
@@ -196,27 +278,14 @@ public class SReportHtmlTicketSeasonMonthAlt {
                     + (ticketOrigin == 0 ? "" : "AND x.fk_tic_orig = " + ticketOrigin + " ")
                     + (ticketDestination == 0 ? "" : "AND x.fk_tic_dest = " + ticketDestination + " ")
                     + "AND x.dt BETWEEN ? AND ?;";
-            preparedWeights = moSession.getStatement().getConnection().prepareStatement(sql);
-            
-            if (useOpCalendars) {
-                opCalendarId = getOpCalendarId(opCalendarsMap, itemConvId);
-                
-                if (opCalendarId == 0) {
-                    throw new Exception("No se encontró un calendario operativo aplicable al ítem '" + name + "' (ID " + itemConvId + ").");
-                }
-                
-                sql = "SELECT month_sta, month_end "
-                        + "FROM su_op_cal_year_month "
-                        + "WHERE id_op_cal = " + opCalendarId + " AND id_year = ? AND id_month = ?;";
-                prepStatementMonths = moSession.getStatement().getConnection().prepareStatement(sql);
-            }
+            PreparedStatement preparedStatement = moSession.getStatement().getConnection().prepareStatement(sql);
             
             // reception during last interval days:
             
-            preparedWeights.setDate(1, new java.sql.Date(SLibTimeUtils.addDate(now, 0, 0, -intvlDays).getTime()));
-            preparedWeights.setDate(2, new java.sql.Date(now.getTime()));
+            preparedStatement.setDate(1, new java.sql.Date(SLibTimeUtils.addDate(now, 0, 0, -intvlDays).getTime()));
+            preparedStatement.setDate(2, new java.sql.Date(now.getTime()));
             
-            try (ResultSet resultSet = preparedWeights.executeQuery()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     double value = resultSet.getDouble("_tot") / unitsDivisor;
 
@@ -232,9 +301,9 @@ public class SReportHtmlTicketSeasonMonthAlt {
             int maxRowToAccum = SCliUtils.getRowIndexLimitForAccumValues(cutoffMonth, reportFirstSeasonMonth); // maximum row to accumulate values throughout all years (or seasons)
             
             // for conventional tickets:
-            double[][] tableConvValues = new double[years][SLibTimeConsts.MONTHS]; // total weight per year (or season), per month
-            double[] tableConvTotals = new double[years]; // total weight per year (or season)
-            double[] tableConvAccums = new double[years]; // accumulated weight per year (or season) up to today
+            double[][] tableCnvValues = new double[years][SLibTimeConsts.MONTHS]; // total weight per year (or season), per month
+            double[] tableCnvTotals = new double[years]; // total weight per year (or season)
+            double[] tableCnvAccums = new double[years]; // accumulated weight per year (or season) up to today
             
             // for alternative tickets:
             double[][] tableAltValues = new double[years][SLibTimeConsts.MONTHS]; // total weight per year (or season), per month
@@ -251,18 +320,15 @@ public class SReportHtmlTicketSeasonMonthAlt {
             for (int row = 0; row < SLibTimeConsts.MONTHS; row++) {
                 year = yearStart;
 
-                if (!useOpCalendars) {
-                    // when not using operating calendars, increment year when December is overrun!
-                    if (reportFirstSeasonMonth + row > SLibTimeConsts.MONTHS) {
-                        year++; // season continues in next calendar year
-                    }
+                if (reportFirstSeasonMonth + row > SLibTimeConsts.MONTHS) {
+                    year++;
                 }
 
                 for (int col = 0; col < tableTotTotals.length; col++) {
                     // prepare month boundaries:
                     
-                    Date start = null;
-                    Date end = null;
+                    Date start;
+                    Date end;
                     
                     if (reportFirstMonthDay == 1) {
                         // standard calendar month:
@@ -270,36 +336,19 @@ public class SReportHtmlTicketSeasonMonthAlt {
                         end = SLibTimeUtils.getEndOfMonth(start);
                     }
                     else {
-                        if (useOpCalendars) {
-                            // operative calendar month:
-                            prepStatementMonths.setInt(1, year - col);
-                            prepStatementMonths.setInt(2, row + 1); // first operating month is 1
-                            
-                            try (ResultSet resultSet = prepStatementMonths.executeQuery()) {
-                                if (resultSet.next()) {
-                                    start = resultSet.getDate("month_sta");
-                                    end = resultSet.getDate("month_end");
-                                }
-                                else {
-                                    throw new Exception("No se encontró el mes operativo " + SLibUtils.DecimalFormatCalendarMonth.format(row + 1) + ", del año " + (year - col) + ", del calendario operativo de ID " + opCalendarId + ".");
-                                }
-                            }
+                        // customized operational month:
+                        if (month > SLibTimeConsts.MONTH_JAN) {
+                            start = SLibTimeUtils.createDate(year - col, month - 1, monthFirstDay);
                         }
                         else {
-                            // customized operational month:
-                            if (month > SLibTimeConsts.MONTH_JAN) {
-                                start = SLibTimeUtils.createDate(year - col, month - 1, monthFirstDay);
-                            }
-                            else {
-                                start = SLibTimeUtils.createDate(year - col - 1, SLibTimeConsts.MONTH_DEC, monthFirstDay);
-                            }
-                            end = SLibTimeUtils.createDate(year - col, month, monthFirstDay - 1);
+                            start = SLibTimeUtils.createDate(year - col - 1, SLibTimeConsts.MONTH_DEC, monthFirstDay);
                         }
+                        end = SLibTimeUtils.createDate(year - col, month, monthFirstDay - 1);
                     }
                     
-                    // validate scope of current iteration:
+                    // validate scope of report:
                     
-                    double valueConv = 0;
+                    double valueCnv = 0;
                     double valueAlt = 0;
                     double valueTot = 0;
                     boolean executeQuery = true;
@@ -314,13 +363,15 @@ public class SReportHtmlTicketSeasonMonthAlt {
                     // extract data:
                     
                     if (executeQuery) {
-                        preparedWeights.setDate(1, new java.sql.Date(start.getTime()));
-                        preparedWeights.setDate(2, new java.sql.Date(end.getTime()));
+                        preparedStatement.setDate(1, new java.sql.Date(start.getTime()));
+                        preparedStatement.setDate(2, new java.sql.Date(end.getTime()));
 
-                        try (ResultSet resultSet = preparedWeights.executeQuery()) {
+                        try (ResultSet resultSet = preparedStatement.executeQuery()) {
                             if (resultSet.next()) {
-                                valueConv = resultSet.getDouble("_conv") / unitsDivisor;
+                                valueCnv = resultSet.getDouble("_cnv") / unitsDivisor;
+                                
                                 valueAlt = resultSet.getDouble("_alt") / unitsDivisor;
+                                
                                 valueTot = resultSet.getDouble("_tot") / unitsDivisor;
                             }
                         }
@@ -328,8 +379,8 @@ public class SReportHtmlTicketSeasonMonthAlt {
                     
                     // process data:
                     
-                    tableConvValues[col][row] = valueConv;
-                    tableConvTotals[col] += valueConv;
+                    tableCnvValues[col][row] = valueCnv;
+                    tableCnvTotals[col] += valueCnv;
 
                     tableAltValues[col][row] = valueAlt;
                     tableAltTotals[col] += valueAlt;
@@ -338,8 +389,10 @@ public class SReportHtmlTicketSeasonMonthAlt {
                     tableTotTotals[col] += valueTot;
 
                     if (row <= maxRowToAccum) {
-                        tableConvAccums[col] += valueConv;
+                        tableCnvAccums[col] += valueCnv;
+                        
                         tableAltAccums[col] += valueAlt;
+                        
                         tableTotAccums[col] += valueTot;
                     }
 
@@ -361,7 +414,7 @@ public class SReportHtmlTicketSeasonMonthAlt {
             // table header:
 
             ArrayList<String> headerCols = new ArrayList<>();
-            headerCols.add("Mes" + (isCustomMonth ? "*" : ""));
+            headerCols.add("Mes" + (isCustomSeason ? "*" : ""));
             for (int col = yearStart; col >= yearEnd; col--) {
                 if (reportFirstSeasonMonth == SLibTimeConsts.MONTH_JAN) {
                     headerCols.add("" + col);
@@ -406,21 +459,11 @@ public class SReportHtmlTicketSeasonMonthAlt {
                 html += "<td class='colmonth'>" + months[month - 1] + ".</td>";
 
                 for (int col = 0; col < tableTotTotals.length; col++) {
-                    if (col == 0 && row > maxRowToAccum) {
-                        // empty values for upcoming months in current season:
-                        html += "<td class='coldata'>&nbsp;</td>"; 
-                        html += "<td class='coldata'>&nbsp;</td>";
-                        html += "<td class='coldata'>&nbsp;</td>";
-                        html += "<td class='coldatapct'>&nbsp;</td>";
-                    }
-                    else {
-                        // correspondig and available value:
-                        boolean isMax = tableRowOfMaxValuesMap.get(col) == row;
-                        html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableConvValues[col][row]) + "</td>";
-                        html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableAltValues[col][row]) + "</td>";
-                        html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableTotValues[col][row]) + "</td>";
-                        html += "<td class='coldatapct" + (isMax ? "max" : "") + "'>" + decimalFormatPct.format(tableTotTotals[col] == 0 ? 0 : tableTotValues[col][row] / tableTotTotals[col]) + "</td>";
-                    }
+                    boolean isMax = tableRowOfMaxValuesMap.get(col) == row;
+                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableCnvValues[col][row]) + "</td>";
+                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableAltValues[col][row]) + "</td>";
+                    html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableTotValues[col][row]) + "</td>";
+                    html += "<td class='coldatapct" + (isMax ? "max" : "") + "'>" + decimalFormatPct.format(tableTotTotals[col] == 0 ? 0 : tableTotValues[col][row] / tableTotTotals[col]) + "</td>";
                 }
 
                 if (++month > SLibTimeConsts.MONTHS) {
@@ -435,10 +478,10 @@ public class SReportHtmlTicketSeasonMonthAlt {
             html += "<tr>";
             html += "<td class='colmonthtotal'><b>Temporada</b></td>";
             for (int col = 0; col < tableTotTotals.length; col++) {
-                html += "<td class='coldatatotal'><b>" + decimalFormatVal.format(tableConvTotals[col]) + "</b></td>";
+                html += "<td class='coldatatotal'><b>" + decimalFormatVal.format(tableCnvTotals[col]) + "</b></td>";
                 html += "<td class='coldatatotal'><b>" + decimalFormatVal.format(tableAltTotals[col]) + "</b></td>";
                 html += "<td class='coldatatotal'><b>" + decimalFormatVal.format(tableTotTotals[col]) + "</b></td>";
-                html += "<td class='coldatapcttotal'><b>" + decimalFormatPct.format(1) + "</b></td>"; // 100%
+                html += "<td class='coldatapcttotal'><b>" + decimalFormatPct.format(1) + "</b></td>";
             }
             html += "</tr>\n";
             
@@ -448,8 +491,8 @@ public class SReportHtmlTicketSeasonMonthAlt {
             
             html += "<tr>";
             html += "<td class='colmonthaccum'>Acum. a " + months[cutoffMonth - 1] + ".</td>";
-            for (int col = 0; col < tableConvAccums.length; col++) {
-                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : decimalFormatVal.format(tableConvAccums[col])) + "</td>";
+            for (int col = 0; col < tableCnvAccums.length; col++) {
+                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : decimalFormatVal.format(tableCnvAccums[col])) + "</td>";
                 html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : decimalFormatVal.format(tableAltAccums[col])) + "</td>";
                 html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : decimalFormatVal.format(tableTotAccums[col])) + "</td>";
                 html += "<td class='coldatapctaccum'>" + (col == 0 ? "N/A" : decimalFormatPct.format(tableTotTotals[col] == 0 ? 0 : tableTotAccums[col] / tableTotTotals[col])) + "</td>";
@@ -458,24 +501,8 @@ public class SReportHtmlTicketSeasonMonthAlt {
 
             html += "</table>\n";
             
-            // custom month warning:
-            
-            if (isCustomMonth) {
-                String monthClosing = useOpCalendars ? "según el calendario operativo aplicable (cierre mes actual: " + SLibUtils.DecimalFormatCalendarMonth.format(monthFirstDay - 1) + "/" + months[cutoffMonth - 1] + "./" + cutoffYear + ")" : "los días " + SLibUtils.DecimalFormatCalendarMonth.format(monthFirstDay - 1) + " de cada mes";
-                html += "<small>" + SLibUtils.textToHtml("* Inicio de temporada: " + SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[seasonFirstMonth - 1] + ". Día de cierre mensual: " + monthClosing + ".") + "</small>\n";
-            }
-            
-            // progress vs. last season:
-            
-            if (tableTotTotals.length >= 2) {
-                String progress = "Recepción de la temporada actual vs. la anterior: ";
-                if (tableTotTotals[1] == 0) {
-                    progress += "N/A.";
-                }
-                else {
-                    progress += SLibUtils.DecimalFormatPercentage1D.format(tableTotTotals[0] / tableTotTotals[1]) + ".";
-                }
-                html += "<p>" + SLibUtils.textToHtml(progress) + "</p>\n";
+            if (isCustomSeason) {
+                html += "<p>" + SLibUtils.textToHtml("* Inicio de temporada: " + SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[seasonFirstMonth - 1] + "; día de cierre mensual: " + (monthFirstDay - 1) + ".") + "</p>\n";
             }
             
             html += "<br>\n";

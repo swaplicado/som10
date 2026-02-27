@@ -73,14 +73,39 @@ public abstract class SOpCalendarUtils {
     }
     
     /**
-     * Read primary key of operating calendar month for given scale ticket date.
+     * Read primary key of operating calendar year for given scale ticket date.
      * @param statement DB statement.
      * @param opCalendarId ID of operating calendar.
      * @param ticketDate Scale ticket date.
-     * @return Primary key of operative calendar month, if any, otherwise <code>null</code>.
+     * @return Primary key of operative calendar year, if any, otherwise <code>null</code>.
      * @throws Exception 
      */
-    public static int[] readOpCalendarMonthKey(final Statement statement, final int opCalendarId, final Date ticketDate) throws Exception {
+    private static int[] readOpCalendarYearKey(final Statement statement, final int opCalendarId, final Date ticketDate) throws Exception {
+        int[] key = null;
+        String sql = "SELECT id_op_cal, id_year "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_OP_CAL_YEAR) + " "
+                + "WHERE id_op_cal = " + opCalendarId + " AND '" + SLibUtils.DbmsDateFormatDate.format(ticketDate) + "' BETWEEN year_sta AND year_end "
+                + "ORDER BY id_op_cal, id_year "
+                + "LIMIT 1;";
+        
+        try (ResultSet resultSet = statement.executeQuery(sql)) {
+            if (resultSet.next()) {
+                key = new int[] { resultSet.getInt("id_op_cal"), resultSet.getInt("id_year") };
+            }
+        }
+        
+        return key;
+    }
+    
+    /**
+     * Read primary key of operating calendar year-month for given scale ticket date.
+     * @param statement DB statement.
+     * @param opCalendarId ID of operating calendar.
+     * @param ticketDate Scale ticket date.
+     * @return Primary key of operative calendar year-month, if any, otherwise <code>null</code>.
+     * @throws Exception 
+     */
+    private static int[] readOpCalendarYearMonthKey(final Statement statement, final int opCalendarId, final Date ticketDate) throws Exception {
         int[] key = null;
         String sql = "SELECT id_op_cal, id_year, id_month "
                 + "FROM " + SModConsts.TablesMap.get(SModConsts.SU_OP_CAL_YEAR_MONTH) + " "
@@ -98,14 +123,16 @@ public abstract class SOpCalendarUtils {
     }
     
     /**
-     * Get primary key of operative calendar month, if any, for given item and ticket date.
+     * Get primary key of operative calendar year, if any, for given item and ticket date.
+     * ATTENTION: Use this method for just one single processing, not for multiple or massive processing.
+     * To get the primary key, in first place, all operating calendars are retrieved to determine to withc the given item belongs.
      * @param session GUI session.
      * @param itemId ID of item.
      * @param ticketDate Date of scale ticket.
-     * @return Primary key of operative calendar month, if any, otherwise <code>null</code>.
+     * @return Primary key of operative calendar year, if any, otherwise <code>null</code>.
      * @throws Exception 
      */
-    public static int[] getOpCalendarMonthKey(final SGuiSession session, final int itemId, final Date ticketDate) throws Exception {
+    public static int[] getOpCalendarYearKey(final SGuiSession session, final int itemId, final Date ticketDate) throws Exception {
         int[] key = null;
         
         try (Statement statement = session.getStatement().getConnection().createStatement()) {
@@ -113,7 +140,7 @@ public abstract class SOpCalendarUtils {
             int opCalendarId = getOpCalendarId(opCalendarsMap, itemId);
             
             if (opCalendarId != 0) {
-                key = readOpCalendarMonthKey(statement, opCalendarId, ticketDate);
+                key = readOpCalendarYearKey(statement, opCalendarId, ticketDate);
             }
         }
         
@@ -121,12 +148,37 @@ public abstract class SOpCalendarUtils {
     }
     
     /**
-     * Massive assign of operative calendar month to all scale tickets.
-     * WARNING: All massive updates to scale tickets are irreversible. Please proceed with caution!
+     * Get primary key of operative calendar year-month, if any, for given item and ticket date.
+     * ATTENTION: Use this method for just one single processing, not for multiple or massive processing.
+     * To get the primary key, in first place, all operating calendars are retrieved to determine to withc the given item belongs.
+     * @param session GUI session.
+     * @param itemId ID of item.
+     * @param ticketDate Date of scale ticket.
+     * @return Primary key of operative calendar year-month, if any, otherwise <code>null</code>.
+     * @throws Exception 
+     */
+    public static int[] getOpCalendarYearMonthKey(final SGuiSession session, final int itemId, final Date ticketDate) throws Exception {
+        int[] key = null;
+        
+        try (Statement statement = session.getStatement().getConnection().createStatement()) {
+            HashMap<Integer, ArrayList<Integer>> opCalendarsMap = createOpCalendarsMap(session);
+            int opCalendarId = getOpCalendarId(opCalendarsMap, itemId);
+            
+            if (opCalendarId != 0) {
+                key = readOpCalendarYearMonthKey(statement, opCalendarId, ticketDate);
+            }
+        }
+        
+        return key;
+    }
+    
+    /**
+     * Massive update of operative calendar month to all scale tickets.
+     * ATTENTION: All massive updates to scale tickets cannot be undone. Please proceed with caution!
      * @param session GUI session.
      * @throws Exception 
      */
-    public static void assignOpCalendarToAllTickets(final SGuiSession session) throws Exception {
+    public static void updateOpCalendarToAllTickets(final SGuiSession session) throws Exception {
         try (Statement statement = session.getStatement().getConnection().createStatement(); Statement statementUpd = session.getStatement().getConnection().createStatement()) {
             int totalCount = 0;
             int clearedCount = 0; // tickets cleared due to non-applying item for operative calendar
@@ -193,7 +245,7 @@ public abstract class SOpCalendarUtils {
                             clearedCount++;
                         }
                         else {
-                            int[] key = readOpCalendarMonthKey(statementUpd, opCalendarId, resultSet.getDate("dt"));
+                            int[] key = readOpCalendarYearMonthKey(statementUpd, opCalendarId, resultSet.getDate("dt"));
 
                             if (key == null) {
                                 // ticket skipped due to unexisting operative month:

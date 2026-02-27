@@ -84,7 +84,9 @@ public class SCliMailerReportFruitsAlt {
             Date cutoff = now;
             
             SReportHtmlTicketSeasonMonthAlt reportHtml = new SReportHtmlTicketSeasonMonthAlt(SCliUtils.createSession());
-            String mailBody = reportHtml.generateReportHtml(argItemIds, argYearBase, argIntvlDays, SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthAlt.MODE_UNIT_TON);
+            String mailBody = reportHtml.generateReportHtml(argItemIds, argYearBase, argIntvlDays,
+                    SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, SCliConsts.FRUIT_BY_OP_CALENDARS,
+                    cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthAlt.MODE_UNIT_TON);
             
             // send mail report:
             
@@ -95,7 +97,7 @@ public class SCliMailerReportFruitsAlt {
             SCliUtils.sendMailReport(mailSubject, mailBody, recipientsTo, recipientsBcc, null);
         }
         catch (Exception e) {
-            SLibUtils.printException("main()", e);
+            SLibUtils.printException(SCliMailerReportFruitsAlt.class.getName(), e);
         }
     }
 }
