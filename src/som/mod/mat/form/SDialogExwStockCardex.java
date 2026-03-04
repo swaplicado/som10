@@ -6,9 +6,18 @@
 package som.mod.mat.form;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Vector;
+import javax.swing.JButton;
 import sa.lib.SLibConsts;
+import sa.lib.SLibTimeUtils;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
 import sa.lib.grid.SGridColumnForm;
 import sa.lib.grid.SGridConsts;
@@ -20,26 +29,29 @@ import sa.lib.gui.SGuiValidation;
 import sa.lib.gui.bean.SBeanFormDialog;
 import som.mod.SModConsts;
 import som.mod.mat.db.SDbExwFacility;
-import som.mod.mat.db.SExwStockMovement;
+import som.mod.mat.db.SExwUtils;
+import som.mod.mat.db.SRowExwMovement;
 import som.mod.som.db.SDbItem;
-import som.mod.som.db.SDbScale;
 import som.mod.som.db.SDbUnit;
 
 /**
  *
  * @author Sergio Flores
  */
-public class SDialogExwStockCardex extends SBeanFormDialog {
+public class SDialogExwStockCardex extends SBeanFormDialog implements ActionListener {
     
-    public static final int GUI_PARAMS = 1;
+    public static final int PARAMS = 1;
     
-    private SDbScale moScale;
-    private SDbExwFacility moExwFacility;
-    private SDbItem moItem;
-    private SDbUnit moUnit;
+    private static final int GO_PREV = 1;
+    private static final int GO_NEXT = 2;
     
     private SGridPaneForm moGridRows;
-    private ArrayList<SExwStockMovement> maExwStockMovements;
+    private Date mtExwStart;
+    private Date mtCutoff;
+    private Params moParams;
+    private SDbItem moItem;
+    private SDbUnit moUnit;
+    private SDbExwFacility moExwFacility;
     
     /**
      * Creates new form SDialogExwStockCardex.
@@ -66,18 +78,20 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
         jpRegistry = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jpData = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        jlScale = new javax.swing.JLabel();
-        jtfScale = new javax.swing.JTextField();
-        jPanel6 = new javax.swing.JPanel();
-        jlExwFacility = new javax.swing.JLabel();
-        jtfExwFacility = new javax.swing.JTextField();
         jPanel7 = new javax.swing.JPanel();
         jlItem = new javax.swing.JLabel();
         jtfItem = new javax.swing.JTextField();
+        jPanel8 = new javax.swing.JPanel();
+        jlUnit = new javax.swing.JLabel();
+        jtfUnit = new javax.swing.JTextField();
+        jPanel6 = new javax.swing.JPanel();
+        jlExwFacility = new javax.swing.JLabel();
+        jtfExwFacility = new javax.swing.JTextField();
         jPanel15 = new javax.swing.JPanel();
         jlCutoff = new javax.swing.JLabel();
         jtfCutoff = new javax.swing.JTextField();
+        jbPrevYear = new javax.swing.JButton();
+        jbNextYear = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jlOpeningStock = new javax.swing.JLabel();
@@ -99,11 +113,6 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
         jpGrid = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowActivated(java.awt.event.WindowEvent evt) {
-                formWindowActivated(evt);
-            }
-        });
 
         jpRegistry.setLayout(new java.awt.BorderLayout());
 
@@ -112,19 +121,35 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
 
         jpData.setLayout(new java.awt.GridLayout(4, 1, 0, 5));
 
-        jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        jlScale.setText("Báscula:");
-        jlScale.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel4.add(jlScale);
+        jlItem.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jlItem.setText("Ítem:");
+        jlItem.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel7.add(jlItem);
 
-        jtfScale.setEditable(false);
-        jtfScale.setText("TEXT");
-        jtfScale.setFocusable(false);
-        jtfScale.setPreferredSize(new java.awt.Dimension(300, 23));
-        jPanel4.add(jtfScale);
+        jtfItem.setEditable(false);
+        jtfItem.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jtfItem.setText("TEXT");
+        jtfItem.setFocusable(false);
+        jtfItem.setPreferredSize(new java.awt.Dimension(450, 23));
+        jPanel7.add(jtfItem);
 
-        jpData.add(jPanel4);
+        jpData.add(jPanel7);
+
+        jPanel8.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+
+        jlUnit.setText("Unidad:");
+        jlUnit.setPreferredSize(new java.awt.Dimension(100, 23));
+        jPanel8.add(jlUnit);
+
+        jtfUnit.setEditable(false);
+        jtfUnit.setText("TEXT");
+        jtfUnit.setFocusable(false);
+        jtfUnit.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel8.add(jtfUnit);
+
+        jpData.add(jPanel8);
 
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -140,31 +165,31 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
 
         jpData.add(jPanel6);
 
-        jPanel7.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlItem.setText("Ítem:");
-        jlItem.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel7.add(jlItem);
-
-        jtfItem.setEditable(false);
-        jtfItem.setText("TEXT");
-        jtfItem.setFocusable(false);
-        jtfItem.setPreferredSize(new java.awt.Dimension(475, 23));
-        jPanel7.add(jtfItem);
-
-        jpData.add(jPanel7);
-
         jPanel15.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        jlCutoff.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jlCutoff.setText("Fecha de corte:");
         jlCutoff.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel15.add(jlCutoff);
 
         jtfCutoff.setEditable(false);
+        jtfCutoff.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jtfCutoff.setText("TEXT");
         jtfCutoff.setFocusable(false);
         jtfCutoff.setPreferredSize(new java.awt.Dimension(75, 23));
         jPanel15.add(jtfCutoff);
+
+        jbPrevYear.setText("<");
+        jbPrevYear.setToolTipText("Retroceder un año");
+        jbPrevYear.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jbPrevYear.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel15.add(jbPrevYear);
+
+        jbNextYear.setText(">");
+        jbNextYear.setToolTipText("Avanzar un año");
+        jbNextYear.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        jbNextYear.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel15.add(jbNextYear);
 
         jpData.add(jPanel15);
 
@@ -182,7 +207,7 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
         jtfOpeningStock.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jtfOpeningStock.setText("0");
         jtfOpeningStock.setFocusable(false);
-        jtfOpeningStock.setPreferredSize(new java.awt.Dimension(100, 23));
+        jtfOpeningStock.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel5.add(jtfOpeningStock);
 
         jtfOpeningStockUnit.setEditable(false);
@@ -203,7 +228,7 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
         jtfInflows.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jtfInflows.setText("0");
         jtfInflows.setFocusable(false);
-        jtfInflows.setPreferredSize(new java.awt.Dimension(100, 23));
+        jtfInflows.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel17.add(jtfInflows);
 
         jtfInflowsUnit.setEditable(false);
@@ -224,7 +249,7 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
         jtfOutflows.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jtfOutflows.setText("0");
         jtfOutflows.setFocusable(false);
-        jtfOutflows.setPreferredSize(new java.awt.Dimension(100, 23));
+        jtfOutflows.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel14.add(jtfOutflows);
 
         jtfOutflowsUnit.setEditable(false);
@@ -237,18 +262,21 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
 
         jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
+        jlStock.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jlStock.setText("Existencias:");
         jlStock.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel16.add(jlStock);
 
         jtfStock.setEditable(false);
+        jtfStock.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jtfStock.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jtfStock.setText("0");
         jtfStock.setFocusable(false);
-        jtfStock.setPreferredSize(new java.awt.Dimension(100, 23));
+        jtfStock.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel16.add(jtfStock);
 
         jtfStockUnit.setEditable(false);
+        jtfStockUnit.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jtfStockUnit.setText("TEXT");
         jtfStockUnit.setFocusable(false);
         jtfStockUnit.setPreferredSize(new java.awt.Dimension(35, 23));
@@ -273,10 +301,6 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        
-    }//GEN-LAST:event_formWindowActivated
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel14;
@@ -284,18 +308,20 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JButton jbNextYear;
+    private javax.swing.JButton jbPrevYear;
     private javax.swing.JLabel jlCutoff;
     private javax.swing.JLabel jlExwFacility;
     private javax.swing.JLabel jlInflows;
     private javax.swing.JLabel jlItem;
     private javax.swing.JLabel jlOpeningStock;
     private javax.swing.JLabel jlOutflows;
-    private javax.swing.JLabel jlScale;
     private javax.swing.JLabel jlStock;
+    private javax.swing.JLabel jlUnit;
     private javax.swing.JPanel jpData;
     private javax.swing.JPanel jpGrid;
     private javax.swing.JPanel jpMovs;
@@ -309,9 +335,9 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
     private javax.swing.JTextField jtfOpeningStockUnit;
     private javax.swing.JTextField jtfOutflows;
     private javax.swing.JTextField jtfOutflowsUnit;
-    private javax.swing.JTextField jtfScale;
     private javax.swing.JTextField jtfStock;
     private javax.swing.JTextField jtfStockUnit;
+    private javax.swing.JTextField jtfUnit;
     // End of variables declaration//GEN-END:variables
 
     private void initCustomComponents() {
@@ -326,22 +352,25 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
             
             @Override
             public void createGridColumns() {
-                int col = 0;
-                SGridColumnForm[] columns = new SGridColumnForm[10];
+                ArrayList<SGridColumnForm> columns = new ArrayList<>();
                 
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DATE_DATETIME, "Referencia");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_DATE, SGridConsts.COL_TITLE_DATE + " movimiento");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "Clase movimiento", 135);
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_REG_NUM, "Folio movimiento");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_ITM_S, "Estado MP", 115);
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_BOOL_S, SGridConsts.COL_TITLE_IS_SYS);
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_4B, "Entrada");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_4B, "Salida");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_INT_4B, "Existencia");
-                columns[col++] = new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_UNT, "Unidad", 50);
-            
-                for (col = 0; col < columns.length; col++) {
-                    moModel.getGridColumns().add(columns[col]);
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_INT_2B, "# movimiento"));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_DATE, SGridConsts.COL_TITLE_DATE + " movimiento"));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT, SGridConsts.COL_TITLE_TYPE + " movimiento", 50));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT, SGridConsts.COL_TITLE_NUM + " movimiento", 75));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT, SGridConsts.COL_TITLE_TYPE + " ajuste"));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "Almacén externo", 125));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_DEC_QTY, "Entrada"));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_DEC_QTY, "Salida"));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_DEC_QTY, "Existencia", 125));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_CODE_UNT, "Unidad"));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_USR, "Usr. creación"));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_DATE_DATETIME, "Creación"));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_TEXT_NAME_USR, "Usr. modificación"));
+                columns.add(new SGridColumnForm(SGridConsts.COL_TYPE_DATE_DATETIME, "Modificación"));
+                
+                for (SGridColumnForm column : columns) {
+                    moModel.getGridColumns().add(column);
                 }
             }
         };
@@ -353,6 +382,152 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
         
         jbSave.setVisible(false);
         jbCancel.setText("Cerrar");
+        
+        jbPrevYear.addActionListener(this);
+        jbNextYear.addActionListener(this);
+        
+        if (!isStockItemAndExw()) {
+            jlExwFacility.setEnabled(false);
+            jtfExwFacility.setEnabled(false);
+        }
+        
+        try {
+            mtExwStart = SExwUtils.getExwStart(miClient.getSession());
+        }
+        catch (Exception e) {
+            SLibUtils.showException(this, e);
+        }
+    }
+    
+    private boolean isStockItemAndExw() {
+        return mnFormSubtype == SExwUtils.STOCK_ITEM_EXW;
+    }
+    
+    private void computeCardex() throws Exception {
+        try (Statement statement = miClient.getSession().getStatement().getConnection().createStatement()) {
+            jtfCutoff.setText(SLibUtils.DateFormatDate.format(mtCutoff));
+
+            ArrayList<SRowExwMovement> rows = new ArrayList<>();
+            Date prevStockEnd = SLibTimeUtils.addDate(SLibTimeUtils.getBeginOfYear(mtCutoff), 0, 0, -1);
+            SExwUtils.Stock prevStock = SExwUtils.getExwStock(miClient.getSession(), moParams.ItemId, moParams.UnitId, isStockItemAndExw() ? moParams.ExwFacilityId : -1, mtExwStart, prevStockEnd);
+            double inflows = 0;
+            double outflows = 0;
+            double stock = prevStock.Stock;
+            int movement = 0;
+            int decs = SLibUtils.getDecimalFormatQuantity().getMaximumFractionDigits();
+
+            SRowExwMovement row = new SRowExwMovement(++movement, prevStockEnd, SExwUtils.MovementTypes.get(SExwUtils.MVMT_OPEN_STK), "", "", isStockItemAndExw() ? moExwFacility.getName() : "", 0, 0, stock, moUnit.getCode());
+            rows.add(row); // opening stock
+
+            String sql = "SELECT "
+                    + "c.mvmt_date, c.flow, c.mvmt_type, c.mvmt_folio, c.id_mvmt, eat.name, c.id_adjust_type, "
+                    + "CASE "
+                    + "WHEN c.mvmt_type = '" + SExwUtils.MVMT_TICKET + "' THEN '" + SExwUtils.MovementTypes.get(SExwUtils.MVMT_TICKET) + "' "
+                    + "WHEN c.mvmt_type = '" + SExwUtils.MVMT_ADJUST + "' THEN '" + SExwUtils.MovementTypes.get(SExwUtils.MVMT_ADJUST) + "' "
+                    + "END AS mvmt_type_desc, "
+                    + "ef.name, c.id_exw_fac, "
+                    + "c.qty, c.id_usr_ins, c.ts_usr_ins, ui.name, c.id_usr_upd, c.ts_usr_upd, uu.name "
+                    + "FROM ("
+                    + SExwUtils.composeSqlExwCardex(moParams.ItemId, moParams.UnitId, isStockItemAndExw() ? moParams.ExwFacilityId : -1, SLibTimeUtils.getBeginOfYear(mtCutoff), mtCutoff)
+                    + ") AS c "
+                    + "INNER JOIN cu_usr AS ui ON ui.id_usr = c.id_usr_ins "
+                    + "INNER JOIN cu_usr AS uu ON uu.id_usr = c.id_usr_upd "
+                    + "INNER JOIN mu_exw_fac AS ef ON ef.id_exw_fac = c.id_exw_fac "
+                    + "LEFT OUTER JOIN mu_exw_adj_tp AS eat ON eat.id_exw_adj_tp = c.id_adjust_type "
+                    + "ORDER BY "
+                    + "c.mvmt_date, c.flow, c.mvmt_type, c.mvmt_folio, c.id_mvmt;";
+            
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                double inflow = resultSet.getString("flow").equals(SExwUtils.INFLOW) ? resultSet.getDouble("qty") : 0;
+                double outflow = resultSet.getString("flow").equals(SExwUtils.OUTFLOW) ? resultSet.getDouble("qty") : 0;
+                
+                inflows = SLibUtils.round(inflows + inflow, decs); // prevent double type rounding errors
+                outflows = SLibUtils.round(outflows + outflow, decs); // prevent double type rounding errors
+                stock = SLibUtils.round(stock + inflow - outflow, decs); // prevent double type rounding errors
+                
+                row = new SRowExwMovement(++movement, resultSet.getDate("mvmt_date"), resultSet.getString("mvmt_type_desc"), resultSet.getString("mvmt_folio"),
+                        resultSet.getString("eat.name"), resultSet.getString("ef.name"), inflow, outflow, stock, moUnit.getCode());
+                
+                row.setUserInsert(resultSet.getString("ui.name"), resultSet.getDate("c.ts_usr_ins"));
+                row.setUserUpdate(resultSet.getString("uu.name"), resultSet.getDate("c.ts_usr_upd"));
+                
+                rows.add(row); // opening stock
+            }
+            
+            jtfOpeningStock.setText(SLibUtils.getDecimalFormatQuantity().format(prevStock.Stock));
+            jtfInflows.setText(SLibUtils.getDecimalFormatQuantity().format(inflows));
+            jtfOutflows.setText(SLibUtils.getDecimalFormatQuantity().format(outflows));
+            jtfStock.setText(SLibUtils.getDecimalFormatQuantity().format(stock));
+            
+            jtfOpeningStock.setForeground(prevStock.Stock < 0 ? Color.red : Color.black);
+            jtfInflows.setForeground(inflows < 0 ? Color.red : Color.black);
+            jtfOutflows.setForeground(outflows < 0 ? Color.red : Color.black);
+            jtfStock.setForeground(stock < 0 ? Color.red : Color.black);
+            
+            moGridRows.populateGrid(new Vector<>(rows));
+        }
+    }
+    
+    private void showCardex(final Params params) {
+        try {
+            mtCutoff = params.Cutoff;
+            moParams = params;
+            moItem = (SDbItem) miClient.getSession().readRegistry(SModConsts.SU_ITEM, new int[] { moParams.ItemId });
+            moUnit = (SDbUnit) miClient.getSession().readRegistry(SModConsts.SU_UNIT, new int[] { moParams.UnitId });
+            moExwFacility = !isStockItemAndExw() ? null : (SDbExwFacility) miClient.getSession().readRegistry(SModConsts.MU_EXW_FAC, new int[] { moParams.ExwFacilityId });
+            
+            jtfItem.setText(moItem.getName());
+            jtfUnit.setText(moUnit.getName());
+            jtfExwFacility.setText(!isStockItemAndExw() ? "" : moExwFacility.getName());
+            jtfOpeningStockUnit.setText(moUnit.getCode());
+            jtfInflowsUnit.setText(moUnit.getCode());
+            jtfOutflowsUnit.setText(moUnit.getCode());
+            jtfStockUnit.setText(moUnit.getCode());
+            
+            computeCardex();
+        }
+        catch (Exception e) {
+            SLibUtils.showException(this, e);
+        }
+    }
+    
+    private void actionPerformedChangeYear(final int direction) {
+        int addYear = 0;
+        int cutoffYear = SLibTimeUtils.digestYear(mtCutoff)[0];
+        
+        switch (direction) {
+            case GO_PREV:
+                int extStartYear = SLibTimeUtils.digestYear(mtExwStart)[0];
+                if (cutoffYear - 1 >= extStartYear) {
+                    addYear = -1;
+                }
+                else {
+                    miClient.showMsgBoxWarning("El año mínimo permitido de consulta es " + extStartYear + ".");
+                }
+                break;
+            case GO_NEXT:
+                if (cutoffYear + 1 <= miClient.getSession().getSystemYear()) {
+                    addYear = 1;
+                }
+                else {
+                    miClient.showMsgBoxWarning("El año máximo permitido de consulta es " + miClient.getSession().getSystemYear() + ".");
+                }
+                break;
+            default:
+                miClient.showMsgBoxWarning(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+        
+        if (addYear != 0) {
+            try {
+                mtCutoff = SLibTimeUtils.addDate(mtCutoff, addYear, 0, 0);
+                
+                computeCardex();
+            }
+            catch (Exception e) {
+                SLibUtils.showException(this, e);
+            }
+        }
     }
     
     @Override
@@ -388,22 +563,34 @@ public class SDialogExwStockCardex extends SBeanFormDialog {
     @Override
     public void setValue(final int type, final Object value) {
         switch (type) {
-            case GUI_PARAMS:
-                //readParams((SGuiParams) value);
+            case PARAMS:
+                showCardex((Params) value);
                 break;
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof JButton) {
+            JButton button = (JButton) e.getSource();
+            
+            if (button == jbPrevYear) {
+                actionPerformedChangeYear(GO_PREV);
+            }
+            else if (button == jbNextYear) {
+                actionPerformedChangeYear(GO_NEXT);
+            }
         }
     }
     
     public static class Params {
         
-        public int ScaleId;
         public int ItemId;
         public int UnitId;
         public int ExwFacilityId;
         public Date Cutoff;
         
-        public Params(final int scaleId, final int itemId, final int unitId, final int exwFacilityId, final Date cutoff) {
-            ScaleId = scaleId;
+        public Params(final int itemId, final int unitId, final int exwFacilityId, final Date cutoff) {
             ItemId = itemId;
             UnitId = unitId;
             ExwFacilityId = exwFacilityId;

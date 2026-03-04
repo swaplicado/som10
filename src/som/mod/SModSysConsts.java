@@ -59,6 +59,7 @@ public abstract class SModSysConsts {
     public static final int CS_RIG_RM_STK_DEO = 15; // raw material existences data entry operator
     public static final int CS_RIG_RM_STK_SUP = 16; // raw material existences supervisor
     public static final int CS_RIG_RM_STK_MAN = 17; // raw material existences manager
+    public static final int CS_RIG_STK_ADJ_AUD = 21; // stock adjustments auditor
 
     public static final int CS_ALT_RIG_PUR = 1; // purchase
     public static final int CS_ALT_RIG_QTY = 2; // quality

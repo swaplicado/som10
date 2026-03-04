@@ -154,7 +154,7 @@ public class SModuleSom extends SGuiModule {
                 break;
             case SModConsts.SU_INP_CT:
                 settings = new SGuiCatalogueSettings("Categoría de insumo", 1);
-                sql = "SELECT id_inp_ct AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + " "
+                sql = "SELECT id_inp_ct AS " + SDbConsts.FIELD_ID + "1, CONCAT(name, ' (', code, ')') AS " + SDbConsts.FIELD_ITEM + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_inp_ct ";
                 break;
             case SModConsts.SU_INP_CL:

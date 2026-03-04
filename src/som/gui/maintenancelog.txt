@@ -1,4 +1,12 @@
 ================================================================================
+2026-03-03, 1.0 097.1
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Implementación del control de autorización de ajustes de existencias de almacenes externos.
+2) Implementación del consulta del cárdex de existencias de almacenes externos.
+3) Corrección a la determinación de la región aplicable a boletos de báscula al capturarse, cuando aplica solo una región, y corrección, también, a la condición de activación de recálculo del total a pagar al guardarse.
+
+================================================================================
 2026-02-27, 1.0 097.0
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

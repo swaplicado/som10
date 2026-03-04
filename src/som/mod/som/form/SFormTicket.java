@@ -63,6 +63,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private SDbItem moItem;
     private SDbProducer moProducer;
     private int mnSeasonId;
+    private int mnDefaultRegionId;
     private boolean mbIsPacking;
     private boolean mbIsLaboratory;
     private boolean mbIsFreightRequired;
@@ -1267,6 +1268,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
     private void readRegion() {
         mnSeasonId = 0;
+        mnDefaultRegionId = 0;
         moKeyRegion.removeAllItems();
 
         try {
@@ -1282,6 +1284,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 
                 if (moKeyRegion.getItemCount() == 2) {
                     moKeyRegion.setSelectedIndex(1);
+                    mnDefaultRegionId = moKeyRegion.getValue()[0];
                 }
             }
         }
@@ -1974,7 +1977,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 moKeyInputSource.setValue(new int[] { moRegistry.getFkInputSourceId() });
             }
 
-            moKeyRegion.setValue(new int[] { moRegistry.getFkRegionId_n()} );
+            if (moRegistry.getFkRegionId_n() != 0) {
+                moKeyRegion.setValue(new int[] { moRegistry.getFkRegionId_n() } );
+            }
+            else {
+                moKeyRegion.setValue(new int[] { mnDefaultRegionId } );
+            }
 
             moTextPlates.setValue(moRegistry.getPlate());
             moTextPlatesCage.setValue(moRegistry.getPlateCage());

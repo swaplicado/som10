@@ -34,6 +34,7 @@ import som.mod.mat.db.SDbExwFacility;
 import som.mod.mat.db.SDbMaterialCondition;
 import som.mod.mat.db.SDbShift;
 import som.mod.mat.db.SDbStockMovement;
+import som.mod.mat.db.SExwUtils;
 import som.mod.mat.form.SFormEmployee;
 import som.mod.mat.form.SFormExwAdjustment;
 import som.mod.mat.form.SFormMaterialCondition;
@@ -1119,10 +1120,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.MX_EXW_STOCK:
                 switch (subtype) {
-                    case SViewExwStock.BY_ITEM:
+                    case SExwUtils.STOCK_ITEM:
                         view = new SViewExwStock(miClient, subtype, "Existencias almacenes externos x ítem");
                         break;
-                    case SViewExwStock.BY_ITEM_EXW:
+                    case SExwUtils.STOCK_ITEM_EXW:
                         view = new SViewExwStock(miClient, subtype, "Existencias almacenes externos x ítem y almacén");
                         break;
                     default:
@@ -1507,10 +1508,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 showView(SModConsts.MX_TIC_MVT, SModSysConsts.MX_TIC_W_MVT_REC, null);
             }
             else if (menuItem == mjStkExwStockByItem) {
-                showView(SModConsts.MX_EXW_STOCK, SViewExwStock.BY_ITEM, null);
+                showView(SModConsts.MX_EXW_STOCK, SExwUtils.STOCK_ITEM, null);
             }
             else if (menuItem == mjStkExwStockByItemExw) {
-                showView(SModConsts.MX_EXW_STOCK, SViewExwStock.BY_ITEM_EXW, null);
+                showView(SModConsts.MX_EXW_STOCK, SExwUtils.STOCK_ITEM_EXW, null);
             }
             else if (menuItem == mjStkExwAdjustments) {
                 showView(SModConsts.M_EXW_ADJ, 0, null);

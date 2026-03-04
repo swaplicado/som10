@@ -893,13 +893,13 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         mnQueryResultId = SDbConsts.SAVE_ERROR;
         
         computeWeight(session, true);
-
-        if (mbAuxRequirePriceComputation) {
-            computePrice(session);
-        }
         
         if (mbAuxMoveNextOnSave) {
             moveNext(session);
+        }
+
+        if (mbAuxRequirePriceComputation) {
+            computePrice(session);
         }
         
         int[] opCalendarMonthKey = SOpCalendarUtils.getOpCalendarYearMonthKey(session, mnFkItemId, mtDate);
@@ -1177,6 +1177,97 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
     }
 
     @Override
+    public void saveField(final Statement statement, final int[] pk, final int field, final Object value) throws SQLException, Exception {
+        initQueryMembers();
+        mnQueryResultId = SDbConsts.SAVE_ERROR;
+
+        msSql = "UPDATE " + getSqlTable() + " SET ";
+
+        switch (field) {
+            case FIELD_PAYED:
+                msSql += "b_pay = " + value + " ";
+                break;
+            case FIELD_TICKET_STATUS:
+                msSql += "fk_tic_st = " + value + " ";
+                break;
+            case FIELD_LABORATORY:
+                msSql += "fk_lab_n = " + value + " ";
+                break;
+            case FIELD_TARED:
+                msSql += "b_tar = " + value + " ";
+                break;
+            case FIELD_ASSORTED:
+                msSql += "b_ass = " + value + ", fk_usr_ass = " + mnFkUserAssortedId + ", ts_usr_ass = NOW() ";
+                break;
+            case FIELD_DPS:
+                msSql += "b_dps = " + value + " ";
+                break;
+            case FIELD_EXT_DPS:
+                if (value == null) {
+                    msSql += "fk_ext_dps_year_n = NULL, fk_ext_dps_doc_n = NULL, fk_ext_dps_ety_n = NULL ";
+                }
+                else {
+                    int[] key = (int[]) value;
+                    msSql += "fk_ext_dps_year_n = " + key[0] + ", fk_ext_dps_doc_n = " + key[1] + ", fk_ext_dps_ety_n = " + key[2] + " ";
+                }
+                break;
+            case FIELD_OP_CALENDAR:
+                if (value == null) {
+                    msSql += "fk_op_cal_n = NULL, fk_op_cal_n = NULL, fk_op_cal_n = NULL ";
+                }
+                else {
+                    int[] key = (int[]) value;
+                    msSql += "fk_op_cal_n = " + key[0] + ", fk_op_cal_year_n = " + key[1] + ", fk_op_cal_month_n = " + key[2] + " ";
+                }
+                break;
+            default:
+                throw new Exception(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+
+        msSql += getSqlWhere(pk);
+        statement.execute(msSql);
+        mnQueryResultId = SDbConsts.SAVE_OK;
+    }
+
+    @Override
+    public boolean canSave(final SGuiSession session) throws SQLException, Exception {
+        boolean can = super.canSave(session);
+
+        if (can) {
+            initQueryMembers();
+            can = !SSomUtils.existsTicket(session, msNumber, mnPkTicketId);
+
+            if (!can) {
+                msQueryResult = "¡El boleto #" + msNumber + " ya existe!";
+            }
+        }
+
+        return can;
+    }
+
+    @Override
+    public boolean canDelete(final SGuiSession session) throws SQLException, Exception {
+        boolean can = super.canDelete(session);
+
+        if (can) {
+            can = !isLinkIog(session);
+
+            if (!can) {
+                msQueryResult = "¡El boleto está vinculado con un documento de inventarios!";
+            }
+            else {
+                can = !SSomUtils.existsTicket(session, msNumber, mnPkTicketId);
+
+                if (!can) {
+                    msQueryResult = "¡El boleto ya existe!";
+                }
+            }
+        }
+
+        return can;
+    }
+
+    @Override
     public SDbTicket clone() throws CloneNotSupportedException {
         SDbTicket registry = new SDbTicket();
 
@@ -1303,97 +1394,6 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
-    }
-
-    @Override
-    public boolean canSave(final SGuiSession session) throws SQLException, Exception {
-        boolean can = super.canSave(session);
-
-        if (can) {
-            initQueryMembers();
-            can = !SSomUtils.existsTicket(session, msNumber, mnPkTicketId);
-
-            if (!can) {
-                msQueryResult = "¡El boleto #" + msNumber + " ya existe!";
-            }
-        }
-
-        return can;
-    }
-
-    @Override
-    public boolean canDelete(final SGuiSession session) throws SQLException, Exception {
-        boolean can = super.canDelete(session);
-
-        if (can) {
-            can = !isLinkIog(session);
-
-            if (!can) {
-                msQueryResult = "¡El boleto está vinculado con un documento de inventarios!";
-            }
-            else {
-                can = !SSomUtils.existsTicket(session, msNumber, mnPkTicketId);
-
-                if (!can) {
-                    msQueryResult = "¡El boleto ya existe!";
-                }
-            }
-        }
-
-        return can;
-    }
-
-    @Override
-    public void saveField(final Statement statement, final int[] pk, final int field, final Object value) throws SQLException, Exception {
-        initQueryMembers();
-        mnQueryResultId = SDbConsts.SAVE_ERROR;
-
-        msSql = "UPDATE " + getSqlTable() + " SET ";
-
-        switch (field) {
-            case FIELD_PAYED:
-                msSql += "b_pay = " + value + " ";
-                break;
-            case FIELD_TICKET_STATUS:
-                msSql += "fk_tic_st = " + value + " ";
-                break;
-            case FIELD_LABORATORY:
-                msSql += "fk_lab_n = " + value + " ";
-                break;
-            case FIELD_TARED:
-                msSql += "b_tar = " + value + " ";
-                break;
-            case FIELD_ASSORTED:
-                msSql += "b_ass = " + value + ", fk_usr_ass = " + mnFkUserAssortedId + ", ts_usr_ass = NOW() ";
-                break;
-            case FIELD_DPS:
-                msSql += "b_dps = " + value + " ";
-                break;
-            case FIELD_EXT_DPS:
-                if (value == null) {
-                    msSql += "fk_ext_dps_year_n = NULL, fk_ext_dps_doc_n = NULL, fk_ext_dps_ety_n = NULL ";
-                }
-                else {
-                    int[] key = (int[]) value;
-                    msSql += "fk_ext_dps_year_n = " + key[0] + ", fk_ext_dps_doc_n = " + key[1] + ", fk_ext_dps_ety_n = " + key[2] + " ";
-                }
-                break;
-            case FIELD_OP_CALENDAR:
-                if (value == null) {
-                    msSql += "fk_op_cal_n = NULL, fk_op_cal_n = NULL, fk_op_cal_n = NULL ";
-                }
-                else {
-                    int[] key = (int[]) value;
-                    msSql += "fk_op_cal_n = " + key[0] + ", fk_op_cal_year_n = " + key[1] + ", fk_op_cal_month_n = " + key[2] + " ";
-                }
-                break;
-            default:
-                throw new Exception(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
-        }
-
-        msSql += getSqlWhere(pk);
-        statement.execute(msSql);
-        mnQueryResultId = SDbConsts.SAVE_OK;
     }
 
     @Override
@@ -1671,6 +1671,7 @@ public class SDbTicket extends SDbRegistryUser implements SGridRow {
         }
         else if (mnFkTicketStatusId == SModSysConsts.SS_TIC_ST_SCA) {
             if (mbLaboratory) {
+                mbAuxRequirePriceComputation = true;
                 mnFkTicketStatusId = SModSysConsts.SS_TIC_ST_LAB;
             }
             else {

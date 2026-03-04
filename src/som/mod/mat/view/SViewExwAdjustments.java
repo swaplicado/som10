@@ -4,8 +4,13 @@
  */
 package som.mod.mat.view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
 import sa.lib.grid.SGridConsts;
@@ -18,16 +23,19 @@ import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiDate;
 import sa.lib.gui.SGuiParams;
+import som.gui.SGuiClientUtils;
 import som.mod.SModConsts;
+import som.mod.SModSysConsts;
 import som.mod.mat.db.SDbExwAdjustment;
 
 /**
  *
  * @author Sergio Flores
  */
-public class SViewExwAdjustments extends SGridPaneView {
+public class SViewExwAdjustments extends SGridPaneView implements ActionListener {
 
     private SGridFilterDatePeriod moFilterDatePeriod;
+    private JButton jbAuthorize;
     
     public SViewExwAdjustments(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.M_EXW_ADJ, 0, title);
@@ -39,7 +47,43 @@ public class SViewExwAdjustments extends SGridPaneView {
         moFilterDatePeriod.initFilter(new SGuiDate(SGuiConsts.GUI_DATE_MONTH, miClient.getSession().getWorkingDate().getTime()));
         getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(moFilterDatePeriod);
         
+        jbAuthorize = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_ok.gif")), "Autorizar/Desautorizar ajuste", this);
+        jbAuthorize.setEnabled(miClient.getSession().getUser().hasPrivilege(SModSysConsts.CS_RIG_STK_ADJ_AUD));
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(jbAuthorize);
+        
         setRowButtonsEnabled(false, true, false, false, true);
+    }
+
+    private void actionPerformedAuthorize() {
+        if (jbAuthorize.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
+                SDbExwAdjustment exwAdjustment = (SDbExwAdjustment) miClient.getSession().readRegistry(SModConsts.M_EXW_ADJ, gridRow.getRowPrimaryKey());
+                
+                if (exwAdjustment.isAuthorized() && !SGuiClientUtils.isPeriodOpened(miClient.getSession(), exwAdjustment.getDate())) {
+                    miClient.showMsgBoxWarning("El período del ajuste '" + exwAdjustment.getFolio() + "' está cerrado, y debido a ello no se puede desautorizar.");
+                }
+                else {
+                    String confirm = "El ajuste '" + exwAdjustment.getFolio() + "' está " + (exwAdjustment.isAuthorized() ? "autorizado" : "desautorizado") + ".\n"
+                            + "¿Está seguro que lo desea " + (exwAdjustment.isAuthorized() ? "desautorizar" : "autorizar") + "?";
+                    boolean execute = miClient.showMsgBoxConfirm(confirm) == JOptionPane.YES_OPTION;;
+
+                    if (execute) {
+                        try {
+                            Object[] value = new Object[] { !exwAdjustment.isAuthorized(), miClient.getSession().getUser().getPkUserId() }; // 0: new authorization status; 1: uset ID
+                            exwAdjustment.saveField(miClient.getSession().getStatement(), exwAdjustment.getPrimaryKey(), SDbExwAdjustment.FIELD_AUTHORIZED, value);
+                            miClient.getSession().notifySuscriptors(mnGridType);
+                        }
+                        catch (Exception e) {
+                            SLibUtils.showException(this, e);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -52,16 +96,42 @@ public class SViewExwAdjustments extends SGridPaneView {
                 SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
                 SDbExwAdjustment exwAdjustment = (SDbExwAdjustment) miClient.getSession().readRegistry(SModConsts.M_EXW_ADJ, gridRow.getRowPrimaryKey());
                 
-                moFormParams = new SGuiParams(exwAdjustment.getFkIogCategoryId());
-                super.actionRowEdit();
+                if (exwAdjustment.isAuthorized()) {
+                    miClient.showMsgBoxWarning("El ajuste '" + exwAdjustment.getFolio() + "' está autorizado, y debido a ello no se puede modificar.");
+                }
+                else if (!SGuiClientUtils.isPeriodOpened(miClient.getSession(), exwAdjustment.getDate())) {
+                    miClient.showMsgBoxWarning("El período del ajuste '" + exwAdjustment.getFolio() + "' está cerrado, y debido a ello no se puede modificar.");
+                }
+                else {
+                    moFormParams = new SGuiParams(exwAdjustment.getFkIogCategoryId());
+                    super.actionRowEdit();
+                }
             }
         }
     }
 
     @Override
     public void actionRowDelete() {
-        if (miClient.showMsgBoxConfirm("La eliminación de los ajustes de existencias de almacenes externos no se pueden revertir.\n" + SGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION) {
-            super.actionRowDelete();
+        if (jbRowDelete.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
+                SDbExwAdjustment exwAdjustment = (SDbExwAdjustment) miClient.getSession().readRegistry(SModConsts.M_EXW_ADJ, gridRow.getRowPrimaryKey());
+                
+                if (exwAdjustment.isAuthorized()) {
+                    miClient.showMsgBoxWarning("El ajuste '" + exwAdjustment.getFolio() + "' está autorizado, y debido a ello no se puede eliminar.");
+                }
+                else if (!SGuiClientUtils.isPeriodOpened(miClient.getSession(), exwAdjustment.getDate())) {
+                    miClient.showMsgBoxWarning("El período del ajuste '" + exwAdjustment.getFolio() + "' está cerrado, y debido a ello no se puede eliminar.");
+                }
+                else {
+                    if (miClient.showMsgBoxConfirm("La eliminación de los ajustes de existencias de almacenes externos no se pueden revertir.\n" + SGuiConsts.MSG_CNF_CONT) == JOptionPane.YES_OPTION) {
+                        super.actionRowDelete();
+                    }
+                }
+            }
         }
     }
     
@@ -100,8 +170,6 @@ public class SViewExwAdjustments extends SGridPaneView {
                 + "eat.code, "
                 + "ef.name, "
                 + "ef.code, "
-                + "s.name, "
-                + "s.code, "
                 + "i.name, "
                 + "i.code, "
                 + "u.code, "
@@ -124,12 +192,10 @@ public class SViewExwAdjustments extends SGridPaneView {
                 + "a.fk_exw_adj_tp = eat.id_exw_adj_tp "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.MU_EXW_FAC) + " AS ef ON "
                 + "a.fk_exw_fac = ef.id_exw_fac "
-                + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_SCA) + " AS s ON "
-                + "a.fk_sca = s.id_sca "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_ITEM) + " AS i ON "
                 + "a.fk_item = i.id_item "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.SU_UNIT) + " AS u ON "
-                + "a.fk_item = u.id_unit "
+                + "a.fk_unit = u.id_unit "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ui ON "
                 + "a.fk_usr_ins = ui.id_usr "
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
@@ -137,16 +203,14 @@ public class SViewExwAdjustments extends SGridPaneView {
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS ua ON "
                 + "a.fk_usr_aut = ua.id_usr "
                 + (sqlWhere.isEmpty() ? "" : "WHERE " + sqlWhere)
-                + "ORDER BY s.name, s.code, s.id_sca, ict.name, ict.id_iog_ct, a.ser, a.num, a.dt, a.id_exw_adj ";
+                + "ORDER BY ict.name, ict.id_iog_ct, a.ser, a.num, a.dt, a.id_exw_adj ";
     }
 
     @Override
     public void createGridColumns() {
         int col = 0;
-        SGridColumnView[] columns = new SGridColumnView[23];
+        SGridColumnView[] columns = new SGridColumnView[21];
 
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT, "s.name", "Báscula", 125);
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_CODE_CAT, "s.code", "Báscula");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "ict.name", "Categoría movimiento");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_REG_NUM, SDbConsts.FIELD_CODE, "Folio ajuste");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE, "a.dt", "Fecha ajuste");
@@ -177,9 +241,19 @@ public class SViewExwAdjustments extends SGridPaneView {
         moSuscriptionsSet.add(mnGridType);
         moSuscriptionsSet.add(SModConsts.MU_EXW_ADJ_TP);
         moSuscriptionsSet.add(SModConsts.MU_EXW_FAC);
-        moSuscriptionsSet.add(SModConsts.SU_SCA);
         moSuscriptionsSet.add(SModConsts.SU_ITEM);
         moSuscriptionsSet.add(SModConsts.SU_UNIT);
         moSuscriptionsSet.add(SModConsts.CU_USR);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof JButton) {
+            JButton button = (JButton) e.getSource();
+
+            if (button == jbAuthorize) {
+                actionPerformedAuthorize();
+            }
+        }
     }
 }

@@ -71,9 +71,6 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
         jPanel7 = new javax.swing.JPanel();
         jlExwAdjustmentType = new javax.swing.JLabel();
         moKeyExwAdjustmentType = new sa.lib.gui.bean.SBeanFieldKey();
-        jPanel6 = new javax.swing.JPanel();
-        jlScale = new javax.swing.JLabel();
-        moKeyScale = new sa.lib.gui.bean.SBeanFieldKey();
         jPanel9 = new javax.swing.JPanel();
         jlExwFacility = new javax.swing.JLabel();
         moKeyExwFacility = new sa.lib.gui.bean.SBeanFieldKey();
@@ -153,17 +150,6 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
         jPanel7.add(moKeyExwAdjustmentType);
 
         jPanel2.add(jPanel7);
-
-        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
-
-        jlScale.setText("Báscula:*");
-        jlScale.setPreferredSize(new java.awt.Dimension(100, 23));
-        jPanel6.add(jlScale);
-
-        moKeyScale.setPreferredSize(new java.awt.Dimension(300, 23));
-        jPanel6.add(moKeyScale);
-
-        jPanel2.add(jPanel6);
 
         jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
@@ -255,7 +241,6 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
@@ -270,7 +255,6 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
     private javax.swing.JLabel jlNote;
     private javax.swing.JLabel jlQuantity;
     private javax.swing.JLabel jlReference;
-    private javax.swing.JLabel jlScale;
     private javax.swing.JTextField jtfFolio;
     private javax.swing.JTextField jtfIogCategory;
     private javax.swing.JTextField jtfOldDate;
@@ -280,7 +264,6 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
     private sa.lib.gui.bean.SBeanFieldKey moKeyExwAdjustmentType;
     private sa.lib.gui.bean.SBeanFieldKey moKeyExwFacility;
     private sa.lib.gui.bean.SBeanFieldKey moKeyItem;
-    private sa.lib.gui.bean.SBeanFieldKey moKeyScale;
     private sa.lib.gui.bean.SBeanFieldText moTextNote;
     private sa.lib.gui.bean.SBeanFieldText moTextReference;
     // End of variables declaration//GEN-END:variables
@@ -306,7 +289,6 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
 
         moDate.setDateSettings(miClient, SGuiUtils.getLabelName(jlDate), true);
         moKeyExwAdjustmentType.setKeySettings(miClient, SGuiUtils.getLabelName(jlExwAdjustmentType), true);
-        moKeyScale.setKeySettings(miClient, SGuiUtils.getLabelName(jlScale), true);
         moKeyExwFacility.setKeySettings(miClient, SGuiUtils.getLabelName(jlExwFacility), true);
         moKeyItem.setKeySettings(miClient, SGuiUtils.getLabelName(jlItem), true);
         moCompQuantity.setCompoundFieldSettings(miClient);
@@ -316,7 +298,6 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
 
         moFields.addField(moDate);
         moFields.addField(moKeyExwAdjustmentType);
-        moFields.addField(moKeyScale);
         moFields.addField(moKeyExwFacility);
         moFields.addField(moKeyItem);
         moFields.addField(moCompQuantity.getField());
@@ -354,7 +335,6 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
     @Override
     public void reloadCatalogues() {
         miClient.getSession().populateCatalogue(moKeyExwAdjustmentType, SModConsts.MU_EXW_ADJ_TP, mnIogCategoryId, null);
-        miClient.getSession().populateCatalogue(moKeyScale, SModConsts.SU_SCA, 0, null);
         miClient.getSession().populateCatalogue(moKeyExwFacility, SModConsts.MU_EXW_FAC, 0, null);
         miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, 0, null);
     }
@@ -390,7 +370,6 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
         
         moDate.setValue(moRegistry.getDate());
         moKeyExwAdjustmentType.setValue(new int[] { moRegistry.getFkExwAdjustmentTypeId() });
-        moKeyScale.setValue(new int[] { moRegistry.getFkScaleId() });
         
         if (moRegistry.isRegistryNew()) {
             moKeyExwFacility.resetField(); // external warehouse facility "NA" has ID 0, so it cannot be selected by setValue()
@@ -424,7 +403,7 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
         else {
             
         }
-
+        
         addAllListeners();
     }
 
@@ -443,12 +422,11 @@ public class SFormExwAdjustment extends sa.lib.gui.bean.SBeanForm implements Ite
         registry.setReference(moTextReference.getValue());
         registry.setNote(moTextNote.getValue());
         registry.setQuantity(moCompQuantity.getField().getValue());
-        //registry.setAuthorized(...);
+        registry.setAuthorized(true); // implicit authorization
         //registry.setDeleted(...);
         //registry.setSystem(...);
         registry.setFkExwAdjustmentTypeId(moKeyExwAdjustmentType.getValue()[0]);
         registry.setFkExwFacilityId(moKeyExwFacility.getValue()[0]);
-        registry.setFkScaleId(moKeyScale.getValue()[0]);
         registry.setFkItemId(moItem.getPkItemId());
         registry.setFkUnitId(moItem.getFkUnitId());
         //registry.setFkUserInsertId(...);

@@ -7,11 +7,13 @@ package som.mod.mat.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
+import sa.lib.db.SDbRegistry;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
@@ -22,6 +24,8 @@ import som.mod.SModSysConsts;
  * @author Sergio Flores
  */
 public class SDbExwAdjustment extends SDbRegistryUser {
+    
+    public static final int FIELD_AUTHORIZED = SDbRegistry.FIELD_BASE + 1;
     
     public static final int NUM_LEN = 6;
     public static final String SERIES_IN = "E";
@@ -42,7 +46,6 @@ public class SDbExwAdjustment extends SDbRegistryUser {
     protected int mnFkIogCategoryId;
     protected int mnFkExwAdjustmentTypeId;
     protected int mnFkExwFacilityId;
-    protected int mnFkScaleId;
     protected int mnFkItemId;
     protected int mnFkUnitId;
     /*
@@ -57,7 +60,7 @@ public class SDbExwAdjustment extends SDbRegistryUser {
     protected Date mtTsUserAuthorization;
     
     protected Date mtOldDate;
-    protected int mnOldFkUserAuthorizationId;
+    protected boolean mbOldAuthorized;
 
     public SDbExwAdjustment() {
         super(SModConsts.M_EXW_ADJ);
@@ -77,7 +80,6 @@ public class SDbExwAdjustment extends SDbRegistryUser {
     public void setFkIogCategoryId(int n) { mnFkIogCategoryId = n; }
     public void setFkExwAdjustmentTypeId(int n) { mnFkExwAdjustmentTypeId = n; }
     public void setFkExwFacilityId(int n) { mnFkExwFacilityId = n; }
-    public void setFkScaleId(int n) { mnFkScaleId = n; }
     public void setFkItemId(int n) { mnFkItemId = n; }
     public void setFkUnitId(int n) { mnFkUnitId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
@@ -100,7 +102,6 @@ public class SDbExwAdjustment extends SDbRegistryUser {
     public int getFkIogCategoryId() { return mnFkIogCategoryId; }
     public int getFkExwAdjustmentTypeId() { return mnFkExwAdjustmentTypeId; }
     public int getFkExwFacilityId() { return mnFkExwFacilityId; }
-    public int getFkScaleId() { return mnFkScaleId; }
     public int getFkItemId() { return mnFkItemId; }
     public int getFkUnitId() { return mnFkUnitId; }
     public int getFkUserInsertId() { return mnFkUserInsertId; }
@@ -111,10 +112,14 @@ public class SDbExwAdjustment extends SDbRegistryUser {
     public Date getTsUserAuthorization() { return mtTsUserAuthorization; }
 
     public void setOldDate(Date t) { mtOldDate = t; }
-    public void setOldFkUserAuthorizationId(int n) { mnOldFkUserAuthorizationId = n; }
+    public void setOldAuthorized(boolean s) { mbOldAuthorized = s; }
     
     public Date getOldDate() { return mtOldDate; }
-    public int getOldFkUserAuthorizationId() { return mnOldFkUserAuthorizationId; }
+    public boolean isOldAuthorized() { return mbOldAuthorized; }
+    
+    public String getFolio() {
+        return (msSeries.isEmpty() ? "" : msSeries + "-") + SLibUtils.DecimalNumberFormat.format(mnNumber);
+    }
     
     @Override
     public void setPrimaryKey(int[] pk) {
@@ -143,7 +148,6 @@ public class SDbExwAdjustment extends SDbRegistryUser {
         mnFkIogCategoryId = 0;
         mnFkExwAdjustmentTypeId = 0;
         mnFkExwFacilityId = 0;
-        mnFkScaleId = 0;
         mnFkItemId = 0;
         mnFkUnitId = 0;
         mnFkUserInsertId = 0;
@@ -154,7 +158,7 @@ public class SDbExwAdjustment extends SDbRegistryUser {
         mtTsUserAuthorization = null;
         
         mtOldDate = null;
-        mnOldFkUserAuthorizationId = 0;
+        mbOldAuthorized = false;
     }
 
     @Override
@@ -212,7 +216,6 @@ public class SDbExwAdjustment extends SDbRegistryUser {
             mnFkIogCategoryId = resultSet.getInt("fk_iog_ct");
             mnFkExwAdjustmentTypeId = resultSet.getInt("fk_exw_adj_tp");
             mnFkExwFacilityId = resultSet.getInt("fk_exw_fac");
-            mnFkScaleId = resultSet.getInt("fk_sca");
             mnFkItemId = resultSet.getInt("fk_item");
             mnFkUnitId = resultSet.getInt("fk_unit");
             mnFkUserInsertId = resultSet.getInt("fk_usr_ins");
@@ -225,7 +228,7 @@ public class SDbExwAdjustment extends SDbRegistryUser {
             // Preserve original values:
             
             mtOldDate = mtDate;
-            mnOldFkUserAuthorizationId = mnFkUserAuthorizationId;
+            mbOldAuthorized = mbAuthorized;
 
             // Finish registry reading:
 
@@ -246,7 +249,7 @@ public class SDbExwAdjustment extends SDbRegistryUser {
             mbSystem = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
-            mnFkUserAuthorizationId = mbAuthorized ? session.getUser().getPkUserId() : SUtilConsts.USR_NA_ID;
+            mnFkUserAuthorizationId = SUtilConsts.USR_NA_ID; // implicit authorizations assigned to user NA!
             
             switch (mnFkIogCategoryId) {
                 case SModSysConsts.SS_IOG_CT_IN:
@@ -275,7 +278,6 @@ public class SDbExwAdjustment extends SDbRegistryUser {
                     mnFkIogCategoryId + ", " + 
                     mnFkExwAdjustmentTypeId + ", " + 
                     mnFkExwFacilityId + ", " + 
-                    mnFkScaleId + ", " + 
                     mnFkItemId + ", " + 
                     mnFkUnitId + ", " + 
                     mnFkUserInsertId + ", " + 
@@ -287,9 +289,13 @@ public class SDbExwAdjustment extends SDbRegistryUser {
                     ")";
         }
         else {
-            boolean isAuthInProgress = mnFkUserAuthorizationId != mnOldFkUserAuthorizationId;
-            
             mnFkUserUpdateId = session.getUser().getPkUserId();
+            
+            boolean isAuthInProgress = mbAuthorized != mbOldAuthorized;
+            
+            if (isAuthInProgress) {
+                mnFkUserAuthorizationId = SUtilConsts.USR_NA_ID; // implicit authorizations assigned to user NA!
+            }
 
             msSql = "UPDATE " + getSqlTable() + " SET " +
                     //"id_exw_adj = " + mnPkExwAdjustmentId + ", " +
@@ -305,7 +311,6 @@ public class SDbExwAdjustment extends SDbRegistryUser {
                     "fk_iog_ct = " + mnFkIogCategoryId + ", " +
                     "fk_exw_adj_tp = " + mnFkExwAdjustmentTypeId + ", " +
                     "fk_exw_fac = " + mnFkExwFacilityId + ", " +
-                    "fk_sca = " + mnFkScaleId + ", " +
                     "fk_item = " + mnFkItemId + ", " +
                     "fk_unit = " + mnFkUnitId + ", " +
                     //"fk_usr_ins = " + mnFkUserInsertId + ", " +
@@ -326,9 +331,31 @@ public class SDbExwAdjustment extends SDbRegistryUser {
     }
 
     @Override
+    public void saveField(final Statement statement, final int[] pk, final int field, final Object value) throws Exception {
+        initQueryMembers();
+        mnQueryResultId = SDbConsts.SAVE_ERROR;
+
+        msSql = "UPDATE " + getSqlTable() + " SET ";
+
+        switch (field) {
+            case FIELD_AUTHORIZED:
+                boolean authorized = (boolean) ((Object[]) value)[0];
+                int userAuthorizationId = (int) ((Object[]) value)[1];
+                msSql += "b_aut = " + (authorized ? 1 : 0) + ", fk_usr_aut = " + userAuthorizationId + ", ts_usr_aut = NOW() ";
+                break;
+            default:
+                throw new Exception(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+
+        msSql += getSqlWhere(pk);
+        statement.execute(msSql);
+        mnQueryResultId = SDbConsts.SAVE_OK;
+    }
+
+    @Override
     public boolean canDelete(final SGuiSession session) throws SQLException, Exception {
         initQueryMembers();
-        return !mbSystem && (mbRegistryNew || (!mbRegistryNew && !mbDeleted)); // prevent deleted registries to be recovered!
+        return !mbSystem && !mbAuthorized && (mbRegistryNew || (!mbRegistryNew && !mbDeleted)); // prevent deleted registries to be recovered!
     }
 
     @Override
@@ -348,7 +375,6 @@ public class SDbExwAdjustment extends SDbRegistryUser {
         registry.setFkIogCategoryId(this.getFkIogCategoryId());
         registry.setFkExwAdjustmentTypeId(this.getFkExwAdjustmentTypeId());
         registry.setFkExwFacilityId(this.getFkExwFacilityId());
-        registry.setFkScaleId(this.getFkScaleId());
         registry.setFkItemId(this.getFkItemId());
         registry.setFkUnitId(this.getFkUnitId());
         registry.setFkUserInsertId(this.getFkUserInsertId());
@@ -359,14 +385,10 @@ public class SDbExwAdjustment extends SDbRegistryUser {
         registry.setTsUserAuthorization(this.getTsUserAuthorization());
         
         registry.setOldDate(this.getOldDate());
-        registry.setOldFkUserAuthorizationId(this.getOldFkUserAuthorizationId());
+        registry.setOldAuthorized(this.isOldAuthorized());
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
-    }
-    
-    public String getFolio() {
-        return (msSeries.isEmpty() ? "" : msSeries + "-") + SLibUtils.DecimalNumberFormat.format(mnNumber);
     }
     
     public static int getNextNumber(final SGuiSession session, final String series) throws SQLException, Exception {
