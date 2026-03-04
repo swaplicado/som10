@@ -7,21 +7,26 @@ package som.cli;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 import sa.lib.SLibTimeConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
 import sa.lib.gui.SGuiSession;
+import som.mod.mat.db.SExwUtils;
 import som.mod.som.db.SDbInputCategory;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbUnit;
 import static som.mod.som.db.SOpCalendarUtils.createOpCalendarsMap;
 import static som.mod.som.db.SOpCalendarUtils.getOpCalendarId;
 import som.mod.som.db.SSomMailUtils;
+import som.mod.som.db.SSomUtils;
 
 /**
   * Generación de las tablas comparativas históricas mensuales de recepción de fruta en base a meses con cierre de acuerdo el calendario operativo aplicable, si aplica, o a meses con cierre fijo los días 18.
@@ -53,12 +58,13 @@ public class SReportHtmlTicketSeasonMonthStd {
      * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
      * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
      * @param mode a) Unit of measure of item; b) Metric tons.
+     * @param addExwStock Add stock in external warehouses.
      * @return
      * @throws Exception
      */
     public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays, 
             final int seasonFirstMonth, final int monthFirstDay, final boolean useOpCalendars,
-            final Date cutoff, final Date now, final int ticketOrigin, final int ticketDestination, final int mode) throws Exception {
+            final Date cutoff, final Date now, final int ticketOrigin, final int ticketDestination, final int mode, final boolean addExwStock) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -152,7 +158,7 @@ public class SReportHtmlTicketSeasonMonthStd {
             // HTML heading 3 (item subtitle):
             
             String name = SCliConsts.ItemNames.get(itemId);
-            html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (valores en " + (isUnitsTon ? "ton" : unit.getCode()) + ")") + "</h4>\n";
+            html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (valores en " + (isUnitsTon ? SCliConsts.TON : unit.getCode()) + ")") + "</h4>\n";
 
             // obtain report data:
             
@@ -192,7 +198,7 @@ public class SReportHtmlTicketSeasonMonthStd {
                     double value = resultSet.getDouble("_tot") / unitsDivisor;
 
                     html += "<p>" + SLibUtils.textToHtml("Recepción " + (intvlDays == 1 ? "del último día" : "de los últimos " + intvlDays + " días") + ": " + 
-                            decimalFormatVal.format(value) + " " + (isUnitsTon ? "ton" : unit.getCode()) + ".") + "</p>\n";
+                            decimalFormatVal.format(value) + " " + (isUnitsTon ? SCliConsts.TON : unit.getCode()) + ".") + "</p>\n";
                 }
             }
             
@@ -410,11 +416,100 @@ public class SReportHtmlTicketSeasonMonthStd {
             html += "<br>\n";
         }
         
+        if (addExwStock) {
+            // add HTML table with stock in external warehouses:
+            html += generateExwStockHtmlTable(itemIds, cutoff, isUnitsTon);
+        }
+        
         html += SSomMailUtils.composeSomMailWarning();
         
         html += "</body>\n";
         
         html += "</html>";
+        
+        return html;
+    }
+    
+    private String generateExwStockHtmlTable(final int[] itemIds, final Date cutoff, final boolean isUnitsTon) throws Exception {
+        String html = "";
+        double unitsDivisor = isUnitsTon ? 1000 : 1;
+        DecimalFormat decimalFormatVal = isUnitsTon ? SLibUtils.DecimalFormatInteger : SLibUtils.getDecimalFormatAmount();
+        Date exwStart = SExwUtils.getExwStart(moSession);
+        
+        String sql = "SELECT "
+                + "ict.name, ict.id_inp_ct, "
+                + "i.name, i.id_item, "
+                + "u.code, u.id_unit, "
+                + "exw.name, exw.id_exw_fac, "
+                + "SUM(s.flow_prev) AS open_stock, "
+                + "SUM(IF(flow = '" + SExwUtils.INFLOW + "', s.flow_curr, 0.0)) AS flow_in, "
+                + "-SUM(IF(flow = '" + SExwUtils.OUTFLOW + "', s.flow_curr, 0.0)) AS flow_out, " // outflows is negative, so render it as positive!
+                + "SUM(s.flow_prev + s.flow_curr) AS stock "
+                + "FROM ("
+                + SExwUtils.composeSqlExwStock(0, 0, SExwUtils.EXW_FAC_UNDEF, exwStart, cutoff)
+                + ") AS s " // stock
+                + ""
+                + "INNER JOIN su_item AS i ON i.id_item = s.id_item "
+                + "INNER JOIN su_inp_ct AS ict ON ict.id_inp_ct = i.fk_inp_ct "
+                + "INNER JOIN su_unit AS u ON u.id_unit = s.id_unit "
+                + "INNER JOIN mu_exw_fac AS exw ON exw.id_exw_fac = s.id_exw_fac "
+                + "WHERE i.id_item IN (" + Arrays.stream(itemIds).mapToObj(String::valueOf).collect(Collectors.joining(", ")) + ") "
+                + "GROUP BY "
+                + "ict.name, ict.id_inp_ct, i.name, i.id_item, u.code, u.id_unit, "
+                + "exw.name, exw.id_exw_fac "
+                + "HAVING stock <> 0.0 "
+                + "ORDER BY "
+                + "ict.name, ict.id_inp_ct, i.name, i.id_item, u.code, u.id_unit, "
+                + "exw.name, exw.id_exw_fac"
+                + ";";
+        
+        html += "<hr>\n";
+        html += "<h3>" + SLibUtils.textToHtml("Existencias en almacenes externos") + "</h3>\n";
+        
+        try (Statement statement = moSession.getStatement().getConnection().createStatement()) {
+            html += "<h4>" + SLibUtils.textToHtml("Materias primas" + (isUnitsTon ? " (valores en " + SCliConsts.TON + ")" : "")) + "</h4>\n";
+            
+            html += "<table>\n";
+            
+            // table header:
+            
+            html += "<tr>";
+            
+            String[] headers = new String[] { "Categoría", "Materia prima", "Almacén externo", /*"Inv. inicial", "Entradas", "Salidas",*/ "Existencias*", "Unidad" };
+            for (String header : headers) {
+                html += "<th>&nbsp;" + SLibUtils.textToHtml(header) + "&nbsp;</th>";
+            }
+            
+            html += "</tr>\n";
+            
+            String[] valueCols = new String[] { /*"open_stock", "flow_in", "flow_out",*/ "stock" };
+            
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                html += "<tr>";
+                
+                html += "<td class='colmonth'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(resultSet.getString("ict.name"))) + "</td>";
+                html += "<td class='colmonth'>" + SLibUtils.textToHtml(SCliConsts.ItemNames.get(resultSet.getInt("i.id_item"))) + "</td>";
+                html += "<td class='colmonth'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(resultSet.getString("exw.name"))) + "</td>";
+                
+                for (String valueCol : valueCols) {
+                    double value = resultSet.getDouble(valueCol) / unitsDivisor;
+                    html += "<td class='coldata'" + (value < 0 ? " style='color: red;'" : "") + ">" + decimalFormatVal.format(value) + "</td>";
+                }
+                
+                html += "<td class='colmonth'>" + SLibUtils.textToHtml(isUnitsTon ? SCliConsts.TON : resultSet.getString("u.code")) + "</td>";
+                
+                html += "</tr>\n";
+            }
+            
+            html += "</table>\n";
+            
+            html += "<small>" + SLibUtils.textToHtml("* Día de corte de existencias: " + SSomUtils.DateFormatGui.format(cutoff) + ".") + "</small>\n";
+            
+            html += "<p>" + SLibUtils.textToHtml("Existencias determinadas en base a boletos de entrada y de salida de almacenes externos.") + "</p>\n";
+            
+            html += "<br>\n";
+        }
         
         return html;
     }

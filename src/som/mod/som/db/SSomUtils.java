@@ -38,12 +38,13 @@ import som.mod.cfg.db.SDbCompany;
  */
 public abstract class SSomUtils {
     
+    public static final DecimalFormat DecimalFormatNegativeValue2D = new DecimalFormat("#,##0.00;(#,##0.00)");
+    public static final SimpleDateFormat DateFormatGui = new SimpleDateFormat("dd/MMM./yyyy");
+    
     private static final int IDX_CONV = 0;
     private static final int IDX_ALT = 1;
     private static final int IDX_TOT = 2;
     private static final double LAGGING_PCT = 0.15;
-    private static final DecimalFormat DecimalFormatNegativeValue2D = new DecimalFormat("#,##0.00;(#,##0.00)");
-    private static final SimpleDateFormat DateFormatGui = new SimpleDateFormat("dd/MMM./yyyy");
     
     /**
      * Gets proper season for ticket defined by date, item and producer.
@@ -1563,8 +1564,8 @@ public abstract class SSomUtils {
     
     private static String composeHtmlTableCompHeader(final String title, final String itemName, final String month, final int year, final String conceptName) {
         return "<b>Resumen y comparativa " + SLibUtils.textToHtml(title) + " (" + SLibUtils.textToHtml(itemName) + ")</b><br>"
-                + "<div style='color: tomato;'><small>" + SLibUtils.textToHtml("(Se marcan en rojo los proveedores rezagados " 
-                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PCT) + " o más respecto al mes del año anterior.)") + "</small></div>"
+                + "<div style='color: tomato;'><small>(<strong>" + SLibUtils.textToHtml("En rojo:") + "</strong>&nbsp;" + SLibUtils.textToHtml("Proveedores rezagados " 
+                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PCT) + " o más respecto al mes del año anterior.") + ")</small></div>"
                 + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
                 + "<tr>"
                 + "<td align='center' rowspan='2'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"
@@ -1587,8 +1588,8 @@ public abstract class SSomUtils {
     
     private static String composeHtmlTableCompHeaderSeasons(final String title, final String itemName, final Date seasonStart, final Date seasonEnd, final String conceptName) {
         return "<b>Resumen y comparativa " + SLibUtils.textToHtml(title) + " (" + SLibUtils.textToHtml(itemName) + ")</b><br>"
-                + "<div style='color: tomato;'><small>" + SLibUtils.textToHtml("(Se marcan en rojo los proveedores rezagados " 
-                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PCT) + " o más respecto al mes del año anterior.)") + "</small></div>"
+                + "<div style='color: tomato;'><small>(<strong>" + SLibUtils.textToHtml("En rojo:") + "</strong>&nbsp;" + SLibUtils.textToHtml("Proveedores rezagados " 
+                    + SLibUtils.DecimalFormatPercentage2D.format(LAGGING_PCT) + " o más respecto al mes del año anterior.") + ")</small></div>"
                 + "<table border='1' bordercolor='#000000' style='background-color:' width='300' cellpadding='0' cellspacing='0'>"
                 + "<tr>"
                 + "<td align='center' rowspan='2'><b>" + SLibUtils.textToHtml(conceptName) + "</b></td>"

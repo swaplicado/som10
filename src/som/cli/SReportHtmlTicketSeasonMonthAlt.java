@@ -170,7 +170,7 @@ public class SReportHtmlTicketSeasonMonthAlt {
             // HTML heading 3 (item subtitle):
             
             String name = SCliConsts.ItemNames.get(itemConvId);
-            html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (valores en " + (isUnitsTon ? "ton" : unit.getCode()) + ")") + "</h4>\n";
+            html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (valores en " + (isUnitsTon ? SCliConsts.TON : unit.getCode()) + ")") + "</h4>\n";
 
             // obtain report data:
 
@@ -221,7 +221,7 @@ public class SReportHtmlTicketSeasonMonthAlt {
                     double value = resultSet.getDouble("_tot") / unitsDivisor;
 
                     html += "<p>" + SLibUtils.textToHtml("Recepción " + (intvlDays == 1 ? "del último día" : "de los últimos " + intvlDays + " días") + ": " + 
-                            decimalFormatVal.format(value) + " " + (isUnitsTon ? "ton" : unit.getCode()) + ".") + "</p>\n";
+                            decimalFormatVal.format(value) + " " + (isUnitsTon ? SCliConsts.TON : unit.getCode()) + ".") + "</p>\n";
                 }
             }
 

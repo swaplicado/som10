@@ -107,7 +107,7 @@ public class SViewExwStock extends SGridPaneView implements ActionListener {
                     cutoff = miClient.getSession().getWorkingDate();
                 }
                 
-                SDialogExwStockCardex.Params params = new SDialogExwStockCardex.Params(key[0], key[1], isStockItemAndExw() ? key[2] : -1, cutoff);
+                SDialogExwStockCardex.Params params = new SDialogExwStockCardex.Params(key[0], key[1], isStockItemAndExw() ? key[2] : SExwUtils.EXW_FAC_UNDEF, cutoff);
 
                 moDialogCardex.resetForm();
                 moDialogCardex.setValue(SDialogExwStockCardex.PARAMS, params);
@@ -131,7 +131,7 @@ public class SViewExwStock extends SGridPaneView implements ActionListener {
 
         filter = (Boolean) moFiltersMap.get(SGridConsts.FILTER_DELETED);
         if ((Boolean) filter) {
-            sqlHaving = "stock <> 0 ";
+            sqlHaving = "stock <> 0.0 ";
         }
 
         filter = (SGuiDate) moFiltersMap.get(SGridConsts.FILTER_DATE);
@@ -168,7 +168,7 @@ public class SViewExwStock extends SGridPaneView implements ActionListener {
                 + "-SUM(IF(flow = '" + SExwUtils.OUTFLOW + "', s.flow_curr, 0.0)) AS flow_out, " // outflows is negative, so render it as positive!
                 + "SUM(s.flow_prev + s.flow_curr) AS stock "
                 + "FROM ("
-                + SExwUtils.composeSqlExwStock(0, 0, -1, mtExwStart, cutoff)
+                + SExwUtils.composeSqlExwStock(0, 0, SExwUtils.EXW_FAC_UNDEF, mtExwStart, cutoff)
                 + ") AS s " // stock
                 + ""
                 + "INNER JOIN su_item AS i ON i.id_item = s.id_item "

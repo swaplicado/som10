@@ -409,7 +409,7 @@ public class SDialogExwStockCardex extends SBeanFormDialog implements ActionList
 
             ArrayList<SRowExwMovement> rows = new ArrayList<>();
             Date prevStockEnd = SLibTimeUtils.addDate(SLibTimeUtils.getBeginOfYear(mtCutoff), 0, 0, -1);
-            SExwUtils.Stock prevStock = SExwUtils.getExwStock(miClient.getSession(), moParams.ItemId, moParams.UnitId, isStockItemAndExw() ? moParams.ExwFacilityId : -1, mtExwStart, prevStockEnd);
+            SExwUtils.Stock prevStock = SExwUtils.getExwStock(miClient.getSession(), moParams.ItemId, moParams.UnitId, isStockItemAndExw() ? moParams.ExwFacilityId : SExwUtils.EXW_FAC_UNDEF, mtExwStart, prevStockEnd);
             double inflows = 0;
             double outflows = 0;
             double stock = prevStock.Stock;
@@ -428,7 +428,7 @@ public class SDialogExwStockCardex extends SBeanFormDialog implements ActionList
                     + "ef.name, c.id_exw_fac, "
                     + "c.qty, c.id_usr_ins, c.ts_usr_ins, ui.name, c.id_usr_upd, c.ts_usr_upd, uu.name "
                     + "FROM ("
-                    + SExwUtils.composeSqlExwCardex(moParams.ItemId, moParams.UnitId, isStockItemAndExw() ? moParams.ExwFacilityId : -1, SLibTimeUtils.getBeginOfYear(mtCutoff), mtCutoff)
+                    + SExwUtils.composeSqlExwCardex(moParams.ItemId, moParams.UnitId, isStockItemAndExw() ? moParams.ExwFacilityId : SExwUtils.EXW_FAC_UNDEF, SLibTimeUtils.getBeginOfYear(mtCutoff), mtCutoff)
                     + ") AS c "
                     + "INNER JOIN cu_usr AS ui ON ui.id_usr = c.id_usr_ins "
                     + "INNER JOIN cu_usr AS uu ON uu.id_usr = c.id_usr_upd "

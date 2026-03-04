@@ -41,6 +41,10 @@ public abstract class SCliConsts {
         ItemsPairsNames.put(IDS_PAIR_AVO_FRUIT_CNV_ORG, "Aguacate convencional y orgánico");
     }
     
+    public static String TON = "ton";
+    public static String EXW_STK_ON = "stk-on"; // argument for adding stock in external warehouses
+    public static String EXW_STK_OFF = "stk-off"; // argument for not adding stock in external warehouses
+    
     /** Mmáximo día de inicio de mes operativo. */
     public static final int MAX_MONTH_START_DAY = 27;
     

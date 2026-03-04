@@ -1,4 +1,11 @@
 ================================================================================
+2026-03-04, 1.0 097.3
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición opcional de tabla con la información de existencias en almacenes externos, en el reporte mail histórico mensual de báscula de recepción de fruta.
+2) Adecuaciones visuales menores al reporte de resumen de báscula, en la comparativa del mes actual vs. los mismos meses de años previos.
+
+================================================================================
 2026-03-03, 1.0 097.2
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

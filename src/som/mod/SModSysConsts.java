@@ -155,10 +155,6 @@ public abstract class SModSysConsts {
     public static final int SS_ITEM_TP_BP = 4;
     public static final int SS_ITEM_TP_CU = 5;
     
-    /**
-     * Warehouse attributes
-     */
-    
     public static final int SS_WHS_OR_VERTICAL = 1;
     public static final int SS_WHS_OR_HORIZONTAL = 2;
     
@@ -173,6 +169,11 @@ public abstract class SModSysConsts {
     public static final int SU_IOG_ADJ_TP_NA = 1;
 
     public static final int SU_INP_CT_NA = 1;
+    
+    public static final int SU_INP_CT_AVOC = 2; // avocado (custom defined, not properly part of SOM's DB design!)
+    public static final int SU_INP_CT_SEED = 3; // oil seeds (custom defined, not properly part of SOM's DB design!)
+    public static final int SU_INP_CT_OTH = 4; // others (custom defined, not properly part of SOM's DB design!)
+    public static final int SU_INP_CT_PEL = 5; // pellet (custom defined, not properly part of SOM's DB design!)
     
     public static final int[] SU_INP_CL_NA = new int[] { 1, 1 };
 

@@ -26,15 +26,18 @@ public class SCliMailerReportFruitsStd {
     private static final int ARG_IDX_YEAR_BASE = 1;
     /** Argument index for interval days for invocation of this report mailer. */
     private static final int ARG_IDX_INTVL_DAYS = 2;
+    /** Argument index for adding stock in external warehouses. */
+    private static final int ARG_IDX_EXW_STK = 3;
     /** Argument index for list of mail-To recipients. */
-    private static final int ARG_IDX_MAIL_TO = 3;
+    private static final int ARG_IDX_MAIL_TO = 4;
     /** Argument index for list of mail-Bcc recipients. */
-    private static final int ARG_IDX_MAIL_BCC = 4;
+    private static final int ARG_IDX_MAIL_BCC = 5;
 
     private static final int[] DEF_ITEM_IDS = new int[] { SCliConsts.ID_AVO_FRUIT_CONV, /*SCliConsts.ID_AVO_FRUIT_ORG,*/ SCliConsts.ID_AVO_CHAFF, SCliConsts.ID_AVO_KERNEL, SCliConsts.ID_AVO_PULP, SCliConsts.ID_MAN_KERNEL };
     private static final int DEF_YEAR_BASE = SCliConsts.FRUIT_FIRST_YEAR; // año/temporada tope hacia atrás
     //private static final int DEF_YEAR_REF = 5; // comparativa de 5 años hacia atrás, además del año/temporada actual
     private static final int DEF_INTVL_DAYS = 7; // intervalo de días entre invocaciones de este de despachador de reportes
+    private static final boolean DEF_EXW_STK = true;
     private static final String DEF_MAIL_TO = "sflores@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx";
     //private static final String DEF_MAIL_TO = "isabel.garcia@swaplicado.com.mx;sflores@swaplicado.com.mx";
@@ -42,6 +45,8 @@ public class SCliMailerReportFruitsStd {
     //private static final String DEF_MAIL_TO = "gortiz@aeth.mx;sflores@swaplicado.com.mx";
     private static final String DEF_MAIL_BCC = "sflores.swaplicado@gmail.com";
     //private static final String DEF_MAIL_BCC = "isabel.garcia@swaplicado.com.mx";
+    
+    //
 
     /**
      * @param args the command line arguments.
@@ -59,6 +64,7 @@ public class SCliMailerReportFruitsStd {
             int[] argItemIds = DEF_ITEM_IDS;
             int argYearBase = DEF_YEAR_BASE;
             int argIntvlDays = DEF_INTVL_DAYS;
+            boolean argAddExwStock = DEF_EXW_STK;
             String argMailTo = DEF_MAIL_TO;
             String argMailBcc = DEF_MAIL_BCC;
             
@@ -72,9 +78,12 @@ public class SCliMailerReportFruitsStd {
                 argIntvlDays = SLibUtils.parseInt(args[ARG_IDX_INTVL_DAYS]);
             }
             if (args.length >= 4) {
-                argMailTo = args[ARG_IDX_MAIL_TO];
+                argAddExwStock = args[ARG_IDX_EXW_STK].equalsIgnoreCase(SCliConsts.EXW_STK_ON);
             }
             if (args.length >= 5) {
+                argMailTo = args[ARG_IDX_MAIL_TO];
+            }
+            if (args.length >= 6) {
                 argMailBcc = args[ARG_IDX_MAIL_BCC];
             }
             
@@ -86,7 +95,7 @@ public class SCliMailerReportFruitsStd {
             SReportHtmlTicketSeasonMonthStd reportHtml = new SReportHtmlTicketSeasonMonthStd(SCliUtils.createSession());
             String mailBody = reportHtml.generateReportHtml(argItemIds, argYearBase, argIntvlDays,
                     SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, SCliConsts.FRUIT_BY_OP_CALENDARS,
-                    cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthStd.MODE_UNIT_TON);
+                    cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthStd.MODE_UNIT_TON, argAddExwStock);
             
             // send mail report:
             

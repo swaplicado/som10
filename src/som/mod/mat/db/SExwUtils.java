@@ -26,12 +26,14 @@ public abstract class SExwUtils {
     public static final int STOCK_ITEM_EXW = 1;
     public static final int STOCK_ITEM = 2;
     
+    public static final int EXW_FAC_UNDEF = -1; // Undefined
+    
     public static final String INFLOW = "I";
     public static final String OUTFLOW = "O";
     
-    public static final String MVMT_OPEN_STK = "OPEN_STK";
-    public static final String MVMT_TICKET = "SCA_TIC";
-    public static final String MVMT_ADJUST = "STK_ADJ";
+    public static final String MVMT_OPEN_STK = "OS";
+    public static final String MVMT_TICKET = "T";
+    public static final String MVMT_ADJUST = "A";
     
     public static final HashMap<String, String> MovementTypes = new HashMap<>();
     
@@ -71,7 +73,7 @@ public abstract class SExwUtils {
      * mvmt_date, mvmt_folio, id_adjust_type, id_exw_fac, qty, id_usr_ins, ts_ins, id_usr_upd, ts_upd.
      * @param itemId ID of required item. Mandatory.
      * @param unitId ID of required unit. Mandatory.
-     * @param exwFacilityId ID of desired External Warehouse Facility. Optional. When not needed, pass -1.
+     * @param exwFacilityId ID of desired External Warehouse Facility. Optional. When not needed, pass EXW_FAC_UNDEF (-1).
      * @param cardexStart Start of cardex control. Mandatory.
      * @param cutoff Cutoff date for stock. Mandatory.
      * @return 
@@ -102,7 +104,7 @@ public abstract class SExwUtils {
                 + "AND t.fk_tic_dest = " + SModSysConsts.SU_TIC_DEST_EXW + " "
                 + (itemId == 0 ? "" : "AND t.fk_item = " + itemId + " ")
                 + (unitId == 0 ? "" : "AND t.fk_unit = " + unitId + " ")
-                + (exwFacilityId == -1 ? "" : "AND t.fk_exw_fac_dest = " + exwFacilityId + " ")
+                + (exwFacilityId == EXW_FAC_UNDEF ? "" : "AND t.fk_exw_fac_dest = " + exwFacilityId + " ")
                 + ""
                 + "UNION "
                 + ""
@@ -119,7 +121,7 @@ public abstract class SExwUtils {
                 + "AND t.fk_tic_orig = " + SModSysConsts.SU_TIC_ORIG_EXW + " "
                 + (itemId == 0 ? "" : "AND t.fk_item = " + itemId + " ")
                 + (unitId == 0 ? "" : "AND t.fk_unit = " + unitId + " ")
-                + (exwFacilityId == -1 ? "" : "AND t.fk_exw_fac_orig = " + exwFacilityId + " ")
+                + (exwFacilityId == EXW_FAC_UNDEF ? "" : "AND t.fk_exw_fac_orig = " + exwFacilityId + " ")
                 + ""
                 + "UNION "
                 + ""
@@ -135,7 +137,7 @@ public abstract class SExwUtils {
                 + "AND a.fk_iog_ct = " + SModSysConsts.SS_IOG_CT_IN + " "
                 + (itemId == 0 ? "" : "AND a.fk_item = " + itemId + " ")
                 + (unitId == 0 ? "" : "AND a.fk_unit = " + unitId + " ")
-                + (exwFacilityId == -1 ? "" : "AND a.fk_exw_fac = " + exwFacilityId + " ")
+                + (exwFacilityId == EXW_FAC_UNDEF ? "" : "AND a.fk_exw_fac = " + exwFacilityId + " ")
                 + ""
                 + "UNION "
                 + ""
@@ -151,7 +153,7 @@ public abstract class SExwUtils {
                 + "AND a.fk_iog_ct = " + SModSysConsts.SS_IOG_CT_OUT + " "
                 + (itemId == 0 ? "" : "AND a.fk_item = " + itemId + " ")
                 + (unitId == 0 ? "" : "AND a.fk_unit = " + unitId + " ")
-                + (exwFacilityId == -1 ? "" : "AND a.fk_exw_fac = " + exwFacilityId + " ")
+                + (exwFacilityId == EXW_FAC_UNDEF ? "" : "AND a.fk_exw_fac = " + exwFacilityId + " ")
                 + ""
                 + "ORDER BY "
                 + "mvmt_date, flow, mvmt_type, mvmt_folio, id_mvmt";
@@ -162,7 +164,7 @@ public abstract class SExwUtils {
      * Result set columns: flow (INFLOW | OUTFLOW), id_item, id_unit, id_exw_fac, flow_prev, flow_curr.
      * @param itemId ID of desired item. Optional. When not needed, pass zero.
      * @param unitId ID of desired unit. Optional. When not needed, pass zero.
-     * @param exwFacilityId ID of desired External Warehouse Facility. Optional. When not needed, pass -1.
+     * @param exwFacilityId ID of desired External Warehouse Facility. Optional. When not needed, pass EXW_FAC_UNDEF (-1).
      * @param exwStart Start of stock control. Optional. When unknown, pass a <code>null</code> value.
      * @param cutoff Cutoff date for stock. Required.
      * @return 
@@ -188,7 +190,7 @@ public abstract class SExwUtils {
                 + "AND t.fk_tic_dest = " + SModSysConsts.SU_TIC_DEST_EXW + " "
                 + (itemId == 0 ? "" : "AND t.fk_item = " + itemId + " ")
                 + (unitId == 0 ? "" : "AND t.fk_unit = " + unitId + " ")
-                + (exwFacilityId == -1 ? "" : "AND t.fk_exw_fac_dest = " + exwFacilityId + " ")
+                + (exwFacilityId == EXW_FAC_UNDEF ? "" : "AND t.fk_exw_fac_dest = " + exwFacilityId + " ")
                 + "GROUP BY "
                 + "t.fk_item, t.fk_unit, t.fk_exw_fac_dest "
                 + ""
@@ -206,7 +208,7 @@ public abstract class SExwUtils {
                 + "AND t.fk_tic_orig = " + SModSysConsts.SU_TIC_ORIG_EXW + " "
                 + (itemId == 0 ? "" : "AND t.fk_item = " + itemId + " ")
                 + (unitId == 0 ? "" : "AND t.fk_unit = " + unitId + " ")
-                + (exwFacilityId == -1 ? "" : "AND t.fk_exw_fac_orig = " + exwFacilityId + " ")
+                + (exwFacilityId == EXW_FAC_UNDEF ? "" : "AND t.fk_exw_fac_orig = " + exwFacilityId + " ")
                 + "GROUP BY "
                 + "t.fk_item, t.fk_unit, t.fk_exw_fac_orig "
                 + ""
@@ -224,7 +226,7 @@ public abstract class SExwUtils {
                 + "AND a.fk_iog_ct = " + SModSysConsts.SS_IOG_CT_IN + " "
                 + (itemId == 0 ? "" : "AND a.fk_item = " + itemId + " ")
                 + (unitId == 0 ? "" : "AND a.fk_unit = " + unitId + " ")
-                + (exwFacilityId == -1 ? "" : "AND a.fk_exw_fac = " + exwFacilityId + " ")
+                + (exwFacilityId == EXW_FAC_UNDEF ? "" : "AND a.fk_exw_fac = " + exwFacilityId + " ")
                 + "GROUP BY "
                 + "a.fk_item, a.fk_unit, a.fk_exw_fac "
                 + ""
@@ -242,7 +244,7 @@ public abstract class SExwUtils {
                 + "AND a.fk_iog_ct = " + SModSysConsts.SS_IOG_CT_OUT + " "
                 + (itemId == 0 ? "" : "AND a.fk_item = " + itemId + " ")
                 + (unitId == 0 ? "" : "AND a.fk_unit = " + unitId + " ")
-                + (exwFacilityId == -1 ? "" : "AND a.fk_exw_fac = " + exwFacilityId + " ")
+                + (exwFacilityId == EXW_FAC_UNDEF ? "" : "AND a.fk_exw_fac = " + exwFacilityId + " ")
                 + "GROUP BY "
                 + "a.fk_item, a.fk_unit, a.fk_exw_fac "
                 + ""
@@ -255,7 +257,7 @@ public abstract class SExwUtils {
      * @param session GUI session.
      * @param itemId ID of required item. Mandatory.
      * @param unitId ID of required unit. Mandatory.
-     * @param exwFacilityId ID of desired External Warehouse Facility. Optional. When not needed, pass -1.
+     * @param exwFacilityId ID of desired External Warehouse Facility. Optional. When not needed, pass EXW_FAC_UNDEF (-1).
      * @param exwStart Start of stock control. Optional. When unknown, pass a <code>null</code> value.
      * @param cutoff Cutoff date for stock. Mandatory.
      * @return
