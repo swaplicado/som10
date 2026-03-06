@@ -715,12 +715,12 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SU_TIC_ORIG:
                 settings = new SGuiCatalogueSettings("Procedencia del boleto", 1);
                 sql = "SELECT id_tic_orig AS " + SDbConsts.FIELD_ID + "1, CONCAT(name, ' (', code, ')') AS " + SDbConsts.FIELD_ITEM + " " 
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY id_tic_orig ";
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY sort ";
                 break;
             case SModConsts.SU_TIC_DEST:
                 settings = new SGuiCatalogueSettings("Destino del boleto", 1);
                 sql = "SELECT id_tic_dest AS " + SDbConsts.FIELD_ID + "1, CONCAT(name, ' (', code, ')') AS " + SDbConsts.FIELD_ITEM + " " 
-                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY id_tic_dest ";
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE NOT b_del AND NOT b_dis ORDER BY sort ";
                 break;
             case SModConsts.SU_FREIGHT_ORIG:
                 settings = new SGuiCatalogueSettings("Origen del flete", 1);

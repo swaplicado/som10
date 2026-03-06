@@ -1218,7 +1218,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 else {
                     // Case 4: Ticket modification (may or not be tared)
                     
-                    moKeyScale.setEnabled(!moRegistry.isTared() && !mbIsRevImport1 && moKeyScale.getItemCount() > 0 && moKeyScale.getItemCount() != 2);
+                    moKeyScale.setEnabled(false);
                     moTextTicket.setEditable(!moRegistry.isTared() && !mbIsRevImport1);
                     jbImportTicket.setEnabled(!moRegistry.isTared() && moConnectionRevuelta != null);
                     jbCleanTicket.setEnabled(!moRegistry.isTared() && mbIsRevImport1);
@@ -1283,7 +1283,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 miClient.getSession().populateCatalogue(moKeyRegion, SModConsts.SX_PROD_REG_ITEM_SEAS, 0, params);
                 
                 if (moKeyRegion.getItemCount() == 2) {
-                    moKeyRegion.setSelectedIndex(1);
+                    moKeyRegion.setSelectedIndex(1); // select the single one option available
                     mnDefaultRegionId = moKeyRegion.getValue()[0];
                 }
             }
@@ -1326,11 +1326,14 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
             moKeyItem.setEnabled(false);
             moKeyInputSource.setEnabled(false);
+            jbSetDefaultInputSource.setEnabled(false);
 
             // reset ticket's origin and destination fields:
 
             moKeyTicketOrigin.resetField();
+            itemStateKeyTicketOrigin();
             moKeyTicketDestination.resetField();
+            itemStateKeyTicketDestination();
 
             if (moKeyProducer.getSelectedIndex() > 0) {
                 // set members:
@@ -1343,14 +1346,14 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
                 // set ticket's origin and destination fields:
 
-                if (moProducer.getPkProducerId() != mnCompanyId) {
-                    // producer is supplier:
-                    moKeyTicketOrigin.setValue(new int[] { SModSysConsts.SU_TIC_ORIG_SUP });
+                if (moProducer.getPkProducerId() == mnCompanyId) {
+                    // producer is this company (seldom):
+                    moKeyTicketOrigin.setValue(new int[] { SModSysConsts.SU_TIC_ORIG_EXW });
                     moKeyTicketDestination.setValue(new int[] { SModSysConsts.SU_TIC_DEST_FAC });
                 }
                 else {
-                    // producer is this company:
-                    moKeyTicketOrigin.setValue(new int[] { SModSysConsts.SU_TIC_ORIG_EXW });
+                    // producer is supplier (nominal case):
+                    moKeyTicketOrigin.setValue(new int[] { SModSysConsts.SU_TIC_ORIG_SUP });
                     moKeyTicketDestination.setValue(new int[] { SModSysConsts.SU_TIC_DEST_FAC });
                 }
 
@@ -1452,7 +1455,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             }
             
             if (moKeyInputSource.getSelectedIndex() <= 0 && moKeyInputSource.getItemCount() == 2) {
-                moKeyInputSource.setSelectedIndex(1);
+                moKeyInputSource.setSelectedIndex(1); // select the single one option available
             }
             
             // set external warehouses fields:
@@ -1484,6 +1487,14 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 }
             }
             
+            if (isRequiredExwFacilityOrigin() && moKeyExwFacilityOrigin.getItemCount() == 2) {
+                moKeyExwFacilityOrigin.setSelectedIndex(1); // select the single one option available
+            }
+            
+            if (isRequiredExwFacilityDestination() && moKeyExwFacilityDestination.getItemCount() == 2) {
+                moKeyExwFacilityDestination.setSelectedIndex(1); // select the single one option available
+            }
+            
             // complete item setup:
 
             reloadFreightTicketsCatalog();
@@ -1498,7 +1509,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moKeyExwFacilityOrigin.setEnabled(moKeyItem.getSelectedIndex() > 0);
             
             if (moKeyExwFacilityOrigin.isEnabled() && moKeyExwFacilityOrigin.getItemCount() == 2) {
-                moKeyExwFacilityOrigin.setSelectedIndex(1);
+                moKeyExwFacilityOrigin.setSelectedIndex(1); // select the single one option available
             }
         }
         else {
@@ -1512,7 +1523,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moKeyExwFacilityDestination.setEnabled(moKeyItem.getSelectedIndex() > 0);
             
             if (moKeyExwFacilityDestination.isEnabled() && moKeyExwFacilityDestination.getItemCount() == 2) {
-                moKeyExwFacilityDestination.setSelectedIndex(1);
+                moKeyExwFacilityDestination.setSelectedIndex(1); // select the single one option available
             }
         }
         else {
@@ -1782,13 +1793,17 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     }
 
     private void actionSetDefaultInputSource() {
-        if (jbSetDefaultInputSource.isEnabled()) {
-            try {
+        if (moProducer != null) {
+            if (moProducer.getFkInputSourceId() != SModSysConsts.SU_INP_SRC_NA) {
                 moKeyInputSource.setValue(new int[] { moProducer.getFkInputSourceId() });
+                moKeyInputSource.requestFocusInWindow();
             }
-            catch (Exception e){
-                miClient.showMsgBoxError("No hay origenes disponibles.");
+            else {
+                miClient.showMsgBoxWarning("El proveedor '" + moProducer.getName() + "' no tiene configurado el " + moKeyInputSource.getFieldName() + " predeterminado.");
             }
+        }
+        else {
+            miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + moKeyProducer.getFieldName() + "'.");
         }
     }
 
@@ -1882,12 +1897,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
     @Override
     public void reloadCatalogues() {
-        miClient.getSession().populateCatalogue(moKeyScale, SModConsts.CU_USR_SCA, 0, new SGuiParams(new int[] { miClient.getSession().getUser().getPkUserId() }));
-        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, 0, null);
-        miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, 0, null);
-        miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, 0, null);
-        miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, 0, null);
-        miClient.getSession().populateCatalogue(moKeyFreightOrigin, SModConsts.SU_FREIGHT_ORIG, 0, null);
+        miClient.getSession().populateCatalogue(moKeyScale, SModConsts.CU_USR_SCA, SLibConsts.UNDEFINED, new SGuiParams(new int[] { miClient.getSession().getUser().getPkUserId() }));
+        miClient.getSession().populateCatalogue(moKeyItem, SModConsts.SU_ITEM, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyProducer, SModConsts.SU_PROD, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketOrigin, SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyTicketDestination, SModConsts.SU_TIC_DEST, SLibConsts.UNDEFINED, null);
+        miClient.getSession().populateCatalogue(moKeyFreightOrigin, SModConsts.SU_FREIGHT_ORIG, SLibConsts.UNDEFINED, null);
         
         maExternalWarehouses = new ArrayList<>(miClient.getSession().getModuleByGuiType(SModConsts.MU_EXW_FAC, 0).readItems(SModConsts.MU_EXW_FAC, 0, null));
         maExternalWarehouses.remove(0); // GUI item for input hint is useless!
@@ -2047,7 +2062,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
 
             if (moRegistry.isRegistryNew()) {
                 if (moKeyScale.getItemCount() == 2) {
-                    moKeyScale.setSelectedIndex(1);
+                    moKeyScale.setSelectedIndex(1); // select the single one option available
                 }
             }
             else {
@@ -2317,32 +2332,60 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 }
                 
                 if (validation.isValid()) {
+                    boolean isCompany = moProducer.getPkProducerId() == mnCompanyId;
+                    boolean isProducer = moProducer.getPkProducerId() != mnCompanyId;
+                    
+                    // ticket ORIGIN cannot be 'NA':
                     if (moKeyTicketOrigin.getValue()[0] == SModSysConsts.SU_TIC_ORIG_NA) {
                         validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyTicketOrigin.getFieldName() + "'.");
                         validation.setComponent(moKeyTicketOrigin);
                     }
-                    else if (moKeyTicketOrigin.getValue()[0] == SModSysConsts.SU_TIC_ORIG_EXW && moKeyExwFacilityOrigin.getSelectedIndex() > 0 && moKeyExwFacilityOrigin.getValue()[0] == SModSysConsts.MU_EXW_FAC_NA) {
-                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyExwFacilityOrigin.getFieldName() + "'.");
-                        validation.setComponent(moKeyExwFacilityOrigin);
+                    // ticket ORIGIN cannot be 'supplier' for company && must be 'supplier' for suppliers:
+                    else if ((isCompany && moKeyTicketOrigin.getValue()[0] == SModSysConsts.SU_TIC_ORIG_SUP) ||
+                            (isProducer && moKeyTicketOrigin.getValue()[0] != SModSysConsts.SU_TIC_ORIG_SUP)) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyTicketOrigin.getFieldName() + "', porque, para '" + moProducer.getName() + "', el valor no puede ser '" + moKeyTicketOrigin.getSelectedItem().toString() + "'.");
+                        validation.setComponent(moKeyTicketOrigin);
                     }
+                    // ticket DESTINATION cannot be 'NA'
                     else if (moKeyTicketDestination.getValue()[0] == SModSysConsts.SU_TIC_DEST_NA) {
                         validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyTicketDestination.getFieldName() + "'.");
                         validation.setComponent(moKeyTicketDestination);
                     }
+                    // confirm when ticket DESTINATION is 'supplier':
+                    else if (moKeyTicketDestination.getValue()[0] == SModSysConsts.SU_TIC_DEST_SUP &&
+                            miClient.showMsgBoxConfirm(SGuiConsts.MSG_CNF_FIELD_VAL_ + "'" + moKeyTicketDestination.getFieldName() + "'" + SGuiConsts.MSG_CNF_FIELD_VAL_EQU + " '" + moKeyTicketDestination.getSelectedItem().toString() + "'?") != JOptionPane.YES_OPTION) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyTicketDestination.getFieldName() + "'.");
+                        validation.setComponent(moKeyTicketDestination);
+                    }
+                    // ticket ORIGIN and DESTINATION cannot be both 'supplier':
+                    else if (moKeyTicketOrigin.getValue()[0] == SModSysConsts.SU_TIC_ORIG_SUP && moKeyTicketDestination.getValue()[0] == SModSysConsts.SU_TIC_DEST_SUP) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyTicketOrigin.getFieldName() + "' o '" + moKeyTicketDestination.getFieldName() + "', no puede ser el mismo.");
+                        validation.setComponent(moKeyTicketOrigin);
+                    }
+                    // ticket ORIGIN and DESTINATION should not be both 'external warehouses' or 'factory':
+                    else if (((moKeyTicketOrigin.getValue()[0] == SModSysConsts.SU_TIC_ORIG_EXW && moKeyTicketDestination.getValue()[0] == SModSysConsts.SU_TIC_DEST_EXW) ||
+                            (moKeyTicketOrigin.getValue()[0] == SModSysConsts.SU_TIC_ORIG_FAC && moKeyTicketDestination.getValue()[0] == SModSysConsts.SU_TIC_DEST_FAC)) &&
+                            miClient.showMsgBoxConfirm("El valor de los campos '" + moKeyTicketOrigin.getFieldName() + "' y '" + moKeyTicketDestination.getFieldName() + "' no debería ser el mismo.\n" + SGuiConsts.MSG_CNF_CONT_OMIT_VAL) != JOptionPane.YES_OPTION) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyTicketOrigin.getFieldName() + "' o '" + moKeyTicketDestination.getFieldName() + "'.");
+                        validation.setComponent(moKeyTicketOrigin);
+                    }
+                    // when ticket ORIGIN is 'external warehouses', origin facilities must be selected:
+                    else if (moKeyTicketOrigin.getValue()[0] == SModSysConsts.SU_TIC_ORIG_EXW && moKeyExwFacilityOrigin.getSelectedIndex() > 0 && moKeyExwFacilityOrigin.getValue()[0] == SModSysConsts.MU_EXW_FAC_NA) {
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyExwFacilityOrigin.getFieldName() + "'.");
+                        validation.setComponent(moKeyExwFacilityOrigin);
+                    }
+                    // when ticket DESTINATION is 'external warehouses', destination facilities must be selected:
                     else if (moKeyTicketDestination.getValue()[0] == SModSysConsts.SU_TIC_DEST_EXW && moKeyExwFacilityDestination.getSelectedIndex() > 0 && moKeyExwFacilityDestination.getValue()[0] == SModSysConsts.MU_EXW_FAC_NA) {
                         validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyExwFacilityDestination.getFieldName() + "'.");
                         validation.setComponent(moKeyExwFacilityDestination);
                     }
-                    else if (moKeyTicketOrigin.getValue()[0] == SModSysConsts.SU_TIC_ORIG_EXW && moKeyTicketDestination.getValue()[0] == SModSysConsts.SU_TIC_DEST_EXW &&
-                            miClient.showMsgBoxConfirm("El valor de los campos '" + moKeyTicketOrigin.getFieldName() + "' y '" + moKeyTicketDestination.getFieldName() + "' no debería ser el mismo.\n" + SGuiConsts.MSG_CNF_CONT_OMIT_VAL) != JOptionPane.YES_OPTION) {
-                        validation.setMessage("Se debe especificar un valor distinto para los campos '" + moKeyTicketOrigin.getFieldName() + "' y/o '" + moKeyTicketDestination.getFieldName() + "'.");
-                        validation.setComponent(moKeyTicketOrigin);
-                    }
+                    // external warehouses facilities ORIGIN and DESTINATION should not be the same:
                     else if (moKeyTicketOrigin.getValue()[0] == SModSysConsts.SU_TIC_ORIG_EXW && moKeyTicketDestination.getValue()[0] == SModSysConsts.SU_TIC_DEST_EXW && moKeyExwFacilityOrigin.getValue()[0] == moKeyExwFacilityDestination.getValue()[0] &&
                             miClient.showMsgBoxConfirm("El valor de los campos '" + moKeyExwFacilityOrigin.getFieldName() + "' y '" + moKeyExwFacilityDestination.getFieldName() + "' no debería ser el mismo.\n" + SGuiConsts.MSG_CNF_CONT_OMIT_VAL) != JOptionPane.YES_OPTION) {
-                        validation.setMessage("Se debe especificar un valor distinto para los campos '" + moKeyExwFacilityOrigin.getFieldName() + "' y/o '" + moKeyExwFacilityDestination.getFieldName() + "'.");
+                        validation.setMessage(SGuiConsts.ERR_MSG_FIELD_DIF + "'" + moKeyExwFacilityOrigin.getFieldName() + "' o '" + moKeyExwFacilityDestination.getFieldName() + "'.");
                         validation.setComponent(moKeyExwFacilityOrigin);
                     }
+                    // complete freight info, when needed:
                     else if (mbIsFreightRequired && !isFormForTicketExwUpdate()) {
                         if (bgFreightType.getSelection() == null) {
                             validation.setMessage(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + SGuiUtils.getLabelName(jlFreightControl) + "'.");

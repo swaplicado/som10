@@ -218,10 +218,12 @@ public abstract class SModSysConsts {
     public static final int SU_TIC_ORIG_NA = 1; // not applicable
     public static final int SU_TIC_ORIG_SUP = 11; // supplier
     public static final int SU_TIC_ORIG_EXW = 12; // external warehouse
+    public static final int SU_TIC_ORIG_FAC = 21; // factory
 
     public static final int SU_TIC_DEST_NA = 1; // not applicable
     public static final int SU_TIC_DEST_FAC = 11; // factory
     public static final int SU_TIC_DEST_EXW = 12; // external warehouse
+    public static final int SU_TIC_DEST_SUP = 21; // supplier
     
     public static final int SU_FREIGHT_ORIG_NA = 1;
 

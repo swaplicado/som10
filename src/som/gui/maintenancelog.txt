@@ -1,4 +1,12 @@
 ================================================================================
+2026-03-06, 1.0 097.4
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Adición de opción "planta" para origen del boleto y la opción "proveedor" en destino del boleto en la captura de boletos de báscula.
+2) Mejora a las validaciones de las posibles combinaciones de valores de origen y destino del boleto, dependiendo si el proveedor es un proveedor real o la empresa.
+3) Mejora a la funcionalidad de selección del origen del insumo predeterminado del proveedor, especialmente si el proveedor no lo tiene configurado.
+
+================================================================================
 2026-03-04, 1.0 097.3
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
