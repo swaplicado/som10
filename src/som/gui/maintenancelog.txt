@@ -1,4 +1,10 @@
 ================================================================================
+2026-03-09, 1.0 097.5
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Reacomodo de la información de existencias en el reporte mail histórico mensual de báscula de recepción de fruta, para aparecer por debajo de la tabla de cada insumo.
+
+================================================================================
 2026-03-06, 1.0 097.4
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

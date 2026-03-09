@@ -54,8 +54,9 @@ public class SCliMailerReportFruitsStd {
      * 1: List of ID of items to be reported (separated with semicolon, without blanks between them, OBVIOUSLY!)
      * 2: Year base. Can be one out of two elegible types of values: 1) if it is a 4-digit year and greater or equal than 2001, it is the year to start from; otherwise 2) it is the number of history years besides current year.
      * 3: Interval of days for invocation of this report mailer.
-     * 4: List of mail-To recipients (separated with semicolon, without blanks between them, OBVIOUSLY!).
-     * 5: List of mail-Bcc recipients (separated with semicolon, without blanks between them, OBVIOUSLY!).
+     * 4: Flag to add external-warehouses stock.
+     * 5: List of mail-To recipients (separated with semicolon, without blanks between them, OBVIOUSLY!).
+     * 6: List of mail-Bcc recipients (separated with semicolon, without blanks between them, OBVIOUSLY!).
      */
     public static void main(String[] args) {
         try {

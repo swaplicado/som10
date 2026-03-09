@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 import sa.lib.SLibTimeConsts;
 import sa.lib.SLibTimeUtils;
@@ -150,15 +151,19 @@ public class SReportHtmlTicketSeasonMonthStd {
             // HTML heading 2 (input category subtitle, if necesary):
 
             if (lastInputCategoryId != inputCategory.getPkInputCategoryId()) {
-                html += "<h3>" + SLibUtils.textToHtml("Categoría: " + SLibUtils.textProperCase(inputCategory.getName())) + "</h3>\n";
+                html += "<hr>\n";
+                html += "<hr>\n";
+                html += "<h3>" + SLibUtils.textToHtml("Categoría: " + SLibUtils.textProperCase(inputCategory.getName())) + "</strong></h3>\n";
                 
                 lastInputCategoryId = inputCategory.getPkInputCategoryId();
             }
             
             // HTML heading 3 (item subtitle):
             
-            String name = SCliConsts.ItemNames.get(itemId);
-            html += "<h4>" + SLibUtils.textToHtml((name != null ? name : SLibUtils.textProperCase(item.getName())) + " (valores en " + (isUnitsTon ? SCliConsts.TON : unit.getCode()) + ")") + "</h4>\n";
+            String name = (SCliConsts.ItemNames.containsKey(itemId) ? SCliConsts.ItemNames.get(itemId) : item.getName()).toLowerCase();
+            
+            html += "<hr>\n";
+            html += "<h4>" + SLibUtils.textToHtml("Recepción " + name + " (valores en " + (isUnitsTon ? SCliConsts.TON : unit.getCode()) + ")") + "</h4>\n";
 
             // obtain report data:
             
@@ -396,7 +401,7 @@ public class SReportHtmlTicketSeasonMonthStd {
             // custom month warning:
             
             if (isCustomMonth) {
-                String monthClosing = useOpCalendars ? "según el calendario operativo aplicable (cierre mes actual: " + SLibUtils.DecimalFormatCalendarMonth.format(monthFirstDay - 1) + "/" + months[cutoffMonth - 1] + "./" + cutoffYear + ")" : "los días " + SLibUtils.DecimalFormatCalendarMonth.format(monthFirstDay - 1) + " de cada mes";
+                String monthClosing = useOpCalendars ? "según el calendario operativo aplicable (cierre de mes actual: " + SLibUtils.DecimalFormatCalendarMonth.format(monthFirstDay - 1) + "/" + months[cutoffMonth - 1] + "./" + cutoffYear + ")" : "los días " + SLibUtils.DecimalFormatCalendarMonth.format(monthFirstDay - 1) + " de cada mes";
                 html += "<small>" + SLibUtils.textToHtml("* Inicio de temporada: " + SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[seasonFirstMonth - 1] + ". Día de cierre mensual: " + monthClosing + ".") + "</small>\n";
             }
             
@@ -413,12 +418,14 @@ public class SReportHtmlTicketSeasonMonthStd {
                 html += "<p>" + SLibUtils.textToHtml(progress) + "</p>\n";
             }
             
-            html += "<br>\n";
-        }
-        
-        if (addExwStock) {
-            // add HTML table with stock in external warehouses:
-            html += generateExwStockHtmlTable(itemIds, cutoff, isUnitsTon);
+            if (addExwStock) {
+                // add HTML table with stock in external warehouses:
+                html += "<br>\n";
+                html += generateExwStockHtmlTable(new int[] { itemId }, cutoff, isUnitsTon, true, name);
+            }
+            else {
+                html += "<br>\n";
+            }
         }
         
         html += SSomMailUtils.composeSomMailWarning();
@@ -430,9 +437,11 @@ public class SReportHtmlTicketSeasonMonthStd {
         return html;
     }
     
-    private String generateExwStockHtmlTable(final int[] itemIds, final Date cutoff, final boolean isUnitsTon) throws Exception {
+    private String generateExwStockHtmlTable(final int[] itemIds, final Date cutoff, final boolean isUnitsTon, final boolean isLonelyItem, final String lonelyItemName) throws Exception {
         String html = "";
+        String htmlTable = "";
         double unitsDivisor = isUnitsTon ? 1000 : 1;
+        HashSet<String> itemNamesSet = new HashSet<>();
         DecimalFormat decimalFormatVal = isUnitsTon ? SLibUtils.DecimalFormatInteger : SLibUtils.getDecimalFormatAmount();
         Date exwStart = SExwUtils.getExwStart(moSession);
         
@@ -463,53 +472,93 @@ public class SReportHtmlTicketSeasonMonthStd {
                 + "exw.name, exw.id_exw_fac"
                 + ";";
         
-        html += "<hr>\n";
-        html += "<h3>" + SLibUtils.textToHtml("Existencias en almacenes externos") + "</h3>\n";
-        
         try (Statement statement = moSession.getStatement().getConnection().createStatement()) {
-            html += "<h4>" + SLibUtils.textToHtml("Materias primas" + (isUnitsTon ? " (valores en " + SCliConsts.TON + ")" : "")) + "</h4>\n";
+            // start table:
             
-            html += "<table>\n";
+            htmlTable += "<table>\n";
             
             // table header:
             
-            html += "<tr>";
+            htmlTable += "<tr>";
             
             String[] headers = new String[] { "Categoría", "Materia prima", "Almacén externo", /*"Inv. inicial", "Entradas", "Salidas",*/ "Existencias*", "Unidad" };
             for (String header : headers) {
-                html += "<th>&nbsp;" + SLibUtils.textToHtml(header) + "&nbsp;</th>";
+                htmlTable += "<th>&nbsp;" + SLibUtils.textToHtml(header) + "&nbsp;</th>";
             }
             
-            html += "</tr>\n";
+            htmlTable += "</tr>\n";
+            
+            // table rows:
             
             String[] valueCols = new String[] { /*"open_stock", "flow_in", "flow_out",*/ "stock" };
+            double[] totals = new double[valueCols.length];
             
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                html += "<tr>";
+                String itemName = SCliConsts.ItemNames.get(resultSet.getInt("i.id_item"));
+                itemNamesSet.add(itemName);
                 
-                html += "<td class='colmonth'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(resultSet.getString("ict.name"))) + "</td>";
-                html += "<td class='colmonth'>" + SLibUtils.textToHtml(SCliConsts.ItemNames.get(resultSet.getInt("i.id_item"))) + "</td>";
-                html += "<td class='colmonth'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(resultSet.getString("exw.name"))) + "</td>";
+                htmlTable += "<tr>";
                 
-                for (String valueCol : valueCols) {
-                    double value = resultSet.getDouble(valueCol) / unitsDivisor;
-                    html += "<td class='coldata'" + (value < 0 ? " style='color: red;'" : "") + ">" + decimalFormatVal.format(value) + "</td>";
+                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(resultSet.getString("ict.name"))) + "</td>";
+                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(itemName) + "</td>";
+                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(resultSet.getString("exw.name"))) + "</td>";
+                
+                for (int col = 0; col < valueCols.length; col++) {
+                    double value = resultSet.getDouble(valueCols[col]) / unitsDivisor;
+                    htmlTable += "<td class='coldata'" + (value < 0 ? " style='color: red;'" : "") + ">" + decimalFormatVal.format(value) + "</td>";
+                    totals[col] += value;
                 }
                 
-                html += "<td class='colmonth'>" + SLibUtils.textToHtml(isUnitsTon ? SCliConsts.TON : resultSet.getString("u.code")) + "</td>";
+                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(isUnitsTon ? SCliConsts.TON : resultSet.getString("u.code")) + "</td>";
                 
-                html += "</tr>\n";
+                htmlTable += "</tr>\n";
             }
             
-            html += "</table>\n";
+            // table footer:
             
-            html += "<small>" + SLibUtils.textToHtml("* Día de corte de existencias: " + SSomUtils.DateFormatGui.format(cutoff) + ".") + "</small>\n";
+            if (isLonelyItem) {
+                htmlTable += "<tr>";
+                htmlTable += "<td class='colmonthtotal' colspan='3'><b>Existencias totales</b></td>";
+                for (int col = 0; col < valueCols.length; col++) {
+                    htmlTable += "<td class='coldatatotal'" + (totals[col] < 0 ? " style='color: red;'" : "") + "><b>" + decimalFormatVal.format(totals[col]) + "</b></td>";
+                }
+                htmlTable += "<td class='colmonthtotal'><b>" + SLibUtils.textToHtml(isUnitsTon ? SCliConsts.TON : resultSet.getString("u.code")) + "</b></td>";
+                htmlTable += "</tr>\n";
+            }
             
-            html += "<p>" + SLibUtils.textToHtml("Existencias determinadas en base a boletos de entrada y de salida de almacenes externos.") + "</p>\n";
+            // complete table:
             
-            html += "<br>\n";
+            htmlTable += "</table>\n";
+            
+            htmlTable += "<small>" + SLibUtils.textToHtml("* Día de corte: " + SSomUtils.DateFormatGui.format(cutoff) + ".") + "</small>\n";
+            
+            htmlTable += "<br>\n";
+            htmlTable += "<br>\n";
         }
+        
+        String rawMaterial = "";
+        
+        if (itemNamesSet.isEmpty() && !lonelyItemName.isEmpty()) {
+            rawMaterial = lonelyItemName.toLowerCase();
+        }
+        else if (itemNamesSet.size() == 1) {
+            rawMaterial = itemNamesSet.toArray()[0].toString().toLowerCase();
+        }
+        else {
+            rawMaterial = "materias primas";
+        }
+        
+        html += "<h5>" + SLibUtils.textToHtml("Existencias " + rawMaterial + (isUnitsTon ? " (valores en " + SCliConsts.TON + ")" : "")) + "</h5>\n";
+        
+        if (itemNamesSet.isEmpty()) {
+            html += "<p>" + SLibUtils.textToHtml("No hay existencias al día de corte, " + SSomUtils.DateFormatGui.format(cutoff) + ".") + "</p>\n";
+        }
+        else {
+            html += htmlTable;
+        }
+        
+        html += "<br>\n";
         
         return html;
     }
