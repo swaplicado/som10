@@ -96,7 +96,8 @@ public class SCliMailerReportFruitsStd {
             SReportHtmlTicketSeasonMonthStd reportHtml = new SReportHtmlTicketSeasonMonthStd(SCliUtils.createSession());
             String mailBody = reportHtml.generateReportHtml(argItemIds, argYearBase, argIntvlDays,
                     SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, SCliConsts.FRUIT_BY_OP_CALENDARS,
-                    cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthStd.MODE_UNIT_TON, argAddExwStock);
+                    cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthStd.MODE_UNIT_TON,
+                    true, argAddExwStock);
             
             // send mail report:
             

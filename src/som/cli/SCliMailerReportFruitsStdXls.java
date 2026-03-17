@@ -140,7 +140,8 @@ public class SCliMailerReportFruitsStdXls {
             SReportHtmlTicketSeasonMonthStd reportHtml = new SReportHtmlTicketSeasonMonthStd(SCliUtils.createSession());
             String mailBodyHtml = reportHtml.generateReportHtml(argItemIds, argYearBase, argIntvlDays,
                     SCliConsts.FRUIT_SEASON_FIRST_MONTH, SCliConsts.FRUIT_MONTH_FIRST_DAY, SCliConsts.FRUIT_BY_OP_CALENDARS,
-                    cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthStd.MODE_UNIT_TON, false); // do not add stock in external warehouses; it is not implemented yet in XLS file!
+                    cutoff, now, SModSysConsts.SU_TIC_ORIG_SUP, 0, SReportHtmlTicketSeasonMonthStd.MODE_UNIT_TON,
+                    false, false); // do not add annual summary nor stock in external warehouses; both are not implemented yet in XLS file!
             
             File file = null;
             

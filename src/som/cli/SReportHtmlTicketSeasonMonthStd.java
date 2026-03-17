@@ -59,13 +59,15 @@ public class SReportHtmlTicketSeasonMonthStd {
      * @param ticketOrigin Ticket origin, e.g., supplier or external warehouse. Can be zero to be discarted.
      * @param ticketDestination Ticket destination, e.g., factory or external warehouse. Can be zero to be discarted.
      * @param mode a) Unit of measure of item; b) Metric tons.
+     * @param addAnnualSummary Add calendar annual summary or reception.
      * @param addExwStock Add stock in external warehouses.
      * @return
      * @throws Exception
      */
-    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays, 
+    public String generateReportHtml(final int[] itemIds, final int yearRef, final int intvlDays,
             final int seasonFirstMonth, final int monthFirstDay, final boolean useOpCalendars,
-            final Date cutoff, final Date now, final int ticketOrigin, final int ticketDestination, final int mode, final boolean addExwStock) throws Exception {
+            final Date cutoff, final Date now, final int ticketOrigin, final int ticketDestination, final int mode,
+            final boolean addAnnualSummary, final boolean addExwStock) throws Exception {
         // HTML:
         
         String html = "<html>\n";
@@ -421,7 +423,7 @@ public class SReportHtmlTicketSeasonMonthStd {
 
             // HTML table of total and cumulative annual:
             
-            if (useOpCalendars) {
+            if (addAnnualSummary) {
                 /*
                 NOTICE:
                 When using operative calendars, main reception table starts some month after January.
