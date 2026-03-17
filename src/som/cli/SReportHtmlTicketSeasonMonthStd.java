@@ -106,8 +106,8 @@ public class SReportHtmlTicketSeasonMonthStd {
         // process list of items for report:
 
         int lastInputCategoryId = 0; // to control when a new input category stages, to stand it out as a new title
+        DecimalFormat decimalFormatValue = isUnitsTon ? SLibUtils.DecimalFormatInteger : SLibUtils.getDecimalFormatAmount();
         DecimalFormat decimalFormatPct = isUnitsTon ? new DecimalFormat("#0%") : new DecimalFormat("#0.0%");
-        DecimalFormat decimalFormatVal = isUnitsTon ? SLibUtils.DecimalFormatInteger : SLibUtils.getDecimalFormatAmount();
         HashMap<Integer, ArrayList<Integer>> opCalendarsMap = null;
         
         if (useOpCalendars) {
@@ -163,7 +163,8 @@ public class SReportHtmlTicketSeasonMonthStd {
             String name = (SCliConsts.ItemNames.containsKey(itemId) ? SCliConsts.ItemNames.get(itemId) : item.getName()).toLowerCase();
             
             html += "<hr>\n";
-            html += "<h4>" + SLibUtils.textToHtml("Recepción " + name + " (valores en " + (isUnitsTon ? SCliConsts.TON : unit.getCode()) + ")") + "</h4>\n";
+            html += "<h3>" + SLibUtils.textToHtml(SLibUtils.textFirstUpperCase(name)) + "</h3>\n";
+            html += "<h4>" + SLibUtils.textToHtml("Recepción mensual de " + name + " por temporada (valores en " + (isUnitsTon ? SCliConsts.TON : unit.getCode()) + ")") + "</h4>\n";
 
             // obtain report data:
             
@@ -203,7 +204,7 @@ public class SReportHtmlTicketSeasonMonthStd {
                     double value = resultSet.getDouble("_tot") / unitsDivisor;
 
                     html += "<p>" + SLibUtils.textToHtml("Recepción " + (intvlDays == 1 ? "del último día" : "de los últimos " + intvlDays + " días") + ": " + 
-                            decimalFormatVal.format(value) + " " + (isUnitsTon ? SCliConsts.TON : unit.getCode()) + ".") + "</p>\n";
+                            decimalFormatValue.format(value) + " " + (isUnitsTon ? SCliConsts.TON : unit.getCode()) + ".") + "</p>\n";
                 }
             }
             
@@ -362,7 +363,7 @@ public class SReportHtmlTicketSeasonMonthStd {
                     else {
                         // correspondig and available value:
                         boolean isMax = tableRowOfMaxValuesMap.get(col) == row;
-                        html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatVal.format(tableValues[col][row]) + "</td>";
+                        html += "<td class='coldata" + (isMax ? "max" : "") + "'>" + decimalFormatValue.format(tableValues[col][row]) + "</td>";
                         html += "<td class='coldatapct" + (isMax ? "max" : "") + "'>" + decimalFormatPct.format(tableTotals[col] == 0 ? 0 : tableValues[col][row] / tableTotals[col]) + "</td>";
                     }
                 }
@@ -379,7 +380,7 @@ public class SReportHtmlTicketSeasonMonthStd {
             html += "<tr>";
             html += "<td class='colmonthtotal'><b>Temporada</b></td>";
             for (int col = 0; col < tableTotals.length; col++) {
-                html += "<td class='coldatatotal'><b>" + decimalFormatVal.format(tableTotals[col]) + "</b></td>";
+                html += "<td class='coldatatotal'><b>" + decimalFormatValue.format(tableTotals[col]) + "</b></td>";
                 html += "<td class='coldatapcttotal'><b>" + decimalFormatPct.format(1) + "</b></td>"; // 100%
             }
             html += "</tr>\n";
@@ -391,7 +392,7 @@ public class SReportHtmlTicketSeasonMonthStd {
             html += "<tr>";
             html += "<td class='colmonthaccum'>Acum. a " + months[cutoffMonth - 1] + ".</td>";
             for (int col = 0; col < tableAccums.length; col++) {
-                html += "<td class='coldataaccum' " + (col == 0 ? "style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : decimalFormatVal.format(tableAccums[col])) + "</td>";
+                html += "<td class='coldataaccum'" + (col == 0 ? " style='text-align: center;'" : "") + ">" + (col == 0 ? "N/A" : decimalFormatValue.format(tableAccums[col])) + "</td>";
                 html += "<td class='coldatapctaccum'>" + (col == 0 ? "N/A" : decimalFormatPct.format(tableTotals[col] == 0 ? 0 : tableAccums[col] / tableTotals[col])) + "</td>";
             }
             html += "</tr>\n";
@@ -417,11 +418,58 @@ public class SReportHtmlTicketSeasonMonthStd {
                 }
                 html += "<p>" + SLibUtils.textToHtml(progress) + "</p>\n";
             }
+
+            // HTML table of total and cumulative annual:
+            
+            if (useOpCalendars) {
+                /*
+                NOTICE:
+                When using operative calendars, main reception table starts some month after January.
+                */
+                
+                int firstYear = yearStart + 1;
+                int[] headerYears = new int[years + 1];
+                double[][] annualValues = new double[years + 1][2]; // total and cumulative annual
+
+                for (year = firstYear; year >= yearEnd; year--) {
+                    headerYears[firstYear - year] = year;
+                    
+                    Date start = SLibTimeUtils.createDate(year, SLibTimeConsts.MONTH_JAN, 1);
+                    Date end = SLibTimeUtils.getEndOfYear(start);
+
+                    prepStatementWeights.setDate(1, new java.sql.Date(start.getTime()));
+                    prepStatementWeights.setDate(2, new java.sql.Date(end.getTime()));
+
+                    try (ResultSet resultSet = prepStatementWeights.executeQuery()) {
+                        if (resultSet.next()) {
+                            annualValues[firstYear - year][0] = resultSet.getDouble("_tot") / unitsDivisor;
+                        }
+                    }
+
+                    end = SLibTimeUtils.createDate(year, cutoffDigestion[1], cutoffDigestion[2]);
+
+                    prepStatementWeights.setDate(1, new java.sql.Date(start.getTime()));
+                    prepStatementWeights.setDate(2, new java.sql.Date(end.getTime()));
+
+                    try (ResultSet resultSet = prepStatementWeights.executeQuery()) {
+                        if (resultSet.next()) {
+                            annualValues[firstYear - year][1] = resultSet.getDouble("_tot") / unitsDivisor;
+                        }
+                    }
+                }
+                
+                // add HTML table with total and cumulative annual:
+                String cutoffMonthText = SLibUtils.DecimalFormatCalendarDay.format(cutoffDay) + "/" + months[cutoffMonth - 1] + ".";
+                html += "<br>\n";
+                html += generateAnnualHtmlTable(name, isUnitsTon, cutoff, cutoffMonthText, headerYears, annualValues, decimalFormatValue, decimalFormatPct);
+            }
+            
+            // HTML table of stock;
             
             if (addExwStock) {
                 // add HTML table with stock in external warehouses:
                 html += "<br>\n";
-                html += generateExwStockHtmlTable(new int[] { itemId }, cutoff, isUnitsTon, true, name);
+                html += generateExwStockHtmlTable(new int[] { itemId }, true, name, isUnitsTon, cutoff);
             }
             else {
                 html += "<br>\n";
@@ -437,7 +485,64 @@ public class SReportHtmlTicketSeasonMonthStd {
         return html;
     }
     
-    private String generateExwStockHtmlTable(final int[] itemIds, final Date cutoff, final boolean isUnitsTon, final boolean isLonelyItem, final String lonelyItemName) throws Exception {
+    private String generateAnnualHtmlTable(final String itemName, final boolean isUnitsTon, final Date cutoff, final String cutoffMonth, final int[] headerYears, final double[][] annualValues, final DecimalFormat decimalFormatValue, final DecimalFormat decimalFormatPct) {
+        String html = "";
+        
+        html += "<h5>" + SLibUtils.textToHtml("Recepción anual de " + itemName + (isUnitsTon ? " por año calendario (valores en " + SCliConsts.TON + ")" : "")) + "</h5>\n";
+        
+        html += "<table>\n";
+
+        // table header:
+
+        html += "<tr>";
+
+        html += "<th>&nbsp;" + SLibUtils.textToHtml("Período*") + "&nbsp;</th>";
+        
+        for (int year : headerYears) {
+            html += "<th colspan='2'>&nbsp;&nbsp;" + year + "&nbsp;&nbsp;</th>";
+        }
+
+        html += "</tr>\n";
+
+        // total annual:
+
+        html += "<tr>";
+
+        html += "<td class='colmonth'>" + SLibUtils.textToHtml("Total anual") + "</td>";
+
+        for (int year = 0; year < annualValues.length; year++) {
+            html += "<td class='coldata'" + (year == 0 ? " style='text-align: center;'" : "") + ">" + (year == 0 ? "&nbsp;N/A&nbsp;" : "&nbsp;" + decimalFormatValue.format(annualValues[year][0])) + "</td>";
+            html += "<td class='coldatapct'" + (year == 0 ? " style='text-align: center;'" : "") + ">" + (year == 0 ? "&nbsp;N/A&nbsp;" : decimalFormatPct.format(1)) + "</td>";
+        }
+
+        html += "</tr>\n";
+        
+        // cumulative annual:
+
+        html += "<tr>";
+
+        html += "<td class='colmonth'>" + SLibUtils.textToHtml("Acum. a " + cutoffMonth) + "</td>";
+
+        for (int year = 0; year < annualValues.length; year++) {
+            html += "<td class='coldata'>" + "&nbsp;" + decimalFormatValue.format(annualValues[year][1]) + "</td>";
+            html += "<td class='coldatapct'" + (year == 0 ? " style='text-align: center;'" : "") + ">" + (year == 0 ? "N/A" : decimalFormatPct.format(annualValues[year][0] == 0 ? 0 : annualValues[year][1] / annualValues[year][0])) + "</td>";
+        }
+
+        html += "</tr>\n";
+
+        // complete table:
+
+        html += "</table>\n";
+
+        html += "<small>" + SLibUtils.textToHtml("* Día de corte: " + SSomUtils.DateFormatGui.format(cutoff) + ".") + "</small>\n";
+
+        html += "<br>\n";
+        html += "<br>\n";
+        
+        return html;
+    }
+    
+    private String generateExwStockHtmlTable(final int[] itemIds, final boolean isLonelyItem, final String lonelyItemName, final boolean isUnitsTon, final Date cutoff) throws Exception {
         String html = "";
         String htmlTable = "";
         double unitsDivisor = isUnitsTon ? 1000 : 1;
@@ -500,9 +605,9 @@ public class SReportHtmlTicketSeasonMonthStd {
                 
                 htmlTable += "<tr>";
                 
-                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(resultSet.getString("ict.name"))) + "</td>";
-                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(itemName) + "</td>";
-                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(resultSet.getString("exw.name"))) + "</td>";
+                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(resultSet.getString("ict.name"))) + "&nbsp;</td>";
+                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(itemName) + "&nbsp;</td>";
+                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(SLibUtils.textProperCase(resultSet.getString("exw.name"))) + "&nbsp;</td>";
                 
                 for (int col = 0; col < valueCols.length; col++) {
                     double value = resultSet.getDouble(valueCols[col]) / unitsDivisor;
@@ -510,7 +615,7 @@ public class SReportHtmlTicketSeasonMonthStd {
                     totals[col] += value;
                 }
                 
-                htmlTable += "<td class='colmonth'>" + SLibUtils.textToHtml(isUnitsTon ? SCliConsts.TON : resultSet.getString("u.code")) + "</td>";
+                htmlTable += "<td class='colmonth'>&nbsp;" + SLibUtils.textToHtml(isUnitsTon ? SCliConsts.TON : resultSet.getString("u.code")) + "</td>";
                 
                 htmlTable += "</tr>\n";
             }
@@ -519,11 +624,11 @@ public class SReportHtmlTicketSeasonMonthStd {
             
             if (isLonelyItem) {
                 htmlTable += "<tr>";
-                htmlTable += "<td class='colmonthtotal' colspan='3'><b>Existencias totales</b></td>";
+                htmlTable += "<td class='colmonthtotal' colspan='3'><b>Existencias totales</b>&nbsp;</td>";
                 for (int col = 0; col < valueCols.length; col++) {
                     htmlTable += "<td class='coldatatotal'" + (totals[col] < 0 ? " style='color: red;'" : "") + "><b>" + decimalFormatVal.format(totals[col]) + "</b></td>";
                 }
-                htmlTable += "<td class='colmonthtotal'><b>" + SLibUtils.textToHtml(isUnitsTon ? SCliConsts.TON : resultSet.getString("u.code")) + "</b></td>";
+                htmlTable += "<td class='colmonthtotal'>&nbsp;<b>" + SLibUtils.textToHtml(isUnitsTon ? SCliConsts.TON : resultSet.getString("u.code")) + "</b></td>";
                 htmlTable += "</tr>\n";
             }
             
@@ -549,7 +654,7 @@ public class SReportHtmlTicketSeasonMonthStd {
             rawMaterial = "materias primas";
         }
         
-        html += "<h5>" + SLibUtils.textToHtml("Existencias " + rawMaterial + (isUnitsTon ? " (valores en " + SCliConsts.TON + ")" : "")) + "</h5>\n";
+        html += "<h5>" + SLibUtils.textToHtml("Existencias de " + rawMaterial + (isUnitsTon ? " (valores en " + SCliConsts.TON + ")" : "")) + "</h5>\n";
         
         if (itemNamesSet.isEmpty()) {
             html += "<p>" + SLibUtils.textToHtml("No hay existencias al día de corte, " + SSomUtils.DateFormatGui.format(cutoff) + ".") + "</p>\n";

@@ -24,13 +24,13 @@ public abstract class SCliConsts {
     public static final HashMap<Integer, String> ItemNames = new HashMap<>();
     
     static {
-        ItemNames.put(ID_AVO_FRUIT_CONV, "Fruta aguacate");
-        ItemNames.put(ID_AVO_FRUIT_ORG, "Fruta aguacate orgánico");
-        ItemNames.put(ID_AVO_CHAFF, "Bagazo aguacate");
-        ItemNames.put(ID_AVO_PELLET, "Pellet aguacate");
-        ItemNames.put(ID_AVO_KERNEL, "Hueso y cáscara aguacate");
-        ItemNames.put(ID_AVO_PULP, "Pulpa aguacate");
-        ItemNames.put(ID_MAN_KERNEL, "Hueso y cáscara mango");
+        ItemNames.put(ID_AVO_FRUIT_CONV, "Fruta de aguacate");
+        ItemNames.put(ID_AVO_FRUIT_ORG, "Fruta de aguacate orgánico");
+        ItemNames.put(ID_AVO_CHAFF, "Bagazo de aguacate");
+        ItemNames.put(ID_AVO_PELLET, "Pellet de aguacate");
+        ItemNames.put(ID_AVO_KERNEL, "Hueso y cáscara de aguacate");
+        ItemNames.put(ID_AVO_PULP, "Pulpa de aguacate");
+        ItemNames.put(ID_MAN_KERNEL, "Hueso y cáscara de mango");
     }
     
     public static final String IDS_PAIR_AVO_FRUIT_CNV_ORG = ID_AVO_FRUIT_CONV + "-" + ID_AVO_FRUIT_ORG;
