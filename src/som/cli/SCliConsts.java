@@ -52,7 +52,7 @@ public abstract class SCliConsts {
     public static final int FRUIT_MONTH_FIRST_DAY = 19;
     
     /** Primer mes operativo de temporada de fruta: julio. Aplica a la fecha de cierre del primer mes operativo de la temporada. */
-    public static final int FRUIT_SEASON_FIRST_MONTH = 7;
+    public static final int FRUIT_SEASON_FIRST_MONTH = 9;
     
     /** Primer año de recepción de fruta: 2010. */
     public static final int FRUIT_FIRST_YEAR = 2010;

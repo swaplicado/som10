@@ -7,11 +7,13 @@ package som.mod.som.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
+import sa.lib.db.SDbRegistry;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
@@ -23,6 +25,8 @@ import som.mod.SModConsts;
 */
 public class SDbTicketAlternative extends SDbRegistryUser  {
 
+    public static final int FIELD_OP_CALENDAR = SDbRegistry.FIELD_BASE + 11;
+    
     protected int mnPkTicketId;
     protected String msNumber;
     protected Date mtDate;
@@ -936,6 +940,32 @@ protected int mnFkOpCalendarMonthId_n;
         
         
         mbRegistryNew = false;
+        mnQueryResultId = SDbConsts.SAVE_OK;
+    }
+
+    @Override
+    public void saveField(final Statement statement, final int[] pk, final int field, final Object value) throws SQLException, Exception {
+        initQueryMembers();
+        mnQueryResultId = SDbConsts.SAVE_ERROR;
+
+        msSql = "UPDATE " + getSqlTable() + " SET ";
+
+        switch (field) {
+            case FIELD_OP_CALENDAR:
+                if (value == null) {
+                    msSql += "fk_op_cal_n = NULL, fk_op_cal_n = NULL, fk_op_cal_n = NULL ";
+                }
+                else {
+                    int[] key = (int[]) value;
+                    msSql += "fk_op_cal_n = " + key[0] + ", fk_op_cal_year_n = " + key[1] + ", fk_op_cal_month_n = " + key[2] + " ";
+                }
+                break;
+            default:
+                throw new Exception(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+        }
+
+        msSql += getSqlWhere(pk);
+        statement.execute(msSql);
         mnQueryResultId = SDbConsts.SAVE_OK;
     }
     

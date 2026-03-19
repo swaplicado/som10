@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import sa.lib.SLibUtils;
+import sa.lib.db.SDbRegistry;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
 
@@ -180,97 +181,114 @@ public abstract class SOpCalendarUtils {
      */
     public static void updateOpCalendarToAllTickets(final SGuiSession session) throws Exception {
         try (Statement statement = session.getStatement().getConnection().createStatement(); Statement statementUpd = session.getStatement().getConnection().createStatement()) {
-            int totalCount = 0;
-            int clearedCount = 0; // tickets cleared due to non-applying item for operative calendar
-            int skippedCount = 0; // tickets skipped due to unexisting operative month
-            int updatedCount = 0; // tickets updated
+            /*
+            Processing in 2 steps:
+            1. tickets
+            2. alternative tickets
+            */
             
-            String sql = "SELECT COUNT(*) "
-                    + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " "
-                    + "WHERE NOT b_del AND b_tar;";
-            
-            ResultSet resultSet = statement.executeQuery(sql);
-            if (resultSet.next()) {
-                totalCount = resultSet.getInt(1);
+            for (int step = 1; step <= 2; step++) {
+                int totalCount = 0;
+                int clearedCount = 0; // tickets cleared due to non-applying item for operative calendar
+                int skippedCount = 0; // tickets skipped due to unexisting operative month
+                int updatedCount = 0; // tickets updated
+
+                String table = SModConsts.TablesMap.get(step == 1 ? SModConsts.S_TIC : SModConsts.S_ALT_TIC);
+                String registryType = step == 1 ? "TICKETS" : "ALTERNATIVE TICKETS";
+                SDbRegistry registry = step == 1 ? new SDbTicket() : new SDbTicketAlternative();
                 
-                if (totalCount > 0) {
-                    int count = 0;
-                    int currentYear = 0;
-                    int currentPct = -1;
-                    SDbTicket ticket = new SDbTicket();
-                    HashMap<Integer, Integer> itemsOpCalendarMap = new HashMap<>(); // key: ID of item; value: ID of operating calendar
-                    HashMap<Integer, ArrayList<Integer>> opCalendarsMap = createOpCalendarsMap(session); // key: ID of operating calendar; value: ID's of applying items
+                String sql = "SELECT COUNT(*) "
+                        + "FROM " + table + " "
+                        + "WHERE NOT b_del AND b_tar;";
 
-                    sql = "SELECT dt, id_tic, fk_item, YEAR(dt) AS _year "
-                            + "FROM " + SModConsts.TablesMap.get(SModConsts.S_TIC) + " "
-                            + "WHERE NOT b_del AND b_tar "
-                            + "ORDER BY dt, id_tic;";
+                ResultSet resultSet = statement.executeQuery(sql);
+                if (resultSet.next()) {
+                    totalCount = resultSet.getInt(1);
+                    
+                    System.out.println(SLibUtils.textRepeat("=", 80));
+                    System.out.println("PROCESSING " + SLibUtils.DecimalFormatInteger.format(totalCount) + " " + registryType + "...");
+                    System.out.println(SLibUtils.textRepeat("=", 80));
+                    System.out.println();
 
-                    resultSet = statement.executeQuery(sql);
-                    while (resultSet.next()) {
-                        int year = resultSet.getInt("_year");
+                    if (totalCount > 0) {
+                        int count = 0;
+                        int currentYear = 0;
+                        int currentPct = -1;
+                        HashMap<Integer, Integer> itemsOpCalendarMap = new HashMap<>(); // key: ID of item; value: ID of operating calendar
+                        HashMap<Integer, ArrayList<Integer>> opCalendarsMap = createOpCalendarsMap(session); // key: ID of operating calendar; value: ID's of applying items
 
-                        if (year != currentYear) {
-                            currentYear = year;
-                            System.out.println(SLibUtils.textRepeat("=", 80));
-                            System.out.println("Processing year " + currentYear + "...");
-                        }
-                        
-                        double pct = ++count / (double) totalCount;
-                        if ((int) (pct * 100) > currentPct) {
-                            currentPct = (int) (pct * 100);
-                            System.out.println("Progress: " + SLibUtils.DecimalFormatPercentage0D.format(currentPct / 100.0) + " (" + SLibUtils.DecimalFormatInteger.format(count) + " out of " + SLibUtils.DecimalFormatInteger.format(totalCount) + ")");
-                        }
+                        sql = "SELECT dt, id_tic, fk_item, YEAR(dt) AS _year "
+                                + "FROM " + table + " "
+                                + "WHERE NOT b_del AND b_tar "
+                                + "ORDER BY dt, id_tic;";
 
-                        int itemId = resultSet.getInt("fk_item");
-                        int opCalendarId = 0;
-                        
-                        if (itemsOpCalendarMap.containsKey(itemId)) {
-                            // reuse identified operative calendar for current item:
-                            opCalendarId = itemsOpCalendarMap.get(itemId);
-                        }
-                        else {
-                            // get operative calendar for current item:
-                            opCalendarId = getOpCalendarId(opCalendarsMap, itemId);
-                            
-                            if (opCalendarId != 0) {
-                                // preserve operative calendar for current item:
-                                itemsOpCalendarMap.put(itemId, opCalendarId);
+                        resultSet = statement.executeQuery(sql);
+                        while (resultSet.next()) {
+                            int year = resultSet.getInt("_year");
+
+                            if (year != currentYear) {
+                                currentYear = year;
+                                System.out.println(SLibUtils.textRepeat("=", 80));
+                                System.out.println("Processing year " + currentYear + "...");
                             }
-                        }
-                        
-                        if (opCalendarId == 0) {
-                            // ticket cleared due to non-applying item for operative calendar:
-                            ticket.saveField(statementUpd, new int[] { resultSet.getInt("id_tic") }, SDbTicket.FIELD_OP_CALENDAR, null);
-                            clearedCount++;
-                        }
-                        else {
-                            int[] key = readOpCalendarYearMonthKey(statementUpd, opCalendarId, resultSet.getDate("dt"));
 
-                            if (key == null) {
-                                // ticket skipped due to unexisting operative month:
-                                ticket.saveField(statementUpd, new int[] { resultSet.getInt("id_tic") }, SDbTicket.FIELD_OP_CALENDAR, null);
-                                skippedCount++;
+                            double pct = ++count / (double) totalCount;
+                            if ((int) (pct * 100) > currentPct) {
+                                currentPct = (int) (pct * 100);
+                                System.out.println("Progress: " + SLibUtils.DecimalFormatPercentage0D.format(currentPct / 100.0) + " (" + SLibUtils.DecimalFormatInteger.format(count) + " out of " + SLibUtils.DecimalFormatInteger.format(totalCount) + ")");
+                            }
+
+                            int itemId = resultSet.getInt("fk_item");
+                            int opCalendarId = 0;
+
+                            if (itemsOpCalendarMap.containsKey(itemId)) {
+                                // reuse identified operative calendar for current item:
+                                opCalendarId = itemsOpCalendarMap.get(itemId);
                             }
                             else {
-                                // tickets updated:
-                                ticket.saveField(statementUpd, new int[] { resultSet.getInt("id_tic") }, SDbTicket.FIELD_OP_CALENDAR, key);
-                                updatedCount++;
+                                // get operative calendar for current item:
+                                opCalendarId = getOpCalendarId(opCalendarsMap, itemId);
+
+                                if (opCalendarId != 0) {
+                                    // preserve operative calendar for current item:
+                                    itemsOpCalendarMap.put(itemId, opCalendarId);
+                                }
+                            }
+
+                            if (opCalendarId == 0) {
+                                // ticket cleared due to non-applying item for operative calendar:
+                                registry.saveField(statementUpd, new int[] { resultSet.getInt("id_tic") }, SDbTicket.FIELD_OP_CALENDAR, null);
+                                clearedCount++;
+                            }
+                            else {
+                                int[] key = readOpCalendarYearMonthKey(statementUpd, opCalendarId, resultSet.getDate("dt"));
+
+                                if (key == null) {
+                                    // ticket skipped due to unexisting operative month:
+                                    registry.saveField(statementUpd, new int[] { resultSet.getInt("id_tic") }, SDbTicket.FIELD_OP_CALENDAR, null);
+                                    skippedCount++;
+                                }
+                                else {
+                                    // tickets updated:
+                                    registry.saveField(statementUpd, new int[] { resultSet.getInt("id_tic") }, SDbTicket.FIELD_OP_CALENDAR, key);
+                                    updatedCount++;
+                                }
                             }
                         }
                     }
                 }
+
+                System.out.println(SLibUtils.textRepeat("=", 80));
+
+                if (totalCount > 0) {
+                    System.out.println(registryType + ":");
+                    System.out.println("Cleared tickets: " + SLibUtils.DecimalFormatInteger.format(clearedCount) + ", " + SLibUtils.DecimalFormatPercentage1D.format(clearedCount / totalCount) + " (from operative calendar).");
+                    System.out.println("Skipped tickets: " + SLibUtils.DecimalFormatInteger.format(skippedCount) + ", " + SLibUtils.DecimalFormatPercentage1D.format(skippedCount / totalCount) + ".");
+                    System.out.println("Updated tickets: " + SLibUtils.DecimalFormatInteger.format(updatedCount) + ", " + SLibUtils.DecimalFormatPercentage1D.format(updatedCount / totalCount) + ".");
+                }
+
+                System.out.println("Total tickets: " + SLibUtils.DecimalFormatInteger.format(totalCount) + ", " + SLibUtils.DecimalFormatPercentage1D.format(1) + ".");
             }
-            
-            System.out.println(SLibUtils.textRepeat("=", 80));
-            
-            if (totalCount > 0) {
-                System.out.println("Cleared tickets: " + SLibUtils.DecimalFormatInteger.format(clearedCount) + ", " + SLibUtils.DecimalFormatPercentage1D.format(clearedCount / totalCount) + ".");
-                System.out.println("Skipped tickets: " + SLibUtils.DecimalFormatInteger.format(skippedCount) + ", " + SLibUtils.DecimalFormatPercentage1D.format(skippedCount / totalCount) + ".");
-                System.out.println("Updated tickets: " + SLibUtils.DecimalFormatInteger.format(updatedCount) + ", " + SLibUtils.DecimalFormatPercentage1D.format(updatedCount / totalCount) + ".");
-            }
-            
-            System.out.println("Total tickets: " + SLibUtils.DecimalFormatInteger.format(totalCount) + ", " + SLibUtils.DecimalFormatPercentage1D.format(1) + ".");
         }
     }
 }
