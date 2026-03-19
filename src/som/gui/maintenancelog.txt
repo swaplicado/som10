@@ -1,23 +1,23 @@
 ================================================================================
-2026-03-19, 1.0 097.7
+2026-03-19, 1.0 098.3
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
 1) Adecuación de rutina de actualización del calendario operativo de boletos para incluir también boletos alternativos.
 
 ================================================================================
-2026-03-17, 1.0 097.6
+2026-03-17, 1.0 098.2
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
 1) Adición de tabla de recepción anual por año calendario en reporte mail histórico mensual de báscula de recepción de fruta.
 
 ================================================================================
-2026-03-09, 1.0 097.5
+2026-03-09, 1.0 098.1
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
 1) Reacomodo de la información de existencias en el reporte mail histórico mensual de báscula de recepción de fruta, para aparecer por debajo de la tabla de cada insumo.
 
 ================================================================================
-2026-03-06, 1.0 097.4
+2026-03-06, 1.0 098.0
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------
 1) Adición de opción "planta" para origen del boleto y la opción "proveedor" en destino del boleto en la captura de boletos de báscula.
