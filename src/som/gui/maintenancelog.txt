@@ -1,4 +1,10 @@
 ================================================================================
+2026-04-10, 1.0 098.4
+Sergio Abraham FLORES GUTIÉRREZ
+--------------------------------------------------------------------------------
+1) Cambio a filtro de resumen anual de recepción de materiales para ajustarse a los inicios y cierres operativos correspondientes a enero y diciembre, y así cubrir todo el año operativo.
+
+================================================================================
 2026-03-19, 1.0 098.3
 Sergio Abraham FLORES GUTIÉRREZ
 --------------------------------------------------------------------------------

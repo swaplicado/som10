@@ -33,7 +33,7 @@ import som.mod.som.db.SSomUtils;
   * Generación de las tablas comparativas históricas mensuales de recepción de fruta en base a meses con cierre de acuerdo el calendario operativo aplicable, si aplica, o a meses con cierre fijo los días 18.
  * @author Sergio Flores
  */
-public class SReportHtmlTicketSeasonMonthStd {
+public class SReportHtmlTicketSeasonMonthStd_20260409 {
     
     /** Report in unit of measure of item. */
     public static final int MODE_UNIT_ITEM = 1;
@@ -42,7 +42,7 @@ public class SReportHtmlTicketSeasonMonthStd {
     
     private final SGuiSession moSession;
     
-    public SReportHtmlTicketSeasonMonthStd(final SGuiSession session) {
+    public SReportHtmlTicketSeasonMonthStd_20260409(final SGuiSession session) {
         moSession = session;
     }
     
@@ -404,7 +404,7 @@ public class SReportHtmlTicketSeasonMonthStd {
             // custom month warning:
             
             if (isCustomMonth) {
-                String monthClosing = useOpCalendars ? "según el calendario operativo aplicable (p. ej., " + months[cutoffMonth - 1] + ". " + cutoffYear + " cierra el " + SLibUtils.DecimalFormatCalendarMonth.format(monthFirstDay - 1) + "/" + months[cutoffMonth - 1] + "./" + cutoffYear + ")" : "los días " + SLibUtils.DecimalFormatCalendarMonth.format(monthFirstDay - 1) + " de cada mes";
+                String monthClosing = useOpCalendars ? "según el calendario operativo aplicable (cierre de mes actual: " + SLibUtils.DecimalFormatCalendarMonth.format(monthFirstDay - 1) + "/" + months[cutoffMonth - 1] + "./" + cutoffYear + ")" : "los días " + SLibUtils.DecimalFormatCalendarMonth.format(monthFirstDay - 1) + " de cada mes";
                 html += "<small>" + SLibUtils.textToHtml("* Inicio de temporada: " + SLibTimeUtils.createMonthsOfYearStd(Calendar.LONG)[seasonFirstMonth - 1] + ". Día de cierre mensual: " + monthClosing + ".") + "</small>\n";
             }
             
@@ -429,44 +429,15 @@ public class SReportHtmlTicketSeasonMonthStd {
                 When using operative calendars, main reception table starts some month after January.
                 */
                 
-                // get annual cutoffs:
-                
-                int firstYear = yearStart + 1; // first year is the more recent year, i.e., the current year
-                int lastYear = yearEnd + 1; // last year is the more old year, i.e., the starting year of reported raw materials receptions
-                HashMap<Integer, Date[]> annualCutoffs = new HashMap<>(); // key: year; value: start and end date of year (index 0: start date; index 1: end date)
-                
-                sql = "SELECT IF(MONTH(month_end) = " + SLibTimeConsts.MONTH_JAN + ", 1, 0) + id_year AS op_year, "
-                        + "MONTH(month_end) AS op_month, code, name, month_sta, month_end "
-                        + "FROM su_op_cal_year_month "
-                        + "WHERE MONTH(month_end) IN (" + SLibTimeConsts.MONTH_JAN + ", " + SLibTimeConsts.MONTH_DEC + ") "
-                        + "AND (IF(MONTH(month_end) = " + SLibTimeConsts.MONTH_JAN + ", 1, 0) + id_year) BETWEEN " + lastYear + " AND " + firstYear + " "
-                        + "ORDER BY op_year, op_month;";
-                
-                try (ResultSet resultSet = moSession.getStatement().executeQuery(sql)) {
-                    int curYear = 0;
-                    Date[] cutoffs = new Date[2];
-                    
-                    while (resultSet.next()) {
-                        if (resultSet.getInt("op_year") != curYear) {
-                            curYear = resultSet.getInt("op_year");
-                            cutoffs[0] = resultSet.getDate("month_sta");
-                        }
-                        else {
-                            cutoffs[1] = resultSet.getDate("month_end");
-                            annualCutoffs.put(curYear, cutoffs.clone());
-                        }
-                    }
-                }
-                
-                int[] headerYears = new int[years];
-                double[][] annualValues = new double[years][2]; // total and cumulative annual
+                int firstYear = yearStart + 1;
+                int[] headerYears = new int[years + 1];
+                double[][] annualValues = new double[years + 1][2]; // total and cumulative annual
 
-                for (year = firstYear; year >= lastYear; year--) {
+                for (year = firstYear; year >= yearEnd; year--) {
                     headerYears[firstYear - year] = year;
                     
-                    Date[] cutoffs = annualCutoffs.get(year);
-                    Date start = cutoffs[0];
-                    Date end = cutoffs[1];
+                    Date start = SLibTimeUtils.createDate(year, SLibTimeConsts.MONTH_JAN, 1);
+                    Date end = SLibTimeUtils.getEndOfYear(start);
 
                     prepStatementWeights.setDate(1, new java.sql.Date(start.getTime()));
                     prepStatementWeights.setDate(2, new java.sql.Date(end.getTime()));
@@ -492,7 +463,7 @@ public class SReportHtmlTicketSeasonMonthStd {
                 // add HTML table with total and cumulative annual:
                 String cutoffMonthText = SLibUtils.DecimalFormatCalendarDay.format(cutoffDay) + "/" + months[cutoffMonth - 1] + ".";
                 html += "<br>\n";
-                html += generateAnnualHtmlTable(name, isUnitsTon, cutoff, cutoffMonthText, headerYears, annualValues, firstYear, annualCutoffs.get(firstYear)[0], decimalFormatValue, decimalFormatPct);
+                html += generateAnnualHtmlTable(name, isUnitsTon, cutoff, cutoffMonthText, headerYears, annualValues, decimalFormatValue, decimalFormatPct);
             }
             
             // HTML table of stock;
@@ -516,10 +487,10 @@ public class SReportHtmlTicketSeasonMonthStd {
         return html;
     }
     
-    private String generateAnnualHtmlTable(final String itemName, final boolean isUnitsTon, final Date cutoff, final String cutoffMonth, final int[] headerYears, final double[][] annualValues, final int firstYear, final Date firstYearStart, final DecimalFormat decimalFormatValue, final DecimalFormat decimalFormatPct) {
+    private String generateAnnualHtmlTable(final String itemName, final boolean isUnitsTon, final Date cutoff, final String cutoffMonth, final int[] headerYears, final double[][] annualValues, final DecimalFormat decimalFormatValue, final DecimalFormat decimalFormatPct) {
         String html = "";
         
-        html += "<h5>" + SLibUtils.textToHtml("Recepción anual de " + itemName + (isUnitsTon ? " por año operativo (valores en " + SCliConsts.TON + ")" : "")) + "</h5>\n";
+        html += "<h5>" + SLibUtils.textToHtml("Recepción anual de " + itemName + (isUnitsTon ? " por año calendario (valores en " + SCliConsts.TON + ")" : "")) + "</h5>\n";
         
         html += "<table>\n";
 
@@ -565,7 +536,7 @@ public class SReportHtmlTicketSeasonMonthStd {
 
         html += "</table>\n";
 
-        html += "<small>" + SLibUtils.textToHtml("* Inicio de año: según el calendario operativo aplicable (p. ej., " + firstYear + " inicia el " + SSomUtils.DateFormatGui.format(firstYearStart) + "). Día de corte: " + SSomUtils.DateFormatGui.format(cutoff) + ".") + "</small>\n";
+        html += "<small>" + SLibUtils.textToHtml("* Día de corte: " + SSomUtils.DateFormatGui.format(cutoff) + ".") + "</small>\n";
 
         html += "<br>\n";
         html += "<br>\n";
