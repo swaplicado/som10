@@ -27,22 +27,21 @@ import som.mod.cfg.db.SDbBranchWarehouse;
 import som.mod.cfg.db.SDbCompany;
 import som.mod.cfg.db.SDbCompanyBranch;
 import som.mod.cfg.db.SDbDivision;
-import som.mod.som.db.SDbGrindingParameter;
-import som.mod.som.db.SDbGrindingLinkItemParameter;
+import som.mod.cfg.db.SDbField;
 import som.mod.cfg.db.SDbProductionLine;
 import som.mod.cfg.db.SDbReportingGroup;
 import som.mod.cfg.db.SDbUser;
 import som.mod.cfg.db.SDbUserInputCategory;
 import som.mod.cfg.db.SDbUserRight;
 import som.mod.cfg.db.SDbUserScale;
+import som.mod.cfg.db.SDbValue;
+import som.mod.cfg.db.SDbValueValue;
 import som.mod.cfg.db.SDbYear;
 import som.mod.cfg.db.SDbYearPeriod;
 import som.mod.cfg.form.SFormBranchPlant;
 import som.mod.cfg.form.SFormBranchWarehouse;
 import som.mod.cfg.form.SFormCompany;
 import som.mod.cfg.form.SFormCompanyBranch;
-import som.mod.som.form.SFormGrindingParameters;
-import som.mod.som.form.SFormGrindingLinkItemParam;
 import som.mod.cfg.form.SFormProductionLine;
 import som.mod.cfg.form.SFormReportingGroup;
 import som.mod.cfg.form.SFormUser;
@@ -52,9 +51,8 @@ import som.mod.cfg.view.SViewBranchPlant;
 import som.mod.cfg.view.SViewBranchWarehouse;
 import som.mod.cfg.view.SViewCompany;
 import som.mod.cfg.view.SViewCompanyBranch;
+import som.mod.cfg.view.SViewField;
 import som.mod.cfg.view.SViewProductionLine;
-import som.mod.som.view.SViewGrindingLinkItmParam;
-import som.mod.som.view.SViewGrindingParameters;
 import som.mod.cfg.view.SViewReportingGroup;
 import som.mod.cfg.view.SViewUser;
 import som.mod.cfg.view.SViewUserAlternative;
@@ -62,8 +60,16 @@ import som.mod.cfg.view.SViewUserAlternativeRight;
 import som.mod.cfg.view.SViewUserInputCategories;
 import som.mod.cfg.view.SViewUserRight;
 import som.mod.cfg.view.SViewUserScale;
+import som.mod.cfg.view.SViewValue;
+import som.mod.cfg.view.SViewValueValue;
 import som.mod.cfg.view.SViewYear;
+import som.mod.som.db.SDbGrindingLinkItemParameter;
+import som.mod.som.db.SDbGrindingParameter;
 import som.mod.som.db.SDbItem;
+import som.mod.som.form.SFormGrindingLinkItemParam;
+import som.mod.som.form.SFormGrindingParameters;
+import som.mod.som.view.SViewGrindingLinkItmParam;
+import som.mod.som.view.SViewGrindingParameters;
 
 /**
  * 
@@ -193,21 +199,25 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                     public String getSqlTable() { return SModConsts.TablesMap.get(mnRegistryType); }
                     public String getSqlWhere(int[] pk) { return "WHERE id_wah_tp = " + pk[0] + " "; }
                 };
+                break;
             case SModConsts.CS_PLA_TP:
                 registry = new SDbRegistrySysFly(type) {
                     public String getSqlTable() { return SModConsts.TablesMap.get(mnRegistryType); }
                     public String getSqlWhere(int[] pk) { return "WHERE id_pla_tp = " + pk[0] + " "; }
                 };
+                break;
             case SModConsts.CS_USR_TP:
                 registry = new SDbRegistrySysFly(type) {
                     public String getSqlTable() { return SModConsts.TablesMap.get(mnRegistryType); }
                     public String getSqlWhere(int[] pk) { return "WHERE id_usr_tp = " + pk[0] + " "; }
                 };
+                break;
             case SModConsts.CS_RIG:
                 registry = new SDbRegistrySysFly(type) {
                     public String getSqlTable() { return SModConsts.TablesMap.get(mnRegistryType); }
                     public String getSqlWhere(int[] pk) { return "WHERE id_rig = " + pk[0] + " "; }
                 };
+                break;
             case SModConsts.CU_CO:
                 registry = new SDbCompany();
                 break;
@@ -261,6 +271,15 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.CU_USR_ALT_RIG:
                 registry = new SDbUser();
+                break;
+            case SModConsts.C_FIELD:
+                registry = new SDbField();
+                break;
+            case SModConsts.C_VALUE:
+                registry = new SDbValue();
+                break;
+            case SModConsts.C_VALUE_VALUE:
+                registry = new SDbValueValue();
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -469,6 +488,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
 
     @Override
     public SGridPaneView getView(int type, int subtype, SGuiParams params) {
+        String title;
         SGridPaneView view = null;
 
         switch (type) {
@@ -519,10 +539,27 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.CU_USR_ALT_RIG:
                 switch (subtype) {
-                    case SModConsts.CS_ALT_RIG: view = new SViewUserAlternativeRight(miClient, "Usuarios alt. vs. derechos (Q)"); break;
-                    case SLibConsts.UNDEFINED: view = new SViewUserAlternative(miClient, "Usuarios alternos"); break;
+                    case SModConsts.CS_ALT_RIG:
+                        view = new SViewUserAlternativeRight(miClient, "Usuarios alt. vs. derechos (Q)");
+                        break;
+                    case SLibConsts.UNDEFINED:
+                        view = new SViewUserAlternative(miClient, "Usuarios alternos");
+                        break;
+                    default:
+                        // nothing
                 }
-            break;
+                break;
+            case SModConsts.C_FIELD:
+                view = new SViewField(miClient, "Campos");
+                break;
+            case SModConsts.C_VALUE:
+                title = subtype == SModSysConsts.C_FIELD_TIC_PLA ? "Placas" : "Choferes";
+                view = new SViewValue(miClient, title, subtype);
+                break;
+            case SModConsts.C_VALUE_VALUE:
+                title = params.getType() == SModSysConsts.C_FIELD_TIC_PLA ? "Placas vs. choferes" : "Choferes vs. placas";
+                view = new SViewValueValue(miClient, title, subtype, params);
+                break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
         }

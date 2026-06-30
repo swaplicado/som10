@@ -81,6 +81,9 @@ public abstract class SModSysConsts {
     public static final int CU_PLA_INT_AGU = 3; // valor por defecto de planta Aguacate
     public static final int CU_PLA_INT_REF = 4; // valor por defecto de planta Refinería
     
+    public static final int C_FIELD_TIC_PLA = 1; // ticket plates
+    public static final int C_FIELD_TIC_DRV = 2; // ticket driver
+    
     public static final int SS_TIC_ST_SCA = 1;
     public static final int SS_TIC_ST_LAB = 2;
     public static final int SS_TIC_ST_ADM = 3;

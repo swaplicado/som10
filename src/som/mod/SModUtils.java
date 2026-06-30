@@ -38,6 +38,9 @@ public class SModUtils implements SGuiModuleUtils {
 
     private boolean belongsToSomRm(final int type) {
         return SLibUtils.belongsTo(type, new int[] {
+            SModConsts.C_FIELD,
+            SModConsts.C_VALUE,
+            SModConsts.C_VALUE_VALUE,
             SModConsts.SS_TIC_ST,
             SModConsts.SU_SUP_REG,
             SModConsts.SU_REG,

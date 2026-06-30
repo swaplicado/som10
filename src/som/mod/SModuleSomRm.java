@@ -25,6 +25,7 @@ import sa.lib.gui.SGuiModule;
 import sa.lib.gui.SGuiOptionPicker;
 import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiReport;
+import som.mod.cfg.view.SViewValueValue;
 import som.mod.ext.db.SExtUtils;
 import som.mod.ext.form.SDialogRepComparativeTicket;
 import som.mod.mat.db.SDbEmployee;
@@ -155,6 +156,12 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCfgSeasonProducer;
     private JMenuItem mjCfgRegions;
     private JMenuItem mjCfgSupraRegions;
+    private JMenu mjCfgField;   // Configuration/ Field
+    private JMenuItem mjCfgFieldPlates;
+    private JMenuItem mjCfgFieldPlatesDriver;
+    private JMenuItem mjCfgFieldDriver;
+    private JMenuItem mjCfgFieldDriverPlates;
+    private JMenuItem mjCfgFieldField;
     private JMenu mjTic;   // Scale tickets
     private JMenuItem mjTicTicketSca;
     private JMenuItem mjTicTicketLab;
@@ -320,19 +327,40 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCfgSeasonProducer = new JMenuItem("Configuración de proveedores");
         mjCfgRegions = new JMenuItem("Regiones");
         mjCfgSupraRegions = new JMenuItem("Supraregiones");
-
+        mjCfgField = new JMenu("Campos");
+        mjCfgFieldPlates = new JMenuItem("Placas");
+        mjCfgFieldPlatesDriver = new JMenuItem("Placas vs. choferes");
+        mjCfgFieldDriver = new JMenuItem("Choferes");
+        mjCfgFieldDriverPlates = new JMenuItem("Choveres vs. placas");
+        mjCfgFieldField = new JMenuItem("Campos");
+        
+        mjCfgField.add(mjCfgFieldPlates);
+        mjCfgField.add(mjCfgFieldPlatesDriver);
+        mjCfgField.addSeparator();
+        mjCfgField.add(mjCfgFieldDriver);
+        mjCfgField.add(mjCfgFieldDriverPlates);
+        mjCfgField.addSeparator();
+        mjCfgField.add(mjCfgFieldField);
+        
         mjCfg.add(mjCfgSeasons);
         mjCfg.add(mjCfgSeasonRegion);
         mjCfg.add(mjCfgSeasonProducer);
         mjCfg.addSeparator();
         mjCfg.add(mjCfgRegions);
         mjCfg.add(mjCfgSupraRegions);
+        mjCfg.addSeparator();
+        mjCfg.add(mjCfgField);
 
         mjCfgSeasons.addActionListener(this);
         mjCfgSeasonRegion.addActionListener(this);
         mjCfgSeasonProducer.addActionListener(this);
         mjCfgRegions.addActionListener(this);
         mjCfgSupraRegions.addActionListener(this);
+        mjCfgFieldPlates.addActionListener(this);
+        mjCfgFieldPlatesDriver.addActionListener(this);
+        mjCfgFieldDriver.addActionListener(this);
+        mjCfgFieldDriverPlates.addActionListener(this);
+        mjCfgFieldField.addActionListener(this);
 
         mjTic = new JMenu("Boletos báscula");
         mjTicTicketSca = new JMenuItem("Boletos en báscula");
@@ -1434,6 +1462,21 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             }
             else if (menuItem == mjCfgSupraRegions) {
                 showView(SModConsts.SU_SUP_REG, SLibConsts.UNDEFINED, null);
+            }
+            else if (menuItem == mjCfgFieldPlates) {
+                miClient.getSession().showView(SModConsts.C_VALUE, SModSysConsts.C_FIELD_TIC_PLA, null);
+            }
+            else if (menuItem == mjCfgFieldPlatesDriver) {
+                miClient.getSession().showView(SModConsts.C_VALUE_VALUE, SViewValueValue.PARENT_A, new SGuiParams(SModSysConsts.C_FIELD_TIC_PLA, SModSysConsts.C_FIELD_TIC_DRV));
+            }
+            else if (menuItem == mjCfgFieldDriver) {
+                miClient.getSession().showView(SModConsts.C_VALUE, SModSysConsts.C_FIELD_TIC_DRV, null);
+            }
+            else if (menuItem == mjCfgFieldDriverPlates) {
+                miClient.getSession().showView(SModConsts.C_VALUE_VALUE, SViewValueValue.PARENT_B, new SGuiParams(SModSysConsts.C_FIELD_TIC_DRV, SModSysConsts.C_FIELD_TIC_PLA));
+            }
+            else if (menuItem == mjCfgFieldField) {
+                miClient.getSession().showView(SModConsts.C_FIELD, 0, null);
             }
             else if (menuItem == mjTicTicketSca) {
                 showView(SModConsts.S_TIC, SModSysConsts.SS_TIC_ST_SCA, null);

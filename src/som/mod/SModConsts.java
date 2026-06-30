@@ -50,7 +50,10 @@ public abstract class SModConsts {
     public static final int SS_LINK_CFG_ITEMS = 220020;
 
     public static final int C_PARAM = 230001;
-    public static final int C_USR_GUI = 230002;
+    public static final int C_FIELD = 230101;
+    public static final int C_VALUE = 230106;
+    public static final int C_VALUE_VALUE = 230109;
+    public static final int C_USR_GUI = 239999;
 
     public static final int SS_TIC_ST = 310001;
     public static final int SS_IOG_CT = 310002;
@@ -297,6 +300,9 @@ public abstract class SModConsts {
         TablesMap.put(CU_PROD_LINES, "cu_line");
         TablesMap.put(CU_REP_GRP, "cu_rep_grp");
         TablesMap.put(C_PARAM, "c_param");
+        TablesMap.put(C_FIELD, "c_field");
+        TablesMap.put(C_VALUE, "c_value");
+        TablesMap.put(C_VALUE_VALUE, "c_value_value");
         TablesMap.put(C_USR_GUI, "c_usr_gui");
 
         TablesMap.put(SS_TIC_ST, "ss_tic_st");
