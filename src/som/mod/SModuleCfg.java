@@ -46,6 +46,7 @@ import som.mod.cfg.form.SFormProductionLine;
 import som.mod.cfg.form.SFormReportingGroup;
 import som.mod.cfg.form.SFormUser;
 import som.mod.cfg.form.SFormUserAlternative;
+import som.mod.cfg.form.SFormValue;
 import som.mod.cfg.form.SFormYear;
 import som.mod.cfg.view.SViewBranchPlant;
 import som.mod.cfg.view.SViewBranchWarehouse;
@@ -108,6 +109,8 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
     private SFormUser moFormUser;
     private SFormYear moFormYear;
     private SFormUserAlternative moFormUserAlternative;
+    private SFormValue moFormValuePlates;
+    private SFormValue moFormValueDriver;
 
     public SModuleCfg(SGuiClient client) {
         super(client, SModConsts.MOD_CFG, SLibConsts.UNDEFINED);
@@ -439,6 +442,12 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 sql = "SELECT id_rep_grp AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
                         + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 AND b_dis = 0 ORDER BY name, id_rep_grp ";
                 break;
+            case SModConsts.C_FIELD:
+                settings = new SGuiCatalogueSettings("Campo", 1);
+                settings.setCodeApplying(true);
+                sql = "SELECT id_field AS " + SDbConsts.FIELD_ID + "1, name AS " + SDbConsts.FIELD_ITEM + ", code AS " + SDbConsts.FIELD_CODE + " "
+                        + "FROM " + SModConsts.TablesMap.get(type) + " WHERE b_del = 0 ORDER BY name, id_field ";
+                break;
             case SModConsts.SU_GRINDING_PARAM:
                 settings = new SGuiCatalogueSettings("Parámetros", 1);
                 settings.setCodeApplying(true);
@@ -620,6 +629,20 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.CU_USR_ALT_RIG:
                 if (moFormUserAlternative == null) moFormUserAlternative = new SFormUserAlternative(miClient, "Usuario alterno");
                 form = moFormUserAlternative;
+                break;
+            case SModConsts.C_VALUE:
+                switch (subtype) {
+                    case SModSysConsts.C_FIELD_TIC_PLA:
+                        if (moFormValuePlates == null) moFormValuePlates = new SFormValue(miClient, subtype, "Placas");
+                        form = moFormValuePlates;
+                        break;
+                    case SModSysConsts.C_FIELD_TIC_DRV:
+                        if (moFormValueDriver == null) moFormValueDriver = new SFormValue(miClient, subtype, "Chofer");
+                        form = moFormValueDriver;
+                        break;
+                    default:
+                        miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
+                }
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);

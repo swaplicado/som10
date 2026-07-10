@@ -157,10 +157,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCfgRegions;
     private JMenuItem mjCfgSupraRegions;
     private JMenu mjCfgField;   // Configuration/ Field
-    private JMenuItem mjCfgFieldPlates;
-    private JMenuItem mjCfgFieldPlatesDriver;
     private JMenuItem mjCfgFieldDriver;
     private JMenuItem mjCfgFieldDriverPlates;
+    private JMenuItem mjCfgFieldPlates;
+    private JMenuItem mjCfgFieldPlatesDriver;
     private JMenuItem mjCfgFieldField;
     private JMenu mjTic;   // Scale tickets
     private JMenuItem mjTicTicketSca;
@@ -328,17 +328,17 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCfgRegions = new JMenuItem("Regiones");
         mjCfgSupraRegions = new JMenuItem("Supraregiones");
         mjCfgField = new JMenu("Campos");
-        mjCfgFieldPlates = new JMenuItem("Placas");
-        mjCfgFieldPlatesDriver = new JMenuItem("Placas vs. choferes");
         mjCfgFieldDriver = new JMenuItem("Choferes");
         mjCfgFieldDriverPlates = new JMenuItem("Choveres vs. placas");
+        mjCfgFieldPlates = new JMenuItem("Placas");
+        mjCfgFieldPlatesDriver = new JMenuItem("Placas vs. choferes");
         mjCfgFieldField = new JMenuItem("Campos");
         
-        mjCfgField.add(mjCfgFieldPlates);
-        mjCfgField.add(mjCfgFieldPlatesDriver);
-        mjCfgField.addSeparator();
         mjCfgField.add(mjCfgFieldDriver);
         mjCfgField.add(mjCfgFieldDriverPlates);
+        mjCfgField.addSeparator();
+        mjCfgField.add(mjCfgFieldPlates);
+        mjCfgField.add(mjCfgFieldPlatesDriver);
         mjCfgField.addSeparator();
         mjCfgField.add(mjCfgFieldField);
         
@@ -356,10 +356,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCfgSeasonProducer.addActionListener(this);
         mjCfgRegions.addActionListener(this);
         mjCfgSupraRegions.addActionListener(this);
-        mjCfgFieldPlates.addActionListener(this);
-        mjCfgFieldPlatesDriver.addActionListener(this);
         mjCfgFieldDriver.addActionListener(this);
         mjCfgFieldDriverPlates.addActionListener(this);
+        mjCfgFieldPlates.addActionListener(this);
+        mjCfgFieldPlatesDriver.addActionListener(this);
         mjCfgFieldField.addActionListener(this);
 
         mjTic = new JMenu("Boletos báscula");
@@ -1463,17 +1463,17 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             else if (menuItem == mjCfgSupraRegions) {
                 showView(SModConsts.SU_SUP_REG, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == mjCfgFieldPlates) {
-                miClient.getSession().showView(SModConsts.C_VALUE, SModSysConsts.C_FIELD_TIC_PLA, null);
-            }
-            else if (menuItem == mjCfgFieldPlatesDriver) {
-                miClient.getSession().showView(SModConsts.C_VALUE_VALUE, SViewValueValue.PARENT_A, new SGuiParams(SModSysConsts.C_FIELD_TIC_PLA, SModSysConsts.C_FIELD_TIC_DRV));
-            }
             else if (menuItem == mjCfgFieldDriver) {
                 miClient.getSession().showView(SModConsts.C_VALUE, SModSysConsts.C_FIELD_TIC_DRV, null);
             }
             else if (menuItem == mjCfgFieldDriverPlates) {
                 miClient.getSession().showView(SModConsts.C_VALUE_VALUE, SViewValueValue.PARENT_B, new SGuiParams(SModSysConsts.C_FIELD_TIC_DRV, SModSysConsts.C_FIELD_TIC_PLA));
+            }
+            else if (menuItem == mjCfgFieldPlates) {
+                miClient.getSession().showView(SModConsts.C_VALUE, SModSysConsts.C_FIELD_TIC_PLA, null);
+            }
+            else if (menuItem == mjCfgFieldPlatesDriver) {
+                miClient.getSession().showView(SModConsts.C_VALUE_VALUE, SViewValueValue.PARENT_A, new SGuiParams(SModSysConsts.C_FIELD_TIC_PLA, SModSysConsts.C_FIELD_TIC_DRV));
             }
             else if (menuItem == mjCfgFieldField) {
                 miClient.getSession().showView(SModConsts.C_FIELD, 0, null);

@@ -24,7 +24,7 @@ public class SFormProductionLine extends sa.lib.gui.bean.SBeanForm {
     private SDbProductionLine moRegistry;
 
     /**
-     * Creates new form SFormCompany
+     * Creates new form SFormProductionLine
      */
     public SFormProductionLine(SGuiClient client, String title) {
         setFormSettings(client, SGuiConsts.BEAN_FORM_EDIT, SModConsts.CU_PROD_LINES, SLibConsts.UNDEFINED, title);

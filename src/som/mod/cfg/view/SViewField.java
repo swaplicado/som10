@@ -4,20 +4,30 @@
  */
 package som.mod.cfg.view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import sa.lib.db.SDbConsts;
 import sa.lib.grid.SGridColumnView;
 import sa.lib.grid.SGridConsts;
 import sa.lib.grid.SGridPaneSettings;
 import sa.lib.grid.SGridPaneView;
+import sa.lib.grid.SGridRowView;
+import sa.lib.grid.SGridUtils;
 import sa.lib.gui.SGuiClient;
+import sa.lib.gui.SGuiConsts;
 import som.mod.SModConsts;
+import som.mod.cfg.db.SDbField;
 
 /**
  * Values of a specific field.
  * @author Sergio Flores
  */
-public class SViewField extends SGridPaneView {
+public class SViewField extends SGridPaneView implements ActionListener {
+    
+    private JButton mjbViewSettings;
     
     /**
      * Creates new values view.
@@ -26,7 +36,26 @@ public class SViewField extends SGridPaneView {
      */
     public SViewField(SGuiClient client, String title) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.C_FIELD, 0, title);
+        initCustomComponents();
+    }
+    
+    private void initCustomComponents() {
         setRowButtonsEnabled(false);
+        mjbViewSettings = SGridUtils.createButton(new ImageIcon(getClass().getResource("/som/gui/img/icon_std_look.gif")), "Ver configuración", this);
+        getPanelCommandsSys(SGuiConsts.PANEL_CENTER).add(mjbViewSettings);
+    }
+    
+    private void actionPerformedViewSettings() {
+        if (mjbViewSettings.isEnabled()) {
+            if (jtTable.getSelectedRowCount() != 1) {
+                miClient.showMsgBoxInformation(SGridConsts.MSG_SELECT_ROW);
+            }
+            else {
+                SGridRowView gridRow = (SGridRowView) getSelectedGridRow();
+                SDbField field = (SDbField) miClient.getSession().readRegistry(SModConsts.C_FIELD, gridRow.getRowPrimaryKey());
+                miClient.showMsgBoxInformation("" + field);
+            }
+        }
     }
 
     @Override
@@ -75,7 +104,7 @@ public class SViewField extends SGridPaneView {
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, SDbConsts.FIELD_NAME, SGridConsts.COL_TITLE_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_M, "v.description", "Descripción");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_L, "v.settings", "Configuración");
-        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.trim_chars", "Carácteres a suprimir");
+        columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_CAT_S, "v.trim_chars", "Remoción");
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_BOOL_S, SDbConsts.FIELD_IS_DEL, SGridConsts.COL_TITLE_IS_DEL);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_TEXT_NAME_USR, SDbConsts.FIELD_USER_INS_NAME, SGridConsts.COL_TITLE_USER_INS_NAME);
         columns[col++] = new SGridColumnView(SGridConsts.COL_TYPE_DATE_DATETIME, SDbConsts.FIELD_USER_INS_TS, SGridConsts.COL_TITLE_USER_INS_TS);
@@ -89,5 +118,16 @@ public class SViewField extends SGridPaneView {
     public void defineSuscriptions() {
         moSuscriptionsSet.add(mnGridType);
         moSuscriptionsSet.add(SModConsts.CU_USR);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof JButton) {
+            JButton button = (JButton) e.getSource();
+            
+            if (button == mjbViewSettings) {
+                actionPerformedViewSettings();
+            }
+        }
     }
 }

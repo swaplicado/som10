@@ -7,10 +7,14 @@ package som.mod.cfg.db;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import som.mod.SModSysConsts;
 
 /**
  *
- * @author Isabel Servín
+ * @author Isabel Servín, Sergio Flores
  */
 public class SCfgUtils {
     
@@ -32,5 +36,17 @@ public class SCfgUtils {
         }
         
         return paramValue;
-    } 
+    }
+    
+    /**
+     * Get param value of IDs of input categories for scope in values as an array of integers.
+     * @param statement Database statement.
+     * @return
+     * @throws Exception 
+     */
+    public static ArrayList<Integer> getParamValueScopeInputCategories(final Statement statement) throws Exception {
+        String paramValue = getParamValue(statement, SModSysConsts.C_PARAM_VALUE_SCOPE_INP_CT);
+        
+        return paramValue.isEmpty() ? new ArrayList<>() : Arrays.stream(paramValue.split(";")).map(Integer::valueOf).collect(Collectors.toCollection(ArrayList::new));
+    }
 }

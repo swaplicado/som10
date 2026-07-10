@@ -5,20 +5,30 @@
 
 package som.mod.cfg.db;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 import sa.gui.util.SUtilConsts;
+import sa.lib.SLibConsts;
+import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
+import sa.lib.grid.SGridRow;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
+import som.mod.SModSysConsts;
 
 /**
  * Value of a field.
  * @author Sergio Flores
  */
-public class SDbValue extends SDbRegistryUser {
+public class SDbValue extends SDbRegistryUser implements SGridRow {
 
     protected int mnPkValueId;
     protected String msValueText;
@@ -34,16 +44,41 @@ public class SDbValue extends SDbRegistryUser {
     protected Date mtTsUserUpdate;
     */
     
+    protected HashSet<Integer> moCompScopeInputCategoriesSet;
+    protected HashSet<Integer> moCompScopeItemsSet;
+    
+    protected String msAuxScopeInputCategoriesNames;
+    protected String msAuxScopeItemsNames;
+    
     public SDbValue() {
         super(SModConsts.C_VALUE);
         initRegistry();
     }
 
+    /*
+     * Overriden methods
+     */
+    
+    private void addListIdsToSet(final String commaSeparatedListIds, final HashSet<Integer> set) {
+        set.clear();
+        
+        if (!commaSeparatedListIds.isEmpty()) {
+            set.addAll(Arrays.stream(commaSeparatedListIds.split(","))
+                    .map(String::trim)
+                    .map(Integer::valueOf)
+                    .collect(Collectors.toCollection(HashSet::new)));
+        }
+    }
+    
+    /*
+     * Public methods
+     */
+    
     public void setPkValueId(int n) { mnPkValueId = n; }
     public void setValueText(String s) { msValueText = s; }
     public void setValueReference(String s) { msValueReference = s; }
-    public void setScopeInputCategories(String s) { msScopeInputCategories = s; }
-    public void setScopeItems(String s) { msScopeItems = s; }
+    public void setScopeInputCategories(String s) { msScopeInputCategories = sanitizeDataIds(s); addListIdsToSet(msScopeInputCategories, moCompScopeInputCategoriesSet); }
+    public void setScopeItems(String s) { msScopeItems = sanitizeDataIds(s); addListIdsToSet(msScopeItems, moCompScopeItemsSet); }
     public void setDeleted(boolean b) { mbDeleted = b; }
     public void setFkFieldId(int n) { mnFkFieldId = n; }
     public void setFkUserInsertId(int n) { mnFkUserInsertId = n; }
@@ -63,6 +98,44 @@ public class SDbValue extends SDbRegistryUser {
     public Date getTsUserInsert() { return mtTsUserInsert; }
     public Date getTsUserUpdate() { return mtTsUserUpdate; }
 
+    public HashSet<Integer> getCompScopeInputCategoriesSet() {
+        return moCompScopeInputCategoriesSet;
+    }
+    
+    public HashSet<Integer> getCompScopeItemsSet() {
+        return moCompScopeItemsSet;
+    }
+    
+    public void setAuxScopeInputCategoriesNames(String s) { msAuxScopeInputCategoriesNames = s; }
+    public void setAuxScopeItemsNames(String s) { msAuxScopeItemsNames = s; }
+    
+    public String getAuxScopeInputCategoriesNames() { return msAuxScopeInputCategoriesNames; }
+    public String getAuxScopeItemsNames() { return msAuxScopeItemsNames; }
+    
+    public void addScopeInputCategoryId(final int id) {
+        if (msScopeInputCategories.isEmpty()) {
+            msScopeInputCategories = "" + id;
+            moCompScopeInputCategoriesSet.add(id);
+        }
+        else {
+            setScopeInputCategories(msScopeInputCategories + "," + id);
+        }
+    }
+    
+    public void addScopeItem(final int id) {
+        if (msScopeItems.isEmpty()) {
+            msScopeItems = "" + id;
+            moCompScopeItemsSet.add(id);
+        }
+        else {
+            setScopeItems(msScopeItems + "," + id);
+        }
+    }
+    
+    /*
+     * Overriden methods
+     */
+    
     @Override
     public void setPrimaryKey(int[] pk) {
         mnPkValueId = pk[0];
@@ -88,6 +161,12 @@ public class SDbValue extends SDbRegistryUser {
         mnFkUserUpdateId = 0;
         mtTsUserInsert = null;
         mtTsUserUpdate = null;
+
+        moCompScopeInputCategoriesSet = new HashSet<>();
+        moCompScopeItemsSet = new HashSet<>();
+
+        msAuxScopeInputCategoriesNames = "";
+        msAuxScopeItemsNames = "";
     }
 
     @Override
@@ -142,6 +221,9 @@ public class SDbValue extends SDbRegistryUser {
                 mnFkUserUpdateId = resultSet.getInt("fk_usr_upd");
                 mtTsUserInsert = resultSet.getTimestamp("ts_usr_ins");
                 mtTsUserUpdate = resultSet.getTimestamp("ts_usr_upd");
+                
+                addListIdsToSet(msScopeInputCategories, moCompScopeInputCategoriesSet);
+                addListIdsToSet(msScopeItems, moCompScopeItemsSet);
 
                 mbRegistryNew = false;
             }
@@ -156,6 +238,8 @@ public class SDbValue extends SDbRegistryUser {
         mnQueryResultId = SDbConsts.SAVE_ERROR;
 
         if (mbRegistryNew) {
+            computePrimaryKey(session);
+            
             mbDeleted = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;
@@ -216,5 +300,222 @@ public class SDbValue extends SDbRegistryUser {
 
         registry.setRegistryNew(this.isRegistryNew());
         return registry;
+    }
+
+    @Override
+    public int[] getRowPrimaryKey() {
+        return getPrimaryKey();
+    }
+
+    @Override
+    public String getRowCode() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getRowName() {
+        return msValueText;
+    }
+
+    @Override
+    public boolean isRowSystem() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isRowDeletable() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isRowEdited() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setRowEdited(boolean edited) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object getRowValueAt(int col) {
+        Object value = null;
+        
+        switch (col) {
+            case 0:
+                value = msValueText;
+                break;
+            case 1:
+                value = msValueReference;
+                break;
+            case 2:
+                value = msAuxScopeInputCategoriesNames;
+                break;
+            case 3:
+                value = msAuxScopeItemsNames;
+                break;
+            default:
+                // nothing
+        }
+        
+        return value;
+    }
+
+    @Override
+    public void setRowValueAt(Object value, int col) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    /*
+     * Public static methods
+     */
+    
+    /**
+     * Count the value occurrences, to check that there are not value duplicities.
+     * @param session GUI session.
+     * @param fieldId Type of field of the value to be checked.
+     * @param valueText Value to check.
+     * @param valueId ID of the original value, to prevent it from being reported. Can be zero.
+     * @return Number of occurrences found.
+     * @throws Exception 
+     */
+    public static int countOccurrences(final SGuiSession session, final int fieldId, final String valueText, final int valueId) throws Exception {
+        int count = 0;
+        
+        String sql = ("SELECT COUNT(*) "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.C_VALUE) + " "
+                + "WHERE value_text = '" + valueText + "' AND fk_field = " + fieldId + " "
+                + (valueId != 0 ? "AND id_value <> " + valueId + " " : "")).trim() + ";";
+        
+        try (ResultSet resultSet = session.getStatement().executeQuery(sql)) {
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+        }
+        
+        return count;
+    }
+    
+    /**
+     * Retrieve similar values, to check that there are not value duplicities.
+     * @param session GUI session.
+     * @param fieldId Type of field of the value to be checked.
+     * @param valueText Value to check.
+     * @param valueId ID of the original value, to prevent it from being reported. Can be zero.
+     * @return List of similar values found.
+     * @throws Exception 
+     */
+    public static ArrayList<SDbValue> retrieveSimilars(final SGuiSession session, final int fieldId, final String valueText, final int valueId) throws Exception {
+        ArrayList<SDbValue> similarValues = new ArrayList<>();
+        
+        String sql = ("SELECT id_value "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.C_VALUE) + " "
+                + "WHERE SOUNDEX(value_text) = SOUNDEX('" + valueText + "') AND fk_field = " + fieldId + " "
+                + (valueId != 0 ? "AND id_value <> " + valueId + " " : "")).trim() + ";";
+        
+        try (Statement statement = session.getStatement().getConnection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                similarValues.add((SDbValue) session.readRegistry(SModConsts.C_VALUE, new int[] { resultSet.getInt(1) }));
+            }
+        }
+        
+        return similarValues;
+    }
+    
+    /**
+     * Sanitize comma-separated list of ID's.
+     * Empty, non-numeric and duplicated values will be removed.
+     * @param commaSeparatedListIds Comma-separated list of ID's.
+     * @return <code>String</code> of sanitized comma-separated list of ID's.
+     */
+    public static String sanitizeDataIds(final String commaSeparatedListIds) {
+        String[] ids = commaSeparatedListIds.trim().replaceAll("\\s+", "").split(",");
+        HashSet<Integer> idsSet = new HashSet<>();
+        
+        for (String id : ids) {
+            if (!id.isEmpty()) {
+                int n = SLibUtils.parseInt(id);
+                if (n > 0) {
+                    idsSet.add(n);
+                }
+            }
+        }
+        
+        String sanitizedListOfIds = "";
+        ArrayList<Integer> idsArray = new ArrayList<>(idsSet);
+        idsArray.sort(null);
+        
+        for (Integer id : idsArray) {
+            sanitizedListOfIds += (!sanitizedListOfIds.isEmpty() ? "," : "") + id;
+        }
+        
+        return sanitizedListOfIds;
+    }
+    
+    /**
+     * Validate the scope of ID's of input categories.
+     * @param session GUI session.
+     * @param dataType Data type: SModConsts.SU_INP_CT and SModConsts.SU_ITEM;
+     * @param commaSeparatedListIds Comma-separated list of ID's.
+     * @return <code>true</code> if all ID's are valid.
+     * @throws java.lang.Exception
+     */
+    public static boolean validateDataIds(final SGuiSession session, final int dataType, final String commaSeparatedListIds) throws Exception {
+        String[] ids = sanitizeDataIds(commaSeparatedListIds).split(",");
+        
+        if (ids == null || ids.length == 0 || ids[0].isEmpty()) {
+            throw new Exception("No hay ningún ID para validar.");
+        }
+        else {
+            int issues = 0;
+            String messages = "";
+            String registry = "";
+
+            String sql = "SELECT name, b_del FROM " + SModConsts.TablesMap.get(dataType) + " WHERE <id> = ?;";
+
+            switch (dataType) {
+                case SModConsts.SU_INP_CT:
+                    registry = "categorías de insumo";
+                    sql = sql.replace("<id>", "id_inp_ct");
+                    break;
+                case SModConsts.SU_ITEM:
+                    registry = "ítems";
+                    sql = sql.replace("<id>", "id_item");
+                    break;
+                default:
+                    throw new Exception(SLibConsts.ERR_MSG_OPTION_UNKNOWN + " (Data type: " + dataType + ")");
+            }
+
+            try (PreparedStatement preparedStatement = session.getStatement().getConnection().prepareStatement(sql)) {
+                for (String id : ids) {
+                    int n = SLibUtils.parseInt(id);
+                    preparedStatement.setInt(1, n);
+                    ResultSet resultSet = preparedStatement.executeQuery();
+                    
+                    if (resultSet.next()) {
+                        if (dataType == SModConsts.SU_INP_CT) {
+                            if (n == SModSysConsts.SU_INP_CT_NA) {
+                                messages += (!messages.isEmpty() ? "\n" : "") + ++issues + ". El registro con ID " + n + ", '" + resultSet.getString("name") + "', no está permitido.";
+                                continue; // stop here and validate the next ID
+                            }
+                        }
+                        
+                        if (resultSet.getBoolean("b_del")) {
+                            messages += (!messages.isEmpty() ? "\n" : "") + ++issues + ". El registro con ID " + n + ", '" + resultSet.getString("name") + "', está eliminado.";
+                        }
+                    }
+                    else {
+                        messages += (!messages.isEmpty() ? "\n" : "") + ++issues + ". El registro con ID " + n + " no existe.";
+                    }
+                }
+            }
+            
+            if (!messages.isEmpty()) {
+                throw new Exception((issues == 1 ? "Se detectó el siguiente problema" : "Se detectaron los siguientes " + issues + " problemas") + " con los ID de '" + registry + "':\n" + messages);
+            }
+        }
+        
+        return true; // all ID's are valid!
     }
 }

@@ -25,6 +25,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
 import sa.lib.SLibTimeUtils;
 import sa.lib.SLibUtils;
@@ -35,12 +36,16 @@ import sa.lib.gui.SGuiItem;
 import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
+import sa.lib.gui.bean.SBeanFieldText;
 import sa.lib.gui.bean.SBeanForm;
 import som.gui.SGuiClientSessionCustom;
 import som.gui.SGuiClientUtils;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
+import som.mod.cfg.db.SCfgUtils;
 import som.mod.cfg.db.SDbCompany;
+import som.mod.cfg.db.SDbField;
+import som.mod.cfg.db.SDbValue;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbProducer;
 import som.mod.som.db.SDbTicket;
@@ -76,6 +81,13 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private String msCommentsArrival;
     private String msCommentsDeparture;
 
+    private ArrayList<Integer> maAllowedScopeInputCategories;
+    private SDbField moFieldPlates;
+    private SDbField moFieldDriver;
+    private SDbValue moValuePlates;
+    private SDbValue moValueDriver;
+    private SPickerValue moPickerPlates;
+    private SPickerValue moPickerDriver;
     private JButton jbSaveSend;
 
     /**
@@ -129,12 +141,17 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jPanel6 = new javax.swing.JPanel();
         jlPlates = new javax.swing.JLabel();
         moTextPlates = new sa.lib.gui.bean.SBeanFieldText();
+        jbPickPlates = new javax.swing.JButton();
+        jlPlatesHelp = new javax.swing.JLabel();
         jlPlatesCage = new javax.swing.JLabel();
         moTextPlatesCage = new sa.lib.gui.bean.SBeanFieldText();
         jlPlatesCage1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jlDriver = new javax.swing.JLabel();
         moTextDriver = new sa.lib.gui.bean.SBeanFieldText();
+        jbPickDriver = new javax.swing.JButton();
+        jlDriverHelp = new javax.swing.JLabel();
+        jlDriver1 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jlWeightSource = new javax.swing.JLabel();
         moDecWeightSource = new sa.lib.gui.bean.SBeanFieldDecimal();
@@ -345,6 +362,16 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moTextPlates.setText("TEXT");
         jPanel6.add(moTextPlates);
 
+        jbPickPlates.setText("...");
+        jbPickPlates.setToolTipText("Buscar placas del vehículo...");
+        jbPickPlates.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel6.add(jbPickPlates);
+
+        jlPlatesHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_view_info.png"))); // NOI18N
+        jlPlatesHelp.setToolTipText("Asegúrate de que las placas sean correctas, y que el valor exista en el catálogo de placas");
+        jlPlatesHelp.setPreferredSize(new java.awt.Dimension(18, 23));
+        jPanel6.add(jlPlatesHelp);
+
         jlPlatesCage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlPlatesCage.setText("Placas caja:");
         jlPlatesCage.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -354,8 +381,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jPanel6.add(moTextPlatesCage);
 
         jlPlatesCage1.setForeground(java.awt.SystemColor.textInactiveText);
-        jlPlatesCage1.setText("(Placas de la caja o remolque del vehículo.)");
-        jlPlatesCage1.setPreferredSize(new java.awt.Dimension(295, 23));
+        jlPlatesCage1.setText("(placas (matrícula) de la caja o remolque)");
+        jlPlatesCage1.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel6.add(jlPlatesCage1);
 
         jPanel2.add(jPanel6);
@@ -369,6 +396,21 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         moTextDriver.setText("TEXT");
         moTextDriver.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel3.add(moTextDriver);
+
+        jbPickDriver.setText("...");
+        jbPickDriver.setToolTipText("Buscar chofer del vehículo...");
+        jbPickDriver.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel3.add(jbPickDriver);
+
+        jlDriverHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_view_info.png"))); // NOI18N
+        jlDriverHelp.setToolTipText("Asegúrate de que el chofer sea correcto, y que el valor exista en el catálogo de choferes");
+        jlDriverHelp.setPreferredSize(new java.awt.Dimension(18, 23));
+        jPanel3.add(jlDriverHelp);
+
+        jlDriver1.setForeground(java.awt.SystemColor.textInactiveText);
+        jlDriver1.setText("(nombre(s) y apellido(s) del chofer)");
+        jlDriver1.setPreferredSize(new java.awt.Dimension(300, 23));
+        jPanel3.add(jlDriver1);
 
         jPanel2.add(jPanel3);
 
@@ -389,8 +431,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jPanel7.add(moBoolWeightSourceAvailable);
 
         jlWeightSource1.setForeground(java.awt.SystemColor.textInactiveText);
-        jlWeightSource1.setText("(Tara manifestada por el proveedor desde el origen.)");
-        jlWeightSource1.setPreferredSize(new java.awt.Dimension(295, 23));
+        jlWeightSource1.setText("(tara manifestada por el proveedor desde el origen)");
+        jlWeightSource1.setPreferredSize(new java.awt.Dimension(300, 23));
         jPanel7.add(jlWeightSource1);
 
         jPanel2.add(jPanel7);
@@ -612,7 +654,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jPanel18.add(jlWeightAverageUnits);
 
         jlWeightAverage1.setForeground(java.awt.SystemColor.textInactiveText);
-        jlWeightAverage1.setText("(De envases llenos.)");
+        jlWeightAverage1.setText("(de envases llenos)");
         jlWeightAverage1.setPreferredSize(new java.awt.Dimension(125, 23));
         jPanel18.add(jlWeightAverage1);
 
@@ -759,12 +801,16 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JButton jbEditPackingFullQuantityArrival;
     private javax.swing.JButton jbImportTicket;
     private javax.swing.JButton jbImportTicketTare;
+    private javax.swing.JButton jbPickDriver;
+    private javax.swing.JButton jbPickPlates;
     private javax.swing.JButton jbSetDefaultInputSource;
     private javax.swing.JLabel jlDatetimeArrival;
     private javax.swing.JLabel jlDatetimeArrival1;
     private javax.swing.JLabel jlDatetimeDeparture;
     private javax.swing.JLabel jlDatetimeDeparture1;
     private javax.swing.JLabel jlDriver;
+    private javax.swing.JLabel jlDriver1;
+    private javax.swing.JLabel jlDriverHelp;
     private javax.swing.JLabel jlDummy;
     private javax.swing.JLabel jlExwFacilityDestination;
     private javax.swing.JLabel jlExwFacilityDestination1;
@@ -803,6 +849,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private javax.swing.JLabel jlPlates;
     private javax.swing.JLabel jlPlatesCage;
     private javax.swing.JLabel jlPlatesCage1;
+    private javax.swing.JLabel jlPlatesHelp;
     private javax.swing.JLabel jlProducer;
     private javax.swing.JLabel jlRegion;
     private javax.swing.JLabel jlScale;
@@ -1028,6 +1075,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moTextPlates.setEditable(false);
             moTextPlatesCage.setEditable(false);
             moTextDriver.setEditable(false);
+            jbPickPlates.setEnabled(false);
+            jbPickDriver.setEnabled(false);
             
             moBoolWeightSourceAvailable.setEnabled(false);
             moDecWeightSource.setEditable(false);
@@ -1087,6 +1136,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 moTextPlates.setEditable(false);
                 moTextPlatesCage.setEditable(false);
                 moTextDriver.setEditable(false);
+                jbPickPlates.setEnabled(false);
+                jbPickDriver.setEnabled(false);
                 
                 moBoolWeightSourceAvailable.setEnabled(false);
                 moDecWeightSource.setEditable(false);
@@ -1134,6 +1185,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 moTextPlates.setEditable(false);
                 moTextPlatesCage.setEditable(false);
                 moTextDriver.setEditable(false);
+                jbPickPlates.setEnabled(false);
+                jbPickDriver.setEnabled(false);
                 
                 moBoolWeightSourceAvailable.setEnabled(false);
                 moDecWeightSource.setEditable(false);
@@ -1184,6 +1237,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                     moTextPlates.setEditable(!mbIsRevImport1);
                     moTextPlatesCage.setEditable(true);
                     moTextDriver.setEditable(!mbIsRevImport1);
+                    jbPickPlates.setEnabled(true);
+                    jbPickDriver.setEnabled(true);
                     
                     moBoolWeightSourceAvailable.setEnabled(true);
                     moDecWeightSource.setEditable(moBoolWeightSourceAvailable.isSelected());
@@ -1231,6 +1286,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                     moTextPlates.setEditable(!moRegistry.isTared() && !mbIsRevImport1);
                     moTextPlatesCage.setEditable(!moRegistry.isTared());
                     moTextDriver.setEditable(!moRegistry.isTared() && !mbIsRevImport1);
+                    jbPickPlates.setEnabled(!moRegistry.isTared());
+                    jbPickDriver.setEnabled(!moRegistry.isTared());
                     
                     moBoolWeightSourceAvailable.setEnabled(!moRegistry.isTared());
                     moDecWeightSource.setEditable(!moRegistry.isTared() && moBoolWeightSourceAvailable.isSelected());
@@ -1806,6 +1863,36 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + moKeyProducer.getFieldName() + "'.");
         }
     }
+    
+    private void pickValue(SPickerValue picker, final int field, SBeanFieldText fieldText) {
+        if (moItem == null) {
+            miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + moKeyItem.getFieldName() + "'.");
+        }
+        else {
+            if (picker == null) {
+                picker = new SPickerValue(miClient, field, SUtilConsts.TXT_FIND + " " + fieldText.getFieldName());
+            }
+
+            picker.resetForm();
+            picker.setValue(SModConsts.SU_ITEM, moItem);
+            picker.setValue(SModConsts.C_VALUE, fieldText.getValue());
+            picker.initForm();
+            picker.setVisible(true);
+
+            if (picker.getFormResult() == SGuiConsts.FORM_RESULT_OK) {
+                fieldText.setValue(picker.getValue(SModConsts.C_VALUE));
+                fieldText.requestFocusInWindow();
+            }
+        }
+    }
+    
+    private void actionPickPlates() {
+        pickValue(moPickerPlates, SModSysConsts.C_FIELD_TIC_PLA, moTextPlates);
+    }
+    
+    private void actionPickDriver() {
+        pickValue(moPickerDriver, SModSysConsts.C_FIELD_TIC_DRV, moTextDriver);
+    }
 
     private void actionSaveSend() {
         mbSaveSendCalled = true;
@@ -1848,6 +1935,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jbImportTicket.addActionListener(this);
         jbCleanTicket.addActionListener(this);
         jbSetDefaultInputSource.addActionListener(this);
+        jbPickPlates.addActionListener(this);
+        jbPickDriver.addActionListener(this);
         jbImportTicketTare.addActionListener(this);
         jbCleanTicketTare.addActionListener(this);
         jbSaveSend.addActionListener(this);
@@ -1877,6 +1966,8 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
         jbImportTicket.removeActionListener(this);
         jbCleanTicket.removeActionListener(this);
         jbSetDefaultInputSource.removeActionListener(this);
+        jbPickPlates.removeActionListener(this);
+        jbPickDriver.removeActionListener(this);
         jbImportTicketTare.removeActionListener(this);
         jbCleanTicketTare.removeActionListener(this);
         jbSaveSend.removeActionListener(this);
@@ -2058,6 +2149,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moKeyFreightOrigin.setValue(new int[] { moRegistry.getFkFreightOriginId_n() });
             moKeyFreightTicket.setValue(new int[] { moRegistry.getFkFreightTicketId_n() });
 
+            maAllowedScopeInputCategories = SCfgUtils.getParamValueScopeInputCategories(miClient.getSession().getStatement());
+            moFieldPlates = (SDbField) miClient.getSession().readRegistry(SModConsts.C_FIELD, new int[] { SModSysConsts.C_FIELD_TIC_PLA });
+            moFieldDriver = (SDbField) miClient.getSession().readRegistry(SModConsts.C_FIELD, new int[] { SModSysConsts.C_FIELD_TIC_DRV });
+            moValuePlates = null; // wait until validation to set this member
+            moValueDriver = null; // wait until validation to set this member
+            
             setFormEditable(true);
 
             if (moRegistry.isRegistryNew()) {
@@ -2237,6 +2334,15 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 ticket.setFkFreightOriginId_n(0);
                 ticket.setFkFreightTicketId_n(0);
             }
+            
+            // save updated values:
+            
+            for (SDbValue value : new SDbValue[] { moValuePlates, moValueDriver }) {
+                if (value != null && value.isRegistryEdited()) {
+                    value.save(miClient.getSession());
+                    value.setRegistryEdited(false);
+                }
+            }
 
             registry = ticket;
         }
@@ -2285,7 +2391,78 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                                 validation.setComponent(((JSpinner.DefaultEditor) moDatetimeDeparture.getComponent().getEditor()).getTextField());
                             }
                         }
-                    }  
+                    }
+                }
+                
+                if (validation.isValid()) {
+                    // validate plates and driver:
+                    
+                    SBeanFieldText text = null;
+                    
+                    try {
+                        // both plates and driver are validated the same:
+                        
+                        moValuePlates = null; // reset previous value
+                        moValueDriver = null; // reset previous value
+                        
+                        Object[] packs = new Object[] {
+                            new Object[] { moTextPlates, moFieldPlates },
+                            new Object[] { moTextDriver, moFieldDriver }
+                        };
+                        
+                        for (Object pack : packs) {
+                            text = (SBeanFieldText) ((Object[]) pack)[0];
+                            SDbField field = (SDbField) ((Object[]) pack)[1];
+                            
+                            // check if value is already sanitized:
+                            
+                            String sanitized = field.sanitizeValueText(text.getValue());
+                            if (!text.getValue().equals(sanitized)) {
+                                String message = SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + text.getFieldName() + "', '" + text.getValue() + "', " + SGuiConsts.ERR_MSG_FIELD_VAL_EQUAL.trim() + " '" + sanitized + "'.";
+                                
+                                if (miClient.showMsgBoxConfirm(message
+                                        + (field.getTrimCharacters().isEmpty() ? "" : "\nQuizás contiene alguno de los carácteres no permitodos: " + field.getTrimCharacters())
+                                        + "\n¿Desea cambiar el valor del campo '" + text.getFieldName() + "' por '" + sanitized + "'?") == JOptionPane.YES_OPTION) {
+                                    text.setValue(sanitized);
+                                }
+                                else {
+                                    throw new Exception(message);
+                                }
+                            }
+                            
+                            // check if value complies required format:
+                            
+                            if (field.validateValueTextFormat(miClient, text.getValue())) {
+                                // check if value exists in catalog and whether it can be used with curreht item:
+                                
+                                SDbField.ValueRetrieved valueRetrieved = field.retrieveValue(miClient, text.getValue(), moItem, SDbField.ADD_TO_SCOPE_POLICY_CONFIRM, maAllowedScopeInputCategories);
+                                
+                                if (!valueRetrieved.Notes.isEmpty()) {
+                                    String message = "";
+                                    for (String note : valueRetrieved.Notes) {
+                                        message += (message.isEmpty() ? "" : "\n") + note;
+                                    }
+                                    throw new Exception(message);
+                                }
+                                else if (valueRetrieved.Value.isRegistryEdited()) {
+                                    switch (field.getPkFieldId()) {
+                                        case SModSysConsts.C_FIELD_TIC_PLA:
+                                            moValuePlates = valueRetrieved.Value;
+                                            break;
+                                        case SModSysConsts.C_FIELD_TIC_DRV:
+                                            moValueDriver = valueRetrieved.Value;
+                                            break;
+                                        default:
+                                            // nothing
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e) {
+                        validation.setMessage(e.getMessage());
+                        validation.setComponent(text);
+                    }
                 }
                 
                 if (validation.isValid()) {
@@ -2416,6 +2593,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             }
             else if (button == jbSetDefaultInputSource) {
                 actionSetDefaultInputSource();
+            }
+            else if (button == jbPickPlates) {
+                actionPickPlates();
+            }
+            else if (button == jbPickDriver) {
+                actionPickDriver();
             }
             else if (button == jbImportTicketTare) {
                 actionImportTicketTare();

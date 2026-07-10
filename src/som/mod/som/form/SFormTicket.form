@@ -273,6 +273,26 @@
                     <Property name="text" type="java.lang.String" value="TEXT"/>
                   </Properties>
                 </Component>
+                <Component class="javax.swing.JButton" name="jbPickPlates">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="..."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Buscar placas del veh&#xed;culo..."/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[23, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlPlatesHelp">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/som/gui/img/icon_view_info.png"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Aseg&#xfa;rate de que las placas sean correctas, y que el valor exista en el cat&#xe1;logo de placas"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[18, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
                 <Component class="javax.swing.JLabel" name="jlPlatesCage">
                   <Properties>
                     <Property name="horizontalAlignment" type="int" value="0"/>
@@ -292,9 +312,9 @@
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="6d" green="6d" id="Text Inactive Text" palette="2" red="6d" type="palette"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="(Placas de la caja o remolque del veh&#xed;culo.)"/>
+                    <Property name="text" type="java.lang.String" value="(placas (matr&#xed;cula) de la caja o remolque)"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[295, 23]"/>
+                      <Dimension value="[300, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -318,6 +338,37 @@
                 <Component class="sa.lib.gui.bean.SBeanFieldText" name="moTextDriver">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="TEXT"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[300, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JButton" name="jbPickDriver">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="..."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Buscar chofer del veh&#xed;culo..."/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[23, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlDriverHelp">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/som/gui/img/icon_view_info.png"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Aseg&#xfa;rate de que el chofer sea correcto, y que el valor exista en el cat&#xe1;logo de choferes"/>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[18, 23]"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jlDriver1">
+                  <Properties>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="6d" green="6d" id="Text Inactive Text" palette="2" red="6d" type="palette"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="(nombre(s) y apellido(s) del chofer)"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[300, 23]"/>
                     </Property>
@@ -370,9 +421,9 @@
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="6d" green="6d" id="Text Inactive Text" palette="2" red="6d" type="palette"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="(Tara manifestada por el proveedor desde el origen.)"/>
+                    <Property name="text" type="java.lang.String" value="(tara manifestada por el proveedor desde el origen)"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[295, 23]"/>
+                      <Dimension value="[300, 23]"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -871,7 +922,7 @@
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="6d" green="6d" id="Text Inactive Text" palette="2" red="6d" type="palette"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="(De envases llenos.)"/>
+                    <Property name="text" type="java.lang.String" value="(de envases llenos)"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[125, 23]"/>
                     </Property>

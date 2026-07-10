@@ -11,9 +11,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbRegistry;
@@ -27,9 +30,14 @@ import sa.lib.gui.SGuiConsts;
 import sa.lib.gui.SGuiParams;
 import sa.lib.gui.SGuiUtils;
 import sa.lib.gui.SGuiValidation;
+import sa.lib.gui.bean.SBeanFieldText;
 import sa.lib.gui.bean.SBeanForm;
 import som.gui.SGuiClientUtils;
 import som.mod.SModConsts;
+import som.mod.SModSysConsts;
+import som.mod.cfg.db.SCfgUtils;
+import som.mod.cfg.db.SDbField;
+import som.mod.cfg.db.SDbValue;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbLaboratory;
 import som.mod.som.db.SDbLaboratoryNote;
@@ -59,6 +67,10 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private int mnNewRegionId;
     private boolean mbIsSaveSend;
 
+    private ArrayList<Integer> maAllowedScopeInputCategories;
+    private SDbField moFieldPlates;
+    private SDbValue moValuePlates;
+    private SPickerValue moPickerPlates;
     private JButton jbSaveSend;
 
     /**
@@ -90,14 +102,17 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         jPanel7 = new javax.swing.JPanel();
         jlPlates = new javax.swing.JLabel();
         moTextPlates = new sa.lib.gui.bean.SBeanFieldText();
-        jbPlates = new javax.swing.JButton();
+        jbEditPlates = new javax.swing.JButton();
+        jbPickPlates = new javax.swing.JButton();
+        jlPlatesHelp = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jlTicket = new javax.swing.JLabel();
         moTextTicket = new sa.lib.gui.bean.SBeanFieldText();
         jPanel14 = new javax.swing.JPanel();
         jlPlatesCage = new javax.swing.JLabel();
         moTextPlatesCage = new sa.lib.gui.bean.SBeanFieldText();
-        jbPlatesCage = new javax.swing.JButton();
+        jbEditPlatesCage = new javax.swing.JButton();
+        jlPlatesCage1 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jlProducer = new javax.swing.JLabel();
         moTextProducer = new sa.lib.gui.bean.SBeanFieldText();
@@ -107,7 +122,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         jPanel12 = new javax.swing.JPanel();
         jlItem = new javax.swing.JLabel();
         moKeyItem = new sa.lib.gui.bean.SBeanFieldKey();
-        jbKeyItem = new javax.swing.JButton();
+        jbEditKeyItem = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         jlNumber = new javax.swing.JLabel();
         moIntNumber = new sa.lib.gui.bean.SBeanFieldInteger();
@@ -167,11 +182,21 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moTextPlates.setText("sBeanFieldText2");
         jPanel7.add(moTextPlates);
 
-        jbPlates.setText("<");
-        jbPlates.setToolTipText("Modificar placas");
-        jbPlates.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        jbPlates.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanel7.add(jbPlates);
+        jbEditPlates.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_std_edit.gif"))); // NOI18N
+        jbEditPlates.setToolTipText("Modificar placas");
+        jbEditPlates.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jbEditPlates.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel7.add(jbEditPlates);
+
+        jbPickPlates.setText("...");
+        jbPickPlates.setToolTipText("Buscar placas del vehículo...");
+        jbPickPlates.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel7.add(jbPickPlates);
+
+        jlPlatesHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_view_info.png"))); // NOI18N
+        jlPlatesHelp.setToolTipText("Asegúrate de que las placas sean correctas, y que el valor exista en el catálogo de placas");
+        jlPlatesHelp.setPreferredSize(new java.awt.Dimension(18, 23));
+        jPanel7.add(jlPlatesHelp);
 
         jPanel2.add(jPanel7);
 
@@ -196,11 +221,16 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moTextPlatesCage.setText("sBeanFieldText2");
         jPanel14.add(moTextPlatesCage);
 
-        jbPlatesCage.setText("<");
-        jbPlatesCage.setToolTipText("Modificar placas caja");
-        jbPlatesCage.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        jbPlatesCage.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanel14.add(jbPlatesCage);
+        jbEditPlatesCage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_std_edit.gif"))); // NOI18N
+        jbEditPlatesCage.setToolTipText("Modificar placas caja");
+        jbEditPlatesCage.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jbEditPlatesCage.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel14.add(jbEditPlatesCage);
+
+        jlPlatesCage1.setForeground(java.awt.SystemColor.textInactiveText);
+        jlPlatesCage1.setText("(placas (matrícula) de la caja o remolque)");
+        jlPlatesCage1.setPreferredSize(new java.awt.Dimension(220, 23));
+        jPanel14.add(jlPlatesCage1);
 
         jPanel2.add(jPanel14);
 
@@ -239,11 +269,11 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         moKeyItem.setPreferredSize(new java.awt.Dimension(350, 23));
         jPanel12.add(moKeyItem);
 
-        jbKeyItem.setText("<");
-        jbKeyItem.setToolTipText("Modificar ítem");
-        jbKeyItem.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        jbKeyItem.setPreferredSize(new java.awt.Dimension(23, 23));
-        jPanel12.add(jbKeyItem);
+        jbEditKeyItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_std_edit.gif"))); // NOI18N
+        jbEditKeyItem.setToolTipText("Modificar ítem");
+        jbEditKeyItem.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jbEditKeyItem.setPreferredSize(new java.awt.Dimension(23, 23));
+        jPanel12.add(jbEditKeyItem);
 
         jPanel2.add(jPanel12);
 
@@ -358,9 +388,10 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JButton jbKeyItem;
-    private javax.swing.JButton jbPlates;
-    private javax.swing.JButton jbPlatesCage;
+    private javax.swing.JButton jbEditKeyItem;
+    private javax.swing.JButton jbEditPlates;
+    private javax.swing.JButton jbEditPlatesCage;
+    private javax.swing.JButton jbPickPlates;
     private javax.swing.JLabel jlDate;
     private javax.swing.JLabel jlDriver;
     private javax.swing.JLabel jlItem;
@@ -368,6 +399,8 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     private javax.swing.JLabel jlNumber;
     private javax.swing.JLabel jlPlates;
     private javax.swing.JLabel jlPlatesCage;
+    private javax.swing.JLabel jlPlatesCage1;
+    private javax.swing.JLabel jlPlatesHelp;
     private javax.swing.JLabel jlProducer;
     private javax.swing.JLabel jlRegion;
     private javax.swing.JLabel jlScale;
@@ -636,21 +669,58 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         }
     }
 
-    private void actionKeyItem() {
+    private void actionEditPlates() {
+        jbEditPlates.setEnabled(false);
+        
+        jbPickPlates.setEnabled(true);
+        moTextPlates.setEditable(true);
+        moTextPlates.requestFocus();
+    }
+
+    private void actionEditPlatesCage() {
+        jbEditPlatesCage.setEnabled(false);
+        
+        moTextPlatesCage.setEditable(true);
+        moTextPlatesCage.requestFocus();
+    }
+
+    private void pickValue(SPickerValue picker, final int field, SBeanFieldText fieldText) {
+        if (moItem == null) {
+            miClient.showMsgBoxWarning(SGuiConsts.ERR_MSG_FIELD_REQ + "'" + moKeyItem.getFieldName() + "'.");
+        }
+        else {
+            if (picker == null) {
+                picker = new SPickerValue(miClient, field, SUtilConsts.TXT_FIND + " " + fieldText.getFieldName());
+            }
+
+            picker.resetForm();
+            picker.setValue(SModConsts.SU_ITEM, moItem);
+            picker.setValue(SModConsts.C_VALUE, fieldText.getValue());
+            picker.initForm();
+            picker.setVisible(true);
+
+            if (picker.getFormResult() == SGuiConsts.FORM_RESULT_OK) {
+                fieldText.setValue(picker.getValue(SModConsts.C_VALUE));
+                fieldText.requestFocusInWindow();
+            }
+        }
+    }
+    
+    private void actionPickPlates() {
+        pickValue(moPickerPlates, SModSysConsts.C_FIELD_TIC_PLA, moTextPlates);
+    }
+    
+    private void actionEditKeyItem() {
         boolean isLink = false;
 
         try {
             isLink = moRegistry.isLinkIog(miClient.getSession());
-//          Se comentó para poder cambiar el ítem aun existiendo pruebas de laboratorio
-//            if (moGridLaboratoryTest.getModel().getRowCount() > 0) {
-//               miClient.showMsgBoxWarning("Es necesario eliminar las pruebas de laboratorio.");
-//               
-//            }
+
             if (isLink) {
                 miClient.showMsgBoxWarning("El boleto está vinculado con un documento de inventarios.");
             }
             else {
-               jbKeyItem.setEnabled(false);
+               jbEditKeyItem.setEnabled(false);
                moKeyItem.setEnabled(true);
                moKeyItem.requestFocus();
             }
@@ -671,18 +741,6 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         }
     }
 
-    private void actionPlates() {
-        jbPlates.setEnabled(false);
-        moTextPlates.setEditable(true);
-        moTextPlates.requestFocus();
-    }
-
-    private void actionPlatesCage() {
-        jbPlatesCage.setEnabled(false);
-        moTextPlatesCage.setEditable(true);
-        moTextPlatesCage.requestFocus();
-    }
-
     private void populateLaboratoryTest() throws SQLException {
         Vector<SGridRow> rows = new Vector<>();
 
@@ -698,19 +756,21 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     @Override
     public void addAllListeners() {
         moKeyItem.addItemListener(this);
-        jbKeyItem.addActionListener(this);
+        jbEditKeyItem.addActionListener(this);
         jbSaveSend.addActionListener(this);
-        jbPlates.addActionListener(this);
-        jbPlatesCage.addActionListener(this);
+        jbEditPlates.addActionListener(this);
+        jbPickPlates.addActionListener(this);
+        jbEditPlatesCage.addActionListener(this);
     }
 
     @Override
     public void removeAllListeners() {
         moKeyItem.removeItemListener(this);
-        jbKeyItem.removeActionListener(this);
+        jbEditKeyItem.removeActionListener(this);
         jbSaveSend.removeActionListener(this);
-        jbPlates.removeActionListener(this);
-        jbPlatesCage.removeActionListener(this);
+        jbEditPlates.removeActionListener(this);
+        jbPickPlates.removeActionListener(this);
+        jbEditPlatesCage.removeActionListener(this);
     }
 
     @Override
@@ -787,6 +847,10 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
             moIntNumber.setValue(SDbLaboratory.getNumberNext(miClient.getSession()));
         }
 
+        maAllowedScopeInputCategories = SCfgUtils.getParamValueScopeInputCategories(miClient.getSession().getStatement());
+        moFieldPlates = (SDbField) miClient.getSession().readRegistry(SModConsts.C_FIELD, new int[] { SModSysConsts.C_FIELD_TIC_PLA });
+        moValuePlates = null; // wait until validation to set this member
+
         setFormEditable(true);
         readItem();
 
@@ -796,11 +860,12 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
         moIntNumber.setEditable(false);
         moKeyItem.setEnabled(false);
-        jbKeyItem.setEnabled(true);
+        jbEditKeyItem.setEnabled(true);
         moKeyTicketOrigin.setEnabled(false);
         moKeyTicketDestination.setEnabled(false);
-        jbPlates.setEnabled(true);
-        jbPlatesCage.setEnabled(true);
+        jbEditPlates.setEnabled(true);
+        jbPickPlates.setEnabled(false);
+        jbEditPlatesCage.setEnabled(true);
 
         moTextScaleName.setEditable(false);
         moTextScaleCode.setEditable(false);
@@ -871,6 +936,15 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         registry.setAuxMoveNextOnSend(mbIsSaveSend);
         registry.setAuxRequirePriceComputation(true);
 
+        // save updated values:
+
+        for (SDbValue value : new SDbValue[] { moValuePlates }) {
+            if (value != null && value.isRegistryEdited()) {
+                value.save(miClient.getSession());
+                value.setRegistryEdited(false);
+            }
+        }
+
         return registry;
     }
 
@@ -887,6 +961,72 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
             validation.setComponent(moGridLaboratoryTest);
         }
 
+        if (validation.isValid() && moTextPlates.isEditable()) {
+            // validate plates and driver:
+
+            SBeanFieldText text = null;
+
+            try {
+                // validate plates keeping code to validate another field, like driver, in the future:
+
+                moValuePlates = null; // reset previous value
+
+                Object[] packs = new Object[] {
+                    new Object[] { moTextPlates, moFieldPlates }
+                };
+
+                for (Object pack : packs) {
+                    text = (SBeanFieldText) ((Object[]) pack)[0];
+                    SDbField field = (SDbField) ((Object[]) pack)[1];
+
+                    // check if value is already sanitized:
+
+                    String sanitized = field.sanitizeValueText(text.getValue());
+                    if (!text.getValue().equals(sanitized)) {
+                        String message = SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + text.getFieldName() + "', '" + text.getValue() + "', " + SGuiConsts.ERR_MSG_FIELD_VAL_EQUAL.trim() + " '" + sanitized + "'.";
+
+                        if (miClient.showMsgBoxConfirm(message
+                                + (field.getTrimCharacters().isEmpty() ? "" : "\nQuizás contiene alguno de los carácteres no permitodos: " + field.getTrimCharacters())
+                                + "\n¿Desea cambiar el valor del campo '" + text.getFieldName() + "' por '" + sanitized + "'?") == JOptionPane.YES_OPTION) {
+                            text.setValue(sanitized);
+                        }
+                        else {
+                            throw new Exception(message);
+                        }
+                    }
+
+                    // check if value complies required format:
+
+                    if (field.validateValueTextFormat(miClient, text.getValue())) {
+                        // check if value exists in catalog and whether it can be used with curreht item:
+
+                        SDbField.ValueRetrieved valueRetrieved = field.retrieveValue(miClient, text.getValue(), moItem, SDbField.ADD_TO_SCOPE_POLICY_CONFIRM, maAllowedScopeInputCategories);
+
+                        if (!valueRetrieved.Notes.isEmpty()) {
+                            String message = "";
+                            for (String note : valueRetrieved.Notes) {
+                                message += (message.isEmpty() ? "" : "\n") + note;
+                            }
+                            throw new Exception(message);
+                        }
+                        else if (valueRetrieved.Value.isRegistryEdited()) {
+                            switch (field.getPkFieldId()) {
+                                case SModSysConsts.C_FIELD_TIC_PLA:
+                                    moValuePlates = valueRetrieved.Value;
+                                    break;
+                                default:
+                                    // nothing
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e) {
+                validation.setMessage(e.getMessage());
+                validation.setComponent(text);
+            }
+        }
+
         return validation;
     }
 
@@ -895,17 +1035,20 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
         if (e.getSource() instanceof JButton) {
             JButton button = (JButton) e.getSource();
 
-            if (button == jbKeyItem) {
-                actionKeyItem();
+            if (button == jbEditPlates) {
+                actionEditPlates();
+            }
+            else if (button == jbPickPlates) {
+                actionPickPlates();
+            }
+            else if (button == jbEditPlatesCage) {
+                actionEditPlatesCage();
+            }
+            else if (button == jbEditKeyItem) {
+                actionEditKeyItem();
             }
             else if (button == jbSaveSend) {
                 actionSaveSend();
-            }
-            else if (button == jbPlates) {
-                actionPlates();
-            }
-            else if (button == jbPlatesCage) {
-                actionPlatesCage();
             }
         }
     }
@@ -924,7 +1067,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
     @Override
     public void notifyRowNew(int i, int i1, int i2, SGridRow sgr) {
         moKeyItem.setEnabled(false);
-        jbKeyItem.setEnabled(true);
+        jbEditKeyItem.setEnabled(true);
         renumberEntries();
         moGridLaboratoryTest.setSelectedGridRow(moGridLaboratoryTest.getTable().getRowCount() - 1);
     }

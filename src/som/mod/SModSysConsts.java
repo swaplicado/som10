@@ -14,14 +14,15 @@ import sa.lib.gui.SGuiItem;
  */
 public abstract class SModSysConsts {
     
-    public static final String C_PARAM_MAT_WAH_DEF = "MAT_WAH_DEF";
     public static final String C_PARAM_MAT_ITEMS = "MAT_ITEMS";
+    public static final String C_PARAM_MAT_WAH_DEF = "MAT_WAH_DEF";
     public static final String C_PARAM_MAT_STK_DAYS_SIGNAL = "MAT_STK_DAYS_SIGNAL";
     public static final String C_PARAM_MAT_DAY_CUTOFF_HR = "MAT_DAY_CUTOFF_HR";
     public static final String C_PARAM_MAT_WEEK_START_DAY = "MAT_WEEK_START_DAY";
     public static final String C_PARAM_MAT_UNIT_DEF = "MAT_UNIT_DEF";
     public static final String C_PARAM_MAT_SCA_DEF = "MAT_SCA_DEF";
-
+    public static final String C_PARAM_VALUE_SCOPE_INP_CT = "VALUE_SCOPE_INP_CT";
+    
     public static final int CS_WAH_TP_WAH = 1;
     public static final int CS_WAH_TP_SIL = 2;
     public static final int CS_WAH_TP_TAN = 3;
