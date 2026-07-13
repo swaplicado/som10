@@ -89,7 +89,7 @@ public class SPickerValue extends SBeanFormDialog implements SGridPaneFormOwner,
         jbCopyValueText = new javax.swing.JButton();
         jlSearchType = new javax.swing.JLabel();
         moRadSearchExact = new sa.lib.gui.bean.SBeanFieldRadio();
-        moRadSearchContent = new sa.lib.gui.bean.SBeanFieldRadio();
+        moRadSearchOpen = new sa.lib.gui.bean.SBeanFieldRadio();
         jPanel5 = new javax.swing.JPanel();
         jlSearchText = new javax.swing.JLabel();
         moTextSearchText = new sa.lib.gui.bean.SBeanFieldText();
@@ -156,13 +156,11 @@ public class SPickerValue extends SBeanFormDialog implements SGridPaneFormOwner,
 
         bgSearchType.add(moRadSearchExact);
         moRadSearchExact.setText("Exacta");
-        moRadSearchExact.setPreferredSize(new java.awt.Dimension(85, 23));
         jPanel7.add(moRadSearchExact);
 
-        bgSearchType.add(moRadSearchContent);
-        moRadSearchContent.setText("Por contenido");
-        moRadSearchContent.setPreferredSize(new java.awt.Dimension(175, 23));
-        jPanel7.add(moRadSearchContent);
+        bgSearchType.add(moRadSearchOpen);
+        moRadSearchOpen.setText("Abierta");
+        jPanel7.add(moRadSearchOpen);
 
         jpSearch.add(jPanel7);
 
@@ -186,21 +184,21 @@ public class SPickerValue extends SBeanFormDialog implements SGridPaneFormOwner,
         jPanel5.add(jlShow);
 
         bgShow.add(jtbShowElegible);
-        jtbShowElegible.setText("Elegibles");
+        jtbShowElegible.setText("Ver elegibles");
         jtbShowElegible.setToolTipText("Valores configurados para usarse con el ítem");
-        jtbShowElegible.setPreferredSize(new java.awt.Dimension(85, 23));
+        jtbShowElegible.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel5.add(jtbShowElegible);
 
         bgShow.add(jtbShowNew);
-        jtbShowNew.setText("Nuevos");
+        jtbShowNew.setText("Ver nuevos");
         jtbShowNew.setToolTipText("Valores que aún no están configurados para usarse con un ítem");
-        jtbShowNew.setPreferredSize(new java.awt.Dimension(85, 23));
+        jtbShowNew.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel5.add(jtbShowNew);
 
         bgShow.add(jtbShowAll);
-        jtbShowAll.setText("Todos");
+        jtbShowAll.setText("Ver todos");
         jtbShowAll.setToolTipText("Todos los valores");
-        jtbShowAll.setPreferredSize(new java.awt.Dimension(85, 23));
+        jtbShowAll.setPreferredSize(new java.awt.Dimension(100, 23));
         jPanel5.add(jtbShowAll);
 
         jpSearch.add(jPanel5);
@@ -237,8 +235,8 @@ public class SPickerValue extends SBeanFormDialog implements SGridPaneFormOwner,
     private javax.swing.JTextField jtfTicketInputCategory;
     private javax.swing.JTextField jtfTicketItem;
     private javax.swing.JTextField jtfValueText;
-    private sa.lib.gui.bean.SBeanFieldRadio moRadSearchContent;
     private sa.lib.gui.bean.SBeanFieldRadio moRadSearchExact;
+    private sa.lib.gui.bean.SBeanFieldRadio moRadSearchOpen;
     private sa.lib.gui.bean.SBeanFieldText moTextSearchText;
     // End of variables declaration//GEN-END:variables
 
@@ -246,7 +244,7 @@ public class SPickerValue extends SBeanFormDialog implements SGridPaneFormOwner,
      * Private methods
      */
     private void initComponentsCustom() {
-        SGuiUtils.setWindowBounds(this, 800, 500);
+        SGuiUtils.setWindowBounds(this, 880, 550);
         
         moTextSearchText.setTextSettings(SGuiUtils.getLabelName(jlSearchText), 100, 0);
         
@@ -336,6 +334,7 @@ public class SPickerValue extends SBeanFormDialog implements SGridPaneFormOwner,
             }
             else {
                 if (moRadSearchExact.isSelected()) {
+                    // exact search:
                     for (SDbValue value : availableValues) {
                         if (value.getValueText().startsWith(text)) {
                             values.add(value);
@@ -343,6 +342,7 @@ public class SPickerValue extends SBeanFormDialog implements SGridPaneFormOwner,
                     }
                 }
                 else {
+                    // open search:
                     for (SDbValue value : availableValues) {
                         if (value.getValueText().contains(text)) {
                             values.add(value);
@@ -410,7 +410,7 @@ public class SPickerValue extends SBeanFormDialog implements SGridPaneFormOwner,
         jtbShowAll.addActionListener(this);
         
         moRadSearchExact.addItemListener(this);
-        moRadSearchContent.addItemListener(this);
+        moRadSearchOpen.addItemListener(this);
         
         moTextSearchText.addKeyListener(this);
     }
@@ -424,7 +424,7 @@ public class SPickerValue extends SBeanFormDialog implements SGridPaneFormOwner,
         jtbShowAll.removeActionListener(this);
         
         moRadSearchExact.removeItemListener(this);
-        moRadSearchContent.removeItemListener(this);
+        moRadSearchOpen.removeItemListener(this);
         
         moTextSearchText.removeKeyListener(this);
     }
@@ -572,7 +572,7 @@ public class SPickerValue extends SBeanFormDialog implements SGridPaneFormOwner,
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() instanceof SBeanFieldRadio && e.getStateChange() == ItemEvent.SELECTED) {
-            if (e.getSource() == moRadSearchExact || e.getSource() == moRadSearchContent) {
+            if (e.getSource() == moRadSearchExact || e.getSource() == moRadSearchOpen) {
                 showValues();
             }
         }

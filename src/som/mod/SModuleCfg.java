@@ -508,7 +508,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 view = new SViewCompanyBranch(miClient, "Sucursales");
                 break;
             case SModConsts.CU_PROD_LINES:
-                view = new SViewProductionLine(miClient, "Líneas de Producción");
+                view = new SViewProductionLine(miClient, "Líneas producción");
                 break;
             case SModConsts.CU_WAH:
                 view = new SViewBranchWarehouse(miClient, "Almacenes");
@@ -517,10 +517,10 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 view = new SViewBranchPlant(miClient, "Plantas");
                 break;
             case SModConsts.SU_GRINDING_PARAM:
-                view = new SViewGrindingParameters(miClient, "Parámetros de molienda");
+                view = new SViewGrindingParameters(miClient, "Parámetros molienda");
                 break;
             case SModConsts.SU_GRINDING_LINK_ITEM_PARAM:
-                view = new SViewGrindingLinkItmParam(miClient, "Parámetros vs ítems");
+                view = new SViewGrindingLinkItmParam(miClient, "Parámetros vs. ítems");
                 break;
             case SModConsts.CU_YEAR:
                 view = new SViewYear(miClient, "Ejercicios y períodos");
@@ -538,7 +538,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 view = new SViewUserScale(miClient, "Usuarios vs. básculas Q");
                 break;
             case SModConsts.CU_USR_INP_CT:
-                view = new SViewUserInputCategories(miClient, "Usuarios vs. categorías de insumo Q");
+                view = new SViewUserInputCategories(miClient, "Usuarios vs. categorías insumo Q");
                 break;
             case SModConsts.CU_DIV:
                 view = null;
@@ -559,7 +559,7 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 }
                 break;
             case SModConsts.C_FIELD:
-                view = new SViewField(miClient, "Campos");
+                view = new SViewField(miClient, "Configuración campos boletos");
                 break;
             case SModConsts.C_VALUE:
                 title = subtype == SModSysConsts.C_FIELD_TIC_PLA ? "Placas" : "Choferes";

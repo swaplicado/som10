@@ -327,12 +327,12 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCfgSeasonProducer = new JMenuItem("Configuración de proveedores");
         mjCfgRegions = new JMenuItem("Regiones");
         mjCfgSupraRegions = new JMenuItem("Supraregiones");
-        mjCfgField = new JMenu("Campos");
+        mjCfgField = new JMenu("Campos de boletos");
         mjCfgFieldDriver = new JMenuItem("Choferes");
-        mjCfgFieldDriverPlates = new JMenuItem("Choveres vs. placas");
+        mjCfgFieldDriverPlates = new JMenuItem("Choferes vs. placas");
         mjCfgFieldPlates = new JMenuItem("Placas");
         mjCfgFieldPlatesDriver = new JMenuItem("Placas vs. choferes");
-        mjCfgFieldField = new JMenuItem("Campos");
+        mjCfgFieldField = new JMenuItem("Configuración de campos de boletos");
         
         mjCfgField.add(mjCfgFieldDriver);
         mjCfgField.add(mjCfgFieldDriverPlates);
@@ -945,7 +945,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 view = new SViewTicketDestination(miClient, "Destinos boletos");
                 break;
             case SModConsts.SU_FREIGHT_ORIG:
-                view = new SViewFreightOrigin(miClient, "Origenes fletes");
+                view = new SViewFreightOrigin(miClient, "Orígenes fletes");
                 break;
             case SModConsts.S_GRINDING_EVENT:
                 switch (subtype) {
@@ -986,10 +986,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.S_LAB:
                 switch (subtype) {
                     case SModSysConsts.SX_LAB_TEST:
-                        view = new SViewLaboratory(miClient, subtype, "Análisis lab MP");
+                        view = new SViewLaboratory(miClient, subtype, "Análisis lab. MP");
                         break;
                     case SModSysConsts.SX_LAB_TEST_DET:
-                        view = new SViewLaboratory(miClient, subtype, "Análisis lab MP (detalle)");
+                        view = new SViewLaboratory(miClient, subtype, "Análisis lab. MP (detalle)");
                         break;
                     default:
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -998,10 +998,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.S_ALT_LAB:
                 switch (subtype) {
                     case SModConsts.SX_ALT_WO_LAB:
-                        view = new SViewLaboratoryAlternative(miClient, subtype, "Bol. pendientes resultados lab MP");
+                        view = new SViewLaboratoryAlternative(miClient, subtype, "Boletos pendientes resultados lab. MP");
                         break;
                     case SModConsts.SX_ALT_W_LAB:
-                        view = new SViewLaboratoryAlternative(miClient, subtype, "Bol. con resultados lab MP");
+                        view = new SViewLaboratoryAlternative(miClient, subtype, "Boletos con resultados lab. MP");
                         break;
                     default:
                         miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -1052,7 +1052,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             case SModConsts.SX_TIC_WAH_UNLD:
                 switch (subtype) {
                     case SModSysConsts.SS_TIC_WAH_UNLD_N_ASIGNED:
-                        view = new SViewTicketWahUnld(miClient, subtype, "Boletos por descargar");
+                        view = new SViewTicketWahUnld(miClient, subtype, "Boletos x descargar");
                         break;
                     case SModSysConsts.SS_TIC_WAH_UNLD_ASIGNED:
                         view = new SViewTicketWahUnld(miClient, subtype, "Boletos descargados");
@@ -1216,7 +1216,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
                 form = moFormGrindingEvent;
                 break;
             case SModConsts.S_GRINDING_RESULT:
-                if (moFormResult == null) moFormResult = new SFormGrindingResultHr(miClient, "Resultado molienda");
+                if (moFormResult == null) moFormResult = new SFormGrindingResultHr(miClient, "Resultado de molienda");
                 form = moFormResult;
                 break;
             case SModConsts.S_TIC:

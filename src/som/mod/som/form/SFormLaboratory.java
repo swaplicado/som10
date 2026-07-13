@@ -986,7 +986,7 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
                         String message = SGuiConsts.ERR_MSG_FIELD_VAL_ + "'" + text.getFieldName() + "', '" + text.getValue() + "', " + SGuiConsts.ERR_MSG_FIELD_VAL_EQUAL.trim() + " '" + sanitized + "'.";
 
                         if (miClient.showMsgBoxConfirm(message
-                                + (field.getTrimCharacters().isEmpty() ? "" : "\nQuizás contiene alguno de los carácteres no permitodos: " + field.getTrimCharacters())
+                                + (field.getTrimCharacters().isEmpty() ? "" : "\nQuizás contiene alguno de los carácteres no permitidos: " + field.getTrimCharacters())
                                 + "\n¿Desea cambiar el valor del campo '" + text.getFieldName() + "' por '" + sanitized + "'?") == JOptionPane.YES_OPTION) {
                             text.setValue(sanitized);
                         }

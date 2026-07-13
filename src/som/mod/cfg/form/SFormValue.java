@@ -155,8 +155,8 @@ public class SFormValue extends sa.lib.gui.bean.SBeanForm implements ActionListe
         jPanel11.add(jtfFieldTrimCharacters);
 
         jlFieldTrimCharactersHint.setForeground(java.awt.SystemColor.textInactiveText);
-        jlFieldTrimCharactersHint.setText("(carácteres a ser removidos del valor)");
-        jlFieldTrimCharactersHint.setPreferredSize(new java.awt.Dimension(250, 23));
+        jlFieldTrimCharactersHint.setText("(carácteres no permitidos, deberán ser removidos)");
+        jlFieldTrimCharactersHint.setPreferredSize(new java.awt.Dimension(273, 23));
         jPanel11.add(jlFieldTrimCharactersHint);
 
         jPanel2.add(jPanel11);
@@ -177,7 +177,7 @@ public class SFormValue extends sa.lib.gui.bean.SBeanForm implements ActionListe
         jPanel5.add(jbEditValueText);
 
         jlValueText1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/som/gui/img/icon_view_info.png"))); // NOI18N
-        jlValueText1.setToolTipText("El valor no puede repetirse, y debe cumplir con la configuración del campo");
+        jlValueText1.setToolTipText("El valor no puede repetirse en el catálogo, y debe cumplir con la configuración del campo");
         jlValueText1.setPreferredSize(new java.awt.Dimension(18, 23));
         jPanel5.add(jlValueText1);
 

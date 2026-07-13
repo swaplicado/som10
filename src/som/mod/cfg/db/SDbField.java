@@ -444,6 +444,7 @@ public class SDbField extends SDbRegistryUser {
                 value = (SDbValue) client.getSession().readRegistry(SModConsts.C_VALUE, new int[] { resultSet.getInt("id_value") });
                 
                 if (resultSet.getBoolean("b_del")) {
+                    value = null;
                     notes.add("El valor " + msName + " '" + valueText + "' está eliminado. Es necesario reactivarlo en el catálogo para poder usarlo.");
                 }
                 else {
@@ -455,17 +456,21 @@ public class SDbField extends SDbRegistryUser {
                         ids = new ArrayList<>(Arrays.asList(resultSet.getString("scope_item").split(",")));
                         
                         if (!ids.contains("" + item.getPkItemId())) {
-                            String message = "El valor " + msName + " '" + valueText + "' no está configurado para usarse con el ítem '" + item.getName() + "'";
+                            boolean addNotes = true;
+                            String message = "El valor " + msName + " '" + valueText + "' no está configurado para usarse con el ítem '" + item.getName() + "'.";
                             
                             if (addToScopePolicy == ADD_TO_SCOPE_POLICY_YES || addToScopePolicy == ADD_TO_SCOPE_POLICY_CONFIRM) {
-                                boolean add = addToScopePolicy == ADD_TO_SCOPE_POLICY_YES;
+                                boolean addValue = addToScopePolicy == ADD_TO_SCOPE_POLICY_YES;
                                 
-                                if (!add) {
-                                    add = client.showMsgBoxConfirm(message + ", pero puede hacerse.\n"
-                                            + "¿Desea configurar el valor " + msName + " '" + valueText + "' para usarse con este ítem?") == JOptionPane.YES_OPTION;
+                                if (!addValue) {
+                                    addValue = client.showMsgBoxConfirm(message + "\n"
+                                            + "Para continuar usando este valor, es necesario configurarlo.\n"
+                                            + "¿Está seguro que desea configurar el valor " + msName + " '" + valueText + "' para usarse con este ítem?") == JOptionPane.YES_OPTION;
                                 }
                                 
-                                if (add) {
+                                if (addValue) {
+                                    addNotes = false;
+                                    
                                     if (allowedScopeInputCategories.contains(item.getFkInputCategoryId())) {
                                         value.addScopeInputCategoryId(item.getFkInputCategoryId());
                                     }
@@ -476,15 +481,17 @@ public class SDbField extends SDbRegistryUser {
                                     value.setRegistryEdited(true);
                                 }
                             }
-                            else {
-                                notes.add(message + ".");
+                            
+                            if (addNotes) {
+                                value = null;
+                                notes.add(message);
                             }
                         }
                     }
                 }
             }
             else {
-                notes.add("El valor " + msName + " '" + valueText + "' no existe. Es necesario crearlo en el catálogo para empezar a usarlo.");
+                notes.add("El valor " + msName + " '" + valueText + "' no existe. Es necesario crearlo en el catálogo para poder a usarlo.");
             }
         }
         
