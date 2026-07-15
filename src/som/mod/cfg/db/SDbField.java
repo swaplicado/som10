@@ -216,10 +216,8 @@ public class SDbField extends SDbRegistryUser {
         mnQueryResultId = SDbConsts.SAVE_ERROR;
 
         if (mbRegistryNew) {
-            verifyRegistryNew(session);
-        }
-
-        if (mbRegistryNew) {
+            computePrimaryKey(session);
+            
             mbDeleted = false;
             mnFkUserInsertId = session.getUser().getPkUserId();
             mnFkUserUpdateId = SUtilConsts.USR_NA_ID;

@@ -38,6 +38,7 @@ import som.mod.SModSysConsts;
 import som.mod.cfg.db.SCfgUtils;
 import som.mod.cfg.db.SDbField;
 import som.mod.cfg.db.SDbValue;
+import som.mod.cfg.db.SDbValueValue;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbLaboratory;
 import som.mod.som.db.SDbLaboratoryNote;
@@ -69,7 +70,10 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
     private ArrayList<Integer> maAllowedScopeInputCategories;
     private SDbField moFieldPlates;
+    private SDbField moFieldDriver;
     private SDbValue moValuePlates;
+    private SDbValue moValueDriver;
+    private SDbValueValue moValueValuePlatesDriver;
     private SPickerValue moPickerPlates;
     private JButton jbSaveSend;
 
@@ -849,7 +853,10 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
         maAllowedScopeInputCategories = SCfgUtils.getParamValueScopeInputCategories(miClient.getSession().getStatement());
         moFieldPlates = (SDbField) miClient.getSession().readRegistry(SModConsts.C_FIELD, new int[] { SModSysConsts.C_FIELD_TIC_PLA });
+        moFieldDriver = (SDbField) miClient.getSession().readRegistry(SModConsts.C_FIELD, new int[] { SModSysConsts.C_FIELD_TIC_DRV });
         moValuePlates = null; // wait until validation to set this member
+        moValueDriver = null; // wait until validation to set this member
+        moValueValuePlatesDriver = null; // wait until validation to set this member
 
         setFormEditable(true);
         readItem();
@@ -938,10 +945,10 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
 
         // save updated values:
 
-        for (SDbValue value : new SDbValue[] { moValuePlates }) {
-            if (value != null && value.isRegistryEdited()) {
-                value.save(miClient.getSession());
-                value.setRegistryEdited(false);
+        for (SDbRegistry registryToSave : new SDbRegistry[] { moValuePlates, moValueDriver, moValueValuePlatesDriver }) {
+            if (registryToSave != null && (registryToSave.isRegistryNew() || registryToSave.isRegistryEdited())) {
+                registryToSave.save(miClient.getSession());
+                registryToSave.setRegistryEdited(false);
             }
         }
 
@@ -970,9 +977,12 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
                 // validate plates keeping code to validate another field, like driver, in the future:
 
                 moValuePlates = null; // reset previous value
+                moValueDriver = null; // reset previous value
+                moValueValuePlatesDriver = null; // reset previous value
 
                 Object[] packs = new Object[] {
-                    new Object[] { moTextPlates, moFieldPlates }
+                    new Object[] { moTextPlates, moFieldPlates },
+                    new Object[] { moTextDriver, moFieldDriver }
                 };
 
                 for (Object pack : packs) {
@@ -1009,10 +1019,16 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
                             }
                             throw new Exception(message);
                         }
-                        else if (valueRetrieved.Value.isRegistryEdited()) {
+                        else if (valueRetrieved.Value == null) {
+                            throw new Exception("No se pudo recuperar el valor " + field.getName() + " '" + text.getValue() + "' del catálogo.");
+                        }
+                        else {
                             switch (field.getPkFieldId()) {
                                 case SModSysConsts.C_FIELD_TIC_PLA:
                                     moValuePlates = valueRetrieved.Value;
+                                    break;
+                                case SModSysConsts.C_FIELD_TIC_DRV:
+                                    moValueDriver = valueRetrieved.Value;
                                     break;
                                 default:
                                     // nothing
@@ -1020,6 +1036,9 @@ public class SFormLaboratory extends SBeanForm implements SGridPaneFormOwner, Ac
                         }
                     }
                 }
+                
+                // check relation between plates and driver:
+                moValueValuePlatesDriver = moValuePlates.checkRelatedValue(miClient, moValueDriver);
             }
             catch (Exception e) {
                 validation.setMessage(e.getMessage());

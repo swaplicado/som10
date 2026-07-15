@@ -46,6 +46,7 @@ import som.mod.cfg.db.SCfgUtils;
 import som.mod.cfg.db.SDbCompany;
 import som.mod.cfg.db.SDbField;
 import som.mod.cfg.db.SDbValue;
+import som.mod.cfg.db.SDbValueValue;
 import som.mod.som.db.SDbItem;
 import som.mod.som.db.SDbProducer;
 import som.mod.som.db.SDbTicket;
@@ -86,6 +87,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
     private SDbField moFieldDriver;
     private SDbValue moValuePlates;
     private SDbValue moValueDriver;
+    private SDbValueValue moValueValuePlatesDriver;
     private SPickerValue moPickerPlates;
     private SPickerValue moPickerDriver;
     private JButton jbSaveSend;
@@ -2154,6 +2156,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
             moFieldDriver = (SDbField) miClient.getSession().readRegistry(SModConsts.C_FIELD, new int[] { SModSysConsts.C_FIELD_TIC_DRV });
             moValuePlates = null; // wait until validation to set this member
             moValueDriver = null; // wait until validation to set this member
+            moValueValuePlatesDriver = null; // wait until validation to set this member
             
             setFormEditable(true);
 
@@ -2335,12 +2338,12 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                 ticket.setFkFreightTicketId_n(0);
             }
             
-            // save updated values:
+            // save registries:
             
-            for (SDbValue value : new SDbValue[] { moValuePlates, moValueDriver }) {
-                if (value != null && value.isRegistryEdited()) {
-                    value.save(miClient.getSession());
-                    value.setRegistryEdited(false);
+            for (SDbRegistry registryToSave : new SDbRegistry[] { moValuePlates, moValueDriver, moValueValuePlatesDriver }) {
+                if (registryToSave != null && (registryToSave.isRegistryNew() || registryToSave.isRegistryEdited())) {
+                    registryToSave.save(miClient.getSession());
+                    registryToSave.setRegistryEdited(false);
                 }
             }
 
@@ -2404,6 +2407,7 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                         
                         moValuePlates = null; // reset previous value
                         moValueDriver = null; // reset previous value
+                        moValueValuePlatesDriver = null; // reset previous value
                         
                         Object[] packs = new Object[] {
                             new Object[] { moTextPlates, moFieldPlates },
@@ -2444,7 +2448,10 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                                     }
                                     throw new Exception(message);
                                 }
-                                else if (valueRetrieved.Value.isRegistryEdited()) {
+                                else if (valueRetrieved.Value == null) {
+                                    throw new Exception("No se pudo recuperar el valor " + field.getName() + " '" + text.getValue() + "' del catálogo.");
+                                }
+                                else {
                                     switch (field.getPkFieldId()) {
                                         case SModSysConsts.C_FIELD_TIC_PLA:
                                             moValuePlates = valueRetrieved.Value;
@@ -2458,6 +2465,9 @@ public class SFormTicket extends SBeanForm implements ActionListener, ItemListen
                                 }
                             }
                         }
+                        
+                        // check relation between plates and driver:
+                        moValueValuePlatesDriver = moValuePlates.checkRelatedValue(miClient, moValueDriver);
                     }
                     catch (Exception e) {
                         validation.setMessage(e.getMessage());

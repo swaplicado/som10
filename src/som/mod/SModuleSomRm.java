@@ -144,6 +144,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCatInputCategory;
     private JMenuItem mjCatInputSource;
     private JMenuItem mjCatReportingGroup;
+    private JMenuItem mjCatFieldDriver;
+    private JMenuItem mjCatFieldDriverPlates;
+    private JMenuItem mjCatFieldPlates;
+    private JMenuItem mjCatFieldPlatesDriver;
     private JMenuItem mjCatTicketOrigin;
     private JMenuItem mjCatTicketDestination;
     private JMenuItem mjCatFreightOrigin;
@@ -156,12 +160,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
     private JMenuItem mjCfgSeasonProducer;
     private JMenuItem mjCfgRegions;
     private JMenuItem mjCfgSupraRegions;
-    private JMenu mjCfgField;   // Configuration/ Field
-    private JMenuItem mjCfgFieldDriver;
-    private JMenuItem mjCfgFieldDriverPlates;
-    private JMenuItem mjCfgFieldPlates;
-    private JMenuItem mjCfgFieldPlatesDriver;
-    private JMenuItem mjCfgFieldField;
+    private JMenuItem mjCfgField;
     private JMenu mjTic;   // Scale tickets
     private JMenuItem mjTicTicketSca;
     private JMenuItem mjTicTicketLab;
@@ -274,6 +273,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatInputCategory = new JMenuItem("Categorías de insumo");
         mjCatInputSource = new JMenuItem("Orígenes de insumos");
         mjCatReportingGroup = new JMenuItem("Agrupadores de reporte");
+        mjCatFieldDriver = new JMenuItem("Choferes para boletos");
+        mjCatFieldDriverPlates = new JMenuItem("Choferes vs. placas para boletos");
+        mjCatFieldPlates = new JMenuItem("Placas para boletos");
+        mjCatFieldPlatesDriver = new JMenuItem("Placas vs. choferes para boletos");
         mjCatTicketOrigin = new JMenuItem("Procedencias de boletos");
         mjCatTicketDestination = new JMenuItem("Destinos de boletos");
         mjCatFreightOrigin = new JMenuItem("Origenes de fletes");
@@ -293,6 +296,11 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCat.addSeparator();
         mjCat.add(mjCatInputSource);
         mjCat.add(mjCatReportingGroup);
+        mjCat.addSeparator();
+        mjCat.add(mjCatFieldDriver);
+        mjCat.add(mjCatFieldDriverPlates);
+        mjCat.add(mjCatFieldPlates);
+        mjCat.add(mjCatFieldPlatesDriver);
         mjCat.addSeparator();
         mjCat.add(mjCatTicketOrigin);
         mjCat.add(mjCatTicketDestination);
@@ -314,6 +322,10 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCatInputCategory.addActionListener(this);
         mjCatInputSource.addActionListener(this);
         mjCatReportingGroup.addActionListener(this);
+        mjCatFieldDriver.addActionListener(this);
+        mjCatFieldDriverPlates.addActionListener(this);
+        mjCatFieldPlates.addActionListener(this);
+        mjCatFieldPlatesDriver.addActionListener(this);
         mjCatTicketOrigin.addActionListener(this);
         mjCatTicketDestination.addActionListener(this);
         mjCatFreightOrigin.addActionListener(this);
@@ -327,20 +339,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCfgSeasonProducer = new JMenuItem("Configuración de proveedores");
         mjCfgRegions = new JMenuItem("Regiones");
         mjCfgSupraRegions = new JMenuItem("Supraregiones");
-        mjCfgField = new JMenu("Campos de boletos");
-        mjCfgFieldDriver = new JMenuItem("Choferes");
-        mjCfgFieldDriverPlates = new JMenuItem("Choferes vs. placas");
-        mjCfgFieldPlates = new JMenuItem("Placas");
-        mjCfgFieldPlatesDriver = new JMenuItem("Placas vs. choferes");
-        mjCfgFieldField = new JMenuItem("Configuración de campos de boletos");
-        
-        mjCfgField.add(mjCfgFieldDriver);
-        mjCfgField.add(mjCfgFieldDriverPlates);
-        mjCfgField.addSeparator();
-        mjCfgField.add(mjCfgFieldPlates);
-        mjCfgField.add(mjCfgFieldPlatesDriver);
-        mjCfgField.addSeparator();
-        mjCfgField.add(mjCfgFieldField);
+        mjCfgField = new JMenuItem("Configuración de campos de boletos");
         
         mjCfg.add(mjCfgSeasons);
         mjCfg.add(mjCfgSeasonRegion);
@@ -356,11 +355,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
         mjCfgSeasonProducer.addActionListener(this);
         mjCfgRegions.addActionListener(this);
         mjCfgSupraRegions.addActionListener(this);
-        mjCfgFieldDriver.addActionListener(this);
-        mjCfgFieldDriverPlates.addActionListener(this);
-        mjCfgFieldPlates.addActionListener(this);
-        mjCfgFieldPlatesDriver.addActionListener(this);
-        mjCfgFieldField.addActionListener(this);
+        mjCfgField.addActionListener(this);
 
         mjTic = new JMenu("Boletos báscula");
         mjTicTicketSca = new JMenuItem("Boletos en báscula");
@@ -1412,6 +1407,18 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             else if (menuItem == mjCatReportingGroup) {
                 miClient.getSession().getModule(SModConsts.MOD_CFG).showView(SModConsts.CU_REP_GRP, SLibConsts.UNDEFINED, null);
             }
+            else if (menuItem == mjCatFieldDriver) {
+                miClient.getSession().showView(SModConsts.C_VALUE, SModSysConsts.C_FIELD_TIC_DRV, null);
+            }
+            else if (menuItem == mjCatFieldDriverPlates) {
+                miClient.getSession().showView(SModConsts.C_VALUE_VALUE, SViewValueValue.PARENT_B, new SGuiParams(SModSysConsts.C_FIELD_TIC_DRV, SModSysConsts.C_FIELD_TIC_PLA));
+            }
+            else if (menuItem == mjCatFieldPlates) {
+                miClient.getSession().showView(SModConsts.C_VALUE, SModSysConsts.C_FIELD_TIC_PLA, null);
+            }
+            else if (menuItem == mjCatFieldPlatesDriver) {
+                miClient.getSession().showView(SModConsts.C_VALUE_VALUE, SViewValueValue.PARENT_A, new SGuiParams(SModSysConsts.C_FIELD_TIC_PLA, SModSysConsts.C_FIELD_TIC_DRV));
+            }
             else if (menuItem == mjCatTicketOrigin) {
                 showView(SModConsts.SU_TIC_ORIG, SLibConsts.UNDEFINED, null);
             }
@@ -1463,19 +1470,7 @@ public class SModuleSomRm extends SGuiModule implements ActionListener {
             else if (menuItem == mjCfgSupraRegions) {
                 showView(SModConsts.SU_SUP_REG, SLibConsts.UNDEFINED, null);
             }
-            else if (menuItem == mjCfgFieldDriver) {
-                miClient.getSession().showView(SModConsts.C_VALUE, SModSysConsts.C_FIELD_TIC_DRV, null);
-            }
-            else if (menuItem == mjCfgFieldDriverPlates) {
-                miClient.getSession().showView(SModConsts.C_VALUE_VALUE, SViewValueValue.PARENT_B, new SGuiParams(SModSysConsts.C_FIELD_TIC_DRV, SModSysConsts.C_FIELD_TIC_PLA));
-            }
-            else if (menuItem == mjCfgFieldPlates) {
-                miClient.getSession().showView(SModConsts.C_VALUE, SModSysConsts.C_FIELD_TIC_PLA, null);
-            }
-            else if (menuItem == mjCfgFieldPlatesDriver) {
-                miClient.getSession().showView(SModConsts.C_VALUE_VALUE, SViewValueValue.PARENT_A, new SGuiParams(SModSysConsts.C_FIELD_TIC_PLA, SModSysConsts.C_FIELD_TIC_DRV));
-            }
-            else if (menuItem == mjCfgFieldField) {
+            else if (menuItem == mjCfgField) {
                 miClient.getSession().showView(SModConsts.C_FIELD, 0, null);
             }
             else if (menuItem == mjTicTicketSca) {

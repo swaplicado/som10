@@ -37,6 +37,7 @@ public class SViewValueValue extends SGridPaneView {
      */
     public SViewValueValue(SGuiClient client, String title, int parent, SGuiParams params) {
         super(client, SGridConsts.GRID_PANE_VIEW, SModConsts.C_VALUE_VALUE, parent, title, params);
+        setRowButtonsEnabled(false, false, false, false, true);
         moFieldParent = (SDbField) miClient.getSession().readRegistry(SModConsts.C_FIELD, new int[] { params.getType() });
         moFieldChild = (SDbField) miClient.getSession().readRegistry(SModConsts.C_FIELD, new int[] { params.getSubtype() });
     }
@@ -72,8 +73,8 @@ public class SViewValueValue extends SGridPaneView {
         }
         
         msSql = "SELECT "
-                + "v.id_value_" + alias1 + " AS " + SDbConsts.FIELD_ID + "1, "
-                + "v.id_value_" + alias2 + " AS " + SDbConsts.FIELD_ID + "2, "
+                + "v.id_value_a AS " + SDbConsts.FIELD_ID + "1, "
+                + "v.id_value_b AS " + SDbConsts.FIELD_ID + "2, "
                 + "v" + alias1 + ".value_text AS " + SDbConsts.FIELD_CODE + ", " // code of "parent" field
                 + "v" + alias1 + ".value_text AS " + SDbConsts.FIELD_NAME + ", " // name of "parent" field
                 + "v" + alias2 + ".value_text AS _name_child, "
@@ -96,7 +97,7 @@ public class SViewValueValue extends SGridPaneView {
                 + "INNER JOIN " + SModConsts.TablesMap.get(SModConsts.CU_USR) + " AS uu ON "
                 + "v.fk_usr_upd = uu.id_usr "
                 + "WHERE v" + alias1 + ".fk_field = " + mnGridMode + " AND v" + alias2 + ".fk_field = " + mnGridSubmode + " " + (sql.isEmpty() ? "" : "AND " + sql)
-                + "ORDER BY v" + alias1 + ".value_text, v" + alias2 + ".value_text, v.id_value_" + alias1 + ", v.id_value_" + alias2 + ";";
+                + "ORDER BY v" + alias1 + ".value_text, v.id_value_" + alias1 + ", v" + alias2 + ".value_text, v.id_value_" + alias2 + ";";
     }
 
     @Override

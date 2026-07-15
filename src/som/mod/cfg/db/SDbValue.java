@@ -14,12 +14,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.stream.Collectors;
+import javax.swing.JOptionPane;
 import sa.gui.util.SUtilConsts;
 import sa.lib.SLibConsts;
 import sa.lib.SLibUtils;
 import sa.lib.db.SDbConsts;
 import sa.lib.db.SDbRegistryUser;
 import sa.lib.grid.SGridRow;
+import sa.lib.gui.SGuiClient;
 import sa.lib.gui.SGuiSession;
 import som.mod.SModConsts;
 import som.mod.SModSysConsts;
@@ -130,6 +132,48 @@ public class SDbValue extends SDbRegistryUser implements SGridRow {
         else {
             setScopeItems(msScopeItems + "," + id);
         }
+    }
+    
+    public SDbValueValue checkRelatedValue(final SGuiClient client, final SDbValue related) throws Exception {
+        SDbValueValue valueValue = null;
+        
+        String sql = "SELECT vv.id_value_a, vv.id_value_b "
+                + "FROM " + SModConsts.TablesMap.get(SModConsts.C_VALUE_VALUE) + " AS vv "
+                + "WHERE vv.id_value_a = " + mnPkValueId + " AND vv.id_value_b = " + related.getPkValueId() + ";";
+        
+        try (Statement statement = client.getSession().getStatement().getConnection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
+            
+            if (resultSet.next()) {
+                valueValue = (SDbValueValue) client.getSession().readRegistry(SModConsts.C_VALUE_VALUE, new int[] { mnPkValueId, related.getPkValueId() });
+                
+                if (valueValue.isDeleted()) {
+                    String message = "La relación entre el valor '" + msValueText + "' con '" + related.getValueText() + "' está eliminada.";
+                    
+                    if (client.showMsgBoxConfirm(message + "\n¿Está seguro que desea continuar, y con ello reactivar esta relación?") == JOptionPane.YES_OPTION) {
+                        valueValue.setDeleted(false);
+                        valueValue.setRegistryEdited(true);
+                    }
+                    else {
+                        throw new Exception(message);
+                    }
+                }
+            }
+            else {
+                String message = "La relación entre el valor '" + msValueText + "' con '" + related.getValueText() + "' no existe.";
+                
+                if (client.showMsgBoxConfirm(message + "\n¿Está seguro que desea continuar, y con ello crear esta relación?") == JOptionPane.YES_OPTION) {
+                    valueValue = new SDbValueValue();
+                    valueValue.setPkValueAId(mnPkValueId);
+                    valueValue.setPkValueBId(related.getPkValueId());
+                }
+                else {
+                    throw new Exception(message);
+                }
+            }
+        }
+        
+        return valueValue;
     }
     
     /*

@@ -563,11 +563,11 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
                 break;
             case SModConsts.C_VALUE:
                 title = subtype == SModSysConsts.C_FIELD_TIC_PLA ? "Placas" : "Choferes";
-                view = new SViewValue(miClient, title, subtype);
+                view = new SViewValue(miClient, title + " boletos", subtype);
                 break;
             case SModConsts.C_VALUE_VALUE:
                 title = params.getType() == SModSysConsts.C_FIELD_TIC_PLA ? "Placas vs. choferes" : "Choferes vs. placas";
-                view = new SViewValueValue(miClient, title, subtype, params);
+                view = new SViewValueValue(miClient, title + " boletos", subtype, params);
                 break;
             default:
                 miClient.showMsgBoxError(SLibConsts.ERR_MSG_OPTION_UNKNOWN);
@@ -633,11 +633,11 @@ public class SModuleCfg extends SGuiModule implements ActionListener {
             case SModConsts.C_VALUE:
                 switch (subtype) {
                     case SModSysConsts.C_FIELD_TIC_PLA:
-                        if (moFormValuePlates == null) moFormValuePlates = new SFormValue(miClient, subtype, "Placas");
+                        if (moFormValuePlates == null) moFormValuePlates = new SFormValue(miClient, subtype, "Placas para boletos");
                         form = moFormValuePlates;
                         break;
                     case SModSysConsts.C_FIELD_TIC_DRV:
-                        if (moFormValueDriver == null) moFormValueDriver = new SFormValue(miClient, subtype, "Chofer");
+                        if (moFormValueDriver == null) moFormValueDriver = new SFormValue(miClient, subtype, "Chofer para boletos");
                         form = moFormValueDriver;
                         break;
                     default:
